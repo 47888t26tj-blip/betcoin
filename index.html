@@ -3,88 +3,729 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>BetCoin</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      margin: 0;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
     }
 
-    .balance {
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 15px;
+    body {
+      margin: 0;
+      padding-bottom: 85px;
+      background: #0b0d12;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      padding: 18px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
     }
 
-    .match {
-      background: #1c1c1c;
-      padding: 15px;
-      border-radius: 15px;
-      margin-bottom: 15px;
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
     }
 
-    button {
-      background: #2ea6ff;
+    .balance-small {
+      background: #191d27;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: bold;
+    }
+
+    .balance-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #1f6feb, #6148d8);
+      margin-bottom: 25px;
+    }
+
+    .balance-card p {
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    .balance-card h1 {
+      margin: 8px 0 0;
+      font-size: 34px;
+    }
+
+    h2 {
+      margin-top: 8px;
+      font-size: 21px;
+    }
+
+    .match {
+      background: #161922;
+      padding: 16px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .league {
+      color: #8d94a5;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .teams {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .time {
+      color: #9097a8;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .odds {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .odd-button {
+      background: #232836;
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 10px;
-      margin: 5px;
+      border-radius: 12px;
+      padding: 12px 5px;
+      font-weight: bold;
       cursor: pointer;
+    }
+
+    .odd-button:active {
+      transform: scale(0.97);
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #13161e;
+      border-top: 1px solid #272b36;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 5px 18px;
+    }
+
+    .nav button {
+      border: none;
+      background: none;
+      color: #858c9c;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .nav button.active {
+      color: white;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 3px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .empty {
+      background: #161922;
+      border-radius: 18px;
+      padding: 30px 20px;
+      text-align: center;
+      color: #9299a8;
+    }
+
+    .bet-card {
+      background: #161922;
+      padding: 15px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+    }
+
+    .profile {
+      background: #161922;
+      padding: 22px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #286cf4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 12px;
+    }
+
+    .modal {
+      position: fixed;
+      display: none;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #1b1f2a;
+      padding: 22px;
+      border-radius: 25px 25px 0 0;
+      z-index: 10;
+    }
+
+    .modal.active {
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      display: none;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 9;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: #292e3b;
+      color: white;
+      font-size: 18px;
+      margin: 12px 0;
+    }
+
+    .confirm {
+      width: 100%;
+      background: #2775ff;
+      border: none;
+      color: white;
+      padding: 15px;
+      border-radius: 13px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .cancel {
+      width: 100%;
+      margin-top: 8px;
+      background: none;
+      border: none;
+      color: #999;
+      padding: 10px;
+    }
+
+    .potential {
+      color: #71df91;
+      margin-bottom: 14px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>⚽ BetCoin</h1>
+<div class="container">
 
-  <div class="balance">
-    <h2>🪙 Баланс</h2>
-    <h1 id="balance">1000</h1>
+  <div class="header">
+    <div class="logo">⚽ BetCoin</div>
+    <div class="balance-small">
+      🪙 <span id="topBalance">1000</span>
+    </div>
   </div>
 
-  <h2>Матчи</h2>
+  <div id="home" class="page active">
 
-  <div class="match">
-    <h3>Barcelona — Arsenal</h3>
+    <div class="balance-card">
+      <p>Твой баланс</p>
+      <h1>🪙 <span id="balance">1000</span></h1>
+    </div>
 
-    <button onclick="bet(2.1)">П1 — 2.10</button>
-    <button onclick="bet(3.3)">X — 3.30</button>
-    <button onclick="bet(2.9)">П2 — 2.90</button>
+    <h2>🔥 Популярные матчи</h2>
+
+    <div id="homeMatches"></div>
+
   </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
 
-    tg.expand();
+  <div id="matches" class="page">
 
-    let balance = 1000;
+    <h2>⚽ Все матчи</h2>
 
-    function bet(coef) {
-      const amount = 100;
+    <div id="allMatches"></div>
 
-      if (balance >= amount) {
-        balance -= amount;
+  </div>
 
-        document.getElementById("balance").innerText = balance;
 
-        alert(
-          "Ставка: " + amount +
-          " монет\nВозможный выигрыш: " +
-          amount * coef
-        );
-      }
-    }
-  </script>
+  <div id="bets" class="page">
+
+    <h2>🎫 Мои ставки</h2>
+
+    <div id="betsList"></div>
+
+  </div>
+
+
+  <div id="profile" class="page">
+
+    <h2>👤 Профиль</h2>
+
+    <div class="profile">
+      <div class="avatar">👤</div>
+
+      <h2 id="playerName">Игрок</h2>
+
+      <p>
+        Баланс:
+        🪙 <span id="profileBalance">1000</span>
+      </p>
+
+      <p>
+        Сделано ставок:
+        <span id="betsCount">0</span>
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="nav">
+
+  <button class="active" onclick="openPage('home', this)">
+    <span class="nav-icon">🏠</span>
+    Главная
+  </button>
+
+  <button onclick="openPage('matches', this)">
+    <span class="nav-icon">⚽</span>
+    Матчи
+  </button>
+
+  <button onclick="openPage('bets', this)">
+    <span class="nav-icon">🎫</span>
+    Ставки
+  </button>
+
+  <button onclick="openPage('profile', this)">
+    <span class="nav-icon">👤</span>
+    Профиль
+  </button>
+
+</div>
+
+
+<div id="overlay" class="overlay" onclick="closeBet()"></div>
+
+<div id="betModal" class="modal">
+
+  <h2 id="modalMatch">Матч</h2>
+
+  <p>
+    Выбор:
+    <b id="modalSelection"></b>
+  </p>
+
+  <p>
+    Коэффициент:
+    <b id="modalOdd"></b>
+  </p>
+
+  <input
+    id="betAmount"
+    type="number"
+    placeholder="Сумма ставки"
+    min="1"
+    oninput="calculateWin()"
+  >
+
+  <div class="potential">
+    Возможный выигрыш:
+    🪙 <span id="possibleWin">0</span>
+  </div>
+
+  <button class="confirm" onclick="confirmBet()">
+    Поставить
+  </button>
+
+  <button class="cancel" onclick="closeBet()">
+    Отмена
+  </button>
+
+</div>
+
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+let balance =
+  Number(localStorage.getItem("betcoinBalance")) || 1000;
+
+let bets =
+  JSON.parse(localStorage.getItem("betcoinBets")) || [];
+
+let selectedBet = null;
+
+
+const matches = [
+
+  {
+    league: "Испания",
+    teams: "Barcelona — Real Madrid",
+    time: "Сегодня • 22:00",
+    odds: [
+      ["П1", 2.10],
+      ["X", 3.40],
+      ["П2", 2.90]
+    ]
+  },
+
+  {
+    league: "Англия",
+    teams: "Arsenal — Manchester City",
+    time: "Сегодня • 20:30",
+    odds: [
+      ["П1", 2.45],
+      ["X", 3.20],
+      ["П2", 2.55]
+    ]
+  },
+
+  {
+    league: "Лига чемпионов",
+    teams: "PSG — Bayern",
+    time: "Завтра • 22:00",
+    odds: [
+      ["П1", 2.30],
+      ["X", 3.50],
+      ["П2", 2.60]
+    ]
+  }
+
+];
+
+
+function createMatch(match) {
+
+  let buttons = "";
+
+  match.odds.forEach(odd => {
+
+    buttons += `
+      <button
+        class="odd-button"
+        onclick="openBet(
+          '${match.teams}',
+          '${odd[0]}',
+          ${odd[1]}
+        )"
+      >
+        ${odd[0]}<br>${odd[1]}
+      </button>
+    `;
+
+  });
+
+  return `
+    <div class="match">
+
+      <div class="league">
+        ${match.league}
+      </div>
+
+      <div class="teams">
+        ${match.teams}
+      </div>
+
+      <div class="time">
+        ${match.time}
+      </div>
+
+      <div class="odds">
+        ${buttons}
+      </div>
+
+    </div>
+  `;
+}
+
+
+function renderMatches() {
+
+  document.getElementById("homeMatches").innerHTML =
+    matches
+      .slice(0, 2)
+      .map(createMatch)
+      .join("");
+
+  document.getElementById("allMatches").innerHTML =
+    matches
+      .map(createMatch)
+      .join("");
+
+}
+
+
+function openBet(match, selection, odd) {
+
+  selectedBet = {
+    match,
+    selection,
+    odd
+  };
+
+  document.getElementById("modalMatch").innerText =
+    match;
+
+  document.getElementById("modalSelection").innerText =
+    selection;
+
+  document.getElementById("modalOdd").innerText =
+    odd;
+
+  document.getElementById("betAmount").value = "";
+
+  document.getElementById("possibleWin").innerText = "0";
+
+  document.getElementById("overlay")
+    .classList.add("active");
+
+  document.getElementById("betModal")
+    .classList.add("active");
+
+}
+
+
+function closeBet() {
+
+  document.getElementById("overlay")
+    .classList.remove("active");
+
+  document.getElementById("betModal")
+    .classList.remove("active");
+
+}
+
+
+function calculateWin() {
+
+  if (!selectedBet) return;
+
+  const amount =
+    Number(document.getElementById("betAmount").value);
+
+  const win =
+    amount * selectedBet.odd;
+
+  document.getElementById("possibleWin").innerText =
+    win ? win.toFixed(0) : 0;
+
+}
+
+
+function confirmBet() {
+
+  const amount =
+    Number(document.getElementById("betAmount").value);
+
+  if (!amount || amount <= 0) {
+
+    alert("Введите сумму ставки");
+    return;
+
+  }
+
+  if (amount > balance) {
+
+    alert("Недостаточно монет");
+    return;
+
+  }
+
+  balance -= amount;
+
+  bets.unshift({
+
+    match: selectedBet.match,
+
+    selection: selectedBet.selection,
+
+    odd: selectedBet.odd,
+
+    amount: amount,
+
+    possible:
+      Math.round(amount * selectedBet.odd),
+
+    status: "Активна"
+
+  });
+
+  saveData();
+
+  updateInterface();
+
+  closeBet();
+
+  tg.HapticFeedback.notificationOccurred("success");
+
+}
+
+
+function saveData() {
+
+  localStorage.setItem(
+    "betcoinBalance",
+    balance
+  );
+
+  localStorage.setItem(
+    "betcoinBets",
+    JSON.stringify(bets)
+  );
+
+}
+
+
+function renderBets() {
+
+  const list =
+    document.getElementById("betsList");
+
+  if (bets.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty">
+        У тебя пока нет ставок
+      </div>
+    `;
+
+    return;
+
+  }
+
+  list.innerHTML =
+    bets.map(bet => `
+
+      <div class="bet-card">
+
+        <b>${bet.match}</b>
+
+        <p>
+          ${bet.selection}
+          • ${bet.odd}
+        </p>
+
+        <p>
+          Ставка:
+          🪙 ${bet.amount}
+        </p>
+
+        <p>
+          Возможный выигрыш:
+          🪙 ${bet.possible}
+        </p>
+
+        <p>
+          ⏳ ${bet.status}
+        </p>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function updateInterface() {
+
+  document.getElementById("balance").innerText =
+    balance;
+
+  document.getElementById("topBalance").innerText =
+    balance;
+
+  document.getElementById("profileBalance").innerText =
+    balance;
+
+  document.getElementById("betsCount").innerText =
+    bets.length;
+
+  renderBets();
+
+}
+
+
+function openPage(page, button) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(p =>
+      p.classList.remove("active")
+    );
+
+  document
+    .getElementById(page)
+    .classList.add("active");
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(b =>
+      b.classList.remove("active")
+    );
+
+  button.classList.add("active");
+
+}
+
+
+const user =
+  tg.initDataUnsafe?.user;
+
+if (user) {
+
+  document.getElementById("playerName").innerText =
+    user.first_name || "Игрок";
+
+}
+
+
+renderMatches();
+updateInterface();
+
+</script>
 
 </body>
 </html>

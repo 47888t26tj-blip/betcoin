@@ -1,6 +1,5 @@
 import os
 import requests
-from datetime import datetime, timedelta, timezone
 
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -32,14 +31,11 @@ def matches():
         "x-apisports-key": API_KEY
     }
 
-    today = datetime.now(timezone.utc).date()
-    week_later = today + timedelta(days=7)
-
     params = {
         "league": 39,
-        "season": 2026,
-        "from": today.isoformat(),
-        "to": week_later.isoformat(),
+        "season": 2024,
+        "from": "2024-10-01",
+        "to": "2024-10-08",
         "timezone": "Europe/Moscow"
     }
 

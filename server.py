@@ -22,7 +22,6 @@ def home():
 
 @app.route("/api/matches")
 def matches():
-
     if not TOKEN:
         return jsonify({
             "success": False,
@@ -34,11 +33,11 @@ def matches():
     }
 
     today = datetime.now(timezone.utc).date()
-    week_later = today + timedelta(days=7)
+    date_to = today + timedelta(days=14)
 
     params = {
         "dateFrom": today.isoformat(),
-        "dateTo": week_later.isoformat()
+        "dateTo": date_to.isoformat()
     }
 
     try:
@@ -67,7 +66,6 @@ def matches():
     matches_list = []
 
     for item in data.get("matches", []):
-
         home_team = item.get("homeTeam", {})
         away_team = item.get("awayTeam", {})
         competition = item.get("competition", {})
@@ -75,37 +73,19 @@ def matches():
         matches_list.append({
             "fixture_id": item.get("id"),
             "date": item.get("utcDate"),
-            "league": competition.get(
-                "name",
-                "Premier League"
-            ),
+            "league": competition.get("name", "Premier League"),
             "country": "England",
-            "home": home_team.get(
-                "name",
-                "Unknown"
-            ),
-            "away": away_team.get(
-                "name",
-                "Unknown"
-            ),
-            "home_logo": home_team.get(
-                "crest",
-                ""
-            ),
-            "away_logo": away_team.get(
-                "crest",
-                ""
-            ),
-            "status": item.get(
-                "status",
-                "SCHEDULED"
-            )
+            "home": home_team.get("name", "Unknown"),
+            "away": away_team.get("name", "Unknown"),
+            "home_logo": home_team.get("crest", ""),
+            "away_logo": away_team.get("crest", ""),
+            "status": item.get("status", "SCHEDULED")
         })
 
     return jsonify({
         "success": True,
         "date_from": today.isoformat(),
-        "date_to": week_later.isoformat(),
+        "date_to": date_to.isoformat(),
         "count": len(matches_list),
         "matches": matches_list
     })
@@ -113,7 +93,6 @@ def matches():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-
     app.run(
         host="0.0.0.0",
         port=port

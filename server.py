@@ -7,8 +7,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = os.environ.get("API_FOOTBALL_KEY", "").strip()
-API_URL = "https://v3.football.api-sports.io"
+TOKEN = os.environ.get("FOOTBALL_DATA_TOKEN", "").strip()
+API_URL = "https://api.football-data.org/v4"
 
 
 @app.route("/")
@@ -21,29 +21,21 @@ def home():
 
 @app.route("/api/matches")
 def matches():
-    if not API_KEY:
+
+    if not TOKEN:
         return jsonify({
             "success": False,
-            "error": "API_FOOTBALL_KEY not found"
+            "error": "FOOTBALL_DATA_TOKEN not found"
         }), 500
 
     headers = {
-        "x-apisports-key": API_KEY
-    }
-
-    params = {
-        "league": 39,
-        "season": 2024,
-        "from": "2024-10-01",
-        "to": "2024-10-08",
-        "timezone": "Europe/Moscow"
+        "X-Auth-Token": TOKEN
     }
 
     try:
         response = requests.get(
-            f"{API_URL}/fixtures",
+            f"{API_URL}/competitions/PL/matches",
             headers=headers,
-            params=params,
             timeout=20
         )
 
@@ -55,31 +47,44 @@ def matches():
             "error": str(error)
         }), 500
 
+    if response.status_code != 200:
+        return jsonify({
+            "success": False,
+            "status_code": response.status_code,
+            "api_response": data
+        }), response.status_code
+
     matches_list = []
 
-    for item in data.get("response", []):
+    for item in data.get("matches", []):
+
+        home_team = item.get("homeTeam", {})
+        away_team = item.get("awayTeam", {})
+        competition = item.get("competition", {})
+
         matches_list.append({
-            "fixture_id": item["fixture"]["id"],
-            "date": item["fixture"]["date"],
-            "league": item["league"]["name"],
-            "country": item["league"]["country"],
-            "home": item["teams"]["home"]["name"],
-            "away": item["teams"]["away"]["name"],
-            "home_logo": item["teams"]["home"]["logo"],
-            "away_logo": item["teams"]["away"]["logo"],
-            "status": item["fixture"]["status"]["short"]
+            "fixture_id": item.get("id"),
+            "date": item.get("utcDate"),
+            "league": competition.get("name", "Premier League"),
+            "country": "England",
+            "home": home_team.get("name", "Unknown"),
+            "away": away_team.get("name", "Unknown"),
+            "home_logo": home_team.get("crest", ""),
+            "away_logo": away_team.get("crest", ""),
+            "status": item.get("status", "SCHEDULED")
         })
 
     return jsonify({
         "success": True,
         "count": len(matches_list),
-        "matches": matches_list,
-        "api_results": data.get("results", 0),
-        "api_errors": data.get("errors", []),
-        "api_parameters": data.get("parameters", {})
+        "matches": matches_list
     })
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>BetCoin</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -14,7 +15,7 @@
 
     body {
       margin: 0;
-      padding-bottom: 85px;
+      padding-bottom: 90px;
       background: #0b0d12;
       color: white;
       font-family: Arial, sans-serif;
@@ -63,7 +64,6 @@
     }
 
     h2 {
-      margin-top: 8px;
       font-size: 21px;
     }
 
@@ -77,19 +77,48 @@
     .league {
       color: #8d94a5;
       font-size: 13px;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .teams {
-      font-size: 17px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .team {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
       font-weight: bold;
-      margin-bottom: 6px;
+    }
+
+    .team img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 7px;
+    }
+
+    .vs {
+      color: #777f90;
+      font-size: 12px;
     }
 
     .time {
+      text-align: center;
       color: #9097a8;
       font-size: 13px;
       margin-bottom: 14px;
+    }
+
+    .odds-title {
+      color: #777f90;
+      font-size: 11px;
+      margin-bottom: 7px;
     }
 
     .odds {
@@ -103,13 +132,9 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px 5px;
+      padding: 11px 5px;
       font-weight: bold;
       cursor: pointer;
-    }
-
-    .odd-button:active {
-      transform: scale(0.97);
     }
 
     .nav {
@@ -122,6 +147,7 @@
       display: flex;
       justify-content: space-around;
       padding: 10px 5px 18px;
+      z-index: 5;
     }
 
     .nav button {
@@ -129,7 +155,6 @@
       background: none;
       color: #858c9c;
       font-size: 12px;
-      cursor: pointer;
     }
 
     .nav button.active {
@@ -184,6 +209,12 @@
       margin: 0 auto 12px;
     }
 
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #9299a8;
+    }
+
     .modal {
       position: fixed;
       display: none;
@@ -204,7 +235,7 @@
       position: fixed;
       display: none;
       inset: 0;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0,0,0,0.65);
       z-index: 9;
     }
 
@@ -256,21 +287,30 @@
 
   <div class="header">
     <div class="logo">⚽ BetCoin</div>
+
     <div class="balance-small">
       🪙 <span id="topBalance">1000</span>
     </div>
   </div>
 
+
   <div id="home" class="page active">
 
     <div class="balance-card">
       <p>Твой баланс</p>
-      <h1>🪙 <span id="balance">1000</span></h1>
+
+      <h1>
+        🪙 <span id="balance">1000</span>
+      </h1>
     </div>
 
-    <h2>🔥 Популярные матчи</h2>
+    <h2>🔥 Матчи</h2>
 
-    <div id="homeMatches"></div>
+    <div id="homeMatches">
+      <div class="loading">
+        Загружаем матчи...
+      </div>
+    </div>
 
   </div>
 
@@ -279,7 +319,11 @@
 
     <h2>⚽ Все матчи</h2>
 
-    <div id="allMatches"></div>
+    <div id="allMatches">
+      <div class="loading">
+        Загружаем матчи...
+      </div>
+    </div>
 
   </div>
 
@@ -298,6 +342,7 @@
     <h2>👤 Профиль</h2>
 
     <div class="profile">
+
       <div class="avatar">👤</div>
 
       <h2 id="playerName">Игрок</h2>
@@ -311,6 +356,7 @@
         Сделано ставок:
         <span id="betsCount">0</span>
       </p>
+
     </div>
 
   </div>
@@ -344,6 +390,7 @@
 
 
 <div id="overlay" class="overlay" onclick="closeBet()"></div>
+
 
 <div id="betModal" class="modal">
 
@@ -385,10 +432,15 @@
 
 <script>
 
+const SERVER_URL =
+  "https://betcoin-gu5c.onrender.com";
+
+
 const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
+
 
 let balance =
   Number(localStorage.getItem("betcoinBalance")) || 1000;
@@ -396,58 +448,63 @@ let balance =
 let bets =
   JSON.parse(localStorage.getItem("betcoinBets")) || [];
 
+let matches = [];
+
 let selectedBet = null;
 
 
-const matches = [
+function generateOdds(fixtureId) {
 
-  {
-    league: "Испания",
-    teams: "Barcelona — Real Madrid",
-    time: "Сегодня • 22:00",
-    odds: [
-      ["П1", 2.10],
-      ["X", 3.40],
-      ["П2", 2.90]
-    ]
-  },
+  const number = Number(fixtureId) || 100;
 
-  {
-    league: "Англия",
-    teams: "Arsenal — Manchester City",
-    time: "Сегодня • 20:30",
-    odds: [
-      ["П1", 2.45],
-      ["X", 3.20],
-      ["П2", 2.55]
-    ]
-  },
+  const home =
+    (1.70 + (number % 90) / 100).toFixed(2);
 
-  {
-    league: "Лига чемпионов",
-    teams: "PSG — Bayern",
-    time: "Завтра • 22:00",
-    odds: [
-      ["П1", 2.30],
-      ["X", 3.50],
-      ["П2", 2.60]
-    ]
-  }
+  const draw =
+    (3.00 + (number % 60) / 100).toFixed(2);
 
-];
+  const away =
+    (1.90 + (number % 110) / 100).toFixed(2);
+
+  return [
+    ["П1", Number(home)],
+    ["X", Number(draw)],
+    ["П2", Number(away)]
+  ];
+
+}
+
+
+function formatDate(dateString) {
+
+  const date = new Date(dateString);
+
+  return date.toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+}
 
 
 function createMatch(match) {
 
+  const odds = generateOdds(match.fixture_id);
+
+  const matchName =
+    `${match.home} — ${match.away}`;
+
   let buttons = "";
 
-  match.odds.forEach(odd => {
+  odds.forEach(odd => {
 
     buttons += `
       <button
         class="odd-button"
         onclick="openBet(
-          '${match.teams}',
+          '${matchName.replace(/'/g, "\\'")}',
           '${odd[0]}',
           ${odd[1]}
         )"
@@ -458,19 +515,38 @@ function createMatch(match) {
 
   });
 
+
   return `
     <div class="match">
 
       <div class="league">
-        ${match.league}
+        ${match.country} • ${match.league}
       </div>
 
       <div class="teams">
-        ${match.teams}
+
+        <div class="team">
+          <img src="${match.home_logo}">
+          ${match.home}
+        </div>
+
+        <div class="vs">
+          VS
+        </div>
+
+        <div class="team">
+          <img src="${match.away_logo}">
+          ${match.away}
+        </div>
+
       </div>
 
       <div class="time">
-        ${match.time}
+        ${formatDate(match.date)}
+      </div>
+
+      <div class="odds-title">
+        Игровые коэффициенты
       </div>
 
       <div class="odds">
@@ -479,16 +555,74 @@ function createMatch(match) {
 
     </div>
   `;
+
+}
+
+
+async function loadMatches() {
+
+  try {
+
+    const response =
+      await fetch(`${SERVER_URL}/api/matches`);
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+      throw new Error("API error");
+    }
+
+    matches = data.matches || [];
+
+    renderMatches();
+
+  } catch (error) {
+
+    document.getElementById("homeMatches").innerHTML = `
+      <div class="empty">
+        Не удалось загрузить матчи
+      </div>
+    `;
+
+    document.getElementById("allMatches").innerHTML = `
+      <div class="empty">
+        Не удалось загрузить матчи
+      </div>
+    `;
+
+  }
+
 }
 
 
 function renderMatches() {
 
+  if (matches.length === 0) {
+
+    const text = `
+      <div class="empty">
+        Матчей пока нет
+      </div>
+    `;
+
+    document.getElementById("homeMatches").innerHTML =
+      text;
+
+    document.getElementById("allMatches").innerHTML =
+      text;
+
+    return;
+
+  }
+
+
   document.getElementById("homeMatches").innerHTML =
     matches
-      .slice(0, 2)
+      .slice(0, 4)
       .map(createMatch)
       .join("");
+
 
   document.getElementById("allMatches").innerHTML =
     matches
@@ -515,9 +649,11 @@ function openBet(match, selection, odd) {
   document.getElementById("modalOdd").innerText =
     odd;
 
-  document.getElementById("betAmount").value = "";
+  document.getElementById("betAmount").value =
+    "";
 
-  document.getElementById("possibleWin").innerText = "0";
+  document.getElementById("possibleWin").innerText =
+    "0";
 
   document.getElementById("overlay")
     .classList.add("active");
@@ -560,12 +696,14 @@ function confirmBet() {
   const amount =
     Number(document.getElementById("betAmount").value);
 
+
   if (!amount || amount <= 0) {
 
     alert("Введите сумму ставки");
     return;
 
   }
+
 
   if (amount > balance) {
 
@@ -574,7 +712,9 @@ function confirmBet() {
 
   }
 
+
   balance -= amount;
+
 
   bets.unshift({
 
@@ -593,13 +733,17 @@ function confirmBet() {
 
   });
 
+
   saveData();
 
   updateInterface();
 
   closeBet();
 
-  tg.HapticFeedback.notificationOccurred("success");
+
+  if (tg.HapticFeedback) {
+    tg.HapticFeedback.notificationOccurred("success");
+  }
 
 }
 
@@ -624,6 +768,7 @@ function renderBets() {
   const list =
     document.getElementById("betsList");
 
+
   if (bets.length === 0) {
 
     list.innerHTML = `
@@ -636,6 +781,7 @@ function renderBets() {
 
   }
 
+
   list.innerHTML =
     bets.map(bet => `
 
@@ -644,8 +790,7 @@ function renderBets() {
         <b>${bet.match}</b>
 
         <p>
-          ${bet.selection}
-          • ${bet.odd}
+          ${bet.selection} • ${bet.odd}
         </p>
 
         <p>
@@ -696,15 +841,18 @@ function openPage(page, button) {
       p.classList.remove("active")
     );
 
+
   document
     .getElementById(page)
     .classList.add("active");
+
 
   document
     .querySelectorAll(".nav button")
     .forEach(b =>
       b.classList.remove("active")
     );
+
 
   button.classList.add("active");
 
@@ -714,6 +862,7 @@ function openPage(page, button) {
 const user =
   tg.initDataUnsafe?.user;
 
+
 if (user) {
 
   document.getElementById("playerName").innerText =
@@ -722,8 +871,8 @@ if (user) {
 }
 
 
-renderMatches();
 updateInterface();
+loadMatches();
 
 </script>
 

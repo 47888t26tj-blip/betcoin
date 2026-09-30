@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BetCoin</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .balance {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .match {
+      background: #1c1c1c;
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background: #2ea6ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>⚽ BetCoin</h1>
+
+  <div class="balance">
+    <h2>🪙 Баланс</h2>
+    <h1 id="balance">1000</h1>
+  </div>
+
+  <h2>Матчи</h2>
+
+  <div class="match">
+    <h3>Barcelona — Arsenal</h3>
+
+    <button onclick="bet(2.1)">П1 — 2.10</button>
+    <button onclick="bet(3.3)">X — 3.30</button>
+    <button onclick="bet(2.9)">П2 — 2.90</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    tg.expand();
+
+    let balance = 1000;
+
+    function bet(coef) {
+      const amount = 100;
+
+      if (balance >= amount) {
+        balance -= amount;
+
+        document.getElementById("balance").innerText = balance;
+
+        alert(
+          "Ставка: " + amount +
+          " монет\nВозможный выигрыш: " +
+          amount * coef
+        );
+      }
+    }
+  </script>
+
+</body>
+</html>

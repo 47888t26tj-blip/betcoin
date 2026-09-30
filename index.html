@@ -115,22 +115,23 @@
       margin-bottom: 14px;
     }
 
-    .odds-title {
-      color: #777f90;
-      font-size: 11px;
+    .market-title {
+      color: #a8afbd;
+      font-size: 12px;
+      margin-top: 14px;
       margin-bottom: 7px;
-    }
-
-    .bookmaker {
-      color: #6f7788;
-      font-size: 11px;
-      margin-top: 10px;
-      text-align: center;
+      font-weight: bold;
     }
 
     .odds {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
 
@@ -144,6 +145,10 @@
       cursor: pointer;
     }
 
+    .odd-button:active {
+      transform: scale(0.98);
+    }
+
     .no-odds {
       background: #20242f;
       color: #8e95a5;
@@ -151,6 +156,13 @@
       border-radius: 12px;
       text-align: center;
       font-size: 13px;
+    }
+
+    .bookmaker {
+      color: #6f7788;
+      font-size: 11px;
+      margin-top: 10px;
+      text-align: center;
     }
 
     .nav {
@@ -483,34 +495,46 @@ function formatDate(dateString) {
 }
 
 
+function safeMatchName(name) {
+  return String(name).replace(/'/g, "\\'");
+}
+
+
 function createMatch(match) {
 
   const matchName =
     `${match.home} — ${match.away}`;
 
-  let oddsBlock = `
+  const safeName =
+    safeMatchName(matchName);
+
+  let mainOddsBlock = `
     <div class="no-odds">
-      Коэффициенты скоро
+      Основные коэффициенты пока недоступны
     </div>
   `;
 
-  let bookmakerBlock = "";
+  let totalsBlock = `
+    <div class="no-odds">
+      Тотал 2.5 пока недоступен
+    </div>
+  `;
+
 
   if (
-    match.odds_available &&
     match.odds &&
     match.odds.home &&
     match.odds.draw &&
     match.odds.away
   ) {
 
-    oddsBlock = `
+    mainOddsBlock = `
       <div class="odds">
 
         <button
           class="odd-button"
           onclick="openBet(
-            '${matchName.replace(/'/g, "\\'")}',
+            '${safeName}',
             'П1',
             ${match.odds.home}
           )"
@@ -521,7 +545,7 @@ function createMatch(match) {
         <button
           class="odd-button"
           onclick="openBet(
-            '${matchName.replace(/'/g, "\\'")}',
+            '${safeName}',
             'X',
             ${match.odds.draw}
           )"
@@ -532,7 +556,7 @@ function createMatch(match) {
         <button
           class="odd-button"
           onclick="openBet(
-            '${matchName.replace(/'/g, "\\'")}',
+            '${safeName}',
             'П2',
             ${match.odds.away}
           )"
@@ -542,14 +566,53 @@ function createMatch(match) {
 
       </div>
     `;
+  }
 
-    if (match.bookmaker) {
-      bookmakerBlock = `
-        <div class="bookmaker">
-          Источник: ${match.bookmaker}
-        </div>
-      `;
-    }
+
+  if (
+    match.total_2_5 &&
+    match.total_2_5.over &&
+    match.total_2_5.under
+  ) {
+
+    totalsBlock = `
+      <div class="totals">
+
+        <button
+          class="odd-button"
+          onclick="openBet(
+            '${safeName}',
+            'ТБ 2.5',
+            ${match.total_2_5.over}
+          )"
+        >
+          ТБ 2.5<br>${Number(match.total_2_5.over).toFixed(2)}
+        </button>
+
+        <button
+          class="odd-button"
+          onclick="openBet(
+            '${safeName}',
+            'ТМ 2.5',
+            ${match.total_2_5.under}
+          )"
+        >
+          ТМ 2.5<br>${Number(match.total_2_5.under).toFixed(2)}
+        </button>
+
+      </div>
+    `;
+  }
+
+
+  let bookmakerBlock = "";
+
+  if (match.bookmaker) {
+    bookmakerBlock = `
+      <div class="bookmaker">
+        Источник коэффициентов: ${match.bookmaker}
+      </div>
+    `;
   }
 
 
@@ -582,11 +645,17 @@ function createMatch(match) {
         ${formatDate(match.date)}
       </div>
 
-      <div class="odds-title">
-        Коэффициенты 1X2
+      <div class="market-title">
+        Исход матча
       </div>
 
-      ${oddsBlock}
+      ${mainOddsBlock}
+
+      <div class="market-title">
+        Тотал голов 2.5
+      </div>
+
+      ${totalsBlock}
 
       ${bookmakerBlock}
 

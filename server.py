@@ -1,10 +1,14 @@
 import os
+import requests
 
 from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+API_KEY = os.environ.get("API_FOOTBALL_KEY")
+API_URL = "https://v3.football.api-sports.io"
 
 
 @app.route("/")
@@ -15,11 +19,50 @@ def home():
     })
 
 
-@app.route("/api/test")
-def test():
+@app.route("/api/matches")
+def matches():
+    if not API_KEY:
+        return jsonify({
+            "success": False,
+            "error": "API_FOOTBALL_KEY not found"
+        }), 500
+
+    headers = {
+        "x-apisports-key": API_KEY
+    }
+
+    params = {
+        "next": 10
+    }
+
+    response = requests.get(
+        f"{API_URL}/fixtures",
+        headers=headers,
+        params=params,
+        timeout=20
+    )
+
+    data = response.json()
+
+    matches_list = []
+
+    for item in data.get("response", []):
+        matches_list.append({
+            "fixture_id": item["fixture"]["id"],
+            "date": item["fixture"]["date"],
+            "league": item["league"]["name"],
+            "country": item["league"]["country"],
+            "home": item["teams"]["home"]["name"],
+            "away": item["teams"]["away"]["name"],
+            "home_logo": item["teams"]["home"]["logo"],
+            "away_logo": item["teams"]["away"]["logo"],
+            "status": item["fixture"]["status"]["short"]
+        })
+
     return jsonify({
         "success": True,
-        "message": "Связь с сервером работает"
+        "count": len(matches_list),
+        "matches": matches_list
     })
 
 

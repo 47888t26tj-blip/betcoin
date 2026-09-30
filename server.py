@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = os.environ.get("API_FOOTBALL_KEY")
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "").strip()
 API_URL = "https://v3.football.api-sports.io"
 
 

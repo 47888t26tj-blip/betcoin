@@ -1,6 +1,7 @@
 import os
 import requests
 
+from datetime import datetime, timedelta, timezone
 from flask import Flask, jsonify
 from flask_cors import CORS
 
@@ -32,10 +33,19 @@ def matches():
         "X-Auth-Token": TOKEN
     }
 
+    today = datetime.now(timezone.utc).date()
+    week_later = today + timedelta(days=7)
+
+    params = {
+        "dateFrom": today.isoformat(),
+        "dateTo": week_later.isoformat()
+    }
+
     try:
         response = requests.get(
             f"{API_URL}/competitions/PL/matches",
             headers=headers,
+            params=params,
             timeout=20
         )
 
@@ -65,17 +75,37 @@ def matches():
         matches_list.append({
             "fixture_id": item.get("id"),
             "date": item.get("utcDate"),
-            "league": competition.get("name", "Premier League"),
+            "league": competition.get(
+                "name",
+                "Premier League"
+            ),
             "country": "England",
-            "home": home_team.get("name", "Unknown"),
-            "away": away_team.get("name", "Unknown"),
-            "home_logo": home_team.get("crest", ""),
-            "away_logo": away_team.get("crest", ""),
-            "status": item.get("status", "SCHEDULED")
+            "home": home_team.get(
+                "name",
+                "Unknown"
+            ),
+            "away": away_team.get(
+                "name",
+                "Unknown"
+            ),
+            "home_logo": home_team.get(
+                "crest",
+                ""
+            ),
+            "away_logo": away_team.get(
+                "crest",
+                ""
+            ),
+            "status": item.get(
+                "status",
+                "SCHEDULED"
+            )
         })
 
     return jsonify({
         "success": True,
+        "date_from": today.isoformat(),
+        "date_to": week_later.isoformat(),
         "count": len(matches_list),
         "matches": matches_list
     })

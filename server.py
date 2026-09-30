@@ -43,14 +43,21 @@ def matches():
         "timezone": "Europe/Moscow"
     }
 
-    response = requests.get(
-        f"{API_URL}/fixtures",
-        headers=headers,
-        params=params,
-        timeout=20
-    )
+    try:
+        response = requests.get(
+            f"{API_URL}/fixtures",
+            headers=headers,
+            params=params,
+            timeout=20
+        )
 
-    data = response.json()
+        data = response.json()
+
+    except Exception as error:
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
     matches_list = []
 
@@ -67,14 +74,14 @@ def matches():
             "status": item["fixture"]["status"]["short"]
         })
 
-   return jsonify({
-    "success": True,
-    "count": len(matches_list),
-    "matches": matches_list,
-    "api_errors": data.get("errors", []),
-    "api_results": data.get("results", 0),
-    "api_parameters": data.get("parameters", {})
-})
+    return jsonify({
+        "success": True,
+        "count": len(matches_list),
+        "matches": matches_list,
+        "api_results": data.get("results", 0),
+        "api_errors": data.get("errors", []),
+        "api_parameters": data.get("parameters", {})
+    })
 
 
 if __name__ == "__main__":

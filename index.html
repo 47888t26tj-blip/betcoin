@@ -123,16 +123,17 @@
       font-weight: bold;
     }
 
-    .odds {
+    .odds-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
 
-    .totals {
+    .odds-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
+      margin-bottom: 8px;
     }
 
     .odd-button {
@@ -500,6 +501,52 @@ function safeMatchName(name) {
 }
 
 
+function makeTotalBlock(match, fieldName, point, safeName) {
+
+  const total = match[fieldName];
+
+  if (
+    !total ||
+    total.over == null ||
+    total.under == null
+  ) {
+    return `
+      <div class="no-odds">
+        Тотал ${point} пока недоступен
+      </div>
+    `;
+  }
+
+  return `
+    <div class="odds-2">
+
+      <button
+        class="odd-button"
+        onclick="openBet(
+          '${safeName}',
+          'ТБ ${point}',
+          ${total.over}
+        )"
+      >
+        ТБ ${point}<br>${Number(total.over).toFixed(2)}
+      </button>
+
+      <button
+        class="odd-button"
+        onclick="openBet(
+          '${safeName}',
+          'ТМ ${point}',
+          ${total.under}
+        )"
+      >
+        ТМ ${point}<br>${Number(total.under).toFixed(2)}
+      </button>
+
+    </div>
+  `;
+}
+
+
 function createMatch(match) {
 
   const matchName =
@@ -514,22 +561,16 @@ function createMatch(match) {
     </div>
   `;
 
-  let totalsBlock = `
-    <div class="no-odds">
-      Тотал 2.5 пока недоступен
-    </div>
-  `;
-
 
   if (
     match.odds &&
-    match.odds.home &&
-    match.odds.draw &&
-    match.odds.away
+    match.odds.home != null &&
+    match.odds.draw != null &&
+    match.odds.away != null
   ) {
 
     mainOddsBlock = `
-      <div class="odds">
+      <div class="odds-3">
 
         <button
           class="odd-button"
@@ -569,40 +610,37 @@ function createMatch(match) {
   }
 
 
-  if (
-    match.total_2_5 &&
-    match.total_2_5.over &&
-    match.total_2_5.under
-  ) {
+  const total15 =
+    makeTotalBlock(
+      match,
+      "total_1_5",
+      "1.5",
+      safeName
+    );
 
-    totalsBlock = `
-      <div class="totals">
+  const total25 =
+    makeTotalBlock(
+      match,
+      "total_2_5",
+      "2.5",
+      safeName
+    );
 
-        <button
-          class="odd-button"
-          onclick="openBet(
-            '${safeName}',
-            'ТБ 2.5',
-            ${match.total_2_5.over}
-          )"
-        >
-          ТБ 2.5<br>${Number(match.total_2_5.over).toFixed(2)}
-        </button>
+  const total35 =
+    makeTotalBlock(
+      match,
+      "total_3_5",
+      "3.5",
+      safeName
+    );
 
-        <button
-          class="odd-button"
-          onclick="openBet(
-            '${safeName}',
-            'ТМ 2.5',
-            ${match.total_2_5.under}
-          )"
-        >
-          ТМ 2.5<br>${Number(match.total_2_5.under).toFixed(2)}
-        </button>
-
-      </div>
-    `;
-  }
+  const total45 =
+    makeTotalBlock(
+      match,
+      "total_4_5",
+      "4.5",
+      safeName
+    );
 
 
   let bookmakerBlock = "";
@@ -645,17 +683,41 @@ function createMatch(match) {
         ${formatDate(match.date)}
       </div>
 
+
       <div class="market-title">
         Исход матча
       </div>
 
       ${mainOddsBlock}
 
+
+      <div class="market-title">
+        Тотал голов 1.5
+      </div>
+
+      ${total15}
+
+
       <div class="market-title">
         Тотал голов 2.5
       </div>
 
-      ${totalsBlock}
+      ${total25}
+
+
+      <div class="market-title">
+        Тотал голов 3.5
+      </div>
+
+      ${total35}
+
+
+      <div class="market-title">
+        Тотал голов 4.5
+      </div>
+
+      ${total45}
+
 
       ${bookmakerBlock}
 

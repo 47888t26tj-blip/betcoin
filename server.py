@@ -37,11 +37,13 @@ def matches():
     today = datetime.now(timezone.utc).date()
     week_later = today + timedelta(days=7)
 
-    params = {
-        "from": today.isoformat(),
-        "to": week_later.isoformat(),
-        "timezone": "Europe/Moscow"
-    }
+  params = {
+    "league": 39,
+    "season": 2026,
+    "from": today.isoformat(),
+    "to": week_later.isoformat(),
+    "timezone": "Europe/Moscow"
+} 
 
     response = requests.get(
         f"{API_URL}/fixtures",

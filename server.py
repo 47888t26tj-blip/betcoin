@@ -67,11 +67,14 @@ def matches():
             "status": item["fixture"]["status"]["short"]
         })
 
-    return jsonify({
-        "success": True,
-        "count": len(matches_list),
-        "matches": matches_list
-    })
+   return jsonify({
+    "success": True,
+    "count": len(matches_list),
+    "matches": matches_list,
+    "api_errors": data.get("errors", []),
+    "api_results": data.get("results", 0),
+    "api_parameters": data.get("parameters", {})
+})
 
 
 if __name__ == "__main__":

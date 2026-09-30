@@ -1,5 +1,6 @@
 import os
 import requests
+from datetime import datetime, timedelta, timezone
 
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -19,7 +20,6 @@ def home():
     })
 
 
-
 @app.route("/api/matches")
 def matches():
     if not API_KEY:
@@ -28,8 +28,6 @@ def matches():
             "error": "API_FOOTBALL_KEY not found"
         }), 500
 
-    from datetime import datetime, timedelta, timezone
-
     headers = {
         "x-apisports-key": API_KEY
     }
@@ -37,13 +35,13 @@ def matches():
     today = datetime.now(timezone.utc).date()
     week_later = today + timedelta(days=7)
 
-  params = {
-    "league": 39,
-    "season": 2026,
-    "from": today.isoformat(),
-    "to": week_later.isoformat(),
-    "timezone": "Europe/Moscow"
-} 
+    params = {
+        "league": 39,
+        "season": 2026,
+        "from": today.isoformat(),
+        "to": week_later.isoformat(),
+        "timezone": "Europe/Moscow"
+    }
 
     response = requests.get(
         f"{API_URL}/fixtures",
@@ -74,6 +72,7 @@ def matches():
         "count": len(matches_list),
         "matches": matches_list
     })
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

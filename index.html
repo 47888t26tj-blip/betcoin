@@ -121,6 +121,13 @@
       margin-bottom: 7px;
     }
 
+    .bookmaker {
+      color: #6f7788;
+      font-size: 11px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
     .odds {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -135,6 +142,15 @@
       padding: 11px 5px;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    .no-odds {
+      background: #20242f;
+      color: #8e95a5;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 13px;
     }
 
     .nav {
@@ -453,28 +469,6 @@ let matches = [];
 let selectedBet = null;
 
 
-function generateOdds(fixtureId) {
-
-  const number = Number(fixtureId) || 100;
-
-  const home =
-    (1.70 + (number % 90) / 100).toFixed(2);
-
-  const draw =
-    (3.00 + (number % 60) / 100).toFixed(2);
-
-  const away =
-    (1.90 + (number % 110) / 100).toFixed(2);
-
-  return [
-    ["П1", Number(home)],
-    ["X", Number(draw)],
-    ["П2", Number(away)]
-  ];
-
-}
-
-
 function formatDate(dateString) {
 
   const date = new Date(dateString);
@@ -491,29 +485,72 @@ function formatDate(dateString) {
 
 function createMatch(match) {
 
-  const odds = generateOdds(match.fixture_id);
-
   const matchName =
     `${match.home} — ${match.away}`;
 
-  let buttons = "";
+  let oddsBlock = `
+    <div class="no-odds">
+      Коэффициенты скоро
+    </div>
+  `;
 
-  odds.forEach(odd => {
+  let bookmakerBlock = "";
 
-    buttons += `
-      <button
-        class="odd-button"
-        onclick="openBet(
-          '${matchName.replace(/'/g, "\\'")}',
-          '${odd[0]}',
-          ${odd[1]}
-        )"
-      >
-        ${odd[0]}<br>${odd[1]}
-      </button>
+  if (
+    match.odds_available &&
+    match.odds &&
+    match.odds.home &&
+    match.odds.draw &&
+    match.odds.away
+  ) {
+
+    oddsBlock = `
+      <div class="odds">
+
+        <button
+          class="odd-button"
+          onclick="openBet(
+            '${matchName.replace(/'/g, "\\'")}',
+            'П1',
+            ${match.odds.home}
+          )"
+        >
+          П1<br>${Number(match.odds.home).toFixed(2)}
+        </button>
+
+        <button
+          class="odd-button"
+          onclick="openBet(
+            '${matchName.replace(/'/g, "\\'")}',
+            'X',
+            ${match.odds.draw}
+          )"
+        >
+          X<br>${Number(match.odds.draw).toFixed(2)}
+        </button>
+
+        <button
+          class="odd-button"
+          onclick="openBet(
+            '${matchName.replace(/'/g, "\\'")}',
+            'П2',
+            ${match.odds.away}
+          )"
+        >
+          П2<br>${Number(match.odds.away).toFixed(2)}
+        </button>
+
+      </div>
     `;
 
-  });
+    if (match.bookmaker) {
+      bookmakerBlock = `
+        <div class="bookmaker">
+          Источник: ${match.bookmaker}
+        </div>
+      `;
+    }
+  }
 
 
   return `
@@ -546,12 +583,12 @@ function createMatch(match) {
       </div>
 
       <div class="odds-title">
-        Игровые коэффициенты
+        Коэффициенты 1X2
       </div>
 
-      <div class="odds">
-        ${buttons}
-      </div>
+      ${oddsBlock}
+
+      ${bookmakerBlock}
 
     </div>
   `;
@@ -647,7 +684,7 @@ function openBet(match, selection, odd) {
     selection;
 
   document.getElementById("modalOdd").innerText =
-    odd;
+    Number(odd).toFixed(2);
 
   document.getElementById("betAmount").value =
     "";
@@ -790,7 +827,7 @@ function renderBets() {
         <b>${bet.match}</b>
 
         <p>
-          ${bet.selection} • ${bet.odd}
+          ${bet.selection} • ${Number(bet.odd).toFixed(2)}
         </p>
 
         <p>

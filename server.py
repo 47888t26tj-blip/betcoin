@@ -19,6 +19,7 @@ def home():
     })
 
 
+
 @app.route("/api/matches")
 def matches():
     if not API_KEY:
@@ -27,12 +28,19 @@ def matches():
             "error": "API_FOOTBALL_KEY not found"
         }), 500
 
+    from datetime import datetime, timedelta, timezone
+
     headers = {
         "x-apisports-key": API_KEY
     }
 
+    today = datetime.now(timezone.utc).date()
+    week_later = today + timedelta(days=7)
+
     params = {
-        "next": 10
+        "from": today.isoformat(),
+        "to": week_later.isoformat(),
+        "timezone": "Europe/Moscow"
     }
 
     response = requests.get(
@@ -64,7 +72,6 @@ def matches():
         "count": len(matches_list),
         "matches": matches_list
     })
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

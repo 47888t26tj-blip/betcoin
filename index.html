@@ -123,6 +123,13 @@
       font-weight: bold;
     }
 
+    .team-total-title {
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      margin: 12px 0 8px;
+    }
+
     .odds-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -153,13 +160,6 @@
     .odd-button:disabled {
       opacity: 0.45;
       cursor: default;
-    }
-
-    .handicap-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 8px;
     }
 
     .no-odds {
@@ -327,15 +327,11 @@
 <div class="container">
 
   <div class="header">
-
-    <div class="logo">
-      ⚽ BetCoin
-    </div>
+    <div class="logo">⚽ BetCoin</div>
 
     <div class="balance-small">
       🪙 <span id="topBalance">1000</span>
     </div>
-
   </div>
 
 
@@ -388,13 +384,9 @@
 
     <div class="profile">
 
-      <div class="avatar">
-        👤
-      </div>
+      <div class="avatar">👤</div>
 
-      <h2 id="playerName">
-        Игрок
-      </h2>
+      <h2 id="playerName">Игрок</h2>
 
       <p>
         Баланс:
@@ -415,34 +407,22 @@
 
 <div class="nav">
 
-  <button
-    class="active"
-    onclick="openPage('home', this)"
-  >
+  <button class="active" onclick="openPage('home', this)">
     <span class="nav-icon">🏠</span>
     Главная
   </button>
 
-
-  <button
-    onclick="openPage('matches', this)"
-  >
+  <button onclick="openPage('matches', this)">
     <span class="nav-icon">⚽</span>
     Матчи
   </button>
 
-
-  <button
-    onclick="openPage('bets', this)"
-  >
+  <button onclick="openPage('bets', this)">
     <span class="nav-icon">🎫</span>
     Ставки
   </button>
 
-
-  <button
-    onclick="openPage('profile', this)"
-  >
+  <button onclick="openPage('profile', this)">
     <span class="nav-icon">👤</span>
     Профиль
   </button>
@@ -450,21 +430,12 @@
 </div>
 
 
-<div
-  id="overlay"
-  class="overlay"
-  onclick="closeBet()"
-></div>
+<div id="overlay" class="overlay" onclick="closeBet()"></div>
 
 
-<div
-  id="betModal"
-  class="modal"
->
+<div id="betModal" class="modal">
 
-  <h2 id="modalMatch">
-    Матч
-  </h2>
+  <h2 id="modalMatch">Матч</h2>
 
   <p>
     Выбор:
@@ -489,17 +460,11 @@
     🪙 <span id="possibleWin">0</span>
   </div>
 
-  <button
-    class="confirm"
-    onclick="confirmBet()"
-  >
+  <button class="confirm" onclick="confirmBet()">
     Поставить
   </button>
 
-  <button
-    class="cancel"
-    onclick="closeBet()"
-  >
+  <button class="cancel" onclick="closeBet()">
     Отмена
   </button>
 
@@ -514,7 +479,6 @@ const SERVER_URL =
 
 const tg =
   window.Telegram.WebApp;
-
 
 tg.ready();
 tg.expand();
@@ -537,7 +501,6 @@ let bets =
 
 
 let matches = [];
-
 let selectedBet = null;
 
 
@@ -551,6 +514,14 @@ const HANDICAP_POINTS = [
   1.5,
   2,
   2.5
+];
+
+
+const TEAM_TOTAL_POINTS = [
+  0.5,
+  1.5,
+  2.5,
+  3.5
 ];
 
 
@@ -630,54 +601,33 @@ function makeTotalBlock(
 
 
   return `
-
     <div class="odds-2">
 
       <button
         class="odd-button"
-
-        onclick="
-          openBet(
-            '${safeName}',
-            'ТБ ${point}',
-            ${total.over}
-          )
-        "
+        onclick="openBet(
+          '${safeName}',
+          'ТБ ${point}',
+          ${total.over}
+        )"
       >
-
-        ТБ ${point}
-        <br>
-
-        ${Number(
-          total.over
-        ).toFixed(2)}
-
+        ТБ ${point}<br>
+        ${Number(total.over).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
-
-        onclick="
-          openBet(
-            '${safeName}',
-            'ТМ ${point}',
-            ${total.under}
-          )
-        "
+        onclick="openBet(
+          '${safeName}',
+          'ТМ ${point}',
+          ${total.under}
+        )"
       >
-
-        ТМ ${point}
-        <br>
-
-        ${Number(
-          total.under
-        ).toFixed(2)}
-
+        ТМ ${point}<br>
+        ${Number(total.under).toFixed(2)}
       </button>
 
     </div>
-
   `;
 
 }
@@ -704,54 +654,33 @@ function makeBttsBlock(
 
 
   return `
-
     <div class="odds-2">
 
       <button
         class="odd-button"
-
-        onclick="
-          openBet(
-            '${safeName}',
-            'ОЗ Да',
-            ${match.btts.yes}
-          )
-        "
+        onclick="openBet(
+          '${safeName}',
+          'ОЗ Да',
+          ${match.btts.yes}
+        )"
       >
-
-        ОЗ Да
-        <br>
-
-        ${Number(
-          match.btts.yes
-        ).toFixed(2)}
-
+        ОЗ Да<br>
+        ${Number(match.btts.yes).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
-
-        onclick="
-          openBet(
-            '${safeName}',
-            'ОЗ Нет',
-            ${match.btts.no}
-          )
-        "
+        onclick="openBet(
+          '${safeName}',
+          'ОЗ Нет',
+          ${match.btts.no}
+        )"
       >
-
-        ОЗ Нет
-        <br>
-
-        ${Number(
-          match.btts.no
-        ).toFixed(2)}
-
+        ОЗ Нет<br>
+        ${Number(match.btts.no).toFixed(2)}
       </button>
 
     </div>
-
   `;
 
 }
@@ -784,82 +713,60 @@ function makeDoubleChanceBlock(
 
 
   return `
-
     <div class="odds-3">
 
       <button
         class="odd-button"
-
         ${oneX == null ? "disabled" : ""}
-
         onclick="${
           oneX == null
             ? ""
             : `openBet('${safeName}', '1X', ${oneX})`
         }"
       >
-
-        1X
-        <br>
-
+        1X<br>
         ${
           oneX == null
             ? "—"
             : Number(oneX).toFixed(2)
         }
-
       </button>
-
 
       <button
         class="odd-button"
-
         ${oneTwo == null ? "disabled" : ""}
-
         onclick="${
           oneTwo == null
             ? ""
             : `openBet('${safeName}', '12', ${oneTwo})`
         }"
       >
-
-        12
-        <br>
-
+        12<br>
         ${
           oneTwo == null
             ? "—"
             : Number(oneTwo).toFixed(2)
         }
-
       </button>
-
 
       <button
         class="odd-button"
-
         ${xTwo == null ? "disabled" : ""}
-
         onclick="${
           xTwo == null
             ? ""
             : `openBet('${safeName}', 'X2', ${xTwo})`
         }"
       >
-
-        X2
-        <br>
-
+        X2<br>
         ${
           xTwo == null
             ? "—"
             : Number(xTwo).toFixed(2)
         }
-
       </button>
 
     </div>
-
   `;
 
 }
@@ -891,16 +798,6 @@ function makeHandicapsBlock(
   HANDICAP_POINTS.forEach(
     homePoint => {
 
-      /*
-        Например:
-
-        Ф1(-1.5)
-        Ф2(+1.5)
-
-        Поэтому для второй команды
-        берём противоположную линию.
-      */
-
       const awayPoint =
         homePoint === 0
           ? 0
@@ -908,22 +805,16 @@ function makeHandicapsBlock(
 
 
       const homeKey =
-        handicapKey(
-          homePoint
-        );
-
+        handicapKey(homePoint);
 
       const awayKey =
-        handicapKey(
-          awayPoint
-        );
+        handicapKey(awayPoint);
 
 
       const homeOdd =
         match.handicaps.home[
           homeKey
         ];
-
 
       const awayOdd =
         match.handicaps.away[
@@ -936,7 +827,6 @@ function makeHandicapsBlock(
           homePoint
         );
 
-
       const awayText =
         handicapLabel(
           awayPoint
@@ -944,18 +834,11 @@ function makeHandicapsBlock(
 
 
       html += `
-
-        <div class="handicap-row">
-
+        <div class="odds-2">
 
           <button
             class="odd-button"
-
-            ${homeOdd == null
-              ? "disabled"
-              : ""
-            }
-
+            ${homeOdd == null ? "disabled" : ""}
             onclick="${
               homeOdd == null
                 ? ""
@@ -966,29 +849,18 @@ function makeHandicapsBlock(
                   )`
             }"
           >
-
-            Ф1(${homeText})
-            <br>
-
+            Ф1(${homeText})<br>
             ${
               homeOdd == null
                 ? "—"
-                : Number(
-                    homeOdd
-                  ).toFixed(2)
+                : Number(homeOdd).toFixed(2)
             }
-
           </button>
 
 
           <button
             class="odd-button"
-
-            ${awayOdd == null
-              ? "disabled"
-              : ""
-            }
-
+            ${awayOdd == null ? "disabled" : ""}
             onclick="${
               awayOdd == null
                 ? ""
@@ -999,23 +871,15 @@ function makeHandicapsBlock(
                   )`
             }"
           >
-
-            Ф2(${awayText})
-            <br>
-
+            Ф2(${awayText})<br>
             ${
               awayOdd == null
                 ? "—"
-                : Number(
-                    awayOdd
-                  ).toFixed(2)
+                : Number(awayOdd).toFixed(2)
             }
-
           </button>
 
-
         </div>
-
       `;
 
     }
@@ -1023,6 +887,178 @@ function makeHandicapsBlock(
 
 
   return html;
+
+}
+
+
+function makeTeamTotalLines(
+  totals,
+  teamNumber,
+  safeName
+) {
+
+  if (!totals) {
+
+    return `
+      <div class="no-odds">
+        Индивидуальные тоталы пока недоступны
+      </div>
+    `;
+
+  }
+
+
+  let foundAnything = false;
+  let html = "";
+
+
+  TEAM_TOTAL_POINTS.forEach(
+    point => {
+
+      const key =
+        String(point);
+
+
+      const line =
+        totals[key];
+
+
+      const over =
+        line?.over;
+
+      const under =
+        line?.under;
+
+
+      if (
+        over != null ||
+        under != null
+      ) {
+
+        foundAnything = true;
+
+      }
+
+
+      html += `
+        <div class="odds-2">
+
+          <button
+            class="odd-button"
+            ${over == null ? "disabled" : ""}
+            onclick="${
+              over == null
+                ? ""
+                : `openBet(
+                    '${safeName}',
+                    'ИТБ${teamNumber}(${point})',
+                    ${over}
+                  )`
+            }"
+          >
+            ИТБ${teamNumber}(${point})<br>
+            ${
+              over == null
+                ? "—"
+                : Number(over).toFixed(2)
+            }
+          </button>
+
+
+          <button
+            class="odd-button"
+            ${under == null ? "disabled" : ""}
+            onclick="${
+              under == null
+                ? ""
+                : `openBet(
+                    '${safeName}',
+                    'ИТМ${teamNumber}(${point})',
+                    ${under}
+                  )`
+            }"
+          >
+            ИТМ${teamNumber}(${point})<br>
+            ${
+              under == null
+                ? "—"
+                : Number(under).toFixed(2)
+            }
+          </button>
+
+        </div>
+      `;
+
+    }
+  );
+
+
+  if (!foundAnything) {
+
+    return `
+      <div class="no-odds">
+        Индивидуальные тоталы пока недоступны
+      </div>
+    `;
+
+  }
+
+
+  return html;
+
+}
+
+
+function makeTeamTotalsBlock(
+  match,
+  safeName
+) {
+
+  if (
+    !match.team_totals ||
+    !match.team_totals.home ||
+    !match.team_totals.away
+  ) {
+
+    return `
+      <div class="no-odds">
+        Индивидуальные тоталы пока недоступны
+      </div>
+    `;
+
+  }
+
+
+  const homeBlock =
+    makeTeamTotalLines(
+      match.team_totals.home,
+      1,
+      safeName
+    );
+
+
+  const awayBlock =
+    makeTeamTotalLines(
+      match.team_totals.away,
+      2,
+      safeName
+    );
+
+
+  return `
+    <div class="team-total-title">
+      ${match.home}
+    </div>
+
+    ${homeBlock}
+
+
+    <div class="team-total-title">
+      ${match.away}
+    </div>
+
+    ${awayBlock}
+  `;
 
 }
 
@@ -1040,11 +1076,9 @@ function createMatch(match) {
 
 
   let mainOddsBlock = `
-
     <div class="no-odds">
       Основные коэффициенты пока недоступны
     </div>
-
   `;
 
 
@@ -1056,76 +1090,45 @@ function createMatch(match) {
   ) {
 
     mainOddsBlock = `
-
       <div class="odds-3">
 
         <button
           class="odd-button"
-
-          onclick="
-            openBet(
-              '${safeName}',
-              'П1',
-              ${match.odds.home}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            'П1',
+            ${match.odds.home}
+          )"
         >
-
-          П1
-          <br>
-
-          ${Number(
-            match.odds.home
-          ).toFixed(2)}
-
+          П1<br>
+          ${Number(match.odds.home).toFixed(2)}
         </button>
-
 
         <button
           class="odd-button"
-
-          onclick="
-            openBet(
-              '${safeName}',
-              'X',
-              ${match.odds.draw}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            'X',
+            ${match.odds.draw}
+          )"
         >
-
-          X
-          <br>
-
-          ${Number(
-            match.odds.draw
-          ).toFixed(2)}
-
+          X<br>
+          ${Number(match.odds.draw).toFixed(2)}
         </button>
-
 
         <button
           class="odd-button"
-
-          onclick="
-            openBet(
-              '${safeName}',
-              'П2',
-              ${match.odds.away}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            'П2',
+            ${match.odds.away}
+          )"
         >
-
-          П2
-          <br>
-
-          ${Number(
-            match.odds.away
-          ).toFixed(2)}
-
+          П2<br>
+          ${Number(match.odds.away).toFixed(2)}
         </button>
 
       </div>
-
     `;
 
   }
@@ -1188,34 +1191,35 @@ function createMatch(match) {
     );
 
 
+  const teamTotalsBlock =
+    makeTeamTotalsBlock(
+      match,
+      safeName
+    );
+
+
   let sourceBlocks = "";
 
 
   if (match.bookmaker) {
 
     sourceBlocks += `
-
       <div class="bookmaker">
         Основные рынки:
         ${match.bookmaker}
       </div>
-
     `;
 
   }
 
 
-  if (
-    match.btts_bookmaker
-  ) {
+  if (match.btts_bookmaker) {
 
     sourceBlocks += `
-
       <div class="bookmaker">
         ОЗ:
         ${match.btts_bookmaker}
       </div>
-
     `;
 
   }
@@ -1226,12 +1230,10 @@ function createMatch(match) {
   ) {
 
     sourceBlocks += `
-
       <div class="bookmaker">
         Двойной шанс:
         ${match.double_chance_bookmaker}
       </div>
-
     `;
 
   }
@@ -1242,21 +1244,31 @@ function createMatch(match) {
   ) {
 
     sourceBlocks += `
-
       <div class="bookmaker">
         Форы:
         ${match.handicaps_bookmaker}
       </div>
+    `;
 
+  }
+
+
+  if (
+    match.team_totals_bookmaker
+  ) {
+
+    sourceBlocks += `
+      <div class="bookmaker">
+        Инд. тоталы:
+        ${match.team_totals_bookmaker}
+      </div>
     `;
 
   }
 
 
   return `
-
     <div class="match">
-
 
       <div class="league">
         ${match.country}
@@ -1359,11 +1371,16 @@ function createMatch(match) {
       ${handicapsBlock}
 
 
+      <div class="market-title">
+        Индивидуальные тоталы
+      </div>
+
+      ${teamTotalsBlock}
+
+
       ${sourceBlocks}
 
-
     </div>
-
   `;
 
 }
@@ -1407,11 +1424,9 @@ async function loadMatches() {
         "homeMatches"
       )
       .innerHTML = `
-
         <div class="empty">
           Не удалось загрузить матчи
         </div>
-
       `;
 
 
@@ -1420,11 +1435,9 @@ async function loadMatches() {
         "allMatches"
       )
       .innerHTML = `
-
         <div class="empty">
           Не удалось загрузить матчи
         </div>
-
       `;
 
   }
@@ -1439,11 +1452,9 @@ function renderMatches() {
   ) {
 
     const text = `
-
       <div class="empty">
         Матчей пока нет
       </div>
-
     `;
 
 
@@ -1736,11 +1747,9 @@ function renderBets() {
   ) {
 
     list.innerHTML = `
-
       <div class="empty">
         У тебя пока нет ставок
       </div>
-
     `;
 
     return;
@@ -1751,7 +1760,6 @@ function renderBets() {
   list.innerHTML =
     bets.map(
       bet => `
-
         <div class="bet-card">
 
           <b>
@@ -1781,7 +1789,6 @@ function renderBets() {
           </p>
 
         </div>
-
       `
     ).join("");
 
@@ -1890,7 +1897,6 @@ if (user) {
 
 
 updateInterface();
-
 loadMatches();
 
 </script>

@@ -547,6 +547,50 @@ function makeTotalBlock(match, fieldName, point, safeName) {
 }
 
 
+function makeBttsBlock(match, safeName) {
+
+  if (
+    !match.btts ||
+    match.btts.yes == null ||
+    match.btts.no == null
+  ) {
+    return `
+      <div class="no-odds">
+        ОЗ пока недоступен
+      </div>
+    `;
+  }
+
+  return `
+    <div class="odds-2">
+
+      <button
+        class="odd-button"
+        onclick="openBet(
+          '${safeName}',
+          'ОЗ Да',
+          ${match.btts.yes}
+        )"
+      >
+        ОЗ Да<br>${Number(match.btts.yes).toFixed(2)}
+      </button>
+
+      <button
+        class="odd-button"
+        onclick="openBet(
+          '${safeName}',
+          'ОЗ Нет',
+          ${match.btts.no}
+        )"
+      >
+        ОЗ Нет<br>${Number(match.btts.no).toFixed(2)}
+      </button>
+
+    </div>
+  `;
+}
+
+
 function createMatch(match) {
 
   const matchName =
@@ -642,13 +686,30 @@ function createMatch(match) {
       safeName
     );
 
+  const bttsBlock =
+    makeBttsBlock(
+      match,
+      safeName
+    );
+
 
   let bookmakerBlock = "";
 
   if (match.bookmaker) {
     bookmakerBlock = `
       <div class="bookmaker">
-        Источник коэффициентов: ${match.bookmaker}
+        Основные рынки: ${match.bookmaker}
+      </div>
+    `;
+  }
+
+
+  let bttsBookmakerBlock = "";
+
+  if (match.btts_bookmaker) {
+    bttsBookmakerBlock = `
+      <div class="bookmaker">
+        ОЗ: ${match.btts_bookmaker}
       </div>
     `;
   }
@@ -719,7 +780,16 @@ function createMatch(match) {
       ${total45}
 
 
+      <div class="market-title">
+        Обе забьют
+      </div>
+
+      ${bttsBlock}
+
+
       ${bookmakerBlock}
+
+      ${bttsBookmakerBlock}
 
     </div>
   `;

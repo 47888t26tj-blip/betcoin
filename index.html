@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>BetCoin</title>
 
@@ -53,7 +56,11 @@
     .balance-card {
       padding: 22px;
       border-radius: 22px;
-      background: linear-gradient(135deg, #1f6feb, #6148d8);
+      background: linear-gradient(
+        135deg,
+        #1f6feb,
+        #6148d8
+      );
       margin-bottom: 25px;
     }
 
@@ -328,6 +335,16 @@
       margin: 0 auto 12px;
     }
 
+    .server-error {
+      background: #3a1717;
+      border: 1px solid #8a3434;
+      color: #ffb3b3;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
     .overlay {
       position: fixed;
       display: none;
@@ -378,6 +395,10 @@
       font-weight: bold;
     }
 
+    .confirm:disabled {
+      opacity: 0.5;
+    }
+
     .cancel {
       width: 100%;
       margin-top: 8px;
@@ -399,49 +420,83 @@
 <div class="container">
 
   <div class="header">
-    <div class="logo">⚽ BetCoin</div>
+
+    <div class="logo">
+      ⚽ BetCoin
+    </div>
 
     <div class="balance-small">
-      🪙 <span id="topBalance">1000</span>
+      🪙 <span id="topBalance">...</span>
     </div>
+
   </div>
 
 
-  <div id="home" class="page active">
+  <div
+    id="serverError"
+    class="server-error"
+  ></div>
+
+
+  <!-- ГЛАВНАЯ -->
+  <div
+    id="home"
+    class="page active"
+  >
 
     <div class="balance-card">
-      <p>Твой баланс</p>
+
+      <p>
+        Твой баланс
+      </p>
 
       <h1>
-        🪙 <span id="balance">1000</span>
+        🪙 <span id="balance">...</span>
       </h1>
+
     </div>
 
-    <h2>🔥 Матчи</h2>
+    <h2>
+      🔥 Матчи
+    </h2>
 
     <div id="homeMatches">
+
       <div class="loading">
         Загружаем матчи...
       </div>
+
     </div>
 
   </div>
 
 
-  <div id="matches" class="page">
+  <!-- ВСЕ МАТЧИ -->
+  <div
+    id="matches"
+    class="page"
+  >
 
-    <h2>⚽ Все матчи</h2>
+    <h2>
+      ⚽ Все матчи
+    </h2>
 
     <div id="allMatches">
+
       <div class="loading">
         Загружаем матчи...
       </div>
+
     </div>
 
   </div>
 
 
-  <div id="matchDetail" class="page">
+  <!-- ОТДЕЛЬНЫЙ МАТЧ -->
+  <div
+    id="matchDetail"
+    class="page"
+  >
 
     <button
       class="back-button"
@@ -450,27 +505,49 @@
       ← Назад
     </button>
 
-    <div id="matchDetailContent"></div>
+    <div
+      id="matchDetailContent"
+    ></div>
 
   </div>
 
 
-  <div id="bets" class="page">
+  <!-- СТАВКИ -->
+  <div
+    id="bets"
+    class="page"
+  >
 
-    <h2>🎫 Мои ставки</h2>
+    <h2>
+      🎫 Мои ставки
+    </h2>
 
-    <div id="betsList"></div>
+    <div id="betsList">
+
+      <div class="loading">
+        Загружаем ставки...
+      </div>
+
+    </div>
 
   </div>
 
 
-  <div id="profile" class="page">
+  <!-- ПРОФИЛЬ -->
+  <div
+    id="profile"
+    class="page"
+  >
 
-    <h2>👤 Профиль</h2>
+    <h2>
+      👤 Профиль
+    </h2>
 
     <div class="profile">
 
-      <div class="avatar">👤</div>
+      <div class="avatar">
+        👤
+      </div>
 
       <h2 id="playerName">
         Игрок
@@ -478,7 +555,7 @@
 
       <p>
         Баланс:
-        🪙 <span id="profileBalance">1000</span>
+        🪙 <span id="profileBalance">...</span>
       </p>
 
       <p>
@@ -493,39 +570,51 @@
 </div>
 
 
+<!-- НИЖНЕЕ МЕНЮ -->
+
 <div class="nav">
 
   <button
     class="active"
     onclick="openPage('home', this)"
   >
-    <span class="nav-icon">🏠</span>
+    <span class="nav-icon">
+      🏠
+    </span>
     Главная
   </button>
 
   <button
     onclick="openPage('matches', this)"
   >
-    <span class="nav-icon">⚽</span>
+    <span class="nav-icon">
+      ⚽
+    </span>
     Матчи
   </button>
 
   <button
     onclick="openPage('bets', this)"
   >
-    <span class="nav-icon">🎫</span>
+    <span class="nav-icon">
+      🎫
+    </span>
     Ставки
   </button>
 
   <button
     onclick="openPage('profile', this)"
   >
-    <span class="nav-icon">👤</span>
+    <span class="nav-icon">
+      👤
+    </span>
     Профиль
   </button>
 
 </div>
 
+
+<!-- ОКНО СТАВКИ -->
 
 <div
   id="overlay"
@@ -567,6 +656,7 @@
   </div>
 
   <button
+    id="confirmBetButton"
     class="confirm"
     onclick="confirmBet()"
   >
@@ -592,30 +682,28 @@ const SERVER_URL =
 const tg =
   window.Telegram.WebApp;
 
+
 tg.ready();
 tg.expand();
 
 
-let balance =
-  Number(
-    localStorage.getItem(
-      "betcoinBalance"
-    )
-  ) || 1000;
+const telegramInitData =
+  tg.initData || "";
 
 
-let bets =
-  JSON.parse(
-    localStorage.getItem(
-      "betcoinBets"
-    )
-  ) || [];
+let balance = 0;
 
+let bets = [];
 
 let matches = [];
+
 let selectedBet = null;
+
 let selectedMatch = null;
+
 let previousPage = "home";
+
+let sessionLoaded = false;
 
 
 const HANDICAP_POINTS = [
@@ -639,18 +727,191 @@ const TEAM_TOTAL_POINTS = [
 ];
 
 
-function formatDate(dateString) {
+/* =========================
+   API
+   ========================= */
+
+function authHeaders() {
+
+  return {
+    "Content-Type":
+      "application/json",
+
+    "X-Telegram-Init-Data":
+      telegramInitData
+  };
+
+}
+
+
+function showError(message) {
+
+  const box =
+    document.getElementById(
+      "serverError"
+    );
+
+  box.innerText =
+    message;
+
+  box.style.display =
+    "block";
+
+}
+
+
+function hideError() {
+
+  document
+    .getElementById(
+      "serverError"
+    )
+    .style.display =
+      "none";
+
+}
+
+
+/* =========================
+   СЕССИЯ И БАЗА
+   ========================= */
+
+async function loadSession() {
+
+  if (!telegramInitData) {
+
+    showError(
+      "Не удалось получить Telegram-сессию. Открой BetCoin через кнопку Играть в Telegram."
+    );
+
+    return false;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${SERVER_URL}/api/session`,
+        {
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+      ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
+        ||
+        "Ошибка авторизации"
+      );
+
+    }
+
+
+    balance =
+      Number(
+        data.balance
+      );
+
+
+    bets =
+      data.bets
+      ||
+      [];
+
+
+    if (
+      data.user
+      &&
+      data.user.first_name
+    ) {
+
+      document
+        .getElementById(
+          "playerName"
+        )
+        .innerText =
+          data.user.first_name;
+
+    }
+
+
+    sessionLoaded =
+      true;
+
+
+    hideError();
+
+    updateInterface();
+
+
+    return true;
+
+  }
+
+  catch (error) {
+
+    showError(
+      "Не удалось загрузить профиль: "
+      + error.message
+    );
+
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================
+   ДАТА
+   ========================= */
+
+function formatDate(
+  dateString
+) {
 
   const date =
-    new Date(dateString);
+    new Date(
+      dateString
+    );
+
 
   return date.toLocaleString(
     "ru-RU",
     {
-      day: "2-digit",
-      month: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
+      day:
+        "2-digit",
+
+      month:
+        "2-digit",
+
+      hour:
+        "2-digit",
+
+      minute:
+        "2-digit"
     }
   );
 
@@ -660,22 +921,39 @@ function formatDate(dateString) {
 function safeMatchName(name) {
 
   return String(name)
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'");
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    );
 
 }
 
 
-function handicapLabel(point) {
+function handicapLabel(
+  point
+) {
 
-  if (point > 0) {
+  if (
+    point > 0
+  ) {
+
     return `+${point}`;
+
   }
+
 
   return `${point}`;
 
 }
 
+
+/* =========================
+   КОМПАКТНАЯ КАРТОЧКА
+   ========================= */
 
 function createCompactMatch(
   match,
@@ -696,10 +974,16 @@ function createCompactMatch(
 
 
   if (
-    match.odds &&
-    match.odds.home != null &&
-    match.odds.draw != null &&
-    match.odds.away != null
+    match.odds
+    &&
+    match.odds.home
+      != null
+    &&
+    match.odds.draw
+      != null
+    &&
+    match.odds.away
+      != null
   ) {
 
     oddsBlock = `
@@ -718,8 +1002,11 @@ function createCompactMatch(
           "
         >
           П1<br>
-          ${Number(match.odds.home).toFixed(2)}
+          ${Number(
+            match.odds.home
+          ).toFixed(2)}
         </button>
+
 
         <button
           class="odd-button"
@@ -734,8 +1021,11 @@ function createCompactMatch(
           "
         >
           X<br>
-          ${Number(match.odds.draw).toFixed(2)}
+          ${Number(
+            match.odds.draw
+          ).toFixed(2)}
         </button>
+
 
         <button
           class="odd-button"
@@ -750,11 +1040,14 @@ function createCompactMatch(
           "
         >
           П2<br>
-          ${Number(match.odds.away).toFixed(2)}
+          ${Number(
+            match.odds.away
+          ).toFixed(2)}
         </button>
 
       </div>
     `;
+
   }
 
 
@@ -762,32 +1055,52 @@ function createCompactMatch(
     <div class="match-card">
 
       <div class="league">
-        ${match.country} • ${match.league}
+        ${match.country}
+        •
+        ${match.league}
       </div>
+
 
       <div class="teams">
 
         <div class="team">
-          <img src="${match.home_logo}">
+
+          <img
+            src="${match.home_logo}"
+          >
+
           ${match.home}
+
         </div>
+
 
         <div class="vs">
           VS
         </div>
 
+
         <div class="team">
-          <img src="${match.away_logo}">
+
+          <img
+            src="${match.away_logo}"
+          >
+
           ${match.away}
+
         </div>
 
       </div>
 
+
       <div class="time">
-        ${formatDate(match.date)}
+        ${formatDate(
+          match.date
+        )}
       </div>
 
+
       ${oddsBlock}
+
 
       <button
         class="open-match-button"
@@ -802,16 +1115,26 @@ function createCompactMatch(
 }
 
 
+/* =========================
+   ОСНОВНОЙ ИСХОД
+   ========================= */
+
 function makeMainOdds(
   match,
   safeName
 ) {
 
   if (
-    !match.odds ||
-    match.odds.home == null ||
-    match.odds.draw == null ||
-    match.odds.away == null
+    !match.odds
+    ||
+    match.odds.home
+      == null
+    ||
+    match.odds.draw
+      == null
+    ||
+    match.odds.away
+      == null
   ) {
 
     return `
@@ -819,6 +1142,7 @@ function makeMainOdds(
         Исход матча пока недоступен
       </div>
     `;
+
   }
 
 
@@ -835,8 +1159,11 @@ function makeMainOdds(
         )"
       >
         П1<br>
-        ${Number(match.odds.home).toFixed(2)}
+        ${Number(
+          match.odds.home
+        ).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
@@ -848,8 +1175,11 @@ function makeMainOdds(
         )"
       >
         X<br>
-        ${Number(match.odds.draw).toFixed(2)}
+        ${Number(
+          match.odds.draw
+        ).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
@@ -861,7 +1191,9 @@ function makeMainOdds(
         )"
       >
         П2<br>
-        ${Number(match.odds.away).toFixed(2)}
+        ${Number(
+          match.odds.away
+        ).toFixed(2)}
       </button>
 
     </div>
@@ -870,29 +1202,47 @@ function makeMainOdds(
 }
 
 
+/* =========================
+   ДВОЙНОЙ ШАНС
+   ========================= */
+
 function makeDoubleChanceBlock(
   match,
   safeName
 ) {
 
-  if (!match.double_chance) {
+  if (
+    !match.double_chance
+  ) {
 
     return `
       <div class="no-odds">
         Двойной шанс пока недоступен
       </div>
     `;
+
   }
 
 
   const oneX =
-    match.double_chance["1x"];
+    match
+      .double_chance[
+        "1x"
+      ];
+
 
   const oneTwo =
-    match.double_chance["12"];
+    match
+      .double_chance[
+        "12"
+      ];
+
 
   const xTwo =
-    match.double_chance["x2"];
+    match
+      .double_chance[
+        "x2"
+      ];
 
 
   return `
@@ -900,7 +1250,11 @@ function makeDoubleChanceBlock(
 
       <button
         class="odd-button"
-        ${oneX == null ? "disabled" : ""}
+        ${oneX == null
+          ? "disabled"
+          : ""
+        }
+
         onclick="${
           oneX == null
             ? ""
@@ -913,12 +1267,23 @@ function makeDoubleChanceBlock(
         }"
       >
         1X<br>
-        ${oneX == null ? "—" : Number(oneX).toFixed(2)}
+        ${
+          oneX == null
+            ? "—"
+            : Number(
+                oneX
+              ).toFixed(2)
+        }
       </button>
+
 
       <button
         class="odd-button"
-        ${oneTwo == null ? "disabled" : ""}
+        ${oneTwo == null
+          ? "disabled"
+          : ""
+        }
+
         onclick="${
           oneTwo == null
             ? ""
@@ -931,12 +1296,23 @@ function makeDoubleChanceBlock(
         }"
       >
         12<br>
-        ${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
+        ${
+          oneTwo == null
+            ? "—"
+            : Number(
+                oneTwo
+              ).toFixed(2)
+        }
       </button>
+
 
       <button
         class="odd-button"
-        ${xTwo == null ? "disabled" : ""}
+        ${xTwo == null
+          ? "disabled"
+          : ""
+        }
+
         onclick="${
           xTwo == null
             ? ""
@@ -949,7 +1325,13 @@ function makeDoubleChanceBlock(
         }"
       >
         X2<br>
-        ${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
+        ${
+          xTwo == null
+            ? "—"
+            : Number(
+                xTwo
+              ).toFixed(2)
+        }
       </button>
 
     </div>
@@ -957,6 +1339,10 @@ function makeDoubleChanceBlock(
 
 }
 
+
+/* =========================
+   ТОТАЛЫ
+   ========================= */
 
 function makeTotalBlock(
   match,
@@ -966,13 +1352,19 @@ function makeTotalBlock(
 ) {
 
   const total =
-    match[fieldName];
+    match[
+      fieldName
+    ];
 
 
   if (
-    !total ||
-    total.over == null ||
-    total.under == null
+    !total
+    ||
+    total.over
+      == null
+    ||
+    total.under
+      == null
   ) {
 
     return `
@@ -980,6 +1372,7 @@ function makeTotalBlock(
         Тотал ${point} пока недоступен
       </div>
     `;
+
   }
 
 
@@ -988,6 +1381,7 @@ function makeTotalBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -996,11 +1390,16 @@ function makeTotalBlock(
         )"
       >
         ТБ ${point}<br>
-        ${Number(total.over).toFixed(2)}
+
+        ${Number(
+          total.over
+        ).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1009,7 +1408,10 @@ function makeTotalBlock(
         )"
       >
         ТМ ${point}<br>
-        ${Number(total.under).toFixed(2)}
+
+        ${Number(
+          total.under
+        ).toFixed(2)}
       </button>
 
     </div>
@@ -1018,15 +1420,23 @@ function makeTotalBlock(
 }
 
 
+/* =========================
+   ОБЕ ЗАБЬЮТ
+   ========================= */
+
 function makeBttsBlock(
   match,
   safeName
 ) {
 
   if (
-    !match.btts ||
-    match.btts.yes == null ||
-    match.btts.no == null
+    !match.btts
+    ||
+    match.btts.yes
+      == null
+    ||
+    match.btts.no
+      == null
   ) {
 
     return `
@@ -1034,6 +1444,7 @@ function makeBttsBlock(
         ОЗ пока недоступен
       </div>
     `;
+
   }
 
 
@@ -1042,6 +1453,7 @@ function makeBttsBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1050,11 +1462,16 @@ function makeBttsBlock(
         )"
       >
         ОЗ Да<br>
-        ${Number(match.btts.yes).toFixed(2)}
+
+        ${Number(
+          match.btts.yes
+        ).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1063,7 +1480,10 @@ function makeBttsBlock(
         )"
       >
         ОЗ Нет<br>
-        ${Number(match.btts.no).toFixed(2)}
+
+        ${Number(
+          match.btts.no
+        ).toFixed(2)}
       </button>
 
     </div>
@@ -1072,14 +1492,20 @@ function makeBttsBlock(
 }
 
 
+/* =========================
+   ФОРЫ
+   ========================= */
+
 function makeHandicapsBlock(
   match,
   safeName
 ) {
 
   if (
-    !match.handicaps ||
-    !match.handicaps.home ||
+    !match.handicaps
+    ||
+    !match.handicaps.home
+    ||
     !match.handicaps.away
   ) {
 
@@ -1088,6 +1514,7 @@ function makeHandicapsBlock(
         Форы пока недоступны
       </div>
     `;
+
   }
 
 
@@ -1104,15 +1531,23 @@ function makeHandicapsBlock(
 
 
       const homeOdd =
-        match.handicaps.home[
-          String(homePoint)
-        ];
+        match
+          .handicaps
+          .home[
+            String(
+              homePoint
+            )
+          ];
 
 
       const awayOdd =
-        match.handicaps.away[
-          String(awayPoint)
-        ];
+        match
+          .handicaps
+          .away[
+            String(
+              awayPoint
+            )
+          ];
 
 
       const homeLabel =
@@ -1132,7 +1567,12 @@ function makeHandicapsBlock(
 
           <button
             class="odd-button"
-            ${homeOdd == null ? "disabled" : ""}
+
+            ${homeOdd == null
+              ? "disabled"
+              : ""
+            }
+
             onclick="${
               homeOdd == null
                 ? ""
@@ -1145,16 +1585,25 @@ function makeHandicapsBlock(
             }"
           >
             Ф1(${homeLabel})<br>
+
             ${
               homeOdd == null
                 ? "—"
-                : Number(homeOdd).toFixed(2)
+                : Number(
+                    homeOdd
+                  ).toFixed(2)
             }
           </button>
 
+
           <button
             class="odd-button"
-            ${awayOdd == null ? "disabled" : ""}
+
+            ${awayOdd == null
+              ? "disabled"
+              : ""
+            }
+
             onclick="${
               awayOdd == null
                 ? ""
@@ -1167,10 +1616,13 @@ function makeHandicapsBlock(
             }"
           >
             Ф2(${awayLabel})<br>
+
             ${
               awayOdd == null
                 ? "—"
-                : Number(awayOdd).toFixed(2)
+                : Number(
+                    awayOdd
+                  ).toFixed(2)
             }
           </button>
 
@@ -1186,6 +1638,10 @@ function makeHandicapsBlock(
 }
 
 
+/* =========================
+   ИНД. ТОТАЛЫ
+   ========================= */
+
 function makeTeamTotalLines(
   match,
   totals,
@@ -1193,17 +1649,21 @@ function makeTeamTotalLines(
   safeName
 ) {
 
-  if (!totals) {
+  if (
+    !totals
+  ) {
 
     return `
       <div class="no-odds">
         Индивидуальные тоталы пока недоступны
       </div>
     `;
+
   }
 
 
   let found = false;
+
   let html = "";
 
 
@@ -1211,21 +1671,30 @@ function makeTeamTotalLines(
     point => {
 
       const line =
-        totals[String(point)];
+        totals[
+          String(
+            point
+          )
+        ];
 
 
       const over =
         line?.over;
+
 
       const under =
         line?.under;
 
 
       if (
-        over != null ||
+        over != null
+        ||
         under != null
       ) {
-        found = true;
+
+        found =
+          true;
+
       }
 
 
@@ -1234,7 +1703,12 @@ function makeTeamTotalLines(
 
           <button
             class="odd-button"
-            ${over == null ? "disabled" : ""}
+
+            ${over == null
+              ? "disabled"
+              : ""
+            }
+
             onclick="${
               over == null
                 ? ""
@@ -1247,12 +1721,25 @@ function makeTeamTotalLines(
             }"
           >
             ИТБ${teamNumber}(${point})<br>
-            ${over == null ? "—" : Number(over).toFixed(2)}
+
+            ${
+              over == null
+                ? "—"
+                : Number(
+                    over
+                  ).toFixed(2)
+            }
           </button>
+
 
           <button
             class="odd-button"
-            ${under == null ? "disabled" : ""}
+
+            ${under == null
+              ? "disabled"
+              : ""
+            }
+
             onclick="${
               under == null
                 ? ""
@@ -1265,7 +1752,14 @@ function makeTeamTotalLines(
             }"
           >
             ИТМ${teamNumber}(${point})<br>
-            ${under == null ? "—" : Number(under).toFixed(2)}
+
+            ${
+              under == null
+                ? "—"
+                : Number(
+                    under
+                  ).toFixed(2)
+            }
           </button>
 
         </div>
@@ -1275,13 +1769,16 @@ function makeTeamTotalLines(
   );
 
 
-  if (!found) {
+  if (
+    !found
+  ) {
 
     return `
       <div class="no-odds">
         Индивидуальные тоталы пока недоступны
       </div>
     `;
+
   }
 
 
@@ -1296,8 +1793,10 @@ function makeTeamTotalsBlock(
 ) {
 
   if (
-    !match.team_totals ||
-    !match.team_totals.home ||
+    !match.team_totals
+    ||
+    !match.team_totals.home
+    ||
     !match.team_totals.away
   ) {
 
@@ -1306,6 +1805,7 @@ function makeTeamTotalsBlock(
         Индивидуальные тоталы пока недоступны
       </div>
     `;
+
   }
 
 
@@ -1320,6 +1820,7 @@ function makeTeamTotalsBlock(
       1,
       safeName
     )}
+
 
     <div class="team-total-title">
       ${match.away}
@@ -1336,28 +1837,46 @@ function makeTeamTotalsBlock(
 }
 
 
-function openMatch(index) {
+/* =========================
+   ОТКРЫТИЕ МАТЧА
+   ========================= */
+
+function openMatch(
+  index
+) {
 
   selectedMatch =
-    matches[index];
+    matches[
+      index
+    ];
 
 
-  if (!selectedMatch) {
+  if (
+    !selectedMatch
+  ) {
+
     return;
+
   }
 
 
   if (
     document
-      .getElementById("matches")
+      .getElementById(
+        "matches"
+      )
       .classList
-      .contains("active")
+      .contains(
+        "active"
+      )
   ) {
 
     previousPage =
       "matches";
 
-  } else {
+  }
+
+  else {
 
     previousPage =
       "home";
@@ -1371,7 +1890,9 @@ function openMatch(index) {
 
 
   document
-    .querySelectorAll(".page")
+    .querySelectorAll(
+      ".page"
+    )
     .forEach(
       page =>
         page.classList.remove(
@@ -1400,7 +1921,9 @@ function openMatch(index) {
 function closeMatch() {
 
   document
-    .querySelectorAll(".page")
+    .querySelectorAll(
+      ".page"
+    )
     .forEach(
       page =>
         page.classList.remove(
@@ -1431,7 +1954,13 @@ function closeMatch() {
 }
 
 
-function renderMatchDetail(match) {
+/* =========================
+   СТРАНИЦА МАТЧА
+   ========================= */
+
+function renderMatchDetail(
+  match
+) {
 
   const matchName =
     `${match.home} — ${match.away}`;
@@ -1452,29 +1981,47 @@ function renderMatchDetail(match) {
       <div class="event-header">
 
         <div class="league">
-          ${match.country} • ${match.league}
+          ${match.country}
+          •
+          ${match.league}
         </div>
+
 
         <div class="teams">
 
           <div class="team">
-            <img src="${match.home_logo}">
+
+            <img
+              src="${match.home_logo}"
+            >
+
             ${match.home}
+
           </div>
+
 
           <div class="vs">
             VS
           </div>
 
+
           <div class="team">
-            <img src="${match.away_logo}">
+
+            <img
+              src="${match.away_logo}"
+            >
+
             ${match.away}
+
           </div>
 
         </div>
 
+
         <div class="time">
-          ${formatDate(match.date)}
+          ${formatDate(
+            match.date
+          )}
         </div>
 
       </div>
@@ -1613,10 +2160,14 @@ function renderMatchDetail(match) {
 
       </div>
 
-  `;
+    `;
 
 }
 
+
+/* =========================
+   ЗАГРУЗКА МАТЧЕЙ
+   ========================= */
 
 async function loadMatches() {
 
@@ -1632,15 +2183,23 @@ async function loadMatches() {
       await response.json();
 
 
-    if (!data.success) {
+    if (
+      !data.success
+    ) {
+
       throw new Error(
+        data.error
+        ||
         "API error"
       );
+
     }
 
 
     matches =
-      data.matches || [];
+      data.matches
+      ||
+      [];
 
 
     renderMatches();
@@ -1678,7 +2237,8 @@ async function loadMatches() {
 function renderMatches() {
 
   if (
-    matches.length === 0
+    matches.length
+    === 0
   ) {
 
     const text = `
@@ -1692,17 +2252,20 @@ function renderMatches() {
       .getElementById(
         "homeMatches"
       )
-      .innerHTML = text;
+      .innerHTML =
+        text;
 
 
     document
       .getElementById(
         "allMatches"
       )
-      .innerHTML = text;
+      .innerHTML =
+        text;
 
 
     return;
+
   }
 
 
@@ -1712,7 +2275,10 @@ function renderMatches() {
     )
     .innerHTML =
       matches
-        .slice(0, 4)
+        .slice(
+          0,
+          4
+        )
         .map(
           match => {
 
@@ -1721,6 +2287,7 @@ function renderMatches() {
                 match
               );
 
+
             return createCompactMatch(
               match,
               index
@@ -1728,7 +2295,9 @@ function renderMatches() {
 
           }
         )
-        .join("");
+        .join(
+          ""
+        );
 
 
   document
@@ -1747,13 +2316,15 @@ function renderMatches() {
               index
             )
         )
-        .join("");
+        .join(
+          ""
+        );
 
 }
 
 
 /* =========================
-   СОЗДАНИЕ СТАВКИ
+   ОКНО СТАВКИ
    ========================= */
 
 function openBet(
@@ -1764,17 +2335,41 @@ function openBet(
 ) {
 
   if (
+    !sessionLoaded
+  ) {
+
+    alert(
+      "Профиль ещё загружается"
+    );
+
+    return;
+
+  }
+
+
+  if (
     odd == null
   ) {
+
     return;
+
   }
 
 
   selectedBet = {
-    match,
-    fixtureId,
-    selection,
-    odd
+    match:
+      match,
+
+    fixtureId:
+      fixtureId,
+
+    selection:
+      selection,
+
+    odd:
+      Number(
+        odd
+      )
   };
 
 
@@ -1801,21 +2396,25 @@ function openBet(
     .innerText =
       Number(
         odd
-      ).toFixed(2);
+      ).toFixed(
+        2
+      );
 
 
   document
     .getElementById(
       "betAmount"
     )
-    .value = "";
+    .value =
+      "";
 
 
   document
     .getElementById(
       "possibleWin"
     )
-    .innerText = "0";
+    .innerText =
+      "0";
 
 
   document
@@ -1857,13 +2456,29 @@ function closeBet() {
       "active"
     );
 
+
+  document
+    .getElementById(
+      "confirmBetButton"
+    )
+    .disabled =
+      false;
+
 }
 
 
+/* =========================
+   ВОЗМОЖНЫЙ ВЫИГРЫШ
+   ========================= */
+
 function calculateWin() {
 
-  if (!selectedBet) {
+  if (
+    !selectedBet
+  ) {
+
     return;
+
   }
 
 
@@ -1878,7 +2493,8 @@ function calculateWin() {
 
 
   const win =
-    amount *
+    amount
+    *
     selectedBet.odd;
 
 
@@ -1887,17 +2503,27 @@ function calculateWin() {
       "possibleWin"
     )
     .innerText =
-      win
-        ? Math.round(win)
+      win > 0
+        ? Math.round(
+            win
+          )
         : 0;
 
 }
 
 
-function confirmBet() {
+/* =========================
+   СОЗДАНИЕ СТАВКИ В БД
+   ========================= */
 
-  if (!selectedBet) {
+async function confirmBet() {
+
+  if (
+    !selectedBet
+  ) {
+
     return;
+
   }
 
 
@@ -1912,15 +2538,19 @@ function confirmBet() {
 
 
   if (
-    !amount ||
+    !Number.isInteger(
+      amount
+    )
+    ||
     amount <= 0
   ) {
 
     alert(
-      "Введите сумму ставки"
+      "Введите целое количество монет"
     );
 
     return;
+
   }
 
 
@@ -1933,614 +2563,114 @@ function confirmBet() {
     );
 
     return;
+
   }
 
 
-  balance -= amount;
+  const button =
+    document.getElementById(
+      "confirmBetButton"
+    );
 
 
-  bets.unshift({
-
-    fixture_id:
-      selectedBet.fixtureId,
-
-    match:
-      selectedBet.match,
-
-    selection:
-      selectedBet.selection,
-
-    odd:
-      Number(
-        selectedBet.odd
-      ),
-
-    amount:
-      amount,
-
-    possible:
-      Math.round(
-        amount *
-        selectedBet.odd
-      ),
-
-    status:
-      "Активна",
-
-    settled:
-      false,
-
-    score:
-      null
-
-  });
+  button.disabled =
+    true;
 
 
-  saveData();
+  try {
 
-  updateInterface();
+    const response =
+      await fetch(
+        `${SERVER_URL}/api/bets`,
+        {
+          method:
+            "POST",
 
-  closeBet();
+          headers:
+            authHeaders(),
 
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData,
 
-  if (
-    tg.HapticFeedback
-  ) {
+              fixture_id:
+                selectedBet
+                  .fixtureId,
 
-    tg.HapticFeedback
-      .notificationOccurred(
-        "success"
+              match:
+                selectedBet
+                  .match,
+
+              selection:
+                selectedBet
+                  .selection,
+
+              odd:
+                selectedBet
+                  .odd,
+
+              amount:
+                amount
+            })
+        }
       );
 
-  }
 
-}
+    const data =
+      await response.json();
 
-
-/* =========================
-   РАСЧЁТ СТАВКИ
-   ========================= */
-
-function compareTotal(
-  value,
-  line,
-  type
-) {
-
-  if (
-    type === "over"
-  ) {
 
     if (
-      value > line
-    ) {
-      return "win";
-    }
-
-    if (
-      value < line
-    ) {
-      return "loss";
-    }
-
-    return "refund";
-
-  }
-
-
-  if (
-    value < line
-  ) {
-    return "win";
-  }
-
-  if (
-    value > line
-  ) {
-    return "loss";
-  }
-
-  return "refund";
-
-}
-
-
-function calculateBetResult(
-  bet,
-  homeScore,
-  awayScore
-) {
-
-  const selection =
-    bet.selection;
-
-
-  const totalGoals =
-    homeScore +
-    awayScore;
-
-
-  /* П1 / Х / П2 */
-
-  if (
-    selection === "П1"
-  ) {
-
-    return homeScore > awayScore
-      ? "win"
-      : "loss";
-  }
-
-
-  if (
-    selection === "X"
-  ) {
-
-    return homeScore === awayScore
-      ? "win"
-      : "loss";
-  }
-
-
-  if (
-    selection === "П2"
-  ) {
-
-    return awayScore > homeScore
-      ? "win"
-      : "loss";
-  }
-
-
-  /* ДВОЙНОЙ ШАНС */
-
-  if (
-    selection === "1X"
-  ) {
-
-    return homeScore >= awayScore
-      ? "win"
-      : "loss";
-  }
-
-
-  if (
-    selection === "12"
-  ) {
-
-    return homeScore !== awayScore
-      ? "win"
-      : "loss";
-  }
-
-
-  if (
-    selection === "X2"
-  ) {
-
-    return awayScore >= homeScore
-      ? "win"
-      : "loss";
-  }
-
-
-  /* ОБЕ ЗАБЬЮТ */
-
-  if (
-    selection === "ОЗ Да"
-  ) {
-
-    return (
-      homeScore > 0
-      &&
-      awayScore > 0
-    )
-      ? "win"
-      : "loss";
-  }
-
-
-  if (
-    selection === "ОЗ Нет"
-  ) {
-
-    return (
-      homeScore === 0
+      !response.ok
       ||
-      awayScore === 0
-    )
-      ? "win"
-      : "loss";
-  }
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
+        ||
+        "Не удалось сделать ставку"
+      );
+
+    }
 
 
-  /* ОБЩИЙ ТОТАЛ */
-
-  const totalMatch =
-    selection.match(
-      /^Т([БМ])\s*([0-9.]+)$/
-    );
-
-
-  if (
-    totalMatch
-  ) {
-
-    const type =
-      totalMatch[1] === "Б"
-        ? "over"
-        : "under";
-
-
-    const line =
+    balance =
       Number(
-        totalMatch[2]
+        data.balance
       );
 
 
-    return compareTotal(
-      totalGoals,
-      line,
-      type
-    );
-
-  }
+    closeBet();
 
 
-  /* ФОРА */
-
-  const handicapMatch =
-    selection.match(
-      /^Ф([12])\(([-+]?[0-9.]+)\)$/
-    );
-
-
-  if (
-    handicapMatch
-  ) {
-
-    const team =
-      Number(
-        handicapMatch[1]
-      );
-
-
-    const handicap =
-      Number(
-        handicapMatch[2]
-      );
-
-
-    let adjusted;
+    await loadSession();
 
 
     if (
-      team === 1
+      tg.HapticFeedback
     ) {
 
-      adjusted =
-        homeScore +
-        handicap -
-        awayScore;
-
-    } else {
-
-      adjusted =
-        awayScore +
-        handicap -
-        homeScore;
-
-    }
-
-
-    if (
-      adjusted > 0
-    ) {
-      return "win";
-    }
-
-
-    if (
-      adjusted < 0
-    ) {
-      return "loss";
-    }
-
-
-    return "refund";
-
-  }
-
-
-  /* ИНДИВИДУАЛЬНЫЙ ТОТАЛ */
-
-  const teamTotalMatch =
-    selection.match(
-      /^ИТ([БМ])([12])\(([0-9.]+)\)$/
-    );
-
-
-  if (
-    teamTotalMatch
-  ) {
-
-    const type =
-      teamTotalMatch[1]
-      === "Б"
-        ? "over"
-        : "under";
-
-
-    const team =
-      Number(
-        teamTotalMatch[2]
-      );
-
-
-    const line =
-      Number(
-        teamTotalMatch[3]
-      );
-
-
-    const goals =
-      team === 1
-        ? homeScore
-        : awayScore;
-
-
-    return compareTotal(
-      goals,
-      line,
-      type
-    );
-
-  }
-
-
-  return null;
-
-}
-
-
-/* =========================
-   ПРОВЕРКА АКТИВНЫХ СТАВОК
-   ========================= */
-
-async function checkActiveBets() {
-
-  const activeBets =
-    bets.filter(
-      bet =>
-        bet.status === "Активна"
-        &&
-        !bet.settled
-        &&
-        bet.fixture_id
-    );
-
-
-  if (
-    activeBets.length === 0
-  ) {
-
-    return;
-
-  }
-
-
-  const fixtureIds =
-    [
-      ...new Set(
-        activeBets.map(
-          bet =>
-            bet.fixture_id
-        )
-      )
-    ];
-
-
-  const matchResults = {};
-
-
-  await Promise.all(
-
-    fixtureIds.map(
-
-      async fixtureId => {
-
-        try {
-
-          const response =
-            await fetch(
-              `${SERVER_URL}/api/match/${fixtureId}`
-            );
-
-
-          const data =
-            await response.json();
-
-
-          if (
-            data.success
-          ) {
-
-            matchResults[
-              fixtureId
-            ] = data;
-
-          }
-
-        }
-
-        catch (error) {
-
-          console.log(
-            "Ошибка проверки матча",
-            fixtureId
-          );
-
-        }
-
-      }
-
-    )
-
-  );
-
-
-  let changed = false;
-
-
-  bets.forEach(
-    bet => {
-
-      if (
-        bet.status !== "Активна"
-        ||
-        bet.settled
-        ||
-        !bet.fixture_id
-      ) {
-
-        return;
-
-      }
-
-
-      const result =
-        matchResults[
-          bet.fixture_id
-        ];
-
-
-      if (
-        !result
-        ||
-        result.status !== "FINISHED"
-        ||
-        result.home_score == null
-        ||
-        result.away_score == null
-      ) {
-
-        return;
-
-      }
-
-
-      const homeScore =
-        Number(
-          result.home_score
+      tg.HapticFeedback
+        .notificationOccurred(
+          "success"
         );
 
-
-      const awayScore =
-        Number(
-          result.away_score
-        );
-
-
-      const betResult =
-        calculateBetResult(
-          bet,
-          homeScore,
-          awayScore
-        );
-
-
-      if (
-        !betResult
-      ) {
-
-        return;
-
-      }
-
-
-      bet.score =
-        `${homeScore}:${awayScore}`;
-
-
-      bet.settled =
-        true;
-
-
-      if (
-        betResult === "win"
-      ) {
-
-        bet.status =
-          "Выиграла";
-
-        balance +=
-          Number(
-            bet.possible
-          );
-
-      }
-
-
-      else if (
-        betResult === "refund"
-      ) {
-
-        bet.status =
-          "Возврат";
-
-        balance +=
-          Number(
-            bet.amount
-          );
-
-      }
-
-
-      else {
-
-        bet.status =
-          "Проиграла";
-
-      }
-
-
-      changed = true;
-
     }
-  );
-
-
-  if (
-    changed
-  ) {
-
-    saveData();
-
-    updateInterface();
 
   }
 
-}
+  catch (error) {
 
+    alert(
+      error.message
+    );
 
-/* =========================
-   ХРАНЕНИЕ
-   ========================= */
+    button.disabled =
+      false;
 
-function saveData() {
-
-  localStorage.setItem(
-    "betcoinBalance",
-    balance
-  );
-
-
-  localStorage.setItem(
-    "betcoinBets",
-    JSON.stringify(
-      bets
-    )
-  );
+  }
 
 }
 
@@ -2558,7 +2688,23 @@ function renderBets() {
 
 
   if (
-    bets.length === 0
+    !sessionLoaded
+  ) {
+
+    list.innerHTML = `
+      <div class="loading">
+        Загружаем ставки...
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  if (
+    bets.length
+    === 0
   ) {
 
     list.innerHTML = `
@@ -2568,147 +2714,149 @@ function renderBets() {
     `;
 
     return;
+
   }
 
 
   list.innerHTML =
-    bets.map(
-      bet => {
+    bets
+      .map(
+        bet => {
 
-        let cardClass = "";
-        let statusClass =
-          "status-active";
+          let cardClass =
+            "";
 
-        let icon =
-          "⏳";
+          let statusClass =
+            "status-active";
 
-
-        if (
-          bet.status === "Выиграла"
-        ) {
-
-          cardClass =
-            "bet-win";
-
-          statusClass =
-            "status-win";
-
-          icon =
-            "✅";
-
-        }
+          let icon =
+            "⏳";
 
 
-        else if (
-          bet.status === "Проиграла"
-        ) {
+          if (
+            bet.status
+            === "Выиграла"
+          ) {
 
-          cardClass =
-            "bet-loss";
+            cardClass =
+              "bet-win";
 
-          statusClass =
-            "status-loss";
+            statusClass =
+              "status-win";
 
-          icon =
-            "❌";
+            icon =
+              "✅";
 
-        }
-
-
-        else if (
-          bet.status === "Возврат"
-        ) {
-
-          cardClass =
-            "bet-refund";
-
-          statusClass =
-            "status-refund";
-
-          icon =
-            "↩️";
-
-        }
+          }
 
 
-        const scoreBlock =
-          bet.score
-            ? `
+          else if (
+            bet.status
+            === "Проиграла"
+          ) {
+
+            cardClass =
+              "bet-loss";
+
+            statusClass =
+              "status-loss";
+
+            icon =
+              "❌";
+
+          }
+
+
+          else if (
+            bet.status
+            === "Возврат"
+          ) {
+
+            cardClass =
+              "bet-refund";
+
+            statusClass =
+              "status-refund";
+
+            icon =
+              "↩️";
+
+          }
+
+
+          const scoreBlock =
+            bet.score
+              ? `
+                <p>
+                  Финальный счёт:
+                  <b>${bet.score}</b>
+                </p>
+              `
+              : "";
+
+
+          return `
+            <div class="bet-card ${cardClass}">
+
+              <b>
+                ${bet.match}
+              </b>
+
               <p>
-                Финальный счёт:
-                <b>${bet.score}</b>
+                ${bet.selection}
+                •
+                ${Number(
+                  bet.odd
+                ).toFixed(2)}
               </p>
-            `
-            : "";
 
-
-        const oldBetWarning =
-          !bet.fixture_id
-          &&
-          bet.status === "Активна"
-            ? `
-              <p style="color:#777f90;font-size:12px;">
-                Авторасчёт недоступен для старой ставки
+              <p>
+                Ставка:
+                🪙 ${bet.amount}
               </p>
-            `
-            : "";
 
+              <p>
+                Возможный выигрыш:
+                🪙 ${bet.possible}
+              </p>
 
-        return `
-          <div class="bet-card ${cardClass}">
+              ${scoreBlock}
 
-            <b>
-              ${bet.match}
-            </b>
+              <p class="${statusClass}">
+                ${icon}
+                ${bet.status}
+              </p>
 
-            <p>
-              ${bet.selection}
-              •
-              ${Number(
-                bet.odd
-              ).toFixed(2)}
-            </p>
+            </div>
+          `;
 
-            <p>
-              Ставка:
-              🪙 ${bet.amount}
-            </p>
-
-            <p>
-              Возможный выигрыш:
-              🪙 ${bet.possible}
-            </p>
-
-            ${scoreBlock}
-
-            <p class="${statusClass}">
-              ${icon}
-              ${bet.status}
-            </p>
-
-            ${oldBetWarning}
-
-          </div>
-        `;
-
-      }
-    ).join("");
+        }
+      )
+      .join(
+        ""
+      );
 
 }
 
 
 /* =========================
-   ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+   ИНТЕРФЕЙС
    ========================= */
 
 function updateInterface() {
+
+  const balanceText =
+    sessionLoaded
+      ? balance
+      : "...";
+
 
   document
     .getElementById(
       "balance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -2716,7 +2864,7 @@ function updateInterface() {
       "topBalance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -2724,7 +2872,7 @@ function updateInterface() {
       "profileBalance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -2740,7 +2888,11 @@ function updateInterface() {
 }
 
 
-function openPage(
+/* =========================
+   НАВИГАЦИЯ
+   ========================= */
+
+async function openPage(
   page,
   button
 ) {
@@ -2788,6 +2940,26 @@ function openPage(
     0
   );
 
+
+  /*
+    Когда пользователь открывает
+    Ставки или Профиль,
+    ещё раз проверяем базу.
+
+    Если матч уже закончился,
+    сервер сам рассчитает ставку.
+  */
+
+  if (
+    page === "bets"
+    ||
+    page === "profile"
+  ) {
+
+    await loadSession();
+
+  }
+
 }
 
 
@@ -2812,55 +2984,64 @@ function updateNavForPage(
   if (
     page === "home"
   ) {
+
     buttons[0]
       .classList.add(
         "active"
       );
+
   }
 
 
   if (
     page === "matches"
   ) {
+
     buttons[1]
       .classList.add(
         "active"
       );
+
   }
 
 
   if (
     page === "bets"
   ) {
+
     buttons[2]
       .classList.add(
         "active"
       );
+
   }
 
 
   if (
     page === "profile"
   ) {
+
     buttons[3]
       .classList.add(
         "active"
       );
+
   }
 
 }
 
 
 /* =========================
-   TELEGRAM
+   TELEGRAM USER
    ========================= */
 
-const user =
-  tg.initDataUnsafe?.user;
+const telegramUser =
+  tg.initDataUnsafe
+    ?.user;
 
 
 if (
-  user
+  telegramUser
 ) {
 
   document
@@ -2868,7 +3049,8 @@ if (
       "playerName"
     )
     .innerText =
-      user.first_name
+      telegramUser
+        .first_name
       ||
       "Игрок";
 
@@ -2879,11 +3061,20 @@ if (
    СТАРТ
    ========================= */
 
-updateInterface();
+async function startApp() {
 
-loadMatches();
+  updateInterface();
 
-checkActiveBets();
+
+  await Promise.all([
+    loadSession(),
+    loadMatches()
+  ]);
+
+}
+
+
+startApp();
 
 </script>
 

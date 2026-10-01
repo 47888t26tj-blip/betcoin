@@ -43,13 +43,8 @@ TELEGRAM_BOT_TOKEN = os.environ.get(
 ).strip()
 
 
-FOOTBALL_API_URL = (
-    "https://api.football-data.org/v4"
-)
-
-ODDS_API_URL = (
-    "https://api.the-odds-api.com/v4"
-)
+FOOTBALL_API_URL = "https://api.football-data.org/v4"
+ODDS_API_URL = "https://api.the-odds-api.com/v4"
 
 
 TOTAL_POINTS = [
@@ -115,6 +110,7 @@ def init_database():
 
     if database_ready:
         return
+
 
     conn = get_db()
     cur = conn.cursor()
@@ -191,6 +187,38 @@ def init_database():
     """)
 
 
+    # Ежедневные задания.
+    # На каждый новый день создаётся новая строка.
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS daily_tasks (
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            task_date DATE NOT NULL,
+
+            login_done BOOLEAN NOT NULL DEFAULT FALSE,
+
+            bets_count INTEGER NOT NULL DEFAULT 0,
+
+            wins_count INTEGER NOT NULL DEFAULT 0,
+
+            login_claimed BOOLEAN NOT NULL DEFAULT FALSE,
+
+            bets_claimed BOOLEAN NOT NULL DEFAULT FALSE,
+
+            win_claimed BOOLEAN NOT NULL DEFAULT FALSE,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            PRIMARY KEY (
+                telegram_id,
+                task_date
+            )
+        )
+    """)
+
+
     conn.commit()
 
     cur.close()
@@ -224,6 +252,7 @@ def xp_info(xp):
         xp % 100
     )
 
+
     return {
         "xp":
             xp,
@@ -237,8 +266,7 @@ def xp_info(xp):
             current_level_xp,
 
         "xp_to_next_level":
-            100
-            - current_level_xp
+            100 - current_level_xp
     }
 
 
@@ -248,7 +276,6 @@ def calculate_level_reward(
 ):
 
     total_reward = 0
-
     reached_levels = []
 
 
@@ -268,8 +295,6 @@ def calculate_level_reward(
         reward = 100
 
 
-        # Каждый 5 уровень:
-        # +500 дополнительно.
         if (
             level_number % 5
             == 0
@@ -317,12 +342,8 @@ def add_xp(
         own_connection = True
 
 
-    # Сначала узнаём старый XP.
-    # FOR UPDATE защищает от одновременных
-    # начислений на один аккаунт.
     cursor.execute("""
-        SELECT
-            xp
+        SELECT xp
 
         FROM users
 
@@ -342,7 +363,6 @@ def add_xp(
         if own_connection:
 
             conn.rollback()
-
             cursor.close()
             conn.close()
 
@@ -351,13 +371,8 @@ def add_xp(
             0
         )
 
-        result[
-            "level_reward"
-        ] = 0
-
-        result[
-            "levels_gained"
-        ] = []
+        result["level_reward"] = 0
+        result["levels_gained"] = []
 
         return result
 
@@ -398,23 +413,19 @@ def add_xp(
     ))
 
 
-    level_reward_data = (
-        calculate_level_reward(
-            old_level,
-            new_level
-        )
+    reward_data = calculate_level_reward(
+        old_level,
+        new_level
     )
 
 
     level_reward = int(
-        level_reward_data[
+        reward_data[
             "reward"
         ]
     )
 
 
-    # Если игрок поднял уровень,
-    # сразу начисляем награду монетами.
     if level_reward > 0:
 
         cursor.execute("""
@@ -454,7 +465,7 @@ def add_xp(
 
     result[
         "levels_gained"
-    ] = level_reward_data[
+    ] = reward_data[
         "levels"
     ]
 
@@ -773,7 +784,6 @@ def get_user_data(
 
 
     if not row:
-
         return None
 
 
@@ -798,23 +808,320 @@ def get_user_data(
     }
 
 
-def get_user_balance(
-    telegram_id
+# =========================================================
+# DAILY TASKS
+# =========================================================
+
+def current_task_date():
+
+    return datetime.now(
+        timezone.utc
+    ).date()
+
+
+def ensure_daily_tasks(
+    telegram_id,
+    cursor=None,
+    mark_login=False
 ):
 
-    user = get_user_data(
-        telegram_id
+    own_connection = False
+    conn = None
+
+
+    if cursor is None:
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        own_connection = True
+
+
+    today = current_task_date()
+
+
+    cursor.execute("""
+        INSERT INTO daily_tasks (
+            telegram_id,
+            task_date
+        )
+
+        VALUES (
+            %s,
+            %s
+        )
+
+        ON CONFLICT (
+            telegram_id,
+            task_date
+        )
+
+        DO NOTHING
+    """, (
+        telegram_id,
+        today
+    ))
+
+
+    if mark_login:
+
+        cursor.execute("""
+            UPDATE daily_tasks
+
+            SET login_done = TRUE
+
+            WHERE
+                telegram_id = %s
+                AND task_date = %s
+        """, (
+            telegram_id,
+            today
+        ))
+
+
+    if own_connection:
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+
+def increment_daily_bet(
+    telegram_id,
+    cursor
+):
+
+    ensure_daily_tasks(
+        telegram_id,
+        cursor,
+        True
     )
 
 
-    if not user:
-        return 0
+    cursor.execute("""
+        UPDATE daily_tasks
+
+        SET
+            bets_count =
+                bets_count + 1
+
+        WHERE
+            telegram_id = %s
+            AND task_date = %s
+    """, (
+        telegram_id,
+        current_task_date()
+    ))
 
 
-    return int(
-        user[
-            "balance"
-        ]
+def increment_daily_win(
+    telegram_id,
+    cursor
+):
+
+    ensure_daily_tasks(
+        telegram_id,
+        cursor,
+        True
+    )
+
+
+    cursor.execute("""
+        UPDATE daily_tasks
+
+        SET
+            wins_count =
+                wins_count + 1
+
+        WHERE
+            telegram_id = %s
+            AND task_date = %s
+    """, (
+        telegram_id,
+        current_task_date()
+    ))
+
+
+def build_daily_tasks(
+    row
+):
+
+    if not row:
+
+        return []
+
+
+    login_done = bool(
+        row[0]
+    )
+
+    bets_count = int(
+        row[1]
+        or 0
+    )
+
+    wins_count = int(
+        row[2]
+        or 0
+    )
+
+    login_claimed = bool(
+        row[3]
+    )
+
+    bets_claimed = bool(
+        row[4]
+    )
+
+    win_claimed = bool(
+        row[5]
+    )
+
+
+    return [
+        {
+            "key":
+                "login",
+
+            "title":
+                "Зайти в приложение",
+
+            "description":
+                "Открой BetCoin сегодня",
+
+            "progress":
+                1 if login_done else 0,
+
+            "target":
+                1,
+
+            "completed":
+                login_done,
+
+            "claimed":
+                login_claimed,
+
+            "reward_type":
+                "xp",
+
+            "reward":
+                50
+        },
+
+        {
+            "key":
+                "bets_3",
+
+            "title":
+                "Сделать 3 ставки",
+
+            "description":
+                "Сделай 3 ставки за сегодня",
+
+            "progress":
+                min(
+                    bets_count,
+                    3
+                ),
+
+            "target":
+                3,
+
+            "completed":
+                bets_count >= 3,
+
+            "claimed":
+                bets_claimed,
+
+            "reward_type":
+                "coins",
+
+            "reward":
+                100
+        },
+
+        {
+            "key":
+                "win_1",
+
+            "title":
+                "Выиграть 1 ставку",
+
+            "description":
+                "Получи хотя бы один выигрыш сегодня",
+
+            "progress":
+                min(
+                    wins_count,
+                    1
+                ),
+
+            "target":
+                1,
+
+            "completed":
+                wins_count >= 1,
+
+            "claimed":
+                win_claimed,
+
+            "reward_type":
+                "coins",
+
+            "reward":
+                150
+        }
+    ]
+
+
+def get_daily_tasks(
+    telegram_id,
+    mark_login=True
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+
+    ensure_daily_tasks(
+        telegram_id,
+        cur,
+        mark_login
+    )
+
+
+    cur.execute("""
+        SELECT
+            login_done,
+            bets_count,
+            wins_count,
+            login_claimed,
+            bets_claimed,
+            win_claimed
+
+        FROM daily_tasks
+
+        WHERE
+            telegram_id = %s
+            AND task_date = %s
+    """, (
+        telegram_id,
+        current_task_date()
+    ))
+
+
+    row = cur.fetchone()
+
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+    return build_daily_tasks(
+        row
     )
 
 
@@ -834,7 +1141,6 @@ def normalize_team(name):
 
 
     replacements = {
-
         "manchester united fc":
             "manchester united",
 
@@ -922,9 +1228,7 @@ def point_key(point):
     if number.is_integer():
 
         return str(
-            int(
-                number
-            )
+            int(number)
         )
 
 
@@ -945,11 +1249,8 @@ def empty_totals():
                 point
             )
         ] = {
-            "over":
-                None,
-
-            "under":
-                None
+            "over": None,
+            "under": None
         }
 
 
@@ -1008,11 +1309,8 @@ def empty_team_totals():
         ][
             key
         ] = {
-            "over":
-                None,
-
-            "under":
-                None
+            "over": None,
+            "under": None
         }
 
 
@@ -1021,11 +1319,8 @@ def empty_team_totals():
         ][
             key
         ] = {
-            "over":
-                None,
-
-            "under":
-                None
+            "over": None,
+            "under": None
         }
 
 
@@ -1242,11 +1537,9 @@ def find_odds_event(
 
 
         if (
-            home_normalized
-            == odds_home
+            home_normalized == odds_home
             and
-            away_normalized
-            == odds_away
+            away_normalized == odds_away
         ):
 
             return event
@@ -1281,10 +1574,7 @@ def get_main_markets(event):
     ):
 
         h2h_data = None
-
-        totals_data = (
-            empty_totals()
-        )
+        totals_data = empty_totals()
 
         found = False
 
@@ -1315,7 +1605,6 @@ def get_main_markets(event):
                         "name"
                     )
 
-
                     price = outcome.get(
                         "price"
                     )
@@ -1327,9 +1616,7 @@ def get_main_markets(event):
 
 
                     elif (
-                        normalize_team(
-                            name
-                        )
+                        normalize_team(name)
                         == home_normalized
                     ):
 
@@ -1337,9 +1624,7 @@ def get_main_markets(event):
 
 
                     elif (
-                        normalize_team(
-                            name
-                        )
+                        normalize_team(name)
                         == away_normalized
                     ):
 
@@ -1379,11 +1664,9 @@ def get_main_markets(event):
                         "point"
                     )
 
-
                     name = outcome.get(
                         "name"
                     )
-
 
                     price = outcome.get(
                         "price"
@@ -1401,11 +1684,7 @@ def get_main_markets(event):
                         continue
 
 
-                    if (
-                        point
-                        not in TOTAL_POINTS
-                    ):
-
+                    if point not in TOTAL_POINTS:
                         continue
 
 
@@ -1485,19 +1764,11 @@ def detect_team_side(
     )
 
 
-    if (
-        home_normalized
-        in combined
-    ):
-
+    if home_normalized in combined:
         return "home"
 
 
-    if (
-        away_normalized
-        in combined
-    ):
-
+    if away_normalized in combined:
         return "away"
 
 
@@ -1526,12 +1797,10 @@ def detect_over_under(
 
 
     if "over" in text:
-
         return "over"
 
 
     if "under" in text:
-
         return "under"
 
 
@@ -1584,11 +1853,7 @@ def get_extra_markets(
         )
 
 
-        if (
-            response.status_code
-            != 200
-        ):
-
+        if response.status_code != 200:
             return None
 
 
@@ -1611,32 +1876,17 @@ def get_extra_markets(
 
 
     result = {
-        "btts":
-            None,
+        "btts": None,
+        "double_chance": None,
+        "handicaps": None,
+        "team_totals": None,
 
-        "double_chance":
-            None,
+        "btts_bookmaker": None,
+        "double_chance_bookmaker": None,
+        "handicaps_bookmaker": None,
+        "team_totals_bookmaker": None,
 
-        "handicaps":
-            None,
-
-        "team_totals":
-            None,
-
-        "btts_bookmaker":
-            None,
-
-        "double_chance_bookmaker":
-            None,
-
-        "handicaps_bookmaker":
-            None,
-
-        "team_totals_bookmaker":
-            None,
-
-        "available_extra_markets":
-            []
+        "available_extra_markets": []
     }
 
 
@@ -1658,8 +1908,7 @@ def get_extra_markets(
             if (
                 market_key
                 and
-                market_key
-                not in result[
+                market_key not in result[
                     "available_extra_markets"
                 ]
             ):
@@ -1670,8 +1919,6 @@ def get_extra_markets(
                     market_key
                 )
 
-
-            # BTTS
 
             if market_key == "btts":
 
@@ -1708,18 +1955,14 @@ def get_extra_markets(
 
 
                 if (
-                    result[
-                        "btts"
-                    ] is None
+                    result["btts"] is None
                     and
                     yes_odd is not None
                     and
                     no_odd is not None
                 ):
 
-                    result[
-                        "btts"
-                    ] = {
+                    result["btts"] = {
                         "yes":
                             yes_odd,
 
@@ -1735,8 +1978,6 @@ def get_extra_markets(
                         "Bookmaker"
                     )
 
-
-            # DOUBLE CHANCE
 
             elif (
                 market_key
@@ -1772,33 +2013,27 @@ def get_extra_markets(
 
 
                     if (
-                        home_normalized
-                        in normalized
+                        home_normalized in normalized
                         and
-                        "draw"
-                        in normalized
+                        "draw" in normalized
                     ):
 
                         one_x = price
 
 
                     elif (
-                        away_normalized
-                        in normalized
+                        away_normalized in normalized
                         and
-                        "draw"
-                        in normalized
+                        "draw" in normalized
                     ):
 
                         x_two = price
 
 
                     elif (
-                        home_normalized
-                        in normalized
+                        home_normalized in normalized
                         and
-                        away_normalized
-                        in normalized
+                        away_normalized in normalized
                     ):
 
                         one_two = price
@@ -1840,8 +2075,6 @@ def get_extra_markets(
                     )
 
 
-            # HANDICAPS
-
             elif (
                 market_key
                 == "alternate_spreads"
@@ -1857,11 +2090,7 @@ def get_extra_markets(
                     continue
 
 
-                handicap_data = (
-                    empty_handicaps()
-                )
-
-
+                handicap_data = empty_handicaps()
                 found = False
 
 
@@ -1898,11 +2127,7 @@ def get_extra_markets(
                         continue
 
 
-                    if (
-                        point
-                        not in HANDICAP_POINTS
-                    ):
-
+                    if point not in HANDICAP_POINTS:
                         continue
 
 
@@ -1954,8 +2179,6 @@ def get_extra_markets(
                     )
 
 
-            # TEAM TOTALS
-
             elif market_key in (
                 "team_totals",
                 "alternate_team_totals"
@@ -1970,9 +2193,7 @@ def get_extra_markets(
 
                     result[
                         "team_totals"
-                    ] = (
-                        empty_team_totals()
-                    )
+                    ] = empty_team_totals()
 
 
                 found = False
@@ -2001,11 +2222,7 @@ def get_extra_markets(
                     )
 
 
-                    if (
-                        point
-                        not in TEAM_TOTAL_POINTS
-                    ):
-
+                    if point not in TEAM_TOTAL_POINTS:
                         continue
 
 
@@ -2088,14 +2305,10 @@ def get_extra_markets(
             ):
 
                 if (
-                    line.get(
-                        "over"
-                    )
+                    line.get("over")
                     is not None
                     or
-                    line.get(
-                        "under"
-                    )
+                    line.get("under")
                     is not None
                 ):
 
@@ -2249,17 +2462,13 @@ def calculate_bet_result(
 
         bet_type = (
             "over"
-            if total_match.group(
-                1
-            ) == "Б"
+            if total_match.group(1) == "Б"
             else "under"
         )
 
 
         line = float(
-            total_match.group(
-                2
-            )
+            total_match.group(2)
         )
 
 
@@ -2279,16 +2488,12 @@ def calculate_bet_result(
     if handicap_match:
 
         team_number = int(
-            handicap_match.group(
-                1
-            )
+            handicap_match.group(1)
         )
 
 
         handicap = float(
-            handicap_match.group(
-                2
-            )
+            handicap_match.group(2)
         )
 
 
@@ -2330,24 +2535,18 @@ def calculate_bet_result(
 
         bet_type = (
             "over"
-            if team_total_match.group(
-                1
-            ) == "Б"
+            if team_total_match.group(1) == "Б"
             else "under"
         )
 
 
         team_number = int(
-            team_total_match.group(
-                2
-            )
+            team_total_match.group(2)
         )
 
 
         line = float(
-            team_total_match.group(
-                3
-            )
+            team_total_match.group(3)
         )
 
 
@@ -2379,6 +2578,13 @@ def settle_user_bets(
     cur = conn.cursor()
 
 
+    ensure_daily_tasks(
+        telegram_id,
+        cur,
+        True
+    )
+
+
     cur.execute("""
         SELECT
             id,
@@ -2403,6 +2609,8 @@ def settle_user_bets(
 
     if not rows:
 
+        conn.commit()
+
         cur.close()
         conn.close()
 
@@ -2421,10 +2629,7 @@ def settle_user_bets(
         possible = row[4]
 
 
-        if (
-            fixture_id
-            not in match_cache
-        ):
+        if fixture_id not in match_cache:
 
             try:
 
@@ -2564,23 +2769,27 @@ def settle_user_bets(
                         updated_at =
                             NOW()
 
-                    WHERE
-                        telegram_id = %s
+                    WHERE telegram_id = %s
                 """, (
                     payout,
                     telegram_id
                 ))
 
 
-            # За выигрыш +25 XP.
-            # Если эти XP повышают уровень,
-            # add_xp автоматически начислит
-            # ещё и награду уровня.
             if result == "win":
 
+                # +25 XP за выигрыш
                 add_xp(
                     telegram_id,
                     25,
+                    cur
+                )
+
+
+                # Прогресс задания:
+                # выиграть 1 ставку.
+                increment_daily_win(
+                    telegram_id,
                     cur
                 )
 
@@ -2689,6 +2898,17 @@ def get_user_bets(
 @app.route("/")
 def home():
 
+    try:
+
+        init_database()
+
+        db_ok = True
+
+    except Exception:
+
+        db_ok = False
+
+
     return jsonify({
         "status":
             "ok",
@@ -2697,9 +2917,7 @@ def home():
             "BetCoin server is working",
 
         "database":
-            bool(
-                DATABASE_URL
-            )
+            db_ok
     })
 
 
@@ -2713,9 +2931,7 @@ def home():
 )
 def session():
 
-    telegram_user, error = (
-        require_telegram_user()
-    )
+    telegram_user, error = require_telegram_user()
 
 
     if error:
@@ -2736,6 +2952,14 @@ def session():
 
         settle_user_bets(
             telegram_id
+        )
+
+
+        # Сам вход в приложение выполняет
+        # ежедневное задание login.
+        tasks = get_daily_tasks(
+            telegram_id,
+            True
         )
 
 
@@ -2791,10 +3015,7 @@ def session():
             )
 
 
-            if (
-                now
-                < next_daily_claim
-            ):
+            if now < next_daily_claim:
 
                 daily_available = False
 
@@ -2869,6 +3090,10 @@ def session():
                 bets,
 
 
+            "tasks":
+                tasks,
+
+
             "daily_reward": {
                 "amount":
                     300,
@@ -2896,9 +3121,7 @@ def session():
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
         }), 500
 
 
@@ -2912,9 +3135,7 @@ def session():
 )
 def create_bet():
 
-    telegram_user, error = (
-        require_telegram_user()
-    )
+    telegram_user, error = require_telegram_user()
 
 
     if error:
@@ -3018,6 +3239,13 @@ def create_bet():
         cur = conn.cursor()
 
 
+        ensure_daily_tasks(
+            telegram_id,
+            cur,
+            True
+        )
+
+
         cur.execute("""
             SELECT balance
 
@@ -3056,10 +3284,7 @@ def create_bet():
         )
 
 
-        if (
-            amount
-            > current_balance
-        ):
+        if amount > current_balance:
 
             conn.rollback()
 
@@ -3144,8 +3369,14 @@ def create_bet():
         )
 
 
-        # Баланс мог увеличиться,
-        # если эти 10 XP дали новый уровень.
+        # +1 к ежедневному заданию:
+        # сделать 3 ставки.
+        increment_daily_bet(
+            telegram_id,
+            cur
+        )
+
+
         cur.execute("""
             SELECT balance
 
@@ -3166,6 +3397,12 @@ def create_bet():
 
         cur.close()
         conn.close()
+
+
+        tasks = get_daily_tasks(
+            telegram_id,
+            True
+        )
 
 
         return jsonify({
@@ -3199,6 +3436,11 @@ def create_bet():
                     "current_level_xp"
                 ],
 
+            "xp_to_next_level":
+                xp_result[
+                    "xp_to_next_level"
+                ],
+
             "level_reward":
                 xp_result[
                     "level_reward"
@@ -3207,7 +3449,10 @@ def create_bet():
             "levels_gained":
                 xp_result[
                     "levels_gained"
-                ]
+                ],
+
+            "tasks":
+                tasks
         })
 
 
@@ -3218,9 +3463,7 @@ def create_bet():
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
         }), 500
 
 
@@ -3234,9 +3477,7 @@ def create_bet():
 )
 def daily_reward():
 
-    telegram_user, error = (
-        require_telegram_user()
-    )
+    telegram_user, error = require_telegram_user()
 
 
     if error:
@@ -3317,10 +3558,7 @@ def daily_reward():
             )
 
 
-            if (
-                now
-                < next_claim
-            ):
+            if now < next_claim:
 
                 seconds_left = max(
                     0,
@@ -3379,7 +3617,6 @@ def daily_reward():
         ))
 
 
-        # +15 XP за ежедневный бонус.
         xp_result = add_xp(
             telegram_id,
             15,
@@ -3387,8 +3624,6 @@ def daily_reward():
         )
 
 
-        # Баланс может увеличиться ещё раз,
-        # если произошёл level-up.
         cur.execute("""
             SELECT balance
 
@@ -3439,6 +3674,11 @@ def daily_reward():
                     "current_level_xp"
                 ],
 
+            "xp_to_next_level":
+                xp_result[
+                    "xp_to_next_level"
+                ],
+
             "level_reward":
                 xp_result[
                     "level_reward"
@@ -3469,9 +3709,385 @@ def daily_reward():
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
+        }), 500
+
+
+# =========================================================
+# CLAIM DAILY TASK
+# =========================================================
+
+@app.route(
+    "/api/tasks/claim",
+    methods=["POST"]
+)
+def claim_daily_task():
+
+    telegram_user, error = require_telegram_user()
+
+
+    if error:
+        return error
+
+
+    body = request.get_json(
+        silent=True
+    ) or {}
+
+
+    task_key = str(
+        body.get(
+            "task_key",
+            ""
+        )
+    ).strip()
+
+
+    if task_key not in (
+        "login",
+        "bets_3",
+        "win_1"
+    ):
+
+        return jsonify({
+            "success":
+                False,
+
+            "error":
+                "Неизвестное задание"
+        }), 400
+
+
+    try:
+
+        user = get_or_create_user(
+            telegram_user
+        )
+
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+
+        conn = get_db()
+        cur = conn.cursor()
+
+
+        ensure_daily_tasks(
+            telegram_id,
+            cur,
+            True
+        )
+
+
+        cur.execute("""
+            SELECT
+                login_done,
+                bets_count,
+                wins_count,
+                login_claimed,
+                bets_claimed,
+                win_claimed
+
+            FROM daily_tasks
+
+            WHERE
+                telegram_id = %s
+                AND task_date = %s
+
+            FOR UPDATE
+        """, (
+            telegram_id,
+            current_task_date()
+        ))
+
+
+        row = cur.fetchone()
+
+
+        if not row:
+
+            conn.rollback()
+
+            cur.close()
+            conn.close()
+
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Задания не найдены"
+            }), 404
+
+
+        login_done = bool(
+            row[0]
+        )
+
+        bets_count = int(
+            row[1]
+            or 0
+        )
+
+        wins_count = int(
+            row[2]
+            or 0
+        )
+
+        login_claimed = bool(
+            row[3]
+        )
+
+        bets_claimed = bool(
+            row[4]
+        )
+
+        win_claimed = bool(
+            row[5]
+        )
+
+
+        completed = False
+        claimed = False
+        reward_type = None
+        reward = 0
+        claim_column = None
+
+
+        if task_key == "login":
+
+            completed = login_done
+            claimed = login_claimed
+
+            reward_type = "xp"
+            reward = 50
+
+            claim_column = "login_claimed"
+
+
+        elif task_key == "bets_3":
+
+            completed = (
+                bets_count >= 3
+            )
+
+            claimed = bets_claimed
+
+            reward_type = "coins"
+            reward = 100
+
+            claim_column = "bets_claimed"
+
+
+        elif task_key == "win_1":
+
+            completed = (
+                wins_count >= 1
+            )
+
+            claimed = win_claimed
+
+            reward_type = "coins"
+            reward = 150
+
+            claim_column = "win_claimed"
+
+
+        if not completed:
+
+            conn.rollback()
+
+            cur.close()
+            conn.close()
+
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Задание ещё не выполнено"
+            }), 400
+
+
+        if claimed:
+
+            conn.rollback()
+
+            cur.close()
+            conn.close()
+
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Награда уже получена"
+            }), 400
+
+
+        cur.execute(
+            f"""
+            UPDATE daily_tasks
+
+            SET {claim_column} = TRUE
+
+            WHERE
+                telegram_id = %s
+                AND task_date = %s
+            """,
+            (
+                telegram_id,
+                current_task_date()
+            )
+        )
+
+
+        level_reward = 0
+        levels_gained = []
+
+
+        if reward_type == "coins":
+
+            cur.execute("""
+                UPDATE users
+
+                SET
+                    balance =
+                        balance + %s,
+
+                    updated_at =
+                        NOW()
+
+                WHERE telegram_id = %s
+            """, (
+                reward,
+                telegram_id
+            ))
+
+
+        elif reward_type == "xp":
+
+            xp_result = add_xp(
+                telegram_id,
+                reward,
+                cur
+            )
+
+
+            level_reward = xp_result[
+                "level_reward"
+            ]
+
+
+            levels_gained = xp_result[
+                "levels_gained"
+            ]
+
+
+        cur.execute("""
+            SELECT
+                balance,
+                xp
+
+            FROM users
+
+            WHERE telegram_id = %s
+        """, (
+            telegram_id,
+        ))
+
+
+        user_row = cur.fetchone()
+
+
+        final_balance = int(
+            user_row[0]
+        )
+
+
+        final_xp = int(
+            user_row[1]
+            or 0
+        )
+
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+
+        player_xp = xp_info(
+            final_xp
+        )
+
+
+        tasks = get_daily_tasks(
+            telegram_id,
+            True
+        )
+
+
+        return jsonify({
+            "success":
+                True,
+
+            "task_key":
+                task_key,
+
+            "reward_type":
+                reward_type,
+
+            "reward":
+                reward,
+
+            "balance":
+                final_balance,
+
+            "xp":
+                player_xp[
+                    "xp"
+                ],
+
+            "level":
+                player_xp[
+                    "level"
+                ],
+
+            "current_level_xp":
+                player_xp[
+                    "current_level_xp"
+                ],
+
+            "xp_to_next_level":
+                player_xp[
+                    "xp_to_next_level"
+                ],
+
+            "level_reward":
+                level_reward,
+
+            "levels_gained":
+                levels_gained,
+
+            "tasks":
+                tasks
+        })
+
+
+    except Exception as error:
+
+        return jsonify({
+            "success":
+                False,
+
+            "error":
+                str(error)
         }), 500
 
 
@@ -3485,9 +4101,7 @@ def daily_reward():
 )
 def settle():
 
-    telegram_user, error = (
-        require_telegram_user()
-    )
+    telegram_user, error = require_telegram_user()
 
 
     if error:
@@ -3524,6 +4138,12 @@ def settle():
         )
 
 
+        tasks = get_daily_tasks(
+            telegram_id,
+            True
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -3550,10 +4170,18 @@ def settle():
                     "current_level_xp"
                 ],
 
+            "xp_to_next_level":
+                player_xp[
+                    "xp_to_next_level"
+                ],
+
             "bets":
                 get_user_bets(
                     telegram_id
-                )
+                ),
+
+            "tasks":
+                tasks
         })
 
 
@@ -3564,9 +4192,7 @@ def settle():
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
         }), 500
 
 
@@ -3614,9 +4240,7 @@ def single_match(
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
         }), 500
 
 
@@ -3680,9 +4304,7 @@ def matches():
         ) = get_football_matches()
 
 
-        odds_events = (
-            get_featured_odds()
-        )
+        odds_events = get_featured_odds()
 
 
     except Exception as error:
@@ -3692,9 +4314,7 @@ def matches():
                 False,
 
             "error":
-                str(
-                    error
-                )
+                str(error)
         }), 500
 
 
@@ -3751,14 +4371,12 @@ def matches():
 
         if odds_event:
 
-            extra_markets = (
-                get_extra_markets(
-                    odds_event.get(
-                        "id"
-                    ),
-                    home_name,
-                    away_name
-                )
+            extra_markets = get_extra_markets(
+                odds_event.get(
+                    "id"
+                ),
+                home_name,
+                away_name
             )
 
 
@@ -3893,14 +4511,10 @@ def matches():
                     total
                     and
                     (
-                        total.get(
-                            "over"
-                        )
+                        total.get("over")
                         is not None
                         or
-                        total.get(
-                            "under"
-                        )
+                        total.get("under")
                         is not None
                     )
                 ):

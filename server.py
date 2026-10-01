@@ -515,10 +515,7 @@ def get_extra_markets(
                 )
 
 
-            # =========================
-            # ОБЕ ЗАБЬЮТ
-            # =========================
-
+            # ОЗ
             if market_key == "btts":
 
                 yes_odd = None
@@ -567,10 +564,7 @@ def get_extra_markets(
                     )
 
 
-            # =========================
             # ДВОЙНОЙ ШАНС
-            # =========================
-
             elif market_key == "double_chance":
 
                 one_x = None
@@ -654,10 +648,7 @@ def get_extra_markets(
                     )
 
 
-            # =========================
             # ФОРЫ
-            # =========================
-
             elif market_key == "alternate_spreads":
 
                 if result["handicaps"] is not None:
@@ -732,10 +723,7 @@ def get_extra_markets(
                     )
 
 
-            # =========================
             # ИНДИВИДУАЛЬНЫЕ ТОТАЛЫ
-            # =========================
-
             elif market_key in (
                 "team_totals",
                 "alternate_team_totals"
@@ -828,9 +816,6 @@ def get_extra_markets(
                     )
 
 
-    # Если рынок вообще не пришёл,
-    # оставляем None
-
     team_totals = result[
         "team_totals"
     ]
@@ -855,7 +840,6 @@ def get_extra_markets(
                     line.get("under")
                     is not None
                 ):
-
                     any_team_total = True
 
         if not any_team_total:
@@ -871,6 +855,132 @@ def get_extra_markets(
 
     return result
 
+
+# =========================
+# ОДИН МАТЧ + ФИНАЛЬНЫЙ СЧЁТ
+# =========================
+
+@app.route("/api/match/<int:match_id>")
+def single_match(match_id):
+
+    if not FOOTBALL_TOKEN:
+
+        return jsonify({
+            "success": False,
+            "error":
+                "FOOTBALL_DATA_TOKEN not found"
+        }), 500
+
+
+    headers = {
+        "X-Auth-Token":
+            FOOTBALL_TOKEN
+    }
+
+
+    try:
+
+        response = requests.get(
+            f"{FOOTBALL_API_URL}/matches/{match_id}",
+            headers=headers,
+            timeout=20
+        )
+
+
+        response.raise_for_status()
+
+
+        data = response.json()
+
+
+        score = data.get(
+            "score",
+            {}
+        )
+
+
+        full_time = score.get(
+            "fullTime",
+            {}
+        )
+
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "fixture_id":
+                data.get("id"),
+
+            "status":
+                data.get("status"),
+
+            "home":
+                data.get(
+                    "homeTeam",
+                    {}
+                ).get("name"),
+
+            "away":
+                data.get(
+                    "awayTeam",
+                    {}
+                ).get("name"),
+
+            "home_score":
+                full_time.get("home"),
+
+            "away_score":
+                full_time.get("away"),
+
+            "winner":
+                score.get("winner")
+
+        })
+
+
+    except requests.exceptions.HTTPError as error:
+
+        response = error.response
+
+        try:
+            api_error = response.json()
+
+        except Exception:
+            api_error = response.text
+
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "status_code":
+                response.status_code,
+
+            "api_error":
+                api_error
+
+        }), response.status_code
+
+
+    except Exception as error:
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                str(error)
+
+        }), 500
+
+
+# =========================
+# СПИСОК МАТЧЕЙ
+# =========================
 
 @app.route("/api/matches")
 def matches():

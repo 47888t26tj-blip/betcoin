@@ -21,18 +21,27 @@
       margin: 0;
       padding-bottom: 95px;
       background: #0b0d12;
-      color: white;
+      color: #ffffff;
       font-family: Arial, sans-serif;
     }
 
-    button {
+    button,
+    input {
       font-family: inherit;
     }
 
     .container {
-      padding: 18px;
       max-width: 600px;
       margin: auto;
+      padding: 18px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
     }
 
     .header {
@@ -52,14 +61,6 @@
       padding: 10px 14px;
       border-radius: 14px;
       font-weight: bold;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
     }
 
     h2 {
@@ -104,6 +105,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
 
     .daily-title {
@@ -131,8 +133,8 @@
       padding: 13px;
       background: white;
       color: #111;
-      font-weight: bold;
       font-size: 15px;
+      font-weight: bold;
     }
 
     .daily-button:disabled {
@@ -164,8 +166,8 @@
     }
 
     .tasks-reset {
-      font-size: 12px;
       color: #818899;
+      font-size: 12px;
     }
 
     .task-card {
@@ -191,8 +193,8 @@
     }
 
     .task-title {
-      font-weight: bold;
       font-size: 15px;
+      font-weight: bold;
     }
 
     .task-description {
@@ -202,23 +204,23 @@
     }
 
     .task-reward {
-      font-weight: bold;
       color: #ffd96a;
       white-space: nowrap;
+      font-weight: bold;
     }
 
     .task-progress-row {
       display: flex;
       justify-content: space-between;
       margin: 12px 0 7px;
-      font-size: 12px;
       color: #969dac;
+      font-size: 12px;
     }
 
-    .task-progress {
+    .progress {
       height: 8px;
-      border-radius: 999px;
       background: #292e3b;
+      border-radius: 999px;
       overflow: hidden;
     }
 
@@ -237,9 +239,9 @@
       border: none;
       border-radius: 12px;
       padding: 11px;
-      font-weight: bold;
       background: #2775ff;
       color: white;
+      font-weight: bold;
     }
 
     .task-button:disabled {
@@ -261,7 +263,7 @@
       margin-bottom: 14px;
     }
 
-    .league {
+    .league-name {
       color: #8d94a5;
       font-size: 13px;
       margin-bottom: 14px;
@@ -269,8 +271,8 @@
 
     .teams {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 10px;
     }
 
@@ -282,11 +284,16 @@
     }
 
     .team img {
+      display: block;
       width: 46px;
       height: 46px;
       object-fit: contain;
-      display: block;
       margin: 0 auto 7px;
+    }
+
+    .event-header .team img {
+      width: 58px;
+      height: 58px;
     }
 
     .vs {
@@ -355,11 +362,6 @@
       margin-bottom: 14px;
     }
 
-    .event-header .team img {
-      width: 58px;
-      height: 58px;
-    }
-
     .market-box {
       background: #161922;
       border-radius: 18px;
@@ -368,7 +370,6 @@
     }
 
     .market-title {
-      font-size: 15px;
       font-weight: bold;
       margin-bottom: 10px;
     }
@@ -464,7 +465,7 @@
       background: #161922;
       border-radius: 20px;
       padding: 18px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .level-top {
@@ -486,9 +487,9 @@
     .xp-row {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
       margin-bottom: 8px;
       color: #b8bfcd;
+      font-size: 13px;
     }
 
     .xp-bar {
@@ -511,6 +512,115 @@
       margin-top: 10px;
       color: #858c9c;
       font-size: 12px;
+    }
+
+    /* PLAYER LEAGUE */
+
+    .player-league-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 18px;
+      background: linear-gradient(
+        135deg,
+        #4b2f1d,
+        #231b18
+      );
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .player-league-card.silver {
+      background: linear-gradient(
+        135deg,
+        #6f7684,
+        #292d36
+      );
+    }
+
+    .player-league-card.gold {
+      background: linear-gradient(
+        135deg,
+        #d39419,
+        #5e3b08
+      );
+    }
+
+    .player-league-card.diamond {
+      background: linear-gradient(
+        135deg,
+        #169ec4,
+        #27337b
+      );
+    }
+
+    .player-league-card.master {
+      background: linear-gradient(
+        135deg,
+        #7738b8,
+        #32145b
+      );
+    }
+
+    .league-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .league-big-icon {
+      width: 62px;
+      height: 62px;
+      background: rgba(0,0,0,0.18);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+      flex-shrink: 0;
+    }
+
+    .league-label {
+      color: rgba(255,255,255,0.72);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .league-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .league-levels {
+      margin-top: 4px;
+      color: rgba(255,255,255,0.75);
+      font-size: 12px;
+    }
+
+    .league-progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin: 17px 0 8px;
+      font-size: 12px;
+    }
+
+    .league-progress {
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.25);
+    }
+
+    .league-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+    }
+
+    .league-next {
+      margin-top: 9px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.78);
     }
 
     /* ACHIEVEMENTS */
@@ -555,35 +665,27 @@
 
     .achievement-title {
       font-weight: bold;
-      font-size: 15px;
     }
 
     .achievement-description {
-      margin-top: 4px;
       color: #8e95a5;
       font-size: 12px;
+      margin-top: 4px;
     }
 
     .achievement-reward {
-      margin-top: 7px;
       color: #ffd66b;
       font-size: 13px;
       font-weight: bold;
+      margin-top: 7px;
     }
 
     .achievement-progress-row {
       display: flex;
       justify-content: space-between;
       margin: 12px 0 7px;
-      font-size: 12px;
       color: #969dac;
-    }
-
-    .achievement-progress {
-      height: 8px;
-      background: #292e3b;
-      border-radius: 999px;
-      overflow: hidden;
+      font-size: 12px;
     }
 
     .achievement-progress-fill {
@@ -602,6 +704,7 @@
       border-radius: 12px;
       padding: 11px;
       background: #d99a20;
+      color: #151515;
       font-weight: bold;
     }
 
@@ -629,14 +732,14 @@
     }
 
     .leaderboard-info-title {
-      font-weight: bold;
       font-size: 18px;
+      font-weight: bold;
     }
 
     .leaderboard-info-text {
       margin-top: 7px;
-      font-size: 13px;
       color: #d1d4df;
+      font-size: 13px;
     }
 
     .my-rank-card {
@@ -650,27 +753,27 @@
     .my-rank-title {
       color: #9cbcff;
       font-size: 12px;
-      margin-bottom: 5px;
     }
 
     .my-rank-number {
       font-size: 26px;
       font-weight: bold;
+      margin-top: 5px;
     }
 
     .leader-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       background: #161922;
       border-radius: 16px;
       padding: 13px;
       margin-bottom: 9px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .leader-row.me {
-      border: 1px solid #3478ff;
       background: #172039;
+      border: 1px solid #3478ff;
     }
 
     .leader-position {
@@ -699,16 +802,22 @@
     }
 
     .leader-name {
-      font-weight: bold;
-      white-space: nowrap;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
+      font-weight: bold;
     }
 
     .leader-sub {
       color: #8991a2;
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 4px;
+    }
+
+    .leader-league {
+      margin-top: 5px;
+      font-size: 12px;
+      font-weight: bold;
     }
 
     .leader-stats {
@@ -717,8 +826,8 @@
     }
 
     .leader-xp {
-      font-weight: bold;
       font-size: 13px;
+      font-weight: bold;
     }
 
     .leader-balance {
@@ -734,21 +843,21 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #13161e;
-      border-top: 1px solid #272b36;
       display: flex;
       justify-content: space-around;
       padding: 9px 2px 17px;
+      background: #13161e;
+      border-top: 1px solid #272b36;
       z-index: 5;
     }
 
     .nav button {
       width: 20%;
-      border: none;
+      padding: 0;
       background: none;
+      border: none;
       color: #858c9c;
       font-size: 10px;
-      padding: 0;
     }
 
     .nav button.active {
@@ -757,23 +866,23 @@
 
     .nav-icon {
       display: block;
-      font-size: 21px;
       margin-bottom: 3px;
+      font-size: 21px;
     }
 
     /* COMMON */
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #9299a8;
+    }
 
     .empty {
       background: #161922;
       border-radius: 18px;
       padding: 30px 20px;
       text-align: center;
-      color: #9299a8;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
       color: #9299a8;
     }
 
@@ -787,7 +896,7 @@
       margin-bottom: 15px;
     }
 
-    /* MODALS */
+    /* MODAL */
 
     .overlay {
       display: none;
@@ -843,8 +952,8 @@
       border: none;
       background: none;
       color: #999;
-      margin-top: 8px;
       padding: 10px;
+      margin-top: 8px;
     }
 
     .potential {
@@ -857,12 +966,12 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
       width: calc(100% - 40px);
       max-width: 420px;
+      transform: translate(-50%, -50%);
       background: #171a23;
-      border-radius: 24px;
       padding: 28px 22px;
+      border-radius: 24px;
       z-index: 20;
       text-align: center;
     }
@@ -924,6 +1033,7 @@
     </div>
   </div>
 
+
   <div
     id="serverError"
     class="server-error"
@@ -970,6 +1080,7 @@
 
       </div>
 
+
       <button
         id="dailyButton"
         class="daily-button"
@@ -978,6 +1089,7 @@
       >
         Загрузка...
       </button>
+
 
       <div
         id="dailyTimer"
@@ -999,6 +1111,7 @@
         </div>
       </div>
 
+
       <div id="tasksList">
         <div class="loading">
           Загружаем задания...
@@ -1011,6 +1124,7 @@
     <h2>
       🔥 Матчи
     </h2>
+
 
     <div id="homeMatches">
       <div class="loading">
@@ -1031,6 +1145,7 @@
     <h2>
       ⚽ Все матчи
     </h2>
+
 
     <div id="allMatches">
       <div class="loading">
@@ -1055,6 +1170,7 @@
       ← Назад
     </button>
 
+
     <div id="matchDetailContent"></div>
 
   </div>
@@ -1071,6 +1187,7 @@
       🎫 Мои ставки
     </h2>
 
+
     <div id="betsList">
       <div class="loading">
         Загружаем ставки...
@@ -1080,7 +1197,7 @@
   </div>
 
 
-  <!-- LEADERBOARD -->
+  <!-- LEADERS -->
 
   <div
     id="leaders"
@@ -1099,17 +1216,14 @@
       </div>
 
       <div class="leaderboard-info-text">
-        Игроки сортируются по XP.
-        При одинаковом XP выше игрок с большим балансом.
+        Чем больше XP — тем выше место.
+        При одинаковом XP учитывается баланс.
       </div>
 
     </div>
 
 
-    <div
-      id="myRankCard"
-      class="my-rank-card"
-    >
+    <div class="my-rank-card">
 
       <div class="my-rank-title">
         Твоё место
@@ -1126,11 +1240,9 @@
 
 
     <div id="leaderboardList">
-
       <div class="loading">
         Загружаем рейтинг...
       </div>
-
     </div>
 
   </div>
@@ -1168,7 +1280,6 @@
         <span id="betsCount">0</span>
       </p>
 
-
       <div class="rank-box">
         🏆 Место в рейтинге:
         <span id="profileRank">#—</span>
@@ -1176,6 +1287,81 @@
 
     </div>
 
+
+    <!-- LEAGUE -->
+
+    <div
+      id="playerLeagueCard"
+      class="player-league-card"
+    >
+
+      <div class="league-top">
+
+        <div
+          id="playerLeagueIcon"
+          class="league-big-icon"
+        >
+          🥉
+        </div>
+
+        <div>
+          <div class="league-label">
+            Твоя лига
+          </div>
+
+          <div
+            id="playerLeagueName"
+            class="league-title"
+          >
+            Бронза
+          </div>
+
+          <div
+            id="playerLeagueLevels"
+            class="league-levels"
+          >
+            Уровни 1–4
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="league-progress-info">
+
+        <span>
+          Прогресс
+        </span>
+
+        <span id="leagueProgressText">
+          1 / 5
+        </span>
+
+      </div>
+
+
+      <div class="league-progress">
+
+        <div
+          id="leagueProgressFill"
+          class="league-progress-fill"
+          style="width:0%"
+        ></div>
+
+      </div>
+
+
+      <div
+        id="leagueNext"
+        class="league-next"
+      >
+        До Серебра: 4 уровня
+      </div>
+
+    </div>
+
+
+    <!-- LEVEL -->
 
     <div class="level-card">
 
@@ -1216,6 +1402,7 @@
         <div
           id="xpFill"
           class="xp-fill"
+          style="width:0%"
         ></div>
 
       </div>
@@ -1237,9 +1424,11 @@
 
 
     <div id="achievementsList">
+
       <div class="loading">
         Загружаем достижения...
       </div>
+
     </div>
 
   </div>
@@ -1312,32 +1501,38 @@
     Матч
   </h2>
 
+
   <p>
     Выбор:
     <b id="modalSelection"></b>
   </p>
+
 
   <p>
     Коэффициент:
     <b id="modalOdd"></b>
   </p>
 
+
   <p style="color:#8e95a5;">
     За ставку: +10 XP
   </p>
 
+
   <input
     id="betAmount"
     type="number"
-    placeholder="Сумма ставки"
     min="1"
+    placeholder="Сумма ставки"
     oninput="calculateWin()"
   >
+
 
   <div class="potential">
     Возможный выигрыш:
     🪙 <span id="possibleWin">0</span>
   </div>
+
 
   <button
     id="confirmBetButton"
@@ -1346,6 +1541,7 @@
   >
     Поставить
   </button>
+
 
   <button
     class="cancel"
@@ -1377,9 +1573,11 @@
     🎉
   </div>
 
+
   <div class="levelup-title">
     Новый уровень!
   </div>
+
 
   <div
     id="levelUpLevel"
@@ -1388,12 +1586,14 @@
     Уровень 2
   </div>
 
+
   <div
     id="levelUpReward"
     class="levelup-reward"
   >
     Награда: +100 🪙
   </div>
+
 
   <button
     class="levelup-button"
@@ -1434,6 +1634,15 @@ let myRank = null;
 
 let xp = 0;
 let level = 1;
+
+let league = {
+  key: "bronze",
+  name: "Бронза",
+  icon: "🥉",
+  min_level: 1,
+  next_level: 5
+};
+
 let currentLevelXp = 0;
 let xpToNextLevel = 100;
 
@@ -1475,7 +1684,125 @@ const TEAM_TOTAL_POINTS = [
 ];
 
 
-/* LEVEL */
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function escapeHtml(value) {
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;")
+  .replaceAll("'", "&#039;");
+
+}
+
+
+function safeMatchName(value) {
+
+  return String(
+    value
+  )
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  );
+
+}
+
+
+function formatDate(
+  dateString
+) {
+
+  return new Date(
+    dateString
+  ).toLocaleString(
+    "ru-RU",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
+
+}
+
+
+function handicapLabel(
+  point
+) {
+
+  return (
+    Number(point) > 0
+      ? `+${point}`
+      : `${point}`
+  );
+
+}
+
+
+function authHeaders() {
+
+  return {
+    "Content-Type":
+      "application/json",
+
+    "X-Telegram-Init-Data":
+      telegramInitData
+  };
+
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+function showError(
+  message
+) {
+
+  const box =
+    document.getElementById(
+      "serverError"
+    );
+
+
+  box.innerText =
+    message;
+
+
+  box.style.display =
+    "block";
+
+}
+
+
+function hideError() {
+
+  document
+    .getElementById(
+      "serverError"
+    )
+    .style.display =
+      "none";
+
+}
+
+
+/* =========================================================
+   LEVEL
+   ========================================================= */
 
 function calculateClientLevelReward(
   oldLevel,
@@ -1483,6 +1810,7 @@ function calculateClientLevelReward(
 ) {
 
   let reward = 0;
+
 
   for (
     let lvl = oldLevel + 1;
@@ -1492,14 +1820,20 @@ function calculateClientLevelReward(
 
     reward += 100;
 
+
     if (
       lvl % 5 === 0
     ) {
+
       reward += 500;
+
     }
+
   }
 
+
   return reward;
+
 }
 
 
@@ -1580,65 +1914,238 @@ function closeLevelUp() {
 }
 
 
-/* API */
+/* =========================================================
+   LEAGUE
+   ========================================================= */
 
-function authHeaders() {
+function leagueLevelRange(
+  leagueData
+) {
 
-  return {
-    "Content-Type":
-      "application/json",
+  if (
+    !leagueData
+  ) {
 
-    "X-Telegram-Init-Data":
-      telegramInitData
-  };
+    return "";
+
+  }
+
+
+  if (
+    leagueData.next_level == null
+  ) {
+
+    return `Уровень ${leagueData.min_level}+`;
+
+  }
+
+
+  return (
+    `Уровни ${leagueData.min_level}–`
+    +
+    `${leagueData.next_level - 1}`
+  );
 
 }
 
 
-function showError(message) {
+function nextLeagueName(
+  key
+) {
 
-  const box =
+  if (key === "bronze") {
+    return "Серебра";
+  }
+
+  if (key === "silver") {
+    return "Золота";
+  }
+
+  if (key === "gold") {
+    return "Алмаза";
+  }
+
+  if (key === "diamond") {
+    return "Мастера";
+  }
+
+  return null;
+
+}
+
+
+function updateLeagueInterface() {
+
+  const card =
     document.getElementById(
-      "serverError"
+      "playerLeagueCard"
     );
 
-  box.innerText =
-    message;
 
-  box.style.display =
-    "block";
+  card.className =
+    `player-league-card ${league.key || "bronze"}`;
 
-}
-
-
-function hideError() {
 
   document
     .getElementById(
-      "serverError"
+      "playerLeagueIcon"
     )
-    .style.display =
-      "none";
+    .innerText =
+      league.icon || "🥉";
+
+
+  document
+    .getElementById(
+      "playerLeagueName"
+    )
+    .innerText =
+      league.name || "Бронза";
+
+
+  document
+    .getElementById(
+      "playerLeagueLevels"
+    )
+    .innerText =
+      leagueLevelRange(
+        league
+      );
+
+
+  const nextLevel =
+    league.next_level;
+
+
+  if (
+    nextLevel == null
+  ) {
+
+    document
+      .getElementById(
+        "leagueProgressText"
+      )
+      .innerText =
+        "MAX";
+
+
+    document
+      .getElementById(
+        "leagueProgressFill"
+      )
+      .style.width =
+        "100%";
+
+
+    document
+      .getElementById(
+        "leagueNext"
+      )
+      .innerText =
+        "👑 Ты достиг высшей лиги BetCoin";
+
+
+    return;
+
+  }
+
+
+  const startLevel =
+    Number(
+      league.min_level
+      || 1
+    );
+
+
+  const totalLevels =
+    nextLevel
+    - startLevel;
+
+
+  const completedLevels =
+    Math.max(
+      0,
+      level
+      - startLevel
+    );
+
+
+  const percent =
+    Math.min(
+      100,
+      Math.max(
+        0,
+        (
+          completedLevels
+          /
+          totalLevels
+        )
+        * 100
+      )
+    );
+
+
+  document
+    .getElementById(
+      "leagueProgressText"
+    )
+    .innerText =
+      `Уровень ${level} / ${nextLevel}`;
+
+
+  document
+    .getElementById(
+      "leagueProgressFill"
+    )
+    .style.width =
+      `${percent}%`;
+
+
+  const levelsLeft =
+    Math.max(
+      0,
+      nextLevel
+      - level
+    );
+
+
+  const nextName =
+    nextLeagueName(
+      league.key
+    );
+
+
+  document
+    .getElementById(
+      "leagueNext"
+    )
+    .innerText =
+      `До ${nextName}: ${levelsLeft} ур.`;
 
 }
 
 
-/* SESSION */
+/* =========================================================
+   SESSION
+   ========================================================= */
 
 async function loadSession() {
 
-  if (!telegramInitData) {
+  if (
+    !telegramInitData
+  ) {
 
     showError(
       "Открой BetCoin через Telegram."
     );
 
     return false;
+
   }
 
 
   const oldLevel =
     level;
+
 
   const wasLoaded =
     sessionLoaded;
@@ -1650,12 +2157,17 @@ async function loadSession() {
       await fetch(
         `${SERVER_URL}/api/session`,
         {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({
-            initData:
-              telegramInitData
-          })
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData
+            })
         }
       );
 
@@ -1673,50 +2185,64 @@ async function loadSession() {
       throw new Error(
         data.error
         ||
-        "Ошибка загрузки"
+        "Ошибка загрузки профиля"
       );
+
     }
 
 
     balance =
       Number(
-        data.balance || 0
+        data.balance
+        || 0
       );
 
 
     bets =
-      data.bets || [];
+      data.bets
+      || [];
 
 
     tasks =
-      data.tasks || [];
+      data.tasks
+      || [];
 
 
     achievements =
-      data.achievements || [];
+      data.achievements
+      || [];
 
 
     xp =
       Number(
-        data.xp || 0
+        data.xp
+        || 0
       );
 
 
     level =
       Number(
-        data.level || 1
+        data.level
+        || 1
       );
+
+
+    league =
+      data.league
+      || league;
 
 
     currentLevelXp =
       Number(
-        data.current_level_xp || 0
+        data.current_level_xp
+        || 0
       );
 
 
     xpToNextLevel =
       Number(
-        data.xp_to_next_level || 100
+        data.xp_to_next_level
+        || 100
       );
 
 
@@ -1760,6 +2286,7 @@ async function loadSession() {
         )
         .innerText =
           data.user.first_name;
+
     }
 
 
@@ -1799,8 +2326,10 @@ async function loadSession() {
 
     showError(
       "Не удалось загрузить профиль: "
-      + error.message
+      +
+      error.message
     );
+
 
     return false;
 
@@ -1809,7 +2338,9 @@ async function loadSession() {
 }
 
 
-/* LEADERBOARD */
+/* =========================================================
+   LEADERBOARD
+   ========================================================= */
 
 async function loadLeaderboard() {
 
@@ -1819,12 +2350,17 @@ async function loadLeaderboard() {
       await fetch(
         `${SERVER_URL}/api/leaderboard`,
         {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({
-            initData:
-              telegramInitData
-          })
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData
+            })
         }
       );
 
@@ -1849,11 +2385,13 @@ async function loadLeaderboard() {
 
 
     leaderboardPlayers =
-      data.players || [];
+      data.players
+      || [];
 
 
     myRank =
-      data.my_rank || null;
+      data.my_rank
+      || null;
 
 
     renderLeaderboard();
@@ -1879,7 +2417,9 @@ async function loadLeaderboard() {
 }
 
 
-function rankText(rank) {
+function rankText(
+  rank
+) {
 
   if (rank === 1) {
     return "🥇";
@@ -1894,6 +2434,7 @@ function rankText(rank) {
   }
 
   return `#${rank}`;
+
 }
 
 
@@ -1938,80 +2479,106 @@ function renderLeaderboard() {
 
   list.innerHTML =
     leaderboardPlayers
-      .map(
-        player => {
+    .map(
+      player => {
 
-          const isMe =
-            String(
-              player.telegram_id
-            )
-            ===
-            String(
-              currentTelegramId
-            );
-
-
-          const firstLetter =
-            String(
-              player.first_name
-              || "И"
-            )
-            .charAt(0)
-            .toUpperCase();
+        const isMe =
+          String(
+            player.telegram_id
+          )
+          ===
+          String(
+            currentTelegramId
+          );
 
 
-          return `
-            <div
-              class="leader-row ${isMe ? "me" : ""}"
-            >
+        const name =
+          escapeHtml(
+            player.first_name
+            || "Игрок"
+          );
 
-              <div class="leader-position">
-                ${rankText(player.rank)}
+
+        const username =
+          escapeHtml(
+            player.username
+            || ""
+          );
+
+
+        const firstLetter =
+          name
+          .charAt(0)
+          .toUpperCase();
+
+
+        const playerLeague =
+          player.league
+          || {
+            icon: "🥉",
+            name: "Бронза"
+          };
+
+
+        return `
+          <div
+            class="leader-row ${isMe ? "me" : ""}"
+          >
+
+            <div class="leader-position">
+              ${rankText(player.rank)}
+            </div>
+
+
+            <div class="leader-avatar">
+              ${firstLetter}
+            </div>
+
+
+            <div class="leader-main">
+
+              <div class="leader-name">
+                ${name}
+                ${isMe ? " • Ты" : ""}
               </div>
 
 
-              <div class="leader-avatar">
-                ${firstLetter}
+              <div class="leader-sub">
+                ⭐ Уровень ${player.level}
+                ${
+                  username
+                    ? ` • @${username}`
+                    : ""
+                }
               </div>
 
 
-              <div class="leader-main">
-
-                <div class="leader-name">
-                  ${player.first_name}
-                  ${isMe ? " • Ты" : ""}
-                </div>
-
-                <div class="leader-sub">
-                  ⭐ Уровень ${player.level}
-                  ${
-                    player.username
-                      ? ` • @${player.username}`
-                      : ""
-                  }
-                </div>
-
-              </div>
-
-
-              <div class="leader-stats">
-
-                <div class="leader-xp">
-                  ${player.xp} XP
-                </div>
-
-                <div class="leader-balance">
-                  🪙 ${player.balance}
-                </div>
-
+              <div class="leader-league">
+                ${playerLeague.icon}
+                ${escapeHtml(playerLeague.name)}
               </div>
 
             </div>
-          `;
 
-        }
-      )
-      .join("");
+
+            <div class="leader-stats">
+
+              <div class="leader-xp">
+                ${player.xp} XP
+              </div>
+
+              <div class="leader-balance">
+                🪙 ${player.balance}
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
 
 }
 
@@ -2030,7 +2597,9 @@ function updateProfileRank() {
 }
 
 
-/* TASKS */
+/* =========================================================
+   TASKS
+   ========================================================= */
 
 function renderTasks() {
 
@@ -2043,139 +2612,178 @@ function renderTasks() {
   if (
     !sessionLoaded
   ) {
+
     return;
+
+  }
+
+
+  if (
+    tasks.length === 0
+  ) {
+
+    container.innerHTML = `
+      <div class="empty">
+        Заданий пока нет
+      </div>
+    `;
+
+    return;
+
   }
 
 
   container.innerHTML =
     tasks
-      .map(
-        task => {
+    .map(
+      task => {
 
-          const progress =
-            Number(
-              task.progress || 0
-            );
-
-
-          const target =
-            Number(
-              task.target || 1
-            );
+        const progress =
+          Number(
+            task.progress
+            || 0
+          );
 
 
-          const percent =
-            Math.min(
-              100,
-              Math.round(
-                progress
-                /
-                target
-                *
-                100
-              )
-            );
+        const target =
+          Number(
+            task.target
+            || 1
+          );
 
 
-          let buttonText =
-            "Выполнить";
-
-          let disabled =
-            true;
-
-          let buttonClass =
-            "task-button";
-
-
-          if (
-            task.claimed
-          ) {
-
-            buttonText =
-              "✓ Получено";
-
-            buttonClass +=
-              " claimed";
-
-          }
-
-          else if (
-            task.completed
-          ) {
-
-            buttonText =
-              "Забрать";
-
-            disabled =
-              false;
-
-          }
+        const percent =
+          Math.min(
+            100,
+            (
+              progress
+              /
+              target
+            )
+            * 100
+          );
 
 
-          return `
-            <div
-              class="task-card
-              ${task.completed ? "completed" : ""}
-              ${task.claimed ? "claimed" : ""}"
-            >
-
-              <div class="task-top">
-
-                <div>
-                  <div class="task-title">
-                    ${task.title}
-                  </div>
-
-                  <div class="task-description">
-                    ${task.description}
-                  </div>
-                </div>
+        let buttonText =
+          "В процессе";
 
 
-                <div class="task-reward">
-                  ${
-                    task.reward_type === "xp"
-                    ? `+${task.reward} XP`
-                    : `+${task.reward} 🪙`
-                  }
-                </div>
-
-              </div>
+        let disabled =
+          true;
 
 
-              <div class="task-progress-row">
-                <span>Прогресс</span>
-                <span>${progress} / ${target}</span>
-              </div>
+        let buttonClass =
+          "task-button";
 
 
-              <div class="task-progress">
-                <div
-                  class="task-progress-fill"
-                  style="width:${percent}%"
-                ></div>
-              </div>
+        if (
+          task.claimed
+        ) {
+
+          buttonText =
+            "✓ Получено";
 
 
-              <button
-                class="${buttonClass}"
-                ${disabled ? "disabled" : ""}
-                onclick="claimTask('${task.key}')"
-              >
-                ${buttonText}
-              </button>
-
-            </div>
-          `;
+          buttonClass +=
+            " claimed";
 
         }
-      )
-      .join("");
+
+        else if (
+          task.completed
+        ) {
+
+          buttonText =
+            "Забрать";
+
+
+          disabled =
+            false;
+
+        }
+
+
+        return `
+          <div
+            class="task-card
+            ${task.completed ? "completed" : ""}
+            ${task.claimed ? "claimed" : ""}"
+          >
+
+            <div class="task-top">
+
+              <div>
+
+                <div class="task-title">
+                  ${escapeHtml(task.title)}
+                </div>
+
+                <div class="task-description">
+                  ${escapeHtml(task.description)}
+                </div>
+
+              </div>
+
+
+              <div class="task-reward">
+                ${
+                  task.reward_type === "xp"
+                    ? `+${task.reward} XP`
+                    : `+${task.reward} 🪙`
+                }
+              </div>
+
+            </div>
+
+
+            <div class="task-progress-row">
+
+              <span>
+                Прогресс
+              </span>
+
+              <span>
+                ${progress} / ${target}
+              </span>
+
+            </div>
+
+
+            <div class="progress">
+
+              <div
+                class="task-progress-fill"
+                style="width:${percent}%"
+              ></div>
+
+            </div>
+
+
+            <button
+              class="${buttonClass}"
+              ${disabled ? "disabled" : ""}
+              onclick="claimTask('${task.key}')"
+            >
+              ${buttonText}
+            </button>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
 
 }
 
 
-async function claimTask(taskKey) {
+async function claimTask(
+  taskKey
+) {
+
+  const oldLevel =
+    level;
+
 
   try {
 
@@ -2183,14 +2791,20 @@ async function claimTask(taskKey) {
       await fetch(
         `${SERVER_URL}/api/tasks/claim`,
         {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({
-            initData:
-              telegramInitData,
-            task_key:
-              taskKey
-          })
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData,
+
+              task_key:
+                taskKey
+            })
         }
       );
 
@@ -2207,6 +2821,8 @@ async function claimTask(taskKey) {
 
       throw new Error(
         data.error
+        ||
+        "Ошибка"
       );
 
     }
@@ -2230,6 +2846,11 @@ async function claimTask(taskKey) {
       );
 
 
+    league =
+      data.league
+      || league;
+
+
     currentLevelXp =
       Number(
         data.current_level_xp
@@ -2243,7 +2864,8 @@ async function claimTask(taskKey) {
 
 
     tasks =
-      data.tasks || tasks;
+      data.tasks
+      || tasks;
 
 
     achievements =
@@ -2257,6 +2879,23 @@ async function claimTask(taskKey) {
 
 
     updateInterface();
+
+
+    if (
+      level > oldLevel
+      &&
+      Number(
+        data.level_reward
+        || 0
+      ) > 0
+    ) {
+
+      showLevelUp(
+        level,
+        data.level_reward
+      );
+
+    }
 
 
     alert(
@@ -2281,31 +2920,46 @@ async function claimTask(taskKey) {
 }
 
 
-/* ACHIEVEMENTS */
+/* =========================================================
+   ACHIEVEMENTS
+   ========================================================= */
 
-function achievementIcon(key) {
+function achievementIcon(
+  key
+) {
 
-  if (key === "bets_10") {
+  if (
+    key === "bets_10"
+  ) {
     return "🎫";
   }
 
-  if (key === "wins_5") {
+  if (
+    key === "wins_5"
+  ) {
     return "🔥";
   }
 
-  if (key === "level_5") {
+  if (
+    key === "level_5"
+  ) {
     return "⭐";
   }
 
-  if (key === "xp_500") {
+  if (
+    key === "xp_500"
+  ) {
     return "⚡";
   }
 
-  if (key === "high_odd_win") {
+  if (
+    key === "high_odd_win"
+  ) {
     return "🎯";
   }
 
   return "🏆";
+
 }
 
 
@@ -2320,140 +2974,172 @@ function renderAchievements() {
   if (
     !sessionLoaded
   ) {
+
     return;
+
+  }
+
+
+  if (
+    achievements.length === 0
+  ) {
+
+    container.innerHTML = `
+      <div class="empty">
+        Достижений пока нет
+      </div>
+    `;
+
+    return;
+
   }
 
 
   container.innerHTML =
     achievements
-      .map(
-        item => {
+    .map(
+      item => {
 
-          const progress =
-            Number(
-              item.progress || 0
-            );
-
-
-          const target =
-            Number(
-              item.target || 1
-            );
+        const progress =
+          Number(
+            item.progress
+            || 0
+          );
 
 
-          const percent =
-            Math.min(
-              100,
-              Math.round(
-                progress
-                /
-                target
-                *
-                100
-              )
-            );
+        const target =
+          Number(
+            item.target
+            || 1
+          );
 
 
-          let buttonText =
-            "Не выполнено";
-
-          let disabled =
-            true;
-
-          let buttonClass =
-            "achievement-button";
-
-
-          if (
-            item.completed
-          ) {
-
-            buttonText =
-              "Забрать";
-
-            disabled =
-              false;
-
-          }
+        const percent =
+          Math.min(
+            100,
+            (
+              progress
+              /
+              target
+            )
+            * 100
+          );
 
 
-          if (
-            item.claimed
-          ) {
-
-            buttonText =
-              "✓ Получено";
-
-            disabled =
-              true;
-
-            buttonClass +=
-              " claimed";
-
-          }
+        let buttonText =
+          "Не выполнено";
 
 
-          return `
-            <div
-              class="achievement-card
-              ${item.completed ? "completed" : ""}
-              ${item.claimed ? "claimed" : ""}"
-            >
-
-              <div class="achievement-top">
-
-                <div class="achievement-icon">
-                  ${achievementIcon(item.key)}
-                </div>
+        let disabled =
+          true;
 
 
-                <div class="achievement-main">
-
-                  <div class="achievement-title">
-                    ${item.title}
-                  </div>
-
-                  <div class="achievement-description">
-                    ${item.description}
-                  </div>
-
-                  <div class="achievement-reward">
-                    +${item.reward} 🪙
-                  </div>
-
-                </div>
-
-              </div>
+        let buttonClass =
+          "achievement-button";
 
 
-              <div class="achievement-progress-row">
-                <span>Прогресс</span>
-                <span>${progress} / ${target}</span>
-              </div>
+        if (
+          item.completed
+        ) {
+
+          buttonText =
+            "Забрать";
 
 
-              <div class="achievement-progress">
-                <div
-                  class="achievement-progress-fill"
-                  style="width:${percent}%"
-                ></div>
-              </div>
-
-
-              <button
-                class="${buttonClass}"
-                ${disabled ? "disabled" : ""}
-                onclick="claimAchievement('${item.key}')"
-              >
-                ${buttonText}
-              </button>
-
-            </div>
-          `;
+          disabled =
+            false;
 
         }
-      )
-      .join("");
+
+
+        if (
+          item.claimed
+        ) {
+
+          buttonText =
+            "✓ Получено";
+
+
+          disabled =
+            true;
+
+
+          buttonClass +=
+            " claimed";
+
+        }
+
+
+        return `
+          <div
+            class="achievement-card
+            ${item.completed ? "completed" : ""}
+            ${item.claimed ? "claimed" : ""}"
+          >
+
+            <div class="achievement-top">
+
+              <div class="achievement-icon">
+                ${achievementIcon(item.key)}
+              </div>
+
+
+              <div class="achievement-main">
+
+                <div class="achievement-title">
+                  ${escapeHtml(item.title)}
+                </div>
+
+                <div class="achievement-description">
+                  ${escapeHtml(item.description)}
+                </div>
+
+                <div class="achievement-reward">
+                  +${item.reward} 🪙
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="achievement-progress-row">
+
+              <span>
+                Прогресс
+              </span>
+
+              <span>
+                ${progress} / ${target}
+              </span>
+
+            </div>
+
+
+            <div class="progress">
+
+              <div
+                class="achievement-progress-fill"
+                style="width:${percent}%"
+              ></div>
+
+            </div>
+
+
+            <button
+              class="${buttonClass}"
+              ${disabled ? "disabled" : ""}
+              onclick="claimAchievement('${item.key}')"
+            >
+              ${buttonText}
+            </button>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
 
 }
 
@@ -2468,14 +3154,20 @@ async function claimAchievement(
       await fetch(
         `${SERVER_URL}/api/achievements/claim`,
         {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({
-            initData:
-              telegramInitData,
-            achievement_key:
-              achievementKey
-          })
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData,
+
+              achievement_key:
+                achievementKey
+            })
         }
       );
 
@@ -2492,6 +3184,8 @@ async function claimAchievement(
 
       throw new Error(
         data.error
+        ||
+        "Ошибка"
       );
 
     }
@@ -2536,14 +3230,20 @@ async function claimAchievement(
 }
 
 
-/* DAILY */
+/* =========================================================
+   DAILY BONUS
+   ========================================================= */
 
-function formatDailyTime(seconds) {
+function formatDailyTime(
+  seconds
+) {
 
   seconds =
     Math.max(
       0,
-      Number(seconds)
+      Number(
+        seconds
+      )
     );
 
 
@@ -2563,18 +3263,17 @@ function formatDailyTime(seconds) {
 
 
   const secs =
-    seconds % 60;
+    Math.floor(
+      seconds % 60
+    );
 
 
   return (
-    String(hours)
-      .padStart(2, "0")
+    String(hours).padStart(2, "0")
     + ":"
-    + String(minutes)
-      .padStart(2, "0")
+    + String(minutes).padStart(2, "0")
     + ":"
-    + String(secs)
-      .padStart(2, "0")
+    + String(secs).padStart(2, "0")
   );
 
 }
@@ -2612,11 +3311,14 @@ function updateDailyReward() {
     button.disabled =
       false;
 
+
     button.innerText =
       "Получить +300 🪙";
 
+
     timer.innerText =
       "Бонус доступен!";
+
 
     return;
 
@@ -2626,15 +3328,17 @@ function updateDailyReward() {
   button.disabled =
     true;
 
+
   button.innerText =
     "Бонус уже получен";
 
 
   timer.innerText =
     "Следующий бонус через "
-    + formatDailyTime(
-        dailySecondsLeft
-      );
+    +
+    formatDailyTime(
+      dailySecondsLeft
+    );
 
 
   dailyTimerInterval =
@@ -2676,9 +3380,10 @@ function updateDailyReward() {
 
         timer.innerText =
           "Следующий бонус через "
-          + formatDailyTime(
-              dailySecondsLeft
-            );
+          +
+          formatDailyTime(
+            dailySecondsLeft
+          );
 
       },
       1000
@@ -2689,18 +3394,27 @@ function updateDailyReward() {
 
 async function claimDailyReward() {
 
+  const oldLevel =
+    level;
+
+
   try {
 
     const response =
       await fetch(
         `${SERVER_URL}/api/daily-reward`,
         {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({
-            initData:
-              telegramInitData
-          })
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData
+            })
         }
       );
 
@@ -2715,8 +3429,29 @@ async function claimDailyReward() {
       !data.success
     ) {
 
+      if (
+        data.seconds_left != null
+      ) {
+
+        dailyReward.available =
+          false;
+
+
+        dailySecondsLeft =
+          Number(
+            data.seconds_left
+          );
+
+
+        updateDailyReward();
+
+      }
+
+
       throw new Error(
         data.error
+        ||
+        "Ошибка"
       );
 
     }
@@ -2738,6 +3473,11 @@ async function claimDailyReward() {
       Number(
         data.level
       );
+
+
+    league =
+      data.league
+      || league;
 
 
     currentLevelXp =
@@ -2779,8 +3519,11 @@ async function claimDailyReward() {
 
 
     if (
+      level > oldLevel
+      &&
       Number(
-        data.level_reward || 0
+        data.level_reward
+        || 0
       ) > 0
     ) {
 
@@ -2810,6 +3553,7 @@ async function claimDailyReward() {
       error.message
     );
 
+
     updateDailyReward();
 
   }
@@ -2817,52 +3561,9 @@ async function claimDailyReward() {
 }
 
 
-/* HELPERS */
-
-function formatDate(dateString) {
-
-  return new Date(
-    dateString
-  ).toLocaleString(
-    "ru-RU",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  );
-
-}
-
-
-function safeMatchName(name) {
-
-  return String(name)
-    .replace(
-      /\\/g,
-      "\\\\"
-    )
-    .replace(
-      /'/g,
-      "\\'"
-    );
-
-}
-
-
-function handicapLabel(point) {
-
-  return (
-    point > 0
-      ? `+${point}`
-      : `${point}`
-  );
-
-}
-
-
-/* MATCHES */
+/* =========================================================
+   MATCH CARDS
+   ========================================================= */
 
 function createCompactMatch(
   match,
@@ -2908,6 +3609,7 @@ function createCompactMatch(
           ${Number(match.odds.home).toFixed(2)}
         </button>
 
+
         <button
           class="odd-button"
           onclick="openBet(
@@ -2920,6 +3622,7 @@ function createCompactMatch(
           X<br>
           ${Number(match.odds.draw).toFixed(2)}
         </button>
+
 
         <button
           class="odd-button"
@@ -2943,35 +3646,41 @@ function createCompactMatch(
   return `
     <div class="match-card">
 
-      <div class="league">
-        ${match.country}
+      <div class="league-name">
+        ${escapeHtml(match.country)}
         •
-        ${match.league}
+        ${escapeHtml(match.league)}
       </div>
+
 
       <div class="teams">
 
         <div class="team">
-          <img src="${match.home_logo}">
-          ${match.home}
+          <img src="${match.home_logo || ""}">
+          ${escapeHtml(match.home)}
         </div>
+
 
         <div class="vs">
           VS
         </div>
 
+
         <div class="team">
-          <img src="${match.away_logo}">
-          ${match.away}
+          <img src="${match.away_logo || ""}">
+          ${escapeHtml(match.away)}
         </div>
 
       </div>
+
 
       <div class="time">
         ${formatDate(match.date)}
       </div>
 
+
       ${oddsBlock}
+
 
       <button
         class="open-match-button"
@@ -2986,7 +3695,9 @@ function createCompactMatch(
 }
 
 
-/* MARKETS */
+/* =========================================================
+   MARKETS
+   ========================================================= */
 
 function makeMainOdds(
   match,
@@ -3027,6 +3738,7 @@ function makeMainOdds(
         П1<br>${Number(match.odds.home).toFixed(2)}
       </button>
 
+
       <button
         class="odd-button"
         onclick="openBet(
@@ -3038,6 +3750,7 @@ function makeMainOdds(
       >
         X<br>${Number(match.odds.draw).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
@@ -3062,9 +3775,11 @@ function makeDoubleChanceBlock(
   safeName
 ) {
 
-  if (
-    !match.double_chance
-  ) {
+  const data =
+    match.double_chance;
+
+
+  if (!data) {
 
     return `
       <div class="no-odds">
@@ -3076,13 +3791,15 @@ function makeDoubleChanceBlock(
 
 
   const oneX =
-    match.double_chance["1x"];
+    data["1x"];
+
 
   const oneTwo =
-    match.double_chance["12"];
+    data["12"];
+
 
   const xTwo =
-    match.double_chance["x2"];
+    data["x2"];
 
 
   return `
@@ -3091,52 +3808,57 @@ function makeDoubleChanceBlock(
       <button
         class="odd-button"
         ${oneX == null ? "disabled" : ""}
-        onclick="${
+        ${
           oneX == null
             ? ""
-            : `openBet(
+            : `onclick="openBet(
                 '${safeName}',
                 ${match.fixture_id},
                 '1X',
                 ${oneX}
-              )`
-        }"
+              )"`
+        }
       >
-        1X<br>${oneX == null ? "—" : Number(oneX).toFixed(2)}
+        1X<br>
+        ${oneX == null ? "—" : Number(oneX).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
         ${oneTwo == null ? "disabled" : ""}
-        onclick="${
+        ${
           oneTwo == null
             ? ""
-            : `openBet(
+            : `onclick="openBet(
                 '${safeName}',
                 ${match.fixture_id},
                 '12',
                 ${oneTwo}
-              )`
-        }"
+              )"`
+        }
       >
-        12<br>${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
+        12<br>
+        ${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
         ${xTwo == null ? "disabled" : ""}
-        onclick="${
+        ${
           xTwo == null
             ? ""
-            : `openBet(
+            : `onclick="openBet(
                 '${safeName}',
                 ${match.fixture_id},
                 'X2',
                 ${xTwo}
-              )`
-        }"
+              )"`
+        }
       >
-        X2<br>${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
+        X2<br>
+        ${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
       </button>
 
     </div>
@@ -3188,6 +3910,7 @@ function makeTotalBlock(
         ТБ ${point}<br>
         ${Number(total.over).toFixed(2)}
       </button>
+
 
       <button
         class="odd-button"
@@ -3246,6 +3969,7 @@ function makeBttsBlock(
         ${Number(match.btts.yes).toFixed(2)}
       </button>
 
+
       <button
         class="odd-button"
         onclick="openBet(
@@ -3272,6 +3996,10 @@ function makeHandicapsBlock(
 
   if (
     !match.handicaps
+    ||
+    !match.handicaps.home
+    ||
+    !match.handicaps.away
   ) {
 
     return `
@@ -3296,13 +4024,13 @@ function makeHandicapsBlock(
 
 
       const homeOdd =
-        match.handicaps.home?.[
+        match.handicaps.home[
           String(point)
         ];
 
 
       const awayOdd =
-        match.handicaps.away?.[
+        match.handicaps.away[
           String(awayPoint)
         ];
 
@@ -3313,34 +4041,35 @@ function makeHandicapsBlock(
           <button
             class="odd-button"
             ${homeOdd == null ? "disabled" : ""}
-            onclick="${
+            ${
               homeOdd == null
                 ? ""
-                : `openBet(
+                : `onclick="openBet(
                     '${safeName}',
                     ${match.fixture_id},
                     'Ф1(${handicapLabel(point)})',
                     ${homeOdd}
-                  )`
-            }"
+                  )"`
+            }
           >
             Ф1(${handicapLabel(point)})<br>
             ${homeOdd == null ? "—" : Number(homeOdd).toFixed(2)}
           </button>
 
+
           <button
             class="odd-button"
             ${awayOdd == null ? "disabled" : ""}
-            onclick="${
+            ${
               awayOdd == null
                 ? ""
-                : `openBet(
+                : `onclick="openBet(
                     '${safeName}',
                     ${match.fixture_id},
                     'Ф2(${handicapLabel(awayPoint)})',
                     ${awayOdd}
-                  )`
-            }"
+                  )"`
+            }
           >
             Ф2(${handicapLabel(awayPoint)})<br>
             ${awayOdd == null ? "—" : Number(awayOdd).toFixed(2)}
@@ -3365,6 +4094,10 @@ function makeTeamTotalsBlock(
 
   if (
     !match.team_totals
+    ||
+    !match.team_totals.home
+    ||
+    !match.team_totals.away
   ) {
 
     return `
@@ -3379,35 +4112,27 @@ function makeTeamTotalsBlock(
   let html = "";
 
 
-  [
+  const teams = [
     {
-      side:
-        "home",
-
-      number:
-        1,
-
-      name:
-        match.home
+      side: "home",
+      number: 1,
+      name: match.home
     },
 
     {
-      side:
-        "away",
-
-      number:
-        2,
-
-      name:
-        match.away
+      side: "away",
+      number: 2,
+      name: match.away
     }
-  ]
-  .forEach(
+  ];
+
+
+  teams.forEach(
     team => {
 
       html += `
         <div class="team-total-title">
-          ${team.name}
+          ${escapeHtml(team.name)}
         </div>
       `;
 
@@ -3415,22 +4140,28 @@ function makeTeamTotalsBlock(
       TEAM_TOTAL_POINTS.forEach(
         point => {
 
+          const sideData =
+            match.team_totals[
+              team.side
+            ] || {};
+
+
           const line =
-            match.team_totals
-              ?.[
-                team.side
-              ]
-              ?.[
-                String(point)
-              ];
+            sideData[
+              String(point)
+            ];
 
 
           const over =
-            line?.over;
+            line
+              ? line.over
+              : null;
 
 
           const under =
-            line?.under;
+            line
+              ? line.under
+              : null;
 
 
           html += `
@@ -3439,34 +4170,35 @@ function makeTeamTotalsBlock(
               <button
                 class="odd-button"
                 ${over == null ? "disabled" : ""}
-                onclick="${
+                ${
                   over == null
                     ? ""
-                    : `openBet(
+                    : `onclick="openBet(
                         '${safeName}',
                         ${match.fixture_id},
                         'ИТБ${team.number}(${point})',
                         ${over}
-                      )`
-                }"
+                      )"`
+                }
               >
                 ИТБ${team.number}(${point})<br>
                 ${over == null ? "—" : Number(over).toFixed(2)}
               </button>
 
+
               <button
                 class="odd-button"
                 ${under == null ? "disabled" : ""}
-                onclick="${
+                ${
                   under == null
                     ? ""
-                    : `openBet(
+                    : `onclick="openBet(
                         '${safeName}',
                         ${match.fixture_id},
                         'ИТМ${team.number}(${point})',
                         ${under}
-                      )`
-                }"
+                      )"`
+                }
               >
                 ИТМ${team.number}(${point})<br>
                 ${under == null ? "—" : Number(under).toFixed(2)}
@@ -3487,16 +4219,24 @@ function makeTeamTotalsBlock(
 }
 
 
-/* MATCH DETAIL */
+/* =========================================================
+   MATCH DETAIL
+   ========================================================= */
 
-function openMatch(index) {
+function openMatch(
+  index
+) {
 
   selectedMatch =
     matches[index];
 
 
-  if (!selectedMatch) {
+  if (
+    !selectedMatch
+  ) {
+
     return;
+
   }
 
 
@@ -3538,6 +4278,12 @@ function openMatch(index) {
       "active"
     );
 
+
+  window.scrollTo(
+    0,
+    0
+  );
+
 }
 
 
@@ -3568,10 +4314,18 @@ function closeMatch() {
     previousPage
   );
 
+
+  window.scrollTo(
+    0,
+    0
+  );
+
 }
 
 
-function renderMatchDetail(match) {
+function renderMatchDetail(
+  match
+) {
 
   const safeName =
     safeMatchName(
@@ -3587,29 +4341,33 @@ function renderMatchDetail(match) {
 
       <div class="event-header">
 
-        <div class="league">
-          ${match.country}
+        <div class="league-name">
+          ${escapeHtml(match.country)}
           •
-          ${match.league}
+          ${escapeHtml(match.league)}
         </div>
+
 
         <div class="teams">
 
           <div class="team">
-            <img src="${match.home_logo}">
-            ${match.home}
+            <img src="${match.home_logo || ""}">
+            ${escapeHtml(match.home)}
           </div>
+
 
           <div class="vs">
             VS
           </div>
 
+
           <div class="team">
-            <img src="${match.away_logo}">
-            ${match.away}
+            <img src="${match.away_logo || ""}">
+            ${escapeHtml(match.away)}
           </div>
 
         </div>
+
 
         <div class="time">
           ${formatDate(match.date)}
@@ -3738,7 +4496,9 @@ function renderMatchDetail(match) {
 }
 
 
-/* LOAD MATCHES */
+/* =========================================================
+   MATCHES
+   ========================================================= */
 
 async function loadMatches() {
 
@@ -3754,6 +4514,21 @@ async function loadMatches() {
       await response.json();
 
 
+    if (
+      !response.ok
+      ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
+        ||
+        "Ошибка матчей"
+      );
+
+    }
+
+
     matches =
       data.matches
       || [];
@@ -3765,26 +4540,27 @@ async function loadMatches() {
 
   catch (error) {
 
+    const message = `
+      <div class="empty">
+        Не удалось загрузить матчи
+      </div>
+    `;
+
+
     document
       .getElementById(
         "homeMatches"
       )
-      .innerHTML = `
-        <div class="empty">
-          Не удалось загрузить матчи
-        </div>
-      `;
+      .innerHTML =
+        message;
 
 
     document
       .getElementById(
         "allMatches"
       )
-      .innerHTML = `
-        <div class="empty">
-          Не удалось загрузить матчи
-        </div>
-      `;
+      .innerHTML =
+        message;
 
   }
 
@@ -3797,7 +4573,7 @@ function renderMatches() {
     matches.length === 0
   ) {
 
-    const empty = `
+    const message = `
       <div class="empty">
         Матчей пока нет
       </div>
@@ -3809,7 +4585,7 @@ function renderMatches() {
         "homeMatches"
       )
       .innerHTML =
-        empty;
+        message;
 
 
     document
@@ -3817,7 +4593,7 @@ function renderMatches() {
         "allMatches"
       )
       .innerHTML =
-        empty;
+        message;
 
 
     return;
@@ -3831,20 +4607,30 @@ function renderMatches() {
     )
     .innerHTML =
       matches
-        .slice(
-          0,
-          4
-        )
-        .map(
-          match =>
-            createCompactMatch(
-              match,
-              matches.indexOf(
-                match
-              )
-            )
-        )
-        .join("");
+      .slice(
+        0,
+        4
+      )
+      .map(
+        (
+          match,
+          localIndex
+        ) => {
+
+          const index =
+            matches.indexOf(
+              match
+            );
+
+
+          return createCompactMatch(
+            match,
+            index
+          );
+
+        }
+      )
+      .join("");
 
 
   document
@@ -3853,22 +4639,24 @@ function renderMatches() {
     )
     .innerHTML =
       matches
-        .map(
-          (
+      .map(
+        (
+          match,
+          index
+        ) =>
+          createCompactMatch(
             match,
             index
-          ) =>
-            createCompactMatch(
-              match,
-              index
-            )
-        )
-        .join("");
+          )
+      )
+      .join("");
 
 }
 
 
-/* BET */
+/* =========================================================
+   BET
+   ========================================================= */
 
 function openBet(
   match,
@@ -3877,10 +4665,29 @@ function openBet(
   odd
 ) {
 
+  if (
+    !sessionLoaded
+  ) {
+
+    alert(
+      "Профиль ещё загружается"
+    );
+
+    return;
+
+  }
+
+
   selectedBet = {
-    match,
-    fixtureId,
-    selection,
+    match:
+      match,
+
+    fixtureId:
+      fixtureId,
+
+    selection:
+      selection,
+
     odd:
       Number(
         odd
@@ -3976,8 +4783,12 @@ function closeBet() {
 
 function calculateWin() {
 
-  if (!selectedBet) {
+  if (
+    !selectedBet
+  ) {
+
     return;
+
   }
 
 
@@ -4009,6 +4820,19 @@ function calculateWin() {
 
 async function confirmBet() {
 
+  if (
+    !selectedBet
+  ) {
+
+    return;
+
+  }
+
+
+  const oldLevel =
+    level;
+
+
   const amount =
     Number(
       document
@@ -4028,7 +4852,7 @@ async function confirmBet() {
   ) {
 
     alert(
-      "Введите сумму ставки"
+      "Введите целое количество монет"
     );
 
     return;
@@ -4055,7 +4879,8 @@ async function confirmBet() {
       await fetch(
         `${SERVER_URL}/api/bets`,
         {
-          method: "POST",
+          method:
+            "POST",
 
           headers:
             authHeaders(),
@@ -4096,6 +4921,8 @@ async function confirmBet() {
 
       throw new Error(
         data.error
+        ||
+        "Не удалось сделать ставку"
       );
 
     }
@@ -4117,6 +4944,11 @@ async function confirmBet() {
       Number(
         data.level
       );
+
+
+    league =
+      data.league
+      || league;
 
 
     currentLevelXp =
@@ -4152,6 +4984,8 @@ async function confirmBet() {
 
 
     if (
+      level > oldLevel
+      &&
       Number(
         data.level_reward
         || 0
@@ -4161,6 +4995,18 @@ async function confirmBet() {
       showLevelUp(
         level,
         data.level_reward
+      );
+
+    }
+
+
+    if (
+      tg.HapticFeedback
+    ) {
+
+      tg.HapticFeedback
+      .notificationOccurred(
+        "success"
       );
 
     }
@@ -4183,7 +5029,9 @@ async function confirmBet() {
 }
 
 
-/* BET LIST */
+/* =========================================================
+   BET LIST
+   ========================================================= */
 
 function renderBets() {
 
@@ -4191,6 +5039,15 @@ function renderBets() {
     document.getElementById(
       "betsList"
     );
+
+
+  if (
+    !sessionLoaded
+  ) {
+
+    return;
+
+  }
 
 
   if (
@@ -4210,110 +5067,124 @@ function renderBets() {
 
   list.innerHTML =
     bets
-      .map(
-        bet => {
+    .map(
+      bet => {
 
-          let cardClass = "";
-          let statusClass =
-            "status-active";
-
-          let icon = "⏳";
+        let cardClass =
+          "";
 
 
-          if (
-            bet.status
-            === "Выиграла"
-          ) {
-
-            cardClass =
-              "bet-win";
-
-            statusClass =
-              "status-win";
-
-            icon =
-              "✅";
-
-          }
-
-          else if (
-            bet.status
-            === "Проиграла"
-          ) {
-
-            cardClass =
-              "bet-loss";
-
-            statusClass =
-              "status-loss";
-
-            icon =
-              "❌";
-
-          }
-
-          else if (
-            bet.status
-            === "Возврат"
-          ) {
-
-            cardClass =
-              "bet-refund";
-
-            statusClass =
-              "status-refund";
-
-            icon =
-              "↩️";
-
-          }
+        let statusClass =
+          "status-active";
 
 
-          return `
-            <div class="bet-card ${cardClass}">
+        let icon =
+          "⏳";
 
-              <b>
-                ${bet.match}
-              </b>
 
-              <p>
-                ${bet.selection}
-                •
-                ${Number(bet.odd).toFixed(2)}
-              </p>
+        if (
+          bet.status === "Выиграла"
+        ) {
 
-              <p>
-                Ставка:
-                🪙 ${bet.amount}
-              </p>
+          cardClass =
+            "bet-win";
 
-              <p>
-                Возможный выигрыш:
-                🪙 ${bet.possible}
-              </p>
+          statusClass =
+            "status-win";
 
-              ${
-                bet.score
-                  ? `<p>Счёт: <b>${bet.score}</b></p>`
-                  : ""
-              }
-
-              <p class="${statusClass}">
-                ${icon}
-                ${bet.status}
-              </p>
-
-            </div>
-          `;
+          icon =
+            "✅";
 
         }
-      )
-      .join("");
+
+        else if (
+          bet.status === "Проиграла"
+        ) {
+
+          cardClass =
+            "bet-loss";
+
+          statusClass =
+            "status-loss";
+
+          icon =
+            "❌";
+
+        }
+
+        else if (
+          bet.status === "Возврат"
+        ) {
+
+          cardClass =
+            "bet-refund";
+
+          statusClass =
+            "status-refund";
+
+          icon =
+            "↩️";
+
+        }
+
+
+        return `
+          <div class="bet-card ${cardClass}">
+
+            <b>
+              ${escapeHtml(bet.match)}
+            </b>
+
+
+            <p>
+              ${escapeHtml(bet.selection)}
+              •
+              ${Number(bet.odd).toFixed(2)}
+            </p>
+
+
+            <p>
+              Ставка:
+              🪙 ${bet.amount}
+            </p>
+
+
+            <p>
+              Возможный выигрыш:
+              🪙 ${bet.possible}
+            </p>
+
+
+            ${
+              bet.score
+                ? `
+                  <p>
+                    Счёт:
+                    <b>${escapeHtml(bet.score)}</b>
+                  </p>
+                `
+                : ""
+            }
+
+
+            <p class="${statusClass}">
+              ${icon}
+              ${escapeHtml(bet.status)}
+            </p>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
 
 }
 
 
-/* XP */
+/* =========================================================
+   XP
+   ========================================================= */
 
 function updateXpInterface() {
 
@@ -4354,21 +5225,32 @@ function updateXpInterface() {
       "xpFill"
     )
     .style.width =
-      `${currentLevelXp}%`;
+      `${Math.min(
+        100,
+        currentLevelXp
+      )}%`;
 
 }
 
 
-/* INTERFACE */
+/* =========================================================
+   INTERFACE
+   ========================================================= */
 
 function updateInterface() {
+
+  const balanceText =
+    sessionLoaded
+      ? balance
+      : "...";
+
 
   document
     .getElementById(
       "balance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -4376,7 +5258,7 @@ function updateInterface() {
       "topBalance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -4384,7 +5266,7 @@ function updateInterface() {
       "profileBalance"
     )
     .innerText =
-      balance;
+      balanceText;
 
 
   document
@@ -4397,18 +5279,22 @@ function updateInterface() {
 
   renderTasks();
 
-  renderBets();
-
   renderAchievements();
 
+  renderBets();
+
   updateXpInterface();
+
+  updateLeagueInterface();
 
   updateProfileRank();
 
 }
 
 
-/* NAV */
+/* =========================================================
+   NAV
+   ========================================================= */
 
 async function openPage(
   page,
@@ -4481,7 +5367,9 @@ async function openPage(
 }
 
 
-function updateNavForPage(page) {
+function updateNavForPage(
+  page
+) {
 
   const buttons =
     document.querySelectorAll(
@@ -4497,34 +5385,75 @@ function updateNavForPage(page) {
   );
 
 
-  if (page === "home") {
-    buttons[0].classList.add("active");
+  if (
+    page === "home"
+  ) {
+
+    buttons[0]
+    .classList.add(
+      "active"
+    );
+
   }
 
-  if (page === "matches") {
-    buttons[1].classList.add("active");
+
+  if (
+    page === "matches"
+  ) {
+
+    buttons[1]
+    .classList.add(
+      "active"
+    );
+
   }
 
-  if (page === "bets") {
-    buttons[2].classList.add("active");
+
+  if (
+    page === "bets"
+  ) {
+
+    buttons[2]
+    .classList.add(
+      "active"
+    );
+
   }
 
-  if (page === "leaders") {
-    buttons[3].classList.add("active");
+
+  if (
+    page === "leaders"
+  ) {
+
+    buttons[3]
+    .classList.add(
+      "active"
+    );
+
   }
 
-  if (page === "profile") {
-    buttons[4].classList.add("active");
+
+  if (
+    page === "profile"
+  ) {
+
+    buttons[4]
+    .classList.add(
+      "active"
+    );
+
   }
 
 }
 
 
-/* TELEGRAM */
+/* =========================================================
+   TELEGRAM
+   ========================================================= */
 
 const telegramUser =
   tg.initDataUnsafe
-    ?.user;
+  ?.user;
 
 
 if (
@@ -4543,7 +5472,9 @@ if (
 }
 
 
-/* START */
+/* =========================================================
+   START
+   ========================================================= */
 
 async function startApp() {
 

@@ -89,6 +89,53 @@ database_ready = False
 
 
 # =========================================================
+# ACHIEVEMENTS CONFIG
+# =========================================================
+
+ACHIEVEMENTS = [
+    {
+        "key": "bets_10",
+        "title": "Начало положено",
+        "description": "Сделать 10 ставок",
+        "target": 10,
+        "reward": 200
+    },
+
+    {
+        "key": "wins_5",
+        "title": "На победной волне",
+        "description": "Выиграть 5 ставок",
+        "target": 5,
+        "reward": 300
+    },
+
+    {
+        "key": "level_5",
+        "title": "Опытный игрок",
+        "description": "Достичь 5 уровня",
+        "target": 5,
+        "reward": 500
+    },
+
+    {
+        "key": "xp_500",
+        "title": "500 XP",
+        "description": "Набрать 500 XP",
+        "target": 500,
+        "reward": 400
+    },
+
+    {
+        "key": "high_odd_win",
+        "title": "Риск оправдан",
+        "description": "Выиграть ставку с коэффициентом 3.00+",
+        "target": 1,
+        "reward": 350
+    }
+]
+
+
+# =========================================================
 # DATABASE
 # =========================================================
 
@@ -187,8 +234,6 @@ def init_database():
     """)
 
 
-    # Ежедневные задания.
-    # На каждый новый день создаётся новая строка.
     cur.execute("""
         CREATE TABLE IF NOT EXISTS daily_tasks (
             telegram_id BIGINT NOT NULL
@@ -214,6 +259,24 @@ def init_database():
             PRIMARY KEY (
                 telegram_id,
                 task_date
+            )
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS achievement_claims (
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            achievement_key TEXT NOT NULL,
+
+            claimed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            PRIMARY KEY (
+                telegram_id,
+                achievement_key
             )
         )
     """)
@@ -948,7 +1011,6 @@ def build_daily_tasks(
 ):
 
     if not row:
-
         return []
 
 
@@ -1123,6 +1185,215 @@ def get_daily_tasks(
     return build_daily_tasks(
         row
     )
+
+
+# =========================================================
+# ACHIEVEMENTS
+# =========================================================
+
+def get_achievements(
+    telegram_id
+):
+
+    init_database()
+
+
+    conn = get_db()
+    cur = conn.cursor()
+
+
+    cur.execute("""
+        SELECT xp
+
+        FROM users
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+
+    user_row = cur.fetchone()
+
+
+    user_xp = int(
+        user_row[0]
+        if user_row
+        else 0
+    )
+
+
+    user_level = calculate_level(
+        user_xp
+    )
+
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+
+    bets_count = int(
+        cur.fetchone()[0]
+    )
+
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND status = 'Выиграла'
+    """, (
+        telegram_id,
+    ))
+
+
+    wins_count = int(
+        cur.fetchone()[0]
+    )
+
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND status = 'Выиграла'
+            AND odd >= 3.0
+    """, (
+        telegram_id,
+    ))
+
+
+    high_odd_wins = int(
+        cur.fetchone()[0]
+    )
+
+
+    cur.execute("""
+        SELECT achievement_key
+
+        FROM achievement_claims
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+
+    claimed_keys = {
+        row[0]
+        for row
+        in cur.fetchall()
+    }
+
+
+    cur.close()
+    conn.close()
+
+
+    result = []
+
+
+    for achievement in ACHIEVEMENTS:
+
+        key = achievement[
+            "key"
+        ]
+
+
+        if key == "bets_10":
+
+            progress = bets_count
+
+
+        elif key == "wins_5":
+
+            progress = wins_count
+
+
+        elif key == "level_5":
+
+            progress = user_level
+
+
+        elif key == "xp_500":
+
+            progress = user_xp
+
+
+        elif key == "high_odd_win":
+
+            progress = (
+                1
+                if high_odd_wins > 0
+                else 0
+            )
+
+
+        else:
+
+            progress = 0
+
+
+        target = achievement[
+            "target"
+        ]
+
+
+        completed = (
+            progress >= target
+        )
+
+
+        result.append({
+            "key":
+                key,
+
+            "title":
+                achievement[
+                    "title"
+                ],
+
+            "description":
+                achievement[
+                    "description"
+                ],
+
+            "progress":
+                min(
+                    progress,
+                    target
+                ),
+
+            "target":
+                target,
+
+            "completed":
+                completed,
+
+            "claimed":
+                key in claimed_keys,
+
+            "reward":
+                achievement[
+                    "reward"
+                ]
+        })
+
+
+    return result
 
 
 # =========================================================
@@ -1616,7 +1887,9 @@ def get_main_markets(event):
 
 
                     elif (
-                        normalize_team(name)
+                        normalize_team(
+                            name
+                        )
                         == home_normalized
                     ):
 
@@ -1624,7 +1897,9 @@ def get_main_markets(event):
 
 
                     elif (
-                        normalize_team(name)
+                        normalize_team(
+                            name
+                        )
                         == away_normalized
                     ):
 
@@ -2305,10 +2580,14 @@ def get_extra_markets(
             ):
 
                 if (
-                    line.get("over")
+                    line.get(
+                        "over"
+                    )
                     is not None
                     or
-                    line.get("under")
+                    line.get(
+                        "under"
+                    )
                     is not None
                 ):
 
@@ -2778,7 +3057,6 @@ def settle_user_bets(
 
             if result == "win":
 
-                # +25 XP за выигрыш
                 add_xp(
                     telegram_id,
                     25,
@@ -2786,8 +3064,6 @@ def settle_user_bets(
                 )
 
 
-                # Прогресс задания:
-                # выиграть 1 ставку.
                 increment_daily_win(
                     telegram_id,
                     cur
@@ -2955,11 +3231,14 @@ def session():
         )
 
 
-        # Сам вход в приложение выполняет
-        # ежедневное задание login.
         tasks = get_daily_tasks(
             telegram_id,
             True
+        )
+
+
+        achievements = get_achievements(
+            telegram_id
         )
 
 
@@ -3092,6 +3371,10 @@ def session():
 
             "tasks":
                 tasks,
+
+
+            "achievements":
+                achievements,
 
 
             "daily_reward": {
@@ -3361,7 +3644,6 @@ def create_bet():
         bet_id = cur.fetchone()[0]
 
 
-        # +10 XP за ставку.
         xp_result = add_xp(
             telegram_id,
             10,
@@ -3369,8 +3651,6 @@ def create_bet():
         )
 
 
-        # +1 к ежедневному заданию:
-        # сделать 3 ставки.
         increment_daily_bet(
             telegram_id,
             cur
@@ -3402,6 +3682,11 @@ def create_bet():
         tasks = get_daily_tasks(
             telegram_id,
             True
+        )
+
+
+        achievements = get_achievements(
+            telegram_id
         )
 
 
@@ -3452,7 +3737,10 @@ def create_bet():
                 ],
 
             "tasks":
-                tasks
+                tasks,
+
+            "achievements":
+                achievements
         })
 
 
@@ -3646,6 +3934,11 @@ def daily_reward():
         conn.close()
 
 
+        achievements = get_achievements(
+            telegram_id
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -3688,6 +3981,9 @@ def daily_reward():
                 xp_result[
                     "levels_gained"
                 ],
+
+            "achievements":
+                achievements,
 
             "next_claim":
                 (
@@ -4033,6 +4329,11 @@ def claim_daily_task():
         )
 
 
+        achievements = get_achievements(
+            telegram_id
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -4076,7 +4377,244 @@ def claim_daily_task():
                 levels_gained,
 
             "tasks":
-                tasks
+                tasks,
+
+            "achievements":
+                achievements
+        })
+
+
+    except Exception as error:
+
+        return jsonify({
+            "success":
+                False,
+
+            "error":
+                str(error)
+        }), 500
+
+
+# =========================================================
+# CLAIM ACHIEVEMENT
+# =========================================================
+
+@app.route(
+    "/api/achievements/claim",
+    methods=["POST"]
+)
+def claim_achievement():
+
+    telegram_user, error = require_telegram_user()
+
+
+    if error:
+        return error
+
+
+    body = request.get_json(
+        silent=True
+    ) or {}
+
+
+    achievement_key = str(
+        body.get(
+            "achievement_key",
+            ""
+        )
+    ).strip()
+
+
+    achievement = next(
+        (
+            item
+            for item
+            in ACHIEVEMENTS
+            if item["key"]
+            == achievement_key
+        ),
+        None
+    )
+
+
+    if not achievement:
+
+        return jsonify({
+            "success":
+                False,
+
+            "error":
+                "Неизвестное достижение"
+        }), 400
+
+
+    try:
+
+        user = get_or_create_user(
+            telegram_user
+        )
+
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+
+        achievements = get_achievements(
+            telegram_id
+        )
+
+
+        current = next(
+            (
+                item
+                for item
+                in achievements
+                if item["key"]
+                == achievement_key
+            ),
+            None
+        )
+
+
+        if not current:
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Достижение не найдено"
+            }), 404
+
+
+        if not current[
+            "completed"
+        ]:
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Достижение ещё не выполнено"
+            }), 400
+
+
+        if current[
+            "claimed"
+        ]:
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Награда уже получена"
+            }), 400
+
+
+        conn = get_db()
+        cur = conn.cursor()
+
+
+        cur.execute("""
+            INSERT INTO achievement_claims (
+                telegram_id,
+                achievement_key
+            )
+
+            VALUES (
+                %s,
+                %s
+            )
+
+            ON CONFLICT (
+                telegram_id,
+                achievement_key
+            )
+
+            DO NOTHING
+        """, (
+            telegram_id,
+            achievement_key
+        ))
+
+
+        if cur.rowcount != 1:
+
+            conn.rollback()
+
+            cur.close()
+            conn.close()
+
+
+            return jsonify({
+                "success":
+                    False,
+
+                "error":
+                    "Награда уже получена"
+            }), 400
+
+
+        reward = int(
+            achievement[
+                "reward"
+            ]
+        )
+
+
+        cur.execute("""
+            UPDATE users
+
+            SET
+                balance =
+                    balance + %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+
+            RETURNING balance
+        """, (
+            reward,
+            telegram_id
+        ))
+
+
+        final_balance = int(
+            cur.fetchone()[0]
+        )
+
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+
+        achievements = get_achievements(
+            telegram_id
+        )
+
+
+        return jsonify({
+            "success":
+                True,
+
+            "achievement_key":
+                achievement_key,
+
+            "reward":
+                reward,
+
+            "balance":
+                final_balance,
+
+            "achievements":
+                achievements
         })
 
 
@@ -4144,6 +4682,11 @@ def settle():
         )
 
 
+        achievements = get_achievements(
+            telegram_id
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -4181,7 +4724,10 @@ def settle():
                 ),
 
             "tasks":
-                tasks
+                tasks,
+
+            "achievements":
+                achievements
         })
 
 
@@ -4511,10 +5057,14 @@ def matches():
                     total
                     and
                     (
-                        total.get("over")
+                        total.get(
+                            "over"
+                        )
                         is not None
                         or
-                        total.get("under")
+                        total.get(
+                            "under"
+                        )
                         is not None
                     )
                 ):

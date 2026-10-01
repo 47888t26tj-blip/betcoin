@@ -25,7 +25,6 @@ ODDS_API_URL = "https://api.the-odds-api.com/v4"
 
 TOTAL_POINTS = [1.5, 2.5, 3.5, 4.5]
 
-# Кэш на 10 минут, чтобы не тратить API-запросы
 CACHE_SECONDS = 600
 
 cache_data = {
@@ -123,22 +122,10 @@ def get_featured_odds():
 
 def empty_totals():
     return {
-        "1.5": {
-            "over": None,
-            "under": None
-        },
-        "2.5": {
-            "over": None,
-            "under": None
-        },
-        "3.5": {
-            "over": None,
-            "under": None
-        },
-        "4.5": {
-            "over": None,
-            "under": None
-        }
+        "1.5": {"over": None, "under": None},
+        "2.5": {"over": None, "under": None},
+        "3.5": {"over": None, "under": None},
+        "4.5": {"over": None, "under": None}
     }
 
 
@@ -147,13 +134,8 @@ def find_odds_event(home_team, away_team, odds_events):
     away_normalized = normalize_team(away_team)
 
     for event in odds_events:
-        odds_home = normalize_team(
-            event.get("home_team")
-        )
-
-        odds_away = normalize_team(
-            event.get("away_team")
-        )
+        odds_home = normalize_team(event.get("home_team"))
+        odds_away = normalize_team(event.get("away_team"))
 
         if (
             home_normalized == odds_home
@@ -184,7 +166,6 @@ def get_main_markets(event):
 
         for market in bookmaker.get("markets", []):
 
-            # П1 / X / П2
             if market.get("key") == "h2h":
                 home_odd = None
                 draw_odd = None
@@ -216,7 +197,6 @@ def get_main_markets(event):
 
                     found_something = True
 
-            # Тоталы
             elif market.get("key") == "totals":
                 for outcome in market.get("outcomes", []):
                     point = outcome.get("point")
@@ -227,9 +207,6 @@ def get_main_markets(event):
                         continue
 
                     key = str(point)
-
-                    if key not in totals_data:
-                        continue
 
                     if name == "Over":
                         totals_data[key]["over"] = price
@@ -252,14 +229,14 @@ def get_main_markets(event):
     return None
 
 
-def get_btts(event_id):
+def get_extra_markets(event_id, home_team, away_team):
     if not event_id:
         return None
 
     params = {
         "apiKey": ODDS_API_KEY,
         "regions": "eu",
-        "markets": "btts",
+        "markets": "btts,double_chance",
         "oddsFormat": "decimal",
         "dateFormat": "iso"
     }
@@ -283,48 +260,120 @@ def get_btts(event_id):
     except Exception:
         return None
 
+    home_normalized = normalize_team(home_team)
+    away_normalized = normalize_team(away_team)
+
+    result = {
+        "btts": None,
+        "double_chance": None,
+        "btts_bookmaker": None,
+        "double_chance_bookmaker": None
+    }
+
     for bookmaker in data.get("bookmakers", []):
+
         for market in bookmaker.get("markets", []):
 
-            if market.get("key") != "btts":
-                continue
+            # ОЗ
+            if market.get("key") == "btts":
+                yes_odd = None
+                no_odd = None
 
-            yes_odd = None
-            no_odd = None
+                for outcome in market.get("outcomes", []):
+                    name = str(
+                        outcome.get("name", "")
+                    ).lower()
 
-            for outcome in market.get("outcomes", []):
-                name = str(
-                    outcome.get("name", "")
-                ).lower()
+                    price = outcome.get("price")
 
-                price = outcome.get("price")
+                    if name == "yes":
+                        yes_odd = price
 
-                if name == "yes":
-                    yes_odd = price
+                    elif name == "no":
+                        no_odd = price
 
-                elif name == "no":
-                    no_odd = price
+                if (
+                    yes_odd is not None
+                    and no_odd is not None
+                    and result["btts"] is None
+                ):
+                    result["btts"] = {
+                        "yes": yes_odd,
+                        "no": no_odd
+                    }
 
-            if (
-                yes_odd is not None
-                and no_odd is not None
-            ):
-                return {
-                    "yes": yes_odd,
-                    "no": no_odd,
-                    "bookmaker": bookmaker.get(
-                        "title",
-                        "Bookmaker"
+                    result["btts_bookmaker"] = (
+                        bookmaker.get(
+                            "title",
+                            "Bookmaker"
+                        )
                     )
-                }
 
-    return None
+            # Двойной шанс
+            elif market.get("key") == "double_chance":
+
+                one_x = None
+                one_two = None
+                x_two = None
+
+                for outcome in market.get("outcomes", []):
+
+                    name = str(
+                        outcome.get("name", "")
+                    )
+
+                    price = outcome.get("price")
+
+                    normalized_name = normalize_team(name)
+
+                    # 1X = хозяева или ничья
+                    if (
+                        normalize_team(home_team) in normalized_name
+                        and "draw" in normalized_name
+                    ):
+                        one_x = price
+
+                    # X2 = гости или ничья
+                    elif (
+                        normalize_team(away_team) in normalized_name
+                        and "draw" in normalized_name
+                    ):
+                        x_two = price
+
+                    # 12 = хозяева или гости
+                    elif (
+                        normalize_team(home_team) in normalized_name
+                        and normalize_team(away_team) in normalized_name
+                    ):
+                        one_two = price
+
+                if (
+                    result["double_chance"] is None
+                    and (
+                        one_x is not None
+                        or one_two is not None
+                        or x_two is not None
+                    )
+                ):
+                    result["double_chance"] = {
+                        "1x": one_x,
+                        "12": one_two,
+                        "x2": x_two
+                    }
+
+                    result["double_chance_bookmaker"] = (
+                        bookmaker.get(
+                            "title",
+                            "Bookmaker"
+                        )
+                    )
+
+    return result
 
 
 @app.route("/api/matches")
 def matches():
 
-    # Если кэш свежий — не тратим новый API-запрос
     if (
         cache_data["response"] is not None
         and time.time() - cache_data["time"] < CACHE_SECONDS
@@ -377,9 +426,12 @@ def matches():
         away_team = item.get("awayTeam", {})
         competition = item.get("competition", {})
 
+        home_name = home_team.get("name")
+        away_name = away_team.get("name")
+
         odds_event = find_odds_event(
-            home_team.get("name"),
-            away_team.get("name"),
+            home_name,
+            away_name,
             odds_events
         )
 
@@ -387,11 +439,13 @@ def matches():
             odds_event
         )
 
-        btts = None
+        extra_markets = None
 
         if odds_event:
-            btts = get_btts(
-                odds_event.get("id")
+            extra_markets = get_extra_markets(
+                odds_event.get("id"),
+                home_name,
+                away_name
             )
 
         match = {
@@ -405,15 +459,8 @@ def matches():
 
             "country": "England",
 
-            "home": home_team.get(
-                "name",
-                "Unknown"
-            ),
-
-            "away": away_team.get(
-                "name",
-                "Unknown"
-            ),
+            "home": home_name or "Unknown",
+            "away": away_name or "Unknown",
 
             "home_logo": home_team.get(
                 "crest",
@@ -439,10 +486,12 @@ def matches():
             "total_4_5": None,
 
             "btts": None,
-            "btts_bookmaker": None
+            "btts_bookmaker": None,
+
+            "double_chance": None,
+            "double_chance_bookmaker": None
         }
 
-        # П1/X/П2 + тоталы
         if markets:
             match["bookmaker"] = markets.get(
                 "bookmaker"
@@ -480,15 +529,28 @@ def matches():
                         "under": total.get("under")
                     }
 
-        # ОЗ Да / Нет
-        if btts:
-            match["btts"] = {
-                "yes": btts.get("yes"),
-                "no": btts.get("no")
-            }
+        if extra_markets:
 
-            match["btts_bookmaker"] = btts.get(
-                "bookmaker"
+            match["btts"] = extra_markets.get(
+                "btts"
+            )
+
+            match["btts_bookmaker"] = (
+                extra_markets.get(
+                    "btts_bookmaker"
+                )
+            )
+
+            match["double_chance"] = (
+                extra_markets.get(
+                    "double_chance"
+                )
+            )
+
+            match[
+                "double_chance_bookmaker"
+            ] = extra_markets.get(
+                "double_chance_bookmaker"
             )
 
         matches_list.append(match)

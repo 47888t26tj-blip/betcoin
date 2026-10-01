@@ -70,11 +70,7 @@
     .balance-card {
       padding: 22px;
       border-radius: 22px;
-      background: linear-gradient(
-        135deg,
-        #1f6feb,
-        #6148d8
-      );
+      background: linear-gradient(135deg, #1f6feb, #6148d8);
       margin-bottom: 14px;
     }
 
@@ -91,11 +87,7 @@
     /* DAILY */
 
     .daily-card {
-      background: linear-gradient(
-        135deg,
-        #d98b17,
-        #b65d15
-      );
+      background: linear-gradient(135deg, #d98b17, #b65d15);
       border-radius: 20px;
       padding: 18px;
       margin-bottom: 20px;
@@ -209,7 +201,8 @@
       font-weight: bold;
     }
 
-    .task-progress-row {
+    .task-progress-row,
+    .achievement-progress-row {
       display: flex;
       justify-content: space-between;
       margin: 12px 0 7px;
@@ -226,11 +219,7 @@
 
     .task-progress-fill {
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        #2775ff,
-        #8c57ff
-      );
+      background: linear-gradient(90deg, #2775ff, #8c57ff);
     }
 
     .task-button {
@@ -461,6 +450,104 @@
       font-weight: bold;
     }
 
+    /* STATS */
+
+    .stats-title {
+      margin-top: 22px;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: #161922;
+      border-radius: 17px;
+      padding: 15px;
+      min-height: 96px;
+    }
+
+    .stat-icon {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .stat-label {
+      color: #8f96a7;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .stat-card.green .stat-value {
+      color: #6fe298;
+    }
+
+    .stat-card.red .stat-value {
+      color: #ff7272;
+    }
+
+    .stat-card.gold .stat-value {
+      color: #ffd66b;
+    }
+
+    .stat-card.blue .stat-value {
+      color: #7bb0ff;
+    }
+
+    .profit-card {
+      background: linear-gradient(135deg, #17273a, #171b28);
+      border-radius: 19px;
+      padding: 17px;
+      margin-bottom: 18px;
+    }
+
+    .profit-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .profit-label {
+      color: #969dac;
+      font-size: 13px;
+    }
+
+    .profit-value {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .profit-positive {
+      color: #6fe298;
+    }
+
+    .profit-negative {
+      color: #ff7272;
+    }
+
+    .profit-zero {
+      color: #d0d4dd;
+    }
+
+    .profit-sub {
+      margin-top: 10px;
+      color: #8991a2;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* LEVEL */
+
     .level-card {
       background: #161922;
       border-radius: 20px;
@@ -501,11 +588,7 @@
 
     .xp-fill {
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        #2775ff,
-        #8c57ff
-      );
+      background: linear-gradient(90deg, #2775ff, #8c57ff);
     }
 
     .xp-info {
@@ -517,49 +600,27 @@
     /* PLAYER LEAGUE */
 
     .player-league-card {
-      position: relative;
-      overflow: hidden;
       border-radius: 22px;
       padding: 20px;
       margin-bottom: 18px;
-      background: linear-gradient(
-        135deg,
-        #4b2f1d,
-        #231b18
-      );
+      background: linear-gradient(135deg, #4b2f1d, #231b18);
       border: 1px solid rgba(255,255,255,0.08);
     }
 
     .player-league-card.silver {
-      background: linear-gradient(
-        135deg,
-        #6f7684,
-        #292d36
-      );
+      background: linear-gradient(135deg, #6f7684, #292d36);
     }
 
     .player-league-card.gold {
-      background: linear-gradient(
-        135deg,
-        #d39419,
-        #5e3b08
-      );
+      background: linear-gradient(135deg, #d39419, #5e3b08);
     }
 
     .player-league-card.diamond {
-      background: linear-gradient(
-        135deg,
-        #169ec4,
-        #27337b
-      );
+      background: linear-gradient(135deg, #169ec4, #27337b);
     }
 
     .player-league-card.master {
-      background: linear-gradient(
-        135deg,
-        #7738b8,
-        #32145b
-      );
+      background: linear-gradient(135deg, #7738b8, #32145b);
     }
 
     .league-top {
@@ -680,21 +741,9 @@
       margin-top: 7px;
     }
 
-    .achievement-progress-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 12px 0 7px;
-      color: #969dac;
-      font-size: 12px;
-    }
-
     .achievement-progress-fill {
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        #e1a52c,
-        #ffdf6b
-      );
+      background: linear-gradient(90deg, #e1a52c, #ffdf6b);
     }
 
     .achievement-button {
@@ -721,11 +770,7 @@
     /* LEADERBOARD */
 
     .leaderboard-info {
-      background: linear-gradient(
-        135deg,
-        #3b245c,
-        #263b78
-      );
+      background: linear-gradient(135deg, #3b245c, #263b78);
       padding: 18px;
       border-radius: 20px;
       margin-bottom: 14px;
@@ -896,7 +941,7 @@
       margin-bottom: 15px;
     }
 
-    /* MODAL */
+    /* MODALS */
 
     .overlay {
       display: none;
@@ -1024,15 +1069,12 @@
 <div class="container">
 
   <div class="header">
-    <div class="logo">
-      ⚽ BetCoin
-    </div>
+    <div class="logo">⚽ BetCoin</div>
 
     <div class="balance-small">
       🪙 <span id="topBalance">...</span>
     </div>
   </div>
-
 
   <div
     id="serverError"
@@ -1102,9 +1144,7 @@
     <div class="tasks-section">
 
       <div class="tasks-header">
-        <h2>
-          🎯 Ежедневные задания
-        </h2>
+        <h2>🎯 Ежедневные задания</h2>
 
         <div class="tasks-reset">
           каждый день
@@ -1121,10 +1161,7 @@
     </div>
 
 
-    <h2>
-      🔥 Матчи
-    </h2>
-
+    <h2>🔥 Матчи</h2>
 
     <div id="homeMatches">
       <div class="loading">
@@ -1141,18 +1178,13 @@
     id="matches"
     class="page"
   >
-
-    <h2>
-      ⚽ Все матчи
-    </h2>
-
+    <h2>⚽ Все матчи</h2>
 
     <div id="allMatches">
       <div class="loading">
         Загружаем матчи...
       </div>
     </div>
-
   </div>
 
 
@@ -1170,7 +1202,6 @@
       ← Назад
     </button>
 
-
     <div id="matchDetailContent"></div>
 
   </div>
@@ -1183,10 +1214,7 @@
     class="page"
   >
 
-    <h2>
-      🎫 Мои ставки
-    </h2>
-
+    <h2>🎫 Мои ставки</h2>
 
     <div id="betsList">
       <div class="loading">
@@ -1204,13 +1232,9 @@
     class="page"
   >
 
-    <h2>
-      🏆 Лидеры
-    </h2>
-
+    <h2>🏆 Лидеры</h2>
 
     <div class="leaderboard-info">
-
       <div class="leaderboard-info-title">
         Рейтинг BetCoin
       </div>
@@ -1219,12 +1243,10 @@
         Чем больше XP — тем выше место.
         При одинаковом XP учитывается баланс.
       </div>
-
     </div>
 
 
     <div class="my-rank-card">
-
       <div class="my-rank-title">
         Твоё место
       </div>
@@ -1235,7 +1257,6 @@
       >
         #—
       </div>
-
     </div>
 
 
@@ -1255,9 +1276,7 @@
     class="page"
   >
 
-    <h2>
-      👤 Профиль
-    </h2>
+    <h2>👤 Профиль</h2>
 
 
     <div class="profile">
@@ -1275,14 +1294,151 @@
         🪙 <span id="profileBalance">...</span>
       </p>
 
-      <p>
-        Сделано ставок:
-        <span id="betsCount">0</span>
-      </p>
-
       <div class="rank-box">
         🏆 Место в рейтинге:
         <span id="profileRank">#—</span>
+      </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <h2 class="stats-title">
+      📊 Статистика
+    </h2>
+
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-icon">🎫</div>
+        <div class="stat-label">Всего ставок</div>
+        <div
+          id="statTotalBets"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Побед</div>
+        <div
+          id="statWins"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card red">
+        <div class="stat-icon">❌</div>
+        <div class="stat-label">Поражений</div>
+        <div
+          id="statLosses"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card">
+        <div class="stat-icon">↩️</div>
+        <div class="stat-label">Возвратов</div>
+        <div
+          id="statRefunds"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card blue">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Win Rate</div>
+        <div
+          id="statWinRate"
+          class="stat-value"
+        >
+          0%
+        </div>
+      </div>
+
+
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Активных ставок</div>
+        <div
+          id="statActiveBets"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card gold">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-label">Текущая серия</div>
+        <div
+          id="statCurrentStreak"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+
+      <div class="stat-card gold">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">Лучшая серия</div>
+        <div
+          id="statBestStreak"
+          class="stat-value"
+        >
+          0
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="profit-card">
+
+      <div class="profit-top">
+
+        <div>
+          <div class="profit-label">
+            📈 Чистая прибыль
+          </div>
+
+          <div
+            id="statNetProfit"
+            class="profit-value profit-zero"
+          >
+            0 🪙
+          </div>
+        </div>
+
+
+        <div style="font-size:38px;">
+          💰
+        </div>
+
+      </div>
+
+
+      <div
+        id="statProfitSub"
+        class="profit-sub"
+      >
+        Всего выиграно: 0 🪙
       </div>
 
     </div>
@@ -1328,15 +1484,11 @@
 
 
       <div class="league-progress-info">
-
-        <span>
-          Прогресс
-        </span>
+        <span>Прогресс</span>
 
         <span id="leagueProgressText">
-          1 / 5
+          Уровень 1 / 5
         </span>
-
       </div>
 
 
@@ -1355,7 +1507,7 @@
         id="leagueNext"
         class="league-next"
       >
-        До Серебра: 4 уровня
+        До Серебра: 4 ур.
       </div>
 
     </div>
@@ -1385,26 +1537,20 @@
 
 
       <div class="xp-row">
-
-        <span>
-          Прогресс
-        </span>
+        <span>Прогресс</span>
 
         <span id="xpProgressText">
           0 / 100 XP
         </span>
-
       </div>
 
 
       <div class="xp-bar">
-
         <div
           id="xpFill"
           class="xp-fill"
           style="width:0%"
         ></div>
-
       </div>
 
 
@@ -1418,17 +1564,12 @@
     </div>
 
 
-    <h2>
-      🏆 Достижения
-    </h2>
-
+    <h2>🏆 Достижения</h2>
 
     <div id="achievementsList">
-
       <div class="loading">
         Загружаем достижения...
       </div>
-
     </div>
 
   </div>
@@ -1501,23 +1642,19 @@
     Матч
   </h2>
 
-
   <p>
     Выбор:
     <b id="modalSelection"></b>
   </p>
-
 
   <p>
     Коэффициент:
     <b id="modalOdd"></b>
   </p>
 
-
   <p style="color:#8e95a5;">
     За ставку: +10 XP
   </p>
-
 
   <input
     id="betAmount"
@@ -1527,12 +1664,10 @@
     oninput="calculateWin()"
   >
 
-
   <div class="potential">
     Возможный выигрыш:
     🪙 <span id="possibleWin">0</span>
   </div>
-
 
   <button
     id="confirmBetButton"
@@ -1541,7 +1676,6 @@
   >
     Поставить
   </button>
-
 
   <button
     class="cancel"
@@ -1573,11 +1707,9 @@
     🎉
   </div>
 
-
   <div class="levelup-title">
     Новый уровень!
   </div>
-
 
   <div
     id="levelUpLevel"
@@ -1586,14 +1718,12 @@
     Уровень 2
   </div>
 
-
   <div
     id="levelUpReward"
     class="levelup-reward"
   >
     Награда: +100 🪙
   </div>
-
 
   <button
     class="levelup-button"
@@ -1631,6 +1761,22 @@ let achievements = [];
 
 let leaderboardPlayers = [];
 let myRank = null;
+
+let stats = {
+  total_bets: 0,
+  active_bets: 0,
+  wins: 0,
+  losses: 0,
+  refunds: 0,
+  settled_bets: 0,
+  win_rate: 0,
+  current_win_streak: 0,
+  best_win_streak: 0,
+  total_won: 0,
+  settled_staked: 0,
+  settled_returned: 0,
+  net_profit: 0
+};
 
 let xp = 0;
 let level = 1;
@@ -1684,9 +1830,7 @@ const TEAM_TOTAL_POINTS = [
 ];
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+/* HELPERS */
 
 function escapeHtml(value) {
 
@@ -1704,24 +1848,14 @@ function escapeHtml(value) {
 
 function safeMatchName(value) {
 
-  return String(
-    value
-  )
-  .replace(
-    /\\/g,
-    "\\\\"
-  )
-  .replace(
-    /'/g,
-    "\\'"
-  );
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
 
 }
 
 
-function formatDate(
-  dateString
-) {
+function formatDate(dateString) {
 
   return new Date(
     dateString
@@ -1738,9 +1872,7 @@ function formatDate(
 }
 
 
-function handicapLabel(
-  point
-) {
+function handicapLabel(point) {
 
   return (
     Number(point) > 0
@@ -1764,23 +1896,17 @@ function authHeaders() {
 }
 
 
-/* =========================================================
-   ERROR
-   ========================================================= */
+/* ERROR */
 
-function showError(
-  message
-) {
+function showError(message) {
 
   const box =
     document.getElementById(
       "serverError"
     );
 
-
   box.innerText =
     message;
-
 
   box.style.display =
     "block";
@@ -1800,9 +1926,7 @@ function hideError() {
 }
 
 
-/* =========================================================
-   LEVEL
-   ========================================================= */
+/* LEVEL */
 
 function calculateClientLevelReward(
   oldLevel,
@@ -1810,7 +1934,6 @@ function calculateClientLevelReward(
 ) {
 
   let reward = 0;
-
 
   for (
     let lvl = oldLevel + 1;
@@ -1820,20 +1943,15 @@ function calculateClientLevelReward(
 
     reward += 100;
 
-
     if (
       lvl % 5 === 0
     ) {
 
       reward += 500;
-
     }
-
   }
 
-
   return reward;
-
 }
 
 
@@ -1914,31 +2032,18 @@ function closeLevelUp() {
 }
 
 
-/* =========================================================
-   LEAGUE
-   ========================================================= */
+/* LEAGUE */
 
 function leagueLevelRange(
   leagueData
 ) {
 
   if (
-    !leagueData
-  ) {
-
-    return "";
-
-  }
-
-
-  if (
     leagueData.next_level == null
   ) {
 
     return `Уровень ${leagueData.min_level}+`;
-
   }
-
 
   return (
     `Уровни ${leagueData.min_level}–`
@@ -1949,9 +2054,7 @@ function leagueLevelRange(
 }
 
 
-function nextLeagueName(
-  key
-) {
+function nextLeagueName(key) {
 
   if (key === "bronze") {
     return "Серебра";
@@ -1970,7 +2073,6 @@ function nextLeagueName(
   }
 
   return null;
-
 }
 
 
@@ -2045,7 +2147,6 @@ function updateLeagueInterface() {
 
 
     return;
-
   }
 
 
@@ -2074,12 +2175,11 @@ function updateLeagueInterface() {
       100,
       Math.max(
         0,
-        (
-          completedLevels
-          /
-          totalLevels
-        )
-        * 100
+        completedLevels
+        /
+        totalLevels
+        *
+        100
       )
     );
 
@@ -2108,25 +2208,150 @@ function updateLeagueInterface() {
     );
 
 
-  const nextName =
-    nextLeagueName(
-      league.key
-    );
-
-
   document
     .getElementById(
       "leagueNext"
     )
     .innerText =
-      `До ${nextName}: ${levelsLeft} ур.`;
+      `До ${nextLeagueName(league.key)}: ${levelsLeft} ур.`;
 
 }
 
 
-/* =========================================================
-   SESSION
-   ========================================================= */
+/* PROFILE STATS */
+
+function updateStatsInterface() {
+
+  document
+    .getElementById(
+      "statTotalBets"
+    )
+    .innerText =
+      stats.total_bets || 0;
+
+
+  document
+    .getElementById(
+      "statWins"
+    )
+    .innerText =
+      stats.wins || 0;
+
+
+  document
+    .getElementById(
+      "statLosses"
+    )
+    .innerText =
+      stats.losses || 0;
+
+
+  document
+    .getElementById(
+      "statRefunds"
+    )
+    .innerText =
+      stats.refunds || 0;
+
+
+  document
+    .getElementById(
+      "statActiveBets"
+    )
+    .innerText =
+      stats.active_bets || 0;
+
+
+  document
+    .getElementById(
+      "statWinRate"
+    )
+    .innerText =
+      `${Number(stats.win_rate || 0).toFixed(1)}%`;
+
+
+  document
+    .getElementById(
+      "statCurrentStreak"
+    )
+    .innerText =
+      stats.current_win_streak || 0;
+
+
+  document
+    .getElementById(
+      "statBestStreak"
+    )
+    .innerText =
+      stats.best_win_streak || 0;
+
+
+  const profit =
+    Number(
+      stats.net_profit
+      || 0
+    );
+
+
+  const profitElement =
+    document.getElementById(
+      "statNetProfit"
+    );
+
+
+  profitElement.className =
+    "profit-value";
+
+
+  if (
+    profit > 0
+  ) {
+
+    profitElement.classList.add(
+      "profit-positive"
+    );
+
+    profitElement.innerText =
+      `+${profit} 🪙`;
+
+  }
+
+  else if (
+    profit < 0
+  ) {
+
+    profitElement.classList.add(
+      "profit-negative"
+    );
+
+    profitElement.innerText =
+      `${profit} 🪙`;
+
+  }
+
+  else {
+
+    profitElement.classList.add(
+      "profit-zero"
+    );
+
+    profitElement.innerText =
+      "0 🪙";
+
+  }
+
+
+  document
+    .getElementById(
+      "statProfitSub"
+    )
+    .innerText =
+      `Всего выиграно: ${stats.total_won || 0} 🪙 • Рассчитано ставок: ${stats.settled_bets || 0}`;
+
+}
+
+
+/* SESSION */
 
 async function loadSession() {
 
@@ -2139,7 +2364,6 @@ async function loadSession() {
     );
 
     return false;
-
   }
 
 
@@ -2157,8 +2381,7 @@ async function loadSession() {
       await fetch(
         `${SERVER_URL}/api/session`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -2187,62 +2410,56 @@ async function loadSession() {
         ||
         "Ошибка загрузки профиля"
       );
-
     }
 
 
     balance =
       Number(
-        data.balance
-        || 0
+        data.balance || 0
       );
 
 
     bets =
-      data.bets
-      || [];
+      data.bets || [];
 
 
     tasks =
-      data.tasks
-      || [];
+      data.tasks || [];
 
 
     achievements =
-      data.achievements
-      || [];
+      data.achievements || [];
+
+
+    stats =
+      data.stats || stats;
 
 
     xp =
       Number(
-        data.xp
-        || 0
+        data.xp || 0
       );
 
 
     level =
       Number(
-        data.level
-        || 1
+        data.level || 1
       );
 
 
     league =
-      data.league
-      || league;
+      data.league || league;
 
 
     currentLevelXp =
       Number(
-        data.current_level_xp
-        || 0
+        data.current_level_xp || 0
       );
 
 
     xpToNextLevel =
       Number(
-        data.xp_to_next_level
-        || 100
+        data.xp_to_next_level || 100
       );
 
 
@@ -2253,7 +2470,6 @@ async function loadSession() {
       myRank =
         data.leaderboard.my_rank
         ?? myRank;
-
     }
 
 
@@ -2270,7 +2486,6 @@ async function loadSession() {
           data.daily_reward.seconds_left
           || 0
         );
-
     }
 
 
@@ -2286,7 +2501,6 @@ async function loadSession() {
         )
         .innerText =
           data.user.first_name;
-
     }
 
 
@@ -2314,7 +2528,6 @@ async function loadSession() {
           level
         )
       );
-
     }
 
 
@@ -2332,15 +2545,12 @@ async function loadSession() {
 
 
     return false;
-
   }
 
 }
 
 
-/* =========================================================
-   LEADERBOARD
-   ========================================================= */
+/* LEADERBOARD */
 
 async function loadLeaderboard() {
 
@@ -2350,8 +2560,7 @@ async function loadLeaderboard() {
       await fetch(
         `${SERVER_URL}/api/leaderboard`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -2380,18 +2589,15 @@ async function loadLeaderboard() {
         ||
         "Ошибка рейтинга"
       );
-
     }
 
 
     leaderboardPlayers =
-      data.players
-      || [];
+      data.players || [];
 
 
     myRank =
-      data.my_rank
-      || null;
+      data.my_rank || null;
 
 
     renderLeaderboard();
@@ -2417,9 +2623,7 @@ async function loadLeaderboard() {
 }
 
 
-function rankText(
-  rank
-) {
+function rankText(rank) {
 
   if (rank === 1) {
     return "🥇";
@@ -2467,7 +2671,6 @@ function renderLeaderboard() {
     `;
 
     return;
-
   }
 
 
@@ -2529,11 +2732,9 @@ function renderLeaderboard() {
               ${rankText(player.rank)}
             </div>
 
-
             <div class="leader-avatar">
               ${firstLetter}
             </div>
-
 
             <div class="leader-main">
 
@@ -2541,7 +2742,6 @@ function renderLeaderboard() {
                 ${name}
                 ${isMe ? " • Ты" : ""}
               </div>
-
 
               <div class="leader-sub">
                 ⭐ Уровень ${player.level}
@@ -2552,14 +2752,12 @@ function renderLeaderboard() {
                 }
               </div>
 
-
               <div class="leader-league">
                 ${playerLeague.icon}
                 ${escapeHtml(playerLeague.name)}
               </div>
 
             </div>
-
 
             <div class="leader-stats">
 
@@ -2597,9 +2795,7 @@ function updateProfileRank() {
 }
 
 
-/* =========================================================
-   TASKS
-   ========================================================= */
+/* TASKS */
 
 function renderTasks() {
 
@@ -2614,7 +2810,6 @@ function renderTasks() {
   ) {
 
     return;
-
   }
 
 
@@ -2629,7 +2824,6 @@ function renderTasks() {
     `;
 
     return;
-
   }
 
 
@@ -2640,27 +2834,20 @@ function renderTasks() {
 
         const progress =
           Number(
-            task.progress
-            || 0
+            task.progress || 0
           );
 
 
         const target =
           Number(
-            task.target
-            || 1
+            task.target || 1
           );
 
 
         const percent =
           Math.min(
             100,
-            (
-              progress
-              /
-              target
-            )
-            * 100
+            progress / target * 100
           );
 
 
@@ -2683,10 +2870,8 @@ function renderTasks() {
           buttonText =
             "✓ Получено";
 
-
           buttonClass +=
             " claimed";
-
         }
 
         else if (
@@ -2696,10 +2881,8 @@ function renderTasks() {
           buttonText =
             "Забрать";
 
-
           disabled =
             false;
-
         }
 
 
@@ -2713,7 +2896,6 @@ function renderTasks() {
             <div class="task-top">
 
               <div>
-
                 <div class="task-title">
                   ${escapeHtml(task.title)}
                 </div>
@@ -2721,9 +2903,7 @@ function renderTasks() {
                 <div class="task-description">
                   ${escapeHtml(task.description)}
                 </div>
-
               </div>
-
 
               <div class="task-reward">
                 ${
@@ -2737,25 +2917,16 @@ function renderTasks() {
 
 
             <div class="task-progress-row">
-
-              <span>
-                Прогресс
-              </span>
-
-              <span>
-                ${progress} / ${target}
-              </span>
-
+              <span>Прогресс</span>
+              <span>${progress} / ${target}</span>
             </div>
 
 
             <div class="progress">
-
               <div
                 class="task-progress-fill"
                 style="width:${percent}%"
               ></div>
-
             </div>
 
 
@@ -2777,9 +2948,7 @@ function renderTasks() {
 }
 
 
-async function claimTask(
-  taskKey
-) {
+async function claimTask(taskKey) {
 
   const oldLevel =
     level;
@@ -2791,8 +2960,7 @@ async function claimTask(
       await fetch(
         `${SERVER_URL}/api/tasks/claim`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -2824,31 +2992,23 @@ async function claimTask(
         ||
         "Ошибка"
       );
-
     }
 
 
     balance =
-      Number(
-        data.balance
-      );
+      Number(data.balance);
 
 
     xp =
-      Number(
-        data.xp
-      );
+      Number(data.xp);
 
 
     level =
-      Number(
-        data.level
-      );
+      Number(data.level);
 
 
     league =
-      data.league
-      || league;
+      data.league || league;
 
 
     currentLevelXp =
@@ -2864,18 +3024,15 @@ async function claimTask(
 
 
     tasks =
-      data.tasks
-      || tasks;
+      data.tasks || tasks;
 
 
     achievements =
-      data.achievements
-      || achievements;
+      data.achievements || achievements;
 
 
     myRank =
-      data.my_rank
-      || myRank;
+      data.my_rank || myRank;
 
 
     updateInterface();
@@ -2885,8 +3042,7 @@ async function claimTask(
       level > oldLevel
       &&
       Number(
-        data.level_reward
-        || 0
+        data.level_reward || 0
       ) > 0
     ) {
 
@@ -2894,7 +3050,6 @@ async function claimTask(
         level,
         data.level_reward
       );
-
     }
 
 
@@ -2905,6 +3060,8 @@ async function claimTask(
     );
 
 
+    await loadSession();
+
     await loadLeaderboard();
 
   }
@@ -2914,52 +3071,36 @@ async function claimTask(
     alert(
       error.message
     );
-
   }
 
 }
 
 
-/* =========================================================
-   ACHIEVEMENTS
-   ========================================================= */
+/* ACHIEVEMENTS */
 
-function achievementIcon(
-  key
-) {
+function achievementIcon(key) {
 
-  if (
-    key === "bets_10"
-  ) {
+  if (key === "bets_10") {
     return "🎫";
   }
 
-  if (
-    key === "wins_5"
-  ) {
+  if (key === "wins_5") {
     return "🔥";
   }
 
-  if (
-    key === "level_5"
-  ) {
+  if (key === "level_5") {
     return "⭐";
   }
 
-  if (
-    key === "xp_500"
-  ) {
+  if (key === "xp_500") {
     return "⚡";
   }
 
-  if (
-    key === "high_odd_win"
-  ) {
+  if (key === "high_odd_win") {
     return "🎯";
   }
 
   return "🏆";
-
 }
 
 
@@ -2971,12 +3112,8 @@ function renderAchievements() {
     );
 
 
-  if (
-    !sessionLoaded
-  ) {
-
+  if (!sessionLoaded) {
     return;
-
   }
 
 
@@ -2991,7 +3128,6 @@ function renderAchievements() {
     `;
 
     return;
-
   }
 
 
@@ -3002,27 +3138,20 @@ function renderAchievements() {
 
         const progress =
           Number(
-            item.progress
-            || 0
+            item.progress || 0
           );
 
 
         const target =
           Number(
-            item.target
-            || 1
+            item.target || 1
           );
 
 
         const percent =
           Math.min(
             100,
-            (
-              progress
-              /
-              target
-            )
-            * 100
+            progress / target * 100
           );
 
 
@@ -3045,10 +3174,8 @@ function renderAchievements() {
           buttonText =
             "Забрать";
 
-
           disabled =
             false;
-
         }
 
 
@@ -3059,14 +3186,11 @@ function renderAchievements() {
           buttonText =
             "✓ Получено";
 
-
           disabled =
             true;
 
-
           buttonClass +=
             " claimed";
-
         }
 
 
@@ -3082,7 +3206,6 @@ function renderAchievements() {
               <div class="achievement-icon">
                 ${achievementIcon(item.key)}
               </div>
-
 
               <div class="achievement-main">
 
@@ -3104,25 +3227,16 @@ function renderAchievements() {
 
 
             <div class="achievement-progress-row">
-
-              <span>
-                Прогресс
-              </span>
-
-              <span>
-                ${progress} / ${target}
-              </span>
-
+              <span>Прогресс</span>
+              <span>${progress} / ${target}</span>
             </div>
 
 
             <div class="progress">
-
               <div
                 class="achievement-progress-fill"
                 style="width:${percent}%"
               ></div>
-
             </div>
 
 
@@ -3154,8 +3268,7 @@ async function claimAchievement(
       await fetch(
         `${SERVER_URL}/api/achievements/claim`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -3183,18 +3296,13 @@ async function claimAchievement(
     ) {
 
       throw new Error(
-        data.error
-        ||
-        "Ошибка"
+        data.error || "Ошибка"
       );
-
     }
 
 
     balance =
-      Number(
-        data.balance
-      );
+      Number(data.balance);
 
 
     achievements =
@@ -3215,6 +3323,8 @@ async function claimAchievement(
     );
 
 
+    await loadSession();
+
     await loadLeaderboard();
 
   }
@@ -3224,26 +3334,19 @@ async function claimAchievement(
     alert(
       error.message
     );
-
   }
 
 }
 
 
-/* =========================================================
-   DAILY BONUS
-   ========================================================= */
+/* DAILY */
 
-function formatDailyTime(
-  seconds
-) {
+function formatDailyTime(seconds) {
 
   seconds =
     Math.max(
       0,
-      Number(
-        seconds
-      )
+      Number(seconds)
     );
 
 
@@ -3300,7 +3403,6 @@ function updateDailyReward() {
     clearInterval(
       dailyTimerInterval
     );
-
   }
 
 
@@ -3311,17 +3413,13 @@ function updateDailyReward() {
     button.disabled =
       false;
 
-
     button.innerText =
       "Получить +300 🪙";
-
 
     timer.innerText =
       "Бонус доступен!";
 
-
     return;
-
   }
 
 
@@ -3374,7 +3472,6 @@ function updateDailyReward() {
 
 
           return;
-
         }
 
 
@@ -3404,8 +3501,7 @@ async function claimDailyReward() {
       await fetch(
         `${SERVER_URL}/api/daily-reward`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -3444,40 +3540,29 @@ async function claimDailyReward() {
 
 
         updateDailyReward();
-
       }
 
 
       throw new Error(
-        data.error
-        ||
-        "Ошибка"
+        data.error || "Ошибка"
       );
-
     }
 
 
     balance =
-      Number(
-        data.balance
-      );
+      Number(data.balance);
 
 
     xp =
-      Number(
-        data.xp
-      );
+      Number(data.xp);
 
 
     level =
-      Number(
-        data.level
-      );
+      Number(data.level);
 
 
     league =
-      data.league
-      || league;
+      data.league || league;
 
 
     currentLevelXp =
@@ -3522,8 +3607,7 @@ async function claimDailyReward() {
       level > oldLevel
       &&
       Number(
-        data.level_reward
-        || 0
+        data.level_reward || 0
       ) > 0
     ) {
 
@@ -3531,7 +3615,6 @@ async function claimDailyReward() {
         level,
         data.level_reward
       );
-
     }
 
     else {
@@ -3539,9 +3622,10 @@ async function claimDailyReward() {
       alert(
         `🎁 +${data.reward} монет и +${data.xp_gained} XP`
       );
-
     }
 
+
+    await loadSession();
 
     await loadLeaderboard();
 
@@ -3555,15 +3639,12 @@ async function claimDailyReward() {
 
 
     updateDailyReward();
-
   }
 
 }
 
 
-/* =========================================================
-   MATCH CARDS
-   ========================================================= */
+/* MATCH CARDS */
 
 function createCompactMatch(
   match,
@@ -3609,7 +3690,6 @@ function createCompactMatch(
           ${Number(match.odds.home).toFixed(2)}
         </button>
 
-
         <button
           class="odd-button"
           onclick="openBet(
@@ -3622,7 +3702,6 @@ function createCompactMatch(
           X<br>
           ${Number(match.odds.draw).toFixed(2)}
         </button>
-
 
         <button
           class="odd-button"
@@ -3639,7 +3718,6 @@ function createCompactMatch(
 
       </div>
     `;
-
   }
 
 
@@ -3652,7 +3730,6 @@ function createCompactMatch(
         ${escapeHtml(match.league)}
       </div>
 
-
       <div class="teams">
 
         <div class="team">
@@ -3660,11 +3737,9 @@ function createCompactMatch(
           ${escapeHtml(match.home)}
         </div>
 
-
         <div class="vs">
           VS
         </div>
-
 
         <div class="team">
           <img src="${match.away_logo || ""}">
@@ -3673,14 +3748,11 @@ function createCompactMatch(
 
       </div>
 
-
       <div class="time">
         ${formatDate(match.date)}
       </div>
 
-
       ${oddsBlock}
-
 
       <button
         class="open-match-button"
@@ -3695,9 +3767,7 @@ function createCompactMatch(
 }
 
 
-/* =========================================================
-   MARKETS
-   ========================================================= */
+/* MARKETS */
 
 function makeMainOdds(
   match,
@@ -3719,7 +3789,6 @@ function makeMainOdds(
         Исход матча пока недоступен
       </div>
     `;
-
   }
 
 
@@ -3738,7 +3807,6 @@ function makeMainOdds(
         П1<br>${Number(match.odds.home).toFixed(2)}
       </button>
 
-
       <button
         class="odd-button"
         onclick="openBet(
@@ -3750,7 +3818,6 @@ function makeMainOdds(
       >
         X<br>${Number(match.odds.draw).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3786,17 +3853,14 @@ function makeDoubleChanceBlock(
         Двойной шанс пока недоступен
       </div>
     `;
-
   }
 
 
   const oneX =
     data["1x"];
 
-
   const oneTwo =
     data["12"];
-
 
   const xTwo =
     data["x2"];
@@ -3891,7 +3955,6 @@ function makeTotalBlock(
         Тотал ${point} пока недоступен
       </div>
     `;
-
   }
 
 
@@ -3910,7 +3973,6 @@ function makeTotalBlock(
         ТБ ${point}<br>
         ${Number(total.over).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3949,7 +4011,6 @@ function makeBttsBlock(
         ОЗ пока недоступен
       </div>
     `;
-
   }
 
 
@@ -3968,7 +4029,6 @@ function makeBttsBlock(
         ОЗ Да<br>
         ${Number(match.btts.yes).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -4007,7 +4067,6 @@ function makeHandicapsBlock(
         Форы пока недоступны
       </div>
     `;
-
   }
 
 
@@ -4105,7 +4164,6 @@ function makeTeamTotalsBlock(
         Индивидуальные тоталы пока недоступны
       </div>
     `;
-
   }
 
 
@@ -4118,7 +4176,6 @@ function makeTeamTotalsBlock(
       number: 1,
       name: match.home
     },
-
     {
       side: "away",
       number: 2,
@@ -4219,24 +4276,16 @@ function makeTeamTotalsBlock(
 }
 
 
-/* =========================================================
-   MATCH DETAIL
-   ========================================================= */
+/* MATCH DETAIL */
 
-function openMatch(
-  index
-) {
+function openMatch(index) {
 
   selectedMatch =
     matches[index];
 
 
-  if (
-    !selectedMatch
-  ) {
-
+  if (!selectedMatch) {
     return;
-
   }
 
 
@@ -4323,9 +4372,7 @@ function closeMatch() {
 }
 
 
-function renderMatchDetail(
-  match
-) {
+function renderMatchDetail(match) {
 
   const safeName =
     safeMatchName(
@@ -4347,7 +4394,6 @@ function renderMatchDetail(
           ${escapeHtml(match.league)}
         </div>
 
-
         <div class="teams">
 
           <div class="team">
@@ -4355,11 +4401,9 @@ function renderMatchDetail(
             ${escapeHtml(match.home)}
           </div>
 
-
           <div class="vs">
             VS
           </div>
-
 
           <div class="team">
             <img src="${match.away_logo || ""}">
@@ -4367,7 +4411,6 @@ function renderMatchDetail(
           </div>
 
         </div>
-
 
         <div class="time">
           ${formatDate(match.date)}
@@ -4496,9 +4539,7 @@ function renderMatchDetail(
 }
 
 
-/* =========================================================
-   MATCHES
-   ========================================================= */
+/* MATCHES */
 
 async function loadMatches() {
 
@@ -4525,13 +4566,11 @@ async function loadMatches() {
         ||
         "Ошибка матчей"
       );
-
     }
 
 
     matches =
-      data.matches
-      || [];
+      data.matches || [];
 
 
     renderMatches();
@@ -4597,7 +4636,6 @@ function renderMatches() {
 
 
     return;
-
   }
 
 
@@ -4607,15 +4645,9 @@ function renderMatches() {
     )
     .innerHTML =
       matches
-      .slice(
-        0,
-        4
-      )
+      .slice(0, 4)
       .map(
-        (
-          match,
-          localIndex
-        ) => {
+        match => {
 
           const index =
             matches.indexOf(
@@ -4627,7 +4659,6 @@ function renderMatches() {
             match,
             index
           );
-
         }
       )
       .join("");
@@ -4654,9 +4685,7 @@ function renderMatches() {
 }
 
 
-/* =========================================================
-   BET
-   ========================================================= */
+/* BET */
 
 function openBet(
   match,
@@ -4674,24 +4703,15 @@ function openBet(
     );
 
     return;
-
   }
 
 
   selectedBet = {
-    match:
-      match,
-
-    fixtureId:
-      fixtureId,
-
-    selection:
-      selection,
-
+    match,
+    fixtureId,
+    selection,
     odd:
-      Number(
-        odd
-      )
+      Number(odd)
   };
 
 
@@ -4783,12 +4803,8 @@ function closeBet() {
 
 function calculateWin() {
 
-  if (
-    !selectedBet
-  ) {
-
+  if (!selectedBet) {
     return;
-
   }
 
 
@@ -4820,12 +4836,8 @@ function calculateWin() {
 
 async function confirmBet() {
 
-  if (
-    !selectedBet
-  ) {
-
+  if (!selectedBet) {
     return;
-
   }
 
 
@@ -4856,7 +4868,6 @@ async function confirmBet() {
     );
 
     return;
-
   }
 
 
@@ -4869,7 +4880,6 @@ async function confirmBet() {
     );
 
     return;
-
   }
 
 
@@ -4879,8 +4889,7 @@ async function confirmBet() {
       await fetch(
         `${SERVER_URL}/api/bets`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -4924,31 +4933,23 @@ async function confirmBet() {
         ||
         "Не удалось сделать ставку"
       );
-
     }
 
 
     balance =
-      Number(
-        data.balance
-      );
+      Number(data.balance);
 
 
     xp =
-      Number(
-        data.xp
-      );
+      Number(data.xp);
 
 
     level =
-      Number(
-        data.level
-      );
+      Number(data.level);
 
 
     league =
-      data.league
-      || league;
+      data.league || league;
 
 
     currentLevelXp =
@@ -4964,8 +4965,7 @@ async function confirmBet() {
 
 
     tasks =
-      data.tasks
-      || tasks;
+      data.tasks || tasks;
 
 
     achievements =
@@ -4973,9 +4973,12 @@ async function confirmBet() {
       || achievements;
 
 
+    stats =
+      data.stats || stats;
+
+
     myRank =
-      data.my_rank
-      || myRank;
+      data.my_rank || myRank;
 
 
     closeBet();
@@ -4987,8 +4990,7 @@ async function confirmBet() {
       level > oldLevel
       &&
       Number(
-        data.level_reward
-        || 0
+        data.level_reward || 0
       ) > 0
     ) {
 
@@ -4996,7 +4998,6 @@ async function confirmBet() {
         level,
         data.level_reward
       );
-
     }
 
 
@@ -5008,7 +5009,6 @@ async function confirmBet() {
       .notificationOccurred(
         "success"
       );
-
     }
 
 
@@ -5023,15 +5023,12 @@ async function confirmBet() {
     alert(
       error.message
     );
-
   }
 
 }
 
 
-/* =========================================================
-   BET LIST
-   ========================================================= */
+/* BET LIST */
 
 function renderBets() {
 
@@ -5041,12 +5038,8 @@ function renderBets() {
     );
 
 
-  if (
-    !sessionLoaded
-  ) {
-
+  if (!sessionLoaded) {
     return;
-
   }
 
 
@@ -5061,7 +5054,6 @@ function renderBets() {
     `;
 
     return;
-
   }
 
 
@@ -5070,16 +5062,10 @@ function renderBets() {
     .map(
       bet => {
 
-        let cardClass =
-          "";
-
-
+        let cardClass = "";
         let statusClass =
           "status-active";
-
-
-        let icon =
-          "⏳";
+        let icon = "⏳";
 
 
         if (
@@ -5094,7 +5080,6 @@ function renderBets() {
 
           icon =
             "✅";
-
         }
 
         else if (
@@ -5109,7 +5094,6 @@ function renderBets() {
 
           icon =
             "❌";
-
         }
 
         else if (
@@ -5124,7 +5108,6 @@ function renderBets() {
 
           icon =
             "↩️";
-
         }
 
 
@@ -5135,25 +5118,21 @@ function renderBets() {
               ${escapeHtml(bet.match)}
             </b>
 
-
             <p>
               ${escapeHtml(bet.selection)}
               •
               ${Number(bet.odd).toFixed(2)}
             </p>
 
-
             <p>
               Ставка:
               🪙 ${bet.amount}
             </p>
 
-
             <p>
               Возможный выигрыш:
               🪙 ${bet.possible}
             </p>
-
 
             ${
               bet.score
@@ -5165,7 +5144,6 @@ function renderBets() {
                 `
                 : ""
             }
-
 
             <p class="${statusClass}">
               ${icon}
@@ -5182,9 +5160,7 @@ function renderBets() {
 }
 
 
-/* =========================================================
-   XP
-   ========================================================= */
+/* XP */
 
 function updateXpInterface() {
 
@@ -5233,9 +5209,7 @@ function updateXpInterface() {
 }
 
 
-/* =========================================================
-   INTERFACE
-   ========================================================= */
+/* INTERFACE */
 
 function updateInterface() {
 
@@ -5269,14 +5243,6 @@ function updateInterface() {
       balanceText;
 
 
-  document
-    .getElementById(
-      "betsCount"
-    )
-    .innerText =
-      bets.length;
-
-
   renderTasks();
 
   renderAchievements();
@@ -5289,12 +5255,12 @@ function updateInterface() {
 
   updateProfileRank();
 
+  updateStatsInterface();
+
 }
 
 
-/* =========================================================
-   NAV
-   ========================================================= */
+/* NAV */
 
 async function openPage(
   page,
@@ -5350,7 +5316,6 @@ async function openPage(
   ) {
 
     await loadLeaderboard();
-
   }
 
 
@@ -5361,15 +5326,12 @@ async function openPage(
   ) {
 
     await loadSession();
-
   }
 
 }
 
 
-function updateNavForPage(
-  page
-) {
+function updateNavForPage(page) {
 
   const buttons =
     document.querySelectorAll(
@@ -5385,71 +5347,30 @@ function updateNavForPage(
   );
 
 
-  if (
-    page === "home"
-  ) {
-
-    buttons[0]
-    .classList.add(
-      "active"
-    );
-
+  if (page === "home") {
+    buttons[0].classList.add("active");
   }
 
-
-  if (
-    page === "matches"
-  ) {
-
-    buttons[1]
-    .classList.add(
-      "active"
-    );
-
+  if (page === "matches") {
+    buttons[1].classList.add("active");
   }
 
-
-  if (
-    page === "bets"
-  ) {
-
-    buttons[2]
-    .classList.add(
-      "active"
-    );
-
+  if (page === "bets") {
+    buttons[2].classList.add("active");
   }
 
-
-  if (
-    page === "leaders"
-  ) {
-
-    buttons[3]
-    .classList.add(
-      "active"
-    );
-
+  if (page === "leaders") {
+    buttons[3].classList.add("active");
   }
 
-
-  if (
-    page === "profile"
-  ) {
-
-    buttons[4]
-    .classList.add(
-      "active"
-    );
-
+  if (page === "profile") {
+    buttons[4].classList.add("active");
   }
 
 }
 
 
-/* =========================================================
-   TELEGRAM
-   ========================================================= */
+/* TELEGRAM */
 
 const telegramUser =
   tg.initDataUnsafe
@@ -5468,13 +5389,10 @@ if (
       telegramUser.first_name
       ||
       "Игрок";
-
 }
 
 
-/* =========================================================
-   START
-   ========================================================= */
+/* START */
 
 async function startApp() {
 

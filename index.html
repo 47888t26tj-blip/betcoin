@@ -591,6 +591,79 @@ function makeBttsBlock(match, safeName) {
 }
 
 
+function makeDoubleChanceBlock(match, safeName) {
+
+  if (!match.double_chance) {
+    return `
+      <div class="no-odds">
+        Двойной шанс пока недоступен
+      </div>
+    `;
+  }
+
+  const oneX = match.double_chance["1x"];
+  const oneTwo = match.double_chance["12"];
+  const xTwo = match.double_chance["x2"];
+
+  if (
+    oneX == null &&
+    oneTwo == null &&
+    xTwo == null
+  ) {
+    return `
+      <div class="no-odds">
+        Двойной шанс пока недоступен
+      </div>
+    `;
+  }
+
+  return `
+    <div class="odds-3">
+
+      <button
+        class="odd-button"
+        ${oneX == null ? "disabled" : ""}
+        onclick="${
+          oneX == null
+          ? ""
+          : `openBet('${safeName}', '1X', ${oneX})`
+        }"
+      >
+        1X<br>
+        ${oneX == null ? "—" : Number(oneX).toFixed(2)}
+      </button>
+
+      <button
+        class="odd-button"
+        ${oneTwo == null ? "disabled" : ""}
+        onclick="${
+          oneTwo == null
+          ? ""
+          : `openBet('${safeName}', '12', ${oneTwo})`
+        }"
+      >
+        12<br>
+        ${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
+      </button>
+
+      <button
+        class="odd-button"
+        ${xTwo == null ? "disabled" : ""}
+        onclick="${
+          xTwo == null
+          ? ""
+          : `openBet('${safeName}', 'X2', ${xTwo})`
+        }"
+      >
+        X2<br>
+        ${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
+      </button>
+
+    </div>
+  `;
+}
+
+
 function createMatch(match) {
 
   const matchName =
@@ -692,24 +765,35 @@ function createMatch(match) {
       safeName
     );
 
+  const doubleChanceBlock =
+    makeDoubleChanceBlock(
+      match,
+      safeName
+    );
 
-  let bookmakerBlock = "";
+
+  let sourceBlocks = "";
 
   if (match.bookmaker) {
-    bookmakerBlock = `
+    sourceBlocks += `
       <div class="bookmaker">
         Основные рынки: ${match.bookmaker}
       </div>
     `;
   }
 
-
-  let bttsBookmakerBlock = "";
-
   if (match.btts_bookmaker) {
-    bttsBookmakerBlock = `
+    sourceBlocks += `
       <div class="bookmaker">
         ОЗ: ${match.btts_bookmaker}
+      </div>
+    `;
+  }
+
+  if (match.double_chance_bookmaker) {
+    sourceBlocks += `
+      <div class="bookmaker">
+        Двойной шанс: ${match.double_chance_bookmaker}
       </div>
     `;
   }
@@ -753,6 +837,13 @@ function createMatch(match) {
 
 
       <div class="market-title">
+        Двойной шанс
+      </div>
+
+      ${doubleChanceBlock}
+
+
+      <div class="market-title">
         Тотал голов 1.5
       </div>
 
@@ -787,9 +878,7 @@ function createMatch(match) {
       ${bttsBlock}
 
 
-      ${bookmakerBlock}
-
-      ${bttsBookmakerBlock}
+      ${sourceBlocks}
 
     </div>
   `;

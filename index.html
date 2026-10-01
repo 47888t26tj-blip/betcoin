@@ -147,9 +147,7 @@
       display: block;
     }
 
-    /* =========================
-       TASKS
-       ========================= */
+    /* TASKS */
 
     .tasks-section {
       margin-bottom: 25px;
@@ -266,9 +264,141 @@
       color: #6fe298;
     }
 
-    /* =========================
-       MATCHES
-       ========================= */
+    /* ACHIEVEMENTS */
+
+    .achievements-section {
+      margin-top: 18px;
+    }
+
+    .achievement-card {
+      background: #161922;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #282d39;
+    }
+
+    .achievement-card.completed {
+      border-color: #d79e2b;
+    }
+
+    .achievement-card.claimed {
+      border-color: #3b8f5b;
+      opacity: 0.82;
+    }
+
+    .achievement-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .achievement-icon {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      border-radius: 14px;
+      background: #232836;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+    }
+
+    .achievement-main {
+      flex: 1;
+    }
+
+    .achievement-title {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .achievement-description {
+      color: #8e95a5;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .achievement-reward {
+      margin-top: 7px;
+      color: #ffd66b;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .achievement-progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 13px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      color: #969dac;
+    }
+
+    .achievement-progress {
+      height: 8px;
+      background: #292e3b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .achievement-progress-fill {
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e1a52c,
+        #ffdf6b
+      );
+      border-radius: 999px;
+    }
+
+    .achievement-button {
+      width: 100%;
+      border: none;
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 11px;
+      font-weight: bold;
+      background: #d99a20;
+      color: #171717;
+      cursor: pointer;
+    }
+
+    .achievement-button:disabled {
+      background: #292e3b;
+      color: #858c9c;
+      cursor: default;
+    }
+
+    .achievement-button.claimed {
+      background: #1f4930;
+      color: #6fe298;
+    }
+
+    .achievement-summary {
+      background: linear-gradient(
+        135deg,
+        #35244f,
+        #222b57
+      );
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .achievement-summary-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .achievement-summary-text {
+      font-size: 13px;
+      color: #c1c5d2;
+    }
+
+    /* MATCHES */
 
     .match-card {
       background: #161922;
@@ -410,9 +540,7 @@
       font-size: 13px;
     }
 
-    /* =========================
-       NAV
-       ========================= */
+    /* NAV */
 
     .nav {
       position: fixed;
@@ -458,9 +586,7 @@
       color: #9299a8;
     }
 
-    /* =========================
-       BETS
-       ========================= */
+    /* BETS */
 
     .bet-card {
       background: #161922;
@@ -501,9 +627,7 @@
       font-weight: bold;
     }
 
-    /* =========================
-       PROFILE
-       ========================= */
+    /* PROFILE */
 
     .profile {
       background: #161922;
@@ -592,9 +716,7 @@
       display: none;
     }
 
-    /* =========================
-       MODALS
-       ========================= */
+    /* MODALS */
 
     .overlay {
       position: fixed;
@@ -731,6 +853,7 @@
 <div class="container">
 
   <div class="header">
+
     <div class="logo">
       ⚽ BetCoin
     </div>
@@ -738,6 +861,7 @@
     <div class="balance-small">
       🪙 <span id="topBalance">...</span>
     </div>
+
   </div>
 
 
@@ -747,7 +871,7 @@
   ></div>
 
 
-  <!-- ГЛАВНАЯ -->
+  <!-- HOME -->
 
   <div
     id="home"
@@ -755,21 +879,24 @@
   >
 
     <div class="balance-card">
-      <p>Твой баланс</p>
+
+      <p>
+        Твой баланс
+      </p>
 
       <h1>
         🪙 <span id="balance">...</span>
       </h1>
+
     </div>
 
-
-    <!-- ЕЖЕДНЕВНЫЙ БОНУС -->
 
     <div class="daily-card">
 
       <div class="daily-top">
 
         <div>
+
           <div class="daily-title">
             🎁 Ежедневный бонус
           </div>
@@ -781,6 +908,7 @@
           <div class="daily-description">
             +15 XP • раз в 24 часа
           </div>
+
         </div>
 
         <div style="font-size:45px;">
@@ -807,8 +935,6 @@
 
     </div>
 
-
-    <!-- ЗАДАНИЯ -->
 
     <div class="tasks-section">
 
@@ -852,7 +978,7 @@
   </div>
 
 
-  <!-- МАТЧИ -->
+  <!-- MATCHES -->
 
   <div
     id="matches"
@@ -862,6 +988,7 @@
     <h2>
       ⚽ Все матчи
     </h2>
+
 
     <div id="allMatches">
 
@@ -874,7 +1001,7 @@
   </div>
 
 
-  <!-- МАТЧ -->
+  <!-- MATCH DETAIL -->
 
   <div
     id="matchDetail"
@@ -888,6 +1015,7 @@
       ← Назад
     </button>
 
+
     <div
       id="matchDetailContent"
     ></div>
@@ -895,7 +1023,7 @@
   </div>
 
 
-  <!-- СТАВКИ -->
+  <!-- BETS -->
 
   <div
     id="bets"
@@ -905,6 +1033,7 @@
     <h2>
       🎫 Мои ставки
     </h2>
+
 
     <div id="betsList">
 
@@ -917,7 +1046,7 @@
   </div>
 
 
-  <!-- ПРОФИЛЬ -->
+  <!-- PROFILE -->
 
   <div
     id="profile"
@@ -1005,12 +1134,51 @@
 
     </div>
 
+
+    <!-- ACHIEVEMENTS -->
+
+    <div class="achievements-section">
+
+      <h2>
+        🏆 Достижения
+      </h2>
+
+
+      <div
+        id="achievementSummary"
+        class="achievement-summary"
+      >
+
+        <div class="achievement-summary-title">
+          Твои достижения
+        </div>
+
+        <div
+          id="achievementSummaryText"
+          class="achievement-summary-text"
+        >
+          Загружаем...
+        </div>
+
+      </div>
+
+
+      <div id="achievementsList">
+
+        <div class="loading">
+          Загружаем достижения...
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
 </div>
 
 
-<!-- НИЖНЕЕ МЕНЮ -->
+<!-- NAV -->
 
 <div class="nav">
 
@@ -1022,6 +1190,7 @@
     Главная
   </button>
 
+
   <button
     onclick="openPage('matches', this)"
   >
@@ -1029,12 +1198,14 @@
     Матчи
   </button>
 
+
   <button
     onclick="openPage('bets', this)"
   >
     <span class="nav-icon">🎫</span>
     Ставки
   </button>
+
 
   <button
     onclick="openPage('profile', this)"
@@ -1046,7 +1217,7 @@
 </div>
 
 
-<!-- СТАВКА -->
+<!-- BET MODAL -->
 
 <div
   id="overlay"
@@ -1078,6 +1249,7 @@
     За ставку: +10 XP
   </p>
 
+
   <input
     id="betAmount"
     type="number"
@@ -1086,10 +1258,12 @@
     oninput="calculateWin()"
   >
 
+
   <div class="potential">
     Возможный выигрыш:
     🪙 <span id="possibleWin">0</span>
   </div>
+
 
   <button
     id="confirmBetButton"
@@ -1098,6 +1272,7 @@
   >
     Поставить
   </button>
+
 
   <button
     class="cancel"
@@ -1129,9 +1304,11 @@
     🎉
   </div>
 
+
   <div class="levelup-title">
     Новый уровень!
   </div>
+
 
   <div
     id="levelUpLevel"
@@ -1140,12 +1317,14 @@
     Уровень 2
   </div>
 
+
   <div
     id="levelUpReward"
     class="levelup-reward"
   >
     Награда: +100 🪙
   </div>
+
 
   <button
     class="levelup-button"
@@ -1176,14 +1355,24 @@ const telegramInitData =
 
 
 let balance = 0;
+
 let bets = [];
+
 let matches = [];
+
 let tasks = [];
 
+let achievements = [];
+
+
 let xp = 0;
+
 let level = 1;
+
 let currentLevelXp = 0;
+
 let xpToNextLevel = 100;
+
 
 let dailyReward = {
   amount: 300,
@@ -1192,13 +1381,17 @@ let dailyReward = {
   next_claim: null
 };
 
+
 let dailySecondsLeft = 0;
+
 let dailyTimerInterval = null;
 
 let selectedBet = null;
+
 let selectedMatch = null;
 
 let previousPage = "home";
+
 let sessionLoaded = false;
 
 
@@ -1384,8 +1577,10 @@ function showError(message) {
       "serverError"
     );
 
+
   box.innerText =
     message;
+
 
   box.style.display =
     "block";
@@ -1418,6 +1613,7 @@ async function loadSession() {
     );
 
     return false;
+
   }
 
 
@@ -1483,6 +1679,11 @@ async function loadSession() {
 
     tasks =
       data.tasks
+      || [];
+
+
+    achievements =
+      data.achievements
       || [];
 
 
@@ -1681,32 +1882,20 @@ function renderTasks() {
             );
 
 
-          let rewardText = "";
-
-
-          if (
+          const rewardText =
             task.reward_type
             === "xp"
-          ) {
-
-            rewardText =
-              `+${task.reward} XP`;
-
-          }
-
-          else {
-
-            rewardText =
-              `+${task.reward} 🪙`;
-
-          }
+              ? `+${task.reward} XP`
+              : `+${task.reward} 🪙`;
 
 
           let buttonText =
             "Выполнить";
 
+
           let buttonDisabled =
             true;
+
 
           let buttonClass =
             "task-button";
@@ -1780,6 +1969,7 @@ function renderTasks() {
                   </div>
 
                 </div>
+
 
                 <div class="task-reward">
                   ${rewardText}
@@ -1927,6 +2117,11 @@ async function claimTask(
       || tasks;
 
 
+    achievements =
+      data.achievements
+      || achievements;
+
+
     updateInterface();
 
 
@@ -1964,11 +2159,12 @@ async function claimTask(
 
 
     if (
-      data.reward_type === "xp"
+      data.reward_type
+      === "xp"
     ) {
 
       alert(
-        `🎯 Задание выполнено! +${data.reward} XP`
+        `🎯 +${data.reward} XP`
       );
 
     }
@@ -1976,10 +2172,400 @@ async function claimTask(
     else {
 
       alert(
-        `🎯 Задание выполнено! +${data.reward} монет`
+        `🎯 +${data.reward} монет`
       );
 
     }
+
+  }
+
+  catch (error) {
+
+    alert(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ACHIEVEMENTS
+   ========================================================= */
+
+function achievementIcon(
+  key
+) {
+
+  if (
+    key === "bets_10"
+  ) {
+
+    return "🎫";
+
+  }
+
+
+  if (
+    key === "wins_5"
+  ) {
+
+    return "🔥";
+
+  }
+
+
+  if (
+    key === "level_5"
+  ) {
+
+    return "⭐";
+
+  }
+
+
+  if (
+    key === "xp_500"
+  ) {
+
+    return "⚡";
+
+  }
+
+
+  if (
+    key === "high_odd_win"
+  ) {
+
+    return "🎯";
+
+  }
+
+
+  return "🏆";
+
+}
+
+
+function renderAchievements() {
+
+  const container =
+    document.getElementById(
+      "achievementsList"
+    );
+
+
+  const summary =
+    document.getElementById(
+      "achievementSummaryText"
+    );
+
+
+  if (
+    !sessionLoaded
+  ) {
+
+    container.innerHTML = `
+      <div class="loading">
+        Загружаем достижения...
+      </div>
+    `;
+
+
+    summary.innerText =
+      "Загружаем...";
+
+
+    return;
+
+  }
+
+
+  if (
+    !achievements
+    ||
+    achievements.length === 0
+  ) {
+
+    container.innerHTML = `
+      <div class="empty">
+        Достижений пока нет
+      </div>
+    `;
+
+
+    summary.innerText =
+      "0 достижений";
+
+
+    return;
+
+  }
+
+
+  const claimedCount =
+    achievements.filter(
+      item =>
+        item.claimed
+    ).length;
+
+
+  const completedCount =
+    achievements.filter(
+      item =>
+        item.completed
+    ).length;
+
+
+  summary.innerText =
+    `Получено: ${claimedCount} из ${achievements.length} • Выполнено: ${completedCount}`;
+
+
+  container.innerHTML =
+    achievements
+      .map(
+        achievement => {
+
+          const target =
+            Number(
+              achievement.target
+              || 1
+            );
+
+
+          const progress =
+            Math.min(
+              Number(
+                achievement.progress
+                || 0
+              ),
+              target
+            );
+
+
+          const percent =
+            Math.min(
+              100,
+              Math.round(
+                (
+                  progress
+                  / target
+                )
+                * 100
+              )
+            );
+
+
+          let cardClass =
+            "achievement-card";
+
+
+          let buttonClass =
+            "achievement-button";
+
+
+          let buttonText =
+            "Не выполнено";
+
+
+          let disabled =
+            true;
+
+
+          if (
+            achievement.completed
+          ) {
+
+            cardClass +=
+              " completed";
+
+
+            buttonText =
+              "Забрать";
+
+
+            disabled =
+              false;
+
+          }
+
+
+          if (
+            achievement.claimed
+          ) {
+
+            cardClass +=
+              " claimed";
+
+
+            buttonClass +=
+              " claimed";
+
+
+            buttonText =
+              "✓ Получено";
+
+
+            disabled =
+              true;
+
+          }
+
+
+          return `
+            <div class="${cardClass}">
+
+              <div class="achievement-top">
+
+                <div class="achievement-icon">
+                  ${achievementIcon(
+                    achievement.key
+                  )}
+                </div>
+
+
+                <div class="achievement-main">
+
+                  <div class="achievement-title">
+                    ${achievement.title}
+                  </div>
+
+
+                  <div class="achievement-description">
+                    ${achievement.description}
+                  </div>
+
+
+                  <div class="achievement-reward">
+                    Награда: +${achievement.reward} 🪙
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="achievement-progress-row">
+
+                <span>
+                  Прогресс
+                </span>
+
+                <span>
+                  ${progress} / ${target}
+                </span>
+
+              </div>
+
+
+              <div class="achievement-progress">
+
+                <div
+                  class="achievement-progress-fill"
+                  style="width:${percent}%"
+                ></div>
+
+              </div>
+
+
+              <button
+                class="${buttonClass}"
+                ${disabled ? "disabled" : ""}
+                onclick="claimAchievement('${achievement.key}')"
+              >
+                ${buttonText}
+              </button>
+
+            </div>
+          `;
+
+        }
+      )
+      .join(
+        ""
+      );
+
+}
+
+
+async function claimAchievement(
+  achievementKey
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${SERVER_URL}/api/achievements/claim`,
+        {
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData,
+
+              achievement_key:
+                achievementKey
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+      ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
+        ||
+        "Не удалось получить достижение"
+      );
+
+    }
+
+
+    balance =
+      Number(
+        data.balance
+        || balance
+      );
+
+
+    achievements =
+      data.achievements
+      || achievements;
+
+
+    updateInterface();
+
+
+    if (
+      tg.HapticFeedback
+    ) {
+
+      tg.HapticFeedback
+        .notificationOccurred(
+          "success"
+        );
+
+    }
+
+
+    alert(
+      `🏆 Достижение получено! +${data.reward} монет`
+    );
 
   }
 
@@ -2049,7 +2635,7 @@ function updateXpInterface() {
 
 
 /* =========================================================
-   DAILY REWARD
+   DAILY
    ========================================================= */
 
 function formatDailyTime(
@@ -2059,7 +2645,9 @@ function formatDailyTime(
   seconds =
     Math.max(
       0,
-      Number(seconds)
+      Number(
+        seconds
+      )
     );
 
 
@@ -2085,23 +2673,26 @@ function formatDailyTime(
 
 
   return (
-    String(hours)
-      .padStart(
-        2,
-        "0"
-      )
+    String(
+      hours
+    ).padStart(
+      2,
+      "0"
+    )
     + ":"
-    + String(minutes)
-      .padStart(
-        2,
-        "0"
-      )
+    + String(
+      minutes
+    ).padStart(
+      2,
+      "0"
+    )
     + ":"
-    + String(secs)
-      .padStart(
-        2,
-        "0"
-      )
+    + String(
+      secs
+    ).padStart(
+      2,
+      "0"
+    )
   );
 
 }
@@ -2129,6 +2720,7 @@ function updateDailyReward() {
       dailyTimerInterval
     );
 
+
     dailyTimerInterval =
       null;
 
@@ -2142,11 +2734,14 @@ function updateDailyReward() {
     button.disabled =
       false;
 
+
     button.innerText =
       "Получить +300 🪙";
 
+
     timer.innerText =
       "Бонус доступен!";
+
 
     return;
 
@@ -2155,6 +2750,7 @@ function updateDailyReward() {
 
   button.disabled =
     true;
+
 
   button.innerText =
     "Бонус уже получен";
@@ -2340,6 +2936,11 @@ async function claimDailyReward() {
       );
 
 
+    achievements =
+      data.achievements
+      || achievements;
+
+
     dailyReward.available =
       false;
 
@@ -2434,7 +3035,9 @@ function formatDate(
 
 function safeMatchName(name) {
 
-  return String(name)
+  return String(
+    name
+  )
     .replace(
       /\\/g,
       "\\\\"
@@ -2466,7 +3069,7 @@ function handicapLabel(
 
 
 /* =========================================================
-   MATCH CARDS
+   MATCH CARD
    ========================================================= */
 
 function createCompactMatch(
@@ -2566,8 +3169,13 @@ function createCompactMatch(
       <div class="teams">
 
         <div class="team">
-          <img src="${match.home_logo}">
+
+          <img
+            src="${match.home_logo}"
+          >
+
           ${match.home}
+
         </div>
 
 
@@ -2577,8 +3185,13 @@ function createCompactMatch(
 
 
         <div class="team">
-          <img src="${match.away_logo}">
+
+          <img
+            src="${match.away_logo}"
+          >
+
           ${match.away}
+
         </div>
 
       </div>
@@ -2712,8 +3325,10 @@ function makeDoubleChanceBlock(
   const oneX =
     match.double_chance["1x"];
 
+
   const oneTwo =
     match.double_chance["12"];
+
 
   const xTwo =
     match.double_chance["x2"];
@@ -3055,6 +3670,7 @@ function makeTeamTotalLines(
 
 
   let found = false;
+
   let html = "";
 
 
@@ -3083,7 +3699,8 @@ function makeTeamTotalLines(
         under != null
       ) {
 
-        found = true;
+        found =
+          true;
 
       }
 
@@ -3670,6 +4287,7 @@ function openBet(
 
 
   selectedBet = {
+
     match:
       match,
 
@@ -3972,14 +4590,14 @@ async function confirmBet() {
       );
 
 
-    if (
+    tasks =
       data.tasks
-    ) {
+      || tasks;
 
-      tasks =
-        data.tasks;
 
-    }
+    achievements =
+      data.achievements
+      || achievements;
 
 
     closeBet();
@@ -4087,23 +4705,27 @@ function renderBets() {
           let cardClass =
             "";
 
+
           let statusClass =
             "status-active";
+
 
           let icon =
             "⏳";
 
 
           if (
-            bet.status ===
-            "Выиграла"
+            bet.status
+            === "Выиграла"
           ) {
 
             cardClass =
               "bet-win";
 
+
             statusClass =
               "status-win";
+
 
             icon =
               "✅";
@@ -4111,15 +4733,17 @@ function renderBets() {
           }
 
           else if (
-            bet.status ===
-            "Проиграла"
+            bet.status
+            === "Проиграла"
           ) {
 
             cardClass =
               "bet-loss";
 
+
             statusClass =
               "status-loss";
+
 
             icon =
               "❌";
@@ -4127,15 +4751,17 @@ function renderBets() {
           }
 
           else if (
-            bet.status ===
-            "Возврат"
+            bet.status
+            === "Возврат"
           ) {
 
             cardClass =
               "bet-refund";
 
+
             statusClass =
               "status-refund";
+
 
             icon =
               "↩️";
@@ -4161,6 +4787,7 @@ function renderBets() {
                 ${bet.match}
               </b>
 
+
               <p>
                 ${bet.selection}
                 •
@@ -4169,17 +4796,21 @@ function renderBets() {
                 ).toFixed(2)}
               </p>
 
+
               <p>
                 Ставка:
                 🪙 ${bet.amount}
               </p>
+
 
               <p>
                 Возможный выигрыш:
                 🪙 ${bet.possible}
               </p>
 
+
               ${score}
+
 
               <p class="${statusClass}">
                 ${icon}
@@ -4246,13 +4877,15 @@ function updateInterface() {
 
   renderTasks();
 
+  renderAchievements();
+
   updateXpInterface();
 
 }
 
 
 /* =========================================================
-   NAV
+   NAVIGATION
    ========================================================= */
 
 async function openPage(

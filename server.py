@@ -18,9 +18,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-# =========================
+# =========================================================
 # ENVIRONMENT
-# =========================
+# =========================================================
 
 FOOTBALL_TOKEN = os.environ.get(
     "FOOTBALL_DATA_TOKEN",
@@ -93,11 +93,12 @@ cache_data = {
 database_ready = False
 
 
-# =========================
+# =========================================================
 # DATABASE
-# =========================
+# =========================================================
 
 def get_db():
+
     if not DATABASE_URL:
         raise Exception(
             "DATABASE_URL not found"
@@ -109,6 +110,7 @@ def get_db():
 
 
 def init_database():
+
     global database_ready
 
     if database_ready:
@@ -128,12 +130,16 @@ def init_database():
         )
     """)
 
-    # Добавляем колонку ежедневного бонуса,
-    # если база была создана раньше.
     cur.execute("""
         ALTER TABLE users
         ADD COLUMN IF NOT EXISTS
         last_daily_claim TIMESTAMPTZ
+    """)
+
+    cur.execute("""
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS
+        xp INTEGER NOT NULL DEFAULT 0
     """)
 
     cur.execute("""
@@ -147,11 +153,13 @@ def init_database():
             fixture_id BIGINT NOT NULL,
 
             match_name TEXT NOT NULL,
+
             selection TEXT NOT NULL,
 
             odd DOUBLE PRECISION NOT NULL,
 
             amount INTEGER NOT NULL,
+
             possible INTEGER NOT NULL,
 
             status TEXT NOT NULL DEFAULT 'Активна',
@@ -184,13 +192,108 @@ def init_database():
     database_ready = True
 
 
-# =========================
+# =========================================================
+# XP / LEVELS
+# =========================================================
+
+def calculate_level(xp):
+
+    xp = int(
+        xp or 0
+    )
+
+    return (
+        xp // 100
+    ) + 1
+
+
+def xp_info(xp):
+
+    xp = int(
+        xp or 0
+    )
+
+    current_level_xp = (
+        xp % 100
+    )
+
+    return {
+        "xp":
+            xp,
+
+        "level":
+            calculate_level(
+                xp
+            ),
+
+        "current_level_xp":
+            current_level_xp,
+
+        "xp_to_next_level":
+            100
+            - current_level_xp
+    }
+
+
+def add_xp(
+    telegram_id,
+    amount,
+    cursor=None
+):
+
+    own_connection = False
+    conn = None
+
+    if cursor is None:
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        own_connection = True
+
+    cursor.execute("""
+        UPDATE users
+
+        SET
+            xp = xp + %s,
+            updated_at = NOW()
+
+        WHERE telegram_id = %s
+
+        RETURNING xp
+    """, (
+        int(amount),
+        telegram_id
+    ))
+
+    row = cursor.fetchone()
+
+    if own_connection:
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+    if not row:
+
+        return xp_info(
+            0
+        )
+
+    return xp_info(
+        row[0]
+    )
+
+
+# =========================================================
 # TELEGRAM AUTH
-# =========================
+# =========================================================
 
 def verify_telegram_init_data(
     init_data
 ):
+
     if not TELEGRAM_BOT_TOKEN:
         return None
 
@@ -198,6 +301,7 @@ def verify_telegram_init_data(
         return None
 
     try:
+
         data = dict(
             parse_qsl(
                 init_data,
@@ -213,6 +317,7 @@ def verify_telegram_init_data(
         if not received_hash:
             return None
 
+
         data_check_string = "\n".join(
             f"{key}={value}"
             for key, value
@@ -221,11 +326,13 @@ def verify_telegram_init_data(
             )
         )
 
+
         secret_key = hmac.new(
             b"WebAppData",
             TELEGRAM_BOT_TOKEN.encode(),
             hashlib.sha256
         ).digest()
+
 
         calculated_hash = hmac.new(
             secret_key,
@@ -233,11 +340,13 @@ def verify_telegram_init_data(
             hashlib.sha256
         ).hexdigest()
 
+
         if not hmac.compare_digest(
             calculated_hash,
             received_hash
         ):
             return None
+
 
         auth_date = int(
             data.get(
@@ -246,18 +355,19 @@ def verify_telegram_init_data(
             )
         )
 
+
         now = int(
             time.time()
         )
 
-        # Telegram initData старше суток
-        # не принимаем.
+
         if (
             auth_date <= 0
             or
             now - auth_date > 86400
         ):
             return None
+
 
         user_json = data.get(
             "user"
@@ -266,26 +376,35 @@ def verify_telegram_init_data(
         if not user_json:
             return None
 
+
         user = json.loads(
             user_json
         )
 
-        if not user.get("id"):
+
+        if not user.get(
+            "id"
+        ):
             return None
+
 
         return user
 
     except Exception:
+
         return None
 
 
 def get_telegram_user():
+
     init_data = request.headers.get(
         "X-Telegram-Init-Data",
         ""
     )
 
+
     if not init_data:
+
         body = request.get_json(
             silent=True
         ) or {}
@@ -295,52 +414,66 @@ def get_telegram_user():
             ""
         )
 
+
     return verify_telegram_init_data(
         init_data
     )
 
 
 def require_telegram_user():
+
     user = get_telegram_user()
 
     if not user:
+
         return None, (
             jsonify({
-                "success": False,
+                "success":
+                    False,
+
                 "error":
                     "Telegram authentication failed"
             }),
             401
         )
 
+
     return user, None
 
 
-# =========================
+# =========================================================
 # USERS
-# =========================
+# =========================================================
 
 def get_or_create_user(
     telegram_user
 ):
+
     init_database()
 
+
     telegram_id = int(
-        telegram_user["id"]
+        telegram_user[
+            "id"
+        ]
     )
+
 
     first_name = telegram_user.get(
         "first_name",
         ""
     )
 
+
     username = telegram_user.get(
         "username",
         ""
     )
 
+
     conn = get_db()
     cur = conn.cursor()
+
 
     cur.execute("""
         INSERT INTO users (
@@ -348,20 +481,34 @@ def get_or_create_user(
             first_name,
             username
         )
-        VALUES (%s, %s, %s)
+
+        VALUES (
+            %s,
+            %s,
+            %s
+        )
 
         ON CONFLICT (telegram_id)
+
         DO UPDATE SET
-            first_name = EXCLUDED.first_name,
-            username = EXCLUDED.username,
-            updated_at = NOW()
+
+            first_name =
+                EXCLUDED.first_name,
+
+            username =
+                EXCLUDED.username,
+
+            updated_at =
+                NOW()
     """, (
         telegram_id,
         first_name,
         username
     ))
 
+
     conn.commit()
+
 
     cur.execute("""
         SELECT
@@ -369,7 +516,8 @@ def get_or_create_user(
             first_name,
             username,
             balance,
-            last_daily_claim
+            last_daily_claim,
+            xp
 
         FROM users
 
@@ -378,10 +526,13 @@ def get_or_create_user(
         telegram_id,
     ))
 
+
     row = cur.fetchone()
+
 
     cur.close()
     conn.close()
+
 
     return {
         "telegram_id":
@@ -397,18 +548,29 @@ def get_or_create_user(
             row[3],
 
         "last_daily_claim":
-            row[4]
+            row[4],
+
+        "xp":
+            row[5]
     }
 
 
-def get_user_balance(
+def get_user_data(
     telegram_id
 ):
+
     conn = get_db()
     cur = conn.cursor()
 
+
     cur.execute("""
-        SELECT balance
+        SELECT
+            telegram_id,
+            first_name,
+            username,
+            balance,
+            last_daily_claim,
+            xp
 
         FROM users
 
@@ -417,28 +579,73 @@ def get_user_balance(
         telegram_id,
     ))
 
+
     row = cur.fetchone()
+
 
     cur.close()
     conn.close()
 
+
     if not row:
+        return None
+
+
+    return {
+        "telegram_id":
+            row[0],
+
+        "first_name":
+            row[1],
+
+        "username":
+            row[2],
+
+        "balance":
+            row[3],
+
+        "last_daily_claim":
+            row[4],
+
+        "xp":
+            row[5]
+    }
+
+
+def get_user_balance(
+    telegram_id
+):
+
+    user = get_user_data(
+        telegram_id
+    )
+
+    if not user:
         return 0
 
-    return row[0]
+    return int(
+        user[
+            "balance"
+        ]
+    )
 
 
-# =========================
+# =========================================================
 # HELPERS
-# =========================
+# =========================================================
 
 def normalize_team(name):
+
     if not name:
         return ""
 
-    name = str(name).lower().strip()
+    name = str(
+        name
+    ).lower().strip()
+
 
     replacements = {
+
         "manchester united fc":
             "manchester united",
 
@@ -485,13 +692,19 @@ def normalize_team(name):
             "crystal palace"
     }
 
+
     if name in replacements:
-        name = replacements[name]
+
+        name = replacements[
+            name
+        ]
+
 
     name = name.replace(
         "&",
         "and"
     )
+
 
     name = re.sub(
         r"\bfc\b",
@@ -499,99 +712,154 @@ def normalize_team(name):
         name
     )
 
+
     name = re.sub(
         r"\s+",
         " ",
         name
     )
 
+
     return name.strip()
 
 
 def point_key(point):
-    number = float(point)
+
+    number = float(
+        point
+    )
 
     if number.is_integer():
+
         return str(
-            int(number)
+            int(
+                number
+            )
         )
 
-    return str(number)
+    return str(
+        number
+    )
 
 
 def empty_totals():
+
     result = {}
 
     for point in TOTAL_POINTS:
+
         result[
-            point_key(point)
+            point_key(
+                point
+            )
         ] = {
-            "over": None,
-            "under": None
+            "over":
+                None,
+
+            "under":
+                None
         }
 
     return result
 
 
 def empty_handicaps():
+
     result = {
         "home": {},
         "away": {}
     }
 
+
     for point in HANDICAP_POINTS:
+
         key = point_key(
             point
         )
 
-        result["home"][key] = None
-        result["away"][key] = None
+        result[
+            "home"
+        ][
+            key
+        ] = None
+
+        result[
+            "away"
+        ][
+            key
+        ] = None
+
 
     return result
 
 
 def empty_team_totals():
+
     result = {
         "home": {},
         "away": {}
     }
 
+
     for point in TEAM_TOTAL_POINTS:
+
         key = point_key(
             point
         )
 
-        result["home"][key] = {
-            "over": None,
-            "under": None
+        result[
+            "home"
+        ][
+            key
+        ] = {
+            "over":
+                None,
+
+            "under":
+                None
         }
 
-        result["away"][key] = {
-            "over": None,
-            "under": None
+
+        result[
+            "away"
+        ][
+            key
+        ] = {
+            "over":
+                None,
+
+            "under":
+                None
         }
+
 
     return result
 
 
-# =========================
+# =========================================================
 # FOOTBALL DATA
-# =========================
+# =========================================================
 
 def get_football_matches():
+
     headers = {
         "X-Auth-Token":
             FOOTBALL_TOKEN
     }
 
+
     today = datetime.now(
         timezone.utc
     ).date()
 
+
     date_to = (
         today
-        + timedelta(days=14)
+        + timedelta(
+            days=14
+        )
     )
+
 
     params = {
         "dateFrom":
@@ -600,6 +868,7 @@ def get_football_matches():
         "dateTo":
             date_to.isoformat()
     }
+
 
     response = requests.get(
         (
@@ -611,7 +880,9 @@ def get_football_matches():
         timeout=20
     )
 
+
     response.raise_for_status()
+
 
     return (
         response.json(),
@@ -623,10 +894,12 @@ def get_football_matches():
 def get_single_match(
     fixture_id
 ):
+
     headers = {
         "X-Auth-Token":
             FOOTBALL_TOKEN
     }
+
 
     response = requests.get(
         (
@@ -637,56 +910,77 @@ def get_single_match(
         timeout=20
     )
 
+
     response.raise_for_status()
 
+
     data = response.json()
+
 
     score = data.get(
         "score",
         {}
     )
 
+
     full_time = score.get(
         "fullTime",
         {}
     )
 
+
     return {
         "fixture_id":
-            data.get("id"),
+            data.get(
+                "id"
+            ),
 
         "status":
-            data.get("status"),
+            data.get(
+                "status"
+            ),
 
         "home":
             data.get(
                 "homeTeam",
                 {}
-            ).get("name"),
+            ).get(
+                "name"
+            ),
 
         "away":
             data.get(
                 "awayTeam",
                 {}
-            ).get("name"),
+            ).get(
+                "name"
+            ),
 
         "home_score":
-            full_time.get("home"),
+            full_time.get(
+                "home"
+            ),
 
         "away_score":
-            full_time.get("away"),
+            full_time.get(
+                "away"
+            ),
 
         "winner":
-            score.get("winner")
+            score.get(
+                "winner"
+            )
     }
 
 
-# =========================
+# =========================================================
 # ODDS API
-# =========================
+# =========================================================
 
 def get_featured_odds():
+
     params = {
+
         "apiKey":
             ODDS_API_KEY,
 
@@ -703,6 +997,7 @@ def get_featured_odds():
             "iso"
     }
 
+
     response = requests.get(
         (
             f"{ODDS_API_URL}"
@@ -712,7 +1007,9 @@ def get_featured_odds():
         timeout=20
     )
 
+
     response.raise_for_status()
+
 
     return response.json()
 
@@ -722,6 +1019,7 @@ def find_odds_event(
     away_team,
     odds_events
 ):
+
     home_normalized = normalize_team(
         home_team
     )
@@ -729,6 +1027,7 @@ def find_odds_event(
     away_normalized = normalize_team(
         away_team
     )
+
 
     for event in odds_events:
 
@@ -744,27 +1043,40 @@ def find_odds_event(
             )
         )
 
+
         if (
-            home_normalized == odds_home
+            home_normalized
+            == odds_home
             and
-            away_normalized == odds_away
+            away_normalized
+            == odds_away
         ):
+
             return event
+
 
     return None
 
 
 def get_main_markets(event):
+
     if not event:
         return None
 
+
     home_normalized = normalize_team(
-        event.get("home_team")
+        event.get(
+            "home_team"
+        )
     )
 
+
     away_normalized = normalize_team(
-        event.get("away_team")
+        event.get(
+            "away_team"
+        )
     )
+
 
     for bookmaker in event.get(
         "bookmakers",
@@ -772,8 +1084,13 @@ def get_main_markets(event):
     ):
 
         h2h_data = None
-        totals_data = empty_totals()
+
+        totals_data = (
+            empty_totals()
+        )
+
         found = False
+
 
         for market in bookmaker.get(
             "markets",
@@ -784,11 +1101,17 @@ def get_main_markets(event):
                 "key"
             )
 
+
+            # -------------------------
+            # 1X2
+            # -------------------------
+
             if market_key == "h2h":
 
                 home_odd = None
                 draw_odd = None
                 away_odd = None
+
 
                 for outcome in market.get(
                     "outcomes",
@@ -803,20 +1126,31 @@ def get_main_markets(event):
                         "price"
                     )
 
+
                     if name == "Draw":
+
                         draw_odd = price
 
-                    elif (
-                        normalize_team(name)
-                        == home_normalized
-                    ):
-                        home_odd = price
 
                     elif (
-                        normalize_team(name)
+                        normalize_team(
+                            name
+                        )
+                        == home_normalized
+                    ):
+
+                        home_odd = price
+
+
+                    elif (
+                        normalize_team(
+                            name
+                        )
                         == away_normalized
                     ):
+
                         away_odd = price
+
 
                 if (
                     home_odd is not None
@@ -840,6 +1174,10 @@ def get_main_markets(event):
                     found = True
 
 
+            # -------------------------
+            # TOTALS
+            # -------------------------
+
             elif market_key == "totals":
 
                 for outcome in market.get(
@@ -859,39 +1197,55 @@ def get_main_markets(event):
                         "price"
                     )
 
+
                     try:
+
                         point = float(
                             point
                         )
+
                     except Exception:
+
                         continue
+
 
                     if (
                         point
                         not in TOTAL_POINTS
                     ):
+
                         continue
+
 
                     key = point_key(
                         point
                     )
 
+
                     if name == "Over":
+
                         totals_data[
                             key
-                        ]["over"] = price
+                        ][
+                            "over"
+                        ] = price
 
                         found = True
 
+
                     elif name == "Under":
+
                         totals_data[
                             key
-                        ]["under"] = price
+                        ][
+                            "under"
+                        ] = price
 
                         found = True
 
 
         if found:
+
             return {
                 "h2h":
                     h2h_data,
@@ -906,6 +1260,7 @@ def get_main_markets(event):
                     )
             }
 
+
     return None
 
 
@@ -914,12 +1269,14 @@ def detect_team_side(
     home_normalized,
     away_normalized
 ):
+
     name = str(
         outcome.get(
             "name",
             ""
         )
     )
+
 
     description = str(
         outcome.get(
@@ -928,23 +1285,29 @@ def detect_team_side(
         )
     )
 
+
     combined = normalize_team(
         name
         + " "
         + description
     )
 
+
     if (
         home_normalized
         in combined
     ):
+
         return "home"
+
 
     if (
         away_normalized
         in combined
     ):
+
         return "away"
+
 
     return None
 
@@ -952,6 +1315,7 @@ def detect_team_side(
 def detect_over_under(
     outcome
 ):
+
     text = (
         str(
             outcome.get(
@@ -968,11 +1332,16 @@ def detect_over_under(
         )
     ).lower()
 
+
     if "over" in text:
+
         return "over"
 
+
     if "under" in text:
+
         return "under"
+
 
     return None
 
@@ -982,10 +1351,13 @@ def get_extra_markets(
     home_team,
     away_team
 ):
+
     if not event_id:
         return None
 
+
     params = {
+
         "apiKey":
             ODDS_API_KEY,
 
@@ -1007,7 +1379,9 @@ def get_extra_markets(
             "iso"
     }
 
+
     try:
+
         response = requests.get(
             (
                 f"{ODDS_API_URL}"
@@ -1018,15 +1392,20 @@ def get_extra_markets(
             timeout=20
         )
 
+
         if (
             response.status_code
             != 200
         ):
+
             return None
+
 
         data = response.json()
 
+
     except Exception:
+
         return None
 
 
@@ -1040,6 +1419,7 @@ def get_extra_markets(
 
 
     result = {
+
         "btts":
             None,
 
@@ -1083,6 +1463,7 @@ def get_extra_markets(
                 "key"
             )
 
+
             if (
                 market_key
                 and
@@ -1091,6 +1472,7 @@ def get_extra_markets(
                     "available_extra_markets"
                 ]
             ):
+
                 result[
                     "available_extra_markets"
                 ].append(
@@ -1098,14 +1480,15 @@ def get_extra_markets(
                 )
 
 
-            # ======================
-            # ОБЕ ЗАБЬЮТ
-            # ======================
+            # -------------------------
+            # BOTH TEAMS TO SCORE
+            # -------------------------
 
             if market_key == "btts":
 
                 yes_odd = None
                 no_odd = None
+
 
                 for outcome in market.get(
                     "outcomes",
@@ -1119,33 +1502,42 @@ def get_extra_markets(
                         )
                     ).lower()
 
+
                     price = outcome.get(
                         "price"
                     )
 
+
                     if name == "yes":
+
                         yes_odd = price
 
+
                     elif name == "no":
+
                         no_odd = price
 
 
                 if (
-                    result["btts"]
-                    is None
+                    result[
+                        "btts"
+                    ] is None
                     and
                     yes_odd is not None
                     and
                     no_odd is not None
                 ):
 
-                    result["btts"] = {
+                    result[
+                        "btts"
+                    ] = {
                         "yes":
                             yes_odd,
 
                         "no":
                             no_odd
                     }
+
 
                     result[
                         "btts_bookmaker"
@@ -1155,9 +1547,9 @@ def get_extra_markets(
                     )
 
 
-            # ======================
-            # ДВОЙНОЙ ШАНС
-            # ======================
+            # -------------------------
+            # DOUBLE CHANCE
+            # -------------------------
 
             elif (
                 market_key
@@ -1167,6 +1559,7 @@ def get_extra_markets(
                 one_x = None
                 one_two = None
                 x_two = None
+
 
                 for outcome in market.get(
                     "outcomes",
@@ -1180,15 +1573,16 @@ def get_extra_markets(
                         )
                     )
 
+
                     price = outcome.get(
                         "price"
                     )
 
-                    normalized = (
-                        normalize_team(
-                            name
-                        )
+
+                    normalized = normalize_team(
+                        name
                     )
+
 
                     if (
                         home_normalized
@@ -1197,7 +1591,9 @@ def get_extra_markets(
                         "draw"
                         in normalized
                     ):
+
                         one_x = price
+
 
                     elif (
                         away_normalized
@@ -1206,7 +1602,9 @@ def get_extra_markets(
                         "draw"
                         in normalized
                     ):
+
                         x_two = price
+
 
                     elif (
                         home_normalized
@@ -1215,6 +1613,7 @@ def get_extra_markets(
                         away_normalized
                         in normalized
                     ):
+
                         one_two = price
 
 
@@ -1235,6 +1634,7 @@ def get_extra_markets(
                     result[
                         "double_chance"
                     ] = {
+
                         "1x":
                             one_x,
 
@@ -1245,6 +1645,7 @@ def get_extra_markets(
                             x_two
                     }
 
+
                     result[
                         "double_chance_bookmaker"
                     ] = bookmaker.get(
@@ -1253,9 +1654,9 @@ def get_extra_markets(
                     )
 
 
-            # ======================
-            # ФОРЫ
-            # ======================
+            # -------------------------
+            # HANDICAPS
+            # -------------------------
 
             elif (
                 market_key
@@ -1268,13 +1669,17 @@ def get_extra_markets(
                     ]
                     is not None
                 ):
+
                     continue
+
 
                 handicap_data = (
                     empty_handicaps()
                 )
 
+
                 found = False
+
 
                 for outcome in market.get(
                     "outcomes",
@@ -1287,30 +1692,40 @@ def get_extra_markets(
                         )
                     )
 
+
                     point = outcome.get(
                         "point"
                     )
+
 
                     price = outcome.get(
                         "price"
                     )
 
+
                     try:
+
                         point = float(
                             point
                         )
+
                     except Exception:
+
                         continue
+
 
                     if (
                         point
                         not in HANDICAP_POINTS
                     ):
+
                         continue
+
 
                     key = point_key(
                         point
                     )
+
 
                     if (
                         name
@@ -1319,7 +1734,9 @@ def get_extra_markets(
 
                         handicap_data[
                             "home"
-                        ][key] = price
+                        ][
+                            key
+                        ] = price
 
                         found = True
 
@@ -1331,7 +1748,9 @@ def get_extra_markets(
 
                         handicap_data[
                             "away"
-                        ][key] = price
+                        ][
+                            key
+                        ] = price
 
                         found = True
 
@@ -1342,6 +1761,7 @@ def get_extra_markets(
                         "handicaps"
                     ] = handicap_data
 
+
                     result[
                         "handicaps_bookmaker"
                     ] = bookmaker.get(
@@ -1350,9 +1770,9 @@ def get_extra_markets(
                     )
 
 
-            # ======================
-            # ИНД ТОТАЛЫ
-            # ======================
+            # -------------------------
+            # TEAM TOTALS
+            # -------------------------
 
             elif market_key in (
                 "team_totals",
@@ -1382,38 +1802,40 @@ def get_extra_markets(
                 ):
 
                     try:
+
                         point = float(
                             outcome.get(
                                 "point"
                             )
                         )
+
                     except Exception:
+
                         continue
+
 
                     price = outcome.get(
                         "price"
                     )
 
+
                     if (
                         point
                         not in TEAM_TOTAL_POINTS
                     ):
+
                         continue
 
 
-                    team_side = (
-                        detect_team_side(
-                            outcome,
-                            home_normalized,
-                            away_normalized
-                        )
+                    team_side = detect_team_side(
+                        outcome,
+                        home_normalized,
+                        away_normalized
                     )
 
 
-                    over_under = (
-                        detect_over_under(
-                            outcome
-                        )
+                    over_under = detect_over_under(
+                        outcome
                     )
 
 
@@ -1422,6 +1844,7 @@ def get_extra_markets(
                         or
                         not over_under
                     ):
+
                         continue
 
 
@@ -1470,6 +1893,7 @@ def get_extra_markets(
 
         has_value = False
 
+
         for side in (
             "home",
             "away"
@@ -1510,15 +1934,16 @@ def get_extra_markets(
     return result
 
 
-# =========================
+# =========================================================
 # BET SETTLEMENT
-# =========================
+# =========================================================
 
 def compare_total(
     value,
     line,
     bet_type
 ):
+
     if bet_type == "over":
 
         if value > line:
@@ -1544,19 +1969,23 @@ def calculate_bet_result(
     home_score,
     away_score
 ):
+
     total_goals = (
         home_score
         + away_score
     )
 
 
-    # П1 / X / П2
+    # -------------------------
+    # 1X2
+    # -------------------------
 
     if selection == "П1":
 
         return (
             "win"
-            if home_score > away_score
+            if home_score
+            > away_score
             else "loss"
         )
 
@@ -1565,7 +1994,8 @@ def calculate_bet_result(
 
         return (
             "win"
-            if home_score == away_score
+            if home_score
+            == away_score
             else "loss"
         )
 
@@ -1574,18 +2004,22 @@ def calculate_bet_result(
 
         return (
             "win"
-            if away_score > home_score
+            if away_score
+            > home_score
             else "loss"
         )
 
 
-    # ДВОЙНОЙ ШАНС
+    # -------------------------
+    # DOUBLE CHANCE
+    # -------------------------
 
     if selection == "1X":
 
         return (
             "win"
-            if home_score >= away_score
+            if home_score
+            >= away_score
             else "loss"
         )
 
@@ -1594,7 +2028,8 @@ def calculate_bet_result(
 
         return (
             "win"
-            if home_score != away_score
+            if home_score
+            != away_score
             else "loss"
         )
 
@@ -1603,12 +2038,15 @@ def calculate_bet_result(
 
         return (
             "win"
-            if away_score >= home_score
+            if away_score
+            >= home_score
             else "loss"
         )
 
 
-    # ОБЕ ЗАБЬЮТ
+    # -------------------------
+    # BTTS
+    # -------------------------
 
     if selection == "ОЗ Да":
 
@@ -1636,25 +2074,33 @@ def calculate_bet_result(
         )
 
 
-    # ОБЩИЙ ТОТАЛ
+    # -------------------------
+    # TOTAL
+    # -------------------------
 
     total_match = re.match(
         r"^Т([БМ])\s*([0-9.]+)$",
         selection
     )
 
+
     if total_match:
 
         bet_type = (
             "over"
-            if total_match.group(1)
-            == "Б"
+            if total_match.group(
+                1
+            ) == "Б"
             else "under"
         )
 
+
         line = float(
-            total_match.group(2)
+            total_match.group(
+                2
+            )
         )
+
 
         return compare_total(
             total_goals,
@@ -1663,21 +2109,29 @@ def calculate_bet_result(
         )
 
 
-    # ФОРА
+    # -------------------------
+    # HANDICAP
+    # -------------------------
 
     handicap_match = re.match(
         r"^Ф([12])\(([-+]?[0-9.]+)\)$",
         selection
     )
 
+
     if handicap_match:
 
         team_number = int(
-            handicap_match.group(1)
+            handicap_match.group(
+                1
+            )
         )
 
+
         handicap = float(
-            handicap_match.group(2)
+            handicap_match.group(
+                2
+            )
         )
 
 
@@ -1701,34 +2155,46 @@ def calculate_bet_result(
         if result_value > 0:
             return "win"
 
+
         if result_value < 0:
             return "loss"
+
 
         return "refund"
 
 
-    # ИНД ТОТАЛ
+    # -------------------------
+    # TEAM TOTAL
+    # -------------------------
 
     team_total_match = re.match(
         r"^ИТ([БМ])([12])\(([0-9.]+)\)$",
         selection
     )
 
+
     if team_total_match:
 
         bet_type = (
             "over"
-            if team_total_match.group(1)
-            == "Б"
+            if team_total_match.group(
+                1
+            ) == "Б"
             else "under"
         )
 
+
         team_number = int(
-            team_total_match.group(2)
+            team_total_match.group(
+                2
+            )
         )
 
+
         line = float(
-            team_total_match.group(3)
+            team_total_match.group(
+                3
+            )
         )
 
 
@@ -1752,10 +2218,13 @@ def calculate_bet_result(
 def settle_user_bets(
     telegram_id
 ):
+
     init_database()
+
 
     conn = get_db()
     cur = conn.cursor()
+
 
     cur.execute("""
         SELECT
@@ -1775,12 +2244,15 @@ def settle_user_bets(
         telegram_id,
     ))
 
+
     rows = cur.fetchall()
 
 
     if not rows:
+
         cur.close()
         conn.close()
+
         return
 
 
@@ -1816,11 +2288,9 @@ def settle_user_bets(
                 ] = None
 
 
-        match_data = (
-            match_cache[
-                fixture_id
-            ]
-        )
+        match_data = match_cache[
+            fixture_id
+        ]
 
 
         if not match_data:
@@ -1833,19 +2303,16 @@ def settle_user_bets(
             )
             != "FINISHED"
         ):
+
             continue
 
 
-        home_score = (
-            match_data.get(
-                "home_score"
-            )
+        home_score = match_data.get(
+            "home_score"
         )
 
-        away_score = (
-            match_data.get(
-                "away_score"
-            )
+        away_score = match_data.get(
+            "away_score"
         )
 
 
@@ -1854,13 +2321,23 @@ def settle_user_bets(
             or
             away_score is None
         ):
+
             continue
+
+
+        home_score = int(
+            home_score
+        )
+
+        away_score = int(
+            away_score
+        )
 
 
         result = calculate_bet_result(
             selection,
-            int(home_score),
-            int(away_score)
+            home_score,
+            away_score
         )
 
 
@@ -1917,9 +2394,10 @@ def settle_user_bets(
         ))
 
 
-        # Если ставка уже была рассчитана,
-        # второй раз монеты не начисляем.
+        # Только первый успешный расчёт
+        # может начислить монеты и XP.
         if cur.rowcount == 1:
+
 
             if payout > 0:
 
@@ -1929,7 +2407,9 @@ def settle_user_bets(
                     SET
                         balance =
                             balance + %s,
-                        updated_at = NOW()
+
+                        updated_at =
+                            NOW()
 
                     WHERE
                         telegram_id = %s
@@ -1939,21 +2419,33 @@ def settle_user_bets(
                 ))
 
 
+            # +25 XP только за выигрыш.
+            if result == "win":
+
+                add_xp(
+                    telegram_id,
+                    25,
+                    cur
+                )
+
+
     conn.commit()
 
     cur.close()
     conn.close()
 
 
-# =========================
+# =========================================================
 # BET LIST
-# =========================
+# =========================================================
 
 def get_user_bets(
     telegram_id
 ):
+
     conn = get_db()
     cur = conn.cursor()
+
 
     cur.execute("""
         SELECT
@@ -1978,10 +2470,13 @@ def get_user_bets(
         telegram_id,
     ))
 
+
     rows = cur.fetchall()
+
 
     cur.close()
     conn.close()
+
 
     result = []
 
@@ -1989,6 +2484,7 @@ def get_user_bets(
     for row in rows:
 
         result.append({
+
             "id":
                 row[0],
 
@@ -2020,23 +2516,26 @@ def get_user_bets(
                 row[9],
 
             "created_at":
-                row[10].isoformat()
-                if row[10]
-                else None
+                (
+                    row[10].isoformat()
+                    if row[10]
+                    else None
+                )
         })
 
 
     return result
 
 
-# =========================
+# =========================================================
 # ROOT
-# =========================
+# =========================================================
 
 @app.route("/")
 def home():
 
     return jsonify({
+
         "status":
             "ok",
 
@@ -2050,9 +2549,9 @@ def home():
     })
 
 
-# =========================
+# =========================================================
 # SESSION
-# =========================
+# =========================================================
 
 @app.route(
     "/api/session",
@@ -2063,6 +2562,7 @@ def session():
     telegram_user, error = (
         require_telegram_user()
     )
+
 
     if error:
         return error
@@ -2075,36 +2575,54 @@ def session():
         )
 
 
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+
+        # Проверяем и рассчитываем
+        # законченные ставки.
         settle_user_bets(
-            user[
-                "telegram_id"
-            ]
+            telegram_id
         )
 
 
-        balance = get_user_balance(
-            user[
-                "telegram_id"
-            ]
+        # Получаем свежие данные после
+        # возможного начисления выигрыша и XP.
+        user = get_user_data(
+            telegram_id
         )
+
+
+        if not user:
+
+            raise Exception(
+                "User not found"
+            )
 
 
         bets = get_user_bets(
-            user[
-                "telegram_id"
-            ]
+            telegram_id
         )
 
 
-        last_daily_claim = (
+        player_xp = xp_info(
             user.get(
-                "last_daily_claim"
+                "xp",
+                0
             )
         )
 
 
+        last_daily_claim = user.get(
+            "last_daily_claim"
+        )
+
+
         next_daily_claim = None
+
         daily_available = True
+
         daily_seconds_left = 0
 
 
@@ -2123,9 +2641,13 @@ def session():
             )
 
 
-            if now < next_daily_claim:
+            if (
+                now
+                < next_daily_claim
+            ):
 
                 daily_available = False
+
 
                 daily_seconds_left = max(
                     0,
@@ -2139,10 +2661,13 @@ def session():
 
 
         return jsonify({
+
             "success":
                 True,
 
+
             "user": {
+
                 "telegram_id":
                     user[
                         "telegram_id"
@@ -2159,13 +2684,45 @@ def session():
                     ]
             },
 
+
             "balance":
-                balance,
+                int(
+                    user[
+                        "balance"
+                    ]
+                ),
+
+
+            "xp":
+                player_xp[
+                    "xp"
+                ],
+
+
+            "level":
+                player_xp[
+                    "level"
+                ],
+
+
+            "current_level_xp":
+                player_xp[
+                    "current_level_xp"
+                ],
+
+
+            "xp_to_next_level":
+                player_xp[
+                    "xp_to_next_level"
+                ],
+
 
             "bets":
                 bets,
 
+
             "daily_reward": {
+
                 "amount":
                     300,
 
@@ -2188,17 +2745,20 @@ def session():
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
         }), 500
 
 
-# =========================
+# =========================================================
 # CREATE BET
-# =========================
+# =========================================================
 
 @app.route(
     "/api/bets",
@@ -2209,6 +2769,7 @@ def create_bet():
     telegram_user, error = (
         require_telegram_user()
     )
+
 
     if error:
         return error
@@ -2227,11 +2788,13 @@ def create_bet():
             )
         )
 
+
         amount = int(
             body.get(
                 "amount"
             )
         )
+
 
         odd = float(
             body.get(
@@ -2239,12 +2802,14 @@ def create_bet():
             )
         )
 
+
         match_name = str(
             body.get(
                 "match",
                 ""
             )
         ).strip()
+
 
         selection = str(
             body.get(
@@ -2257,11 +2822,13 @@ def create_bet():
     except Exception:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
                 "Invalid bet data"
+
         }), 400
 
 
@@ -2276,11 +2843,13 @@ def create_bet():
     ):
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
                 "Invalid bet data"
+
         }), 400
 
 
@@ -2330,12 +2899,15 @@ def create_bet():
             cur.close()
             conn.close()
 
+
             return jsonify({
+
                 "success":
                     False,
 
                 "error":
                     "User not found"
+
             }), 404
 
 
@@ -2354,12 +2926,15 @@ def create_bet():
             cur.close()
             conn.close()
 
+
             return jsonify({
+
                 "success":
                     False,
 
                 "error":
                     "Недостаточно монет"
+
             }), 400
 
 
@@ -2420,8 +2995,14 @@ def create_bet():
         ))
 
 
-        bet_id = (
-            cur.fetchone()[0]
+        bet_id = cur.fetchone()[0]
+
+
+        # +10 XP за новую ставку.
+        xp_result = add_xp(
+            telegram_id,
+            10,
+            cur
         )
 
 
@@ -2432,6 +3013,7 @@ def create_bet():
 
 
         return jsonify({
+
             "success":
                 True,
 
@@ -2442,24 +3024,46 @@ def create_bet():
                 new_balance,
 
             "possible":
-                possible
+                possible,
+
+            "xp_gained":
+                10,
+
+            "xp":
+                xp_result[
+                    "xp"
+                ],
+
+            "level":
+                xp_result[
+                    "level"
+                ],
+
+            "current_level_xp":
+                xp_result[
+                    "current_level_xp"
+                ]
         })
 
 
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
+
         }), 500
 
 
-# =========================
+# =========================================================
 # DAILY REWARD
-# =========================
+# =========================================================
 
 @app.route(
     "/api/daily-reward",
@@ -2470,6 +3074,7 @@ def daily_reward():
     telegram_user, error = (
         require_telegram_user()
     )
+
 
     if error:
         return error
@@ -2491,9 +3096,6 @@ def daily_reward():
         cur = conn.cursor()
 
 
-        # Блокируем строку пользователя,
-        # чтобы бонус нельзя было получить
-        # два раза одновременно.
         cur.execute("""
             SELECT
                 balance,
@@ -2519,12 +3121,15 @@ def daily_reward():
             cur.close()
             conn.close()
 
+
             return jsonify({
+
                 "success":
                     False,
 
                 "error":
                     "User not found"
+
             }), 404
 
 
@@ -2574,6 +3179,7 @@ def daily_reward():
 
 
                 return jsonify({
+
                     "success":
                         False,
 
@@ -2585,6 +3191,7 @@ def daily_reward():
 
                     "next_claim":
                         next_claim.isoformat()
+
                 }), 400
 
 
@@ -2613,6 +3220,14 @@ def daily_reward():
         ))
 
 
+        # +15 XP за ежедневный бонус.
+        xp_result = add_xp(
+            telegram_id,
+            15,
+            cur
+        )
+
+
         conn.commit()
 
         cur.close()
@@ -2620,6 +3235,7 @@ def daily_reward():
 
 
         return jsonify({
+
             "success":
                 True,
 
@@ -2628,6 +3244,24 @@ def daily_reward():
 
             "balance":
                 new_balance,
+
+            "xp_gained":
+                15,
+
+            "xp":
+                xp_result[
+                    "xp"
+                ],
+
+            "level":
+                xp_result[
+                    "level"
+                ],
+
+            "current_level_xp":
+                xp_result[
+                    "current_level_xp"
+                ],
 
             "next_claim":
                 (
@@ -2645,17 +3279,21 @@ def daily_reward():
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
+
         }), 500
 
 
-# =========================
+# =========================================================
 # MANUAL SETTLE
-# =========================
+# =========================================================
 
 @app.route(
     "/api/settle",
@@ -2666,6 +3304,7 @@ def settle():
     telegram_user, error = (
         require_telegram_user()
     )
+
 
     if error:
         return error
@@ -2678,29 +3317,59 @@ def settle():
         )
 
 
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+
         settle_user_bets(
-            user[
-                "telegram_id"
-            ]
+            telegram_id
+        )
+
+
+        user = get_user_data(
+            telegram_id
+        )
+
+
+        player_xp = xp_info(
+            user.get(
+                "xp",
+                0
+            )
         )
 
 
         return jsonify({
+
             "success":
                 True,
 
             "balance":
-                get_user_balance(
+                int(
                     user[
-                        "telegram_id"
+                        "balance"
                     ]
                 ),
 
+            "xp":
+                player_xp[
+                    "xp"
+                ],
+
+            "level":
+                player_xp[
+                    "level"
+                ],
+
+            "current_level_xp":
+                player_xp[
+                    "current_level_xp"
+                ],
+
             "bets":
                 get_user_bets(
-                    user[
-                        "telegram_id"
-                    ]
+                    telegram_id
                 )
         })
 
@@ -2708,17 +3377,21 @@ def settle():
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
+
         }), 500
 
 
-# =========================
+# =========================================================
 # SINGLE MATCH
-# =========================
+# =========================================================
 
 @app.route(
     "/api/match/<int:match_id>"
@@ -2730,11 +3403,13 @@ def single_match(
     if not FOOTBALL_TOKEN:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
                 "FOOTBALL_DATA_TOKEN not found"
+
         }), 500
 
 
@@ -2746,6 +3421,7 @@ def single_match(
 
 
         return jsonify({
+
             "success":
                 True,
 
@@ -2756,17 +3432,21 @@ def single_match(
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
+
         }), 500
 
 
-# =========================
+# =========================================================
 # MATCH LIST
-# =========================
+# =========================================================
 
 @app.route(
     "/api/matches"
@@ -2796,22 +3476,26 @@ def matches():
     if not FOOTBALL_TOKEN:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
                 "FOOTBALL_DATA_TOKEN not found"
+
         }), 500
 
 
     if not ODDS_API_KEY:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
                 "ODDS_API_KEY not found"
+
         }), 500
 
 
@@ -2821,7 +3505,6 @@ def matches():
             football_data,
             today,
             date_to
-
         ) = get_football_matches()
 
 
@@ -2833,11 +3516,15 @@ def matches():
     except Exception as error:
 
         return jsonify({
+
             "success":
                 False,
 
             "error":
-                str(error)
+                str(
+                    error
+                )
+
         }), 500
 
 
@@ -2854,10 +3541,12 @@ def matches():
             {}
         )
 
+
         away_team = item.get(
             "awayTeam",
             {}
         )
+
 
         competition = item.get(
             "competition",
@@ -2868,6 +3557,7 @@ def matches():
         home_name = home_team.get(
             "name"
         )
+
 
         away_name = away_team.get(
             "name"
@@ -3024,6 +3714,7 @@ def matches():
                     point
                 )
 
+
                 total = totals.get(
                     key
                 )
@@ -3076,15 +3767,25 @@ def matches():
         if extra_markets:
 
             for key in (
+
                 "btts",
+
                 "btts_bookmaker",
+
                 "double_chance",
+
                 "double_chance_bookmaker",
+
                 "handicaps",
+
                 "handicaps_bookmaker",
+
                 "team_totals",
+
                 "team_totals_bookmaker",
+
                 "available_extra_markets"
+
             ):
 
                 match[
@@ -3135,9 +3836,9 @@ def matches():
     )
 
 
-# =========================
+# =========================================================
 # START
-# =========================
+# =========================================================
 
 if __name__ == "__main__":
 
@@ -3147,6 +3848,7 @@ if __name__ == "__main__":
             10000
         )
     )
+
 
     app.run(
         host="0.0.0.0",

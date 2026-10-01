@@ -375,6 +375,7 @@
       padding: 22px;
       border-radius: 20px;
       text-align: center;
+      margin-bottom: 14px;
     }
 
     .avatar {
@@ -387,6 +388,64 @@
       justify-content: center;
       font-size: 30px;
       margin: 0 auto 12px;
+    }
+
+    .level-card {
+      background: #161922;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: left;
+    }
+
+    .level-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .level-number {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .level-xp-total {
+      color: #9299a8;
+      font-size: 13px;
+    }
+
+    .xp-row {
+      display: flex;
+      justify-content: space-between;
+      color: #b8bfcd;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .xp-bar {
+      width: 100%;
+      height: 12px;
+      background: #292e3b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .xp-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(
+        90deg,
+        #2775ff,
+        #8c57ff
+      );
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .xp-info {
+      margin-top: 10px;
+      color: #858c9c;
+      font-size: 12px;
     }
 
     .server-error {
@@ -474,6 +533,7 @@
 <div class="container">
 
   <div class="header">
+
     <div class="logo">
       ⚽ BetCoin
     </div>
@@ -481,6 +541,7 @@
     <div class="balance-small">
       🪙 <span id="topBalance">...</span>
     </div>
+
   </div>
 
 
@@ -527,7 +588,7 @@
           </div>
 
           <div class="daily-description">
-            Забирай бонус каждые 24 часа
+            +15 XP • раз в 24 часа
           </div>
 
         </div>
@@ -649,6 +710,7 @@
       👤 Профиль
     </h2>
 
+
     <div class="profile">
 
       <div class="avatar">
@@ -668,6 +730,60 @@
         Сделано ставок:
         <span id="betsCount">0</span>
       </p>
+
+    </div>
+
+
+    <div class="level-card">
+
+      <div class="level-top">
+
+        <div
+          id="levelNumber"
+          class="level-number"
+        >
+          ⭐ Уровень 1
+        </div>
+
+        <div
+          id="totalXp"
+          class="level-xp-total"
+        >
+          0 XP
+        </div>
+
+      </div>
+
+
+      <div class="xp-row">
+
+        <span>
+          Прогресс
+        </span>
+
+        <span id="xpProgressText">
+          0 / 100 XP
+        </span>
+
+      </div>
+
+
+      <div class="xp-bar">
+
+        <div
+          id="xpFill"
+          class="xp-fill"
+        ></div>
+
+      </div>
+
+
+      <div
+        id="xpInfo"
+        class="xp-info"
+      >
+        До следующего уровня: 100 XP
+      </div>
 
     </div>
 
@@ -720,7 +836,7 @@
 </div>
 
 
-<!-- СТАВКА -->
+<!-- ОКНО СТАВКИ -->
 
 <div
   id="overlay"
@@ -746,6 +862,10 @@
   <p>
     Коэффициент:
     <b id="modalOdd"></b>
+  </p>
+
+  <p style="color:#8e95a5;">
+    За ставку: +10 XP
   </p>
 
   <input
@@ -803,12 +923,23 @@ let bets = [];
 
 let matches = [];
 
+
+let xp = 0;
+
+let level = 1;
+
+let currentLevelXp = 0;
+
+let xpToNextLevel = 100;
+
+
 let dailyReward = {
   amount: 300,
   available: false,
   seconds_left: 0,
   next_claim: null
 };
+
 
 let dailySecondsLeft = 0;
 
@@ -844,9 +975,9 @@ const TEAM_TOTAL_POINTS = [
 ];
 
 
-/* =========================
+/* =========================================================
    API
-   ========================= */
+   ========================================================= */
 
 function authHeaders() {
 
@@ -889,9 +1020,9 @@ function hideError() {
 }
 
 
-/* =========================
+/* =========================================================
    SESSION
-   ========================= */
+   ========================================================= */
 
 async function loadSession() {
 
@@ -948,13 +1079,41 @@ async function loadSession() {
     balance =
       Number(
         data.balance
+        || 0
       );
 
 
     bets =
       data.bets
-      ||
-      [];
+      || [];
+
+
+    xp =
+      Number(
+        data.xp
+        || 0
+      );
+
+
+    level =
+      Number(
+        data.level
+        || 1
+      );
+
+
+    currentLevelXp =
+      Number(
+        data.current_level_xp
+        || 0
+      );
+
+
+    xpToNextLevel =
+      Number(
+        data.xp_to_next_level
+        || 100
+      );
 
 
     if (
@@ -964,12 +1123,12 @@ async function loadSession() {
       dailyReward =
         data.daily_reward;
 
+
       dailySecondsLeft =
         Number(
           data.daily_reward
             .seconds_left
-          ||
-          0
+          || 0
         );
 
     }
@@ -1001,6 +1160,7 @@ async function loadSession() {
 
     updateDailyReward();
 
+
     return true;
 
   }
@@ -1012,6 +1172,7 @@ async function loadSession() {
       + error.message
     );
 
+
     return false;
 
   }
@@ -1019,9 +1180,67 @@ async function loadSession() {
 }
 
 
-/* =========================
+/* =========================================================
+   XP
+   ========================================================= */
+
+function updateXpInterface() {
+
+  document
+    .getElementById(
+      "levelNumber"
+    )
+    .innerText =
+      `⭐ Уровень ${level}`;
+
+
+  document
+    .getElementById(
+      "totalXp"
+    )
+    .innerText =
+      `${xp} XP`;
+
+
+  document
+    .getElementById(
+      "xpProgressText"
+    )
+    .innerText =
+      `${currentLevelXp} / 100 XP`;
+
+
+  document
+    .getElementById(
+      "xpInfo"
+    )
+    .innerText =
+      `До следующего уровня: ${xpToNextLevel} XP`;
+
+
+  const progress =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        currentLevelXp
+      )
+    );
+
+
+  document
+    .getElementById(
+      "xpFill"
+    )
+    .style.width =
+      `${progress}%`;
+
+}
+
+
+/* =========================================================
    DAILY REWARD
-   ========================= */
+   ========================================================= */
 
 function formatDailyTime(
   seconds
@@ -1252,10 +1471,12 @@ async function claimDailyReward() {
         dailyReward.available =
           false;
 
+
         dailySecondsLeft =
           Number(
             data.seconds_left
           );
+
 
         updateDailyReward();
 
@@ -1277,14 +1498,47 @@ async function claimDailyReward() {
       );
 
 
+    if (
+      data.xp != null
+    ) {
+
+      xp =
+        Number(
+          data.xp
+        );
+
+    }
+
+
+    if (
+      data.level != null
+    ) {
+
+      level =
+        Number(
+          data.level
+        );
+
+    }
+
+
+    currentLevelXp =
+      xp % 100;
+
+
+    xpToNextLevel =
+      100
+      - currentLevelXp;
+
+
     dailyReward.available =
       false;
+
 
     dailySecondsLeft =
       Number(
         data.seconds_left
-        ||
-        86400
+        || 86400
       );
 
 
@@ -1306,7 +1560,7 @@ async function claimDailyReward() {
 
 
     alert(
-      `🎁 Ты получил +${data.reward} монет!`
+      `🎁 +${data.reward} монет и +${data.xp_gained || 15} XP!`
     );
 
   }
@@ -1335,9 +1589,9 @@ async function claimDailyReward() {
 }
 
 
-/* =========================
+/* =========================================================
    ДАТА
-   ========================= */
+   ========================================================= */
 
 function formatDate(
   dateString
@@ -1402,9 +1656,9 @@ function handicapLabel(
 }
 
 
-/* =========================
+/* =========================================================
    КАРТОЧКА МАТЧА
-   ========================= */
+   ========================================================= */
 
 function createCompactMatch(
   match,
@@ -1439,14 +1693,12 @@ function createCompactMatch(
 
         <button
           class="odd-button"
-          onclick="
-            openBet(
-              '${safeName}',
-              ${match.fixture_id},
-              'П1',
-              ${match.odds.home}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            ${match.fixture_id},
+            'П1',
+            ${match.odds.home}
+          )"
         >
           П1<br>
           ${Number(
@@ -1457,14 +1709,12 @@ function createCompactMatch(
 
         <button
           class="odd-button"
-          onclick="
-            openBet(
-              '${safeName}',
-              ${match.fixture_id},
-              'X',
-              ${match.odds.draw}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            ${match.fixture_id},
+            'X',
+            ${match.odds.draw}
+          )"
         >
           X<br>
           ${Number(
@@ -1475,14 +1725,12 @@ function createCompactMatch(
 
         <button
           class="odd-button"
-          onclick="
-            openBet(
-              '${safeName}',
-              ${match.fixture_id},
-              'П2',
-              ${match.odds.away}
-            )
-          "
+          onclick="openBet(
+            '${safeName}',
+            ${match.fixture_id},
+            'П2',
+            ${match.odds.away}
+          )"
         >
           П2<br>
           ${Number(
@@ -1560,9 +1808,9 @@ function createCompactMatch(
 }
 
 
-/* =========================
+/* =========================================================
    ИСХОД
-   ========================= */
+   ========================================================= */
 
 function makeMainOdds(
   match,
@@ -1644,9 +1892,9 @@ function makeMainOdds(
 }
 
 
-/* =========================
+/* =========================================================
    ДВОЙНОЙ ШАНС
-   ========================= */
+   ========================================================= */
 
 function makeDoubleChanceBlock(
   match,
@@ -1682,6 +1930,7 @@ function makeDoubleChanceBlock(
       <button
         class="odd-button"
         ${oneX == null ? "disabled" : ""}
+
         onclick="${
           oneX == null
             ? ""
@@ -1707,6 +1956,7 @@ function makeDoubleChanceBlock(
       <button
         class="odd-button"
         ${oneTwo == null ? "disabled" : ""}
+
         onclick="${
           oneTwo == null
             ? ""
@@ -1732,6 +1982,7 @@ function makeDoubleChanceBlock(
       <button
         class="odd-button"
         ${xTwo == null ? "disabled" : ""}
+
         onclick="${
           xTwo == null
             ? ""
@@ -1759,9 +2010,9 @@ function makeDoubleChanceBlock(
 }
 
 
-/* =========================
+/* =========================================================
    ТОТАЛ
-   ========================= */
+   ========================================================= */
 
 function makeTotalBlock(
   match,
@@ -1798,6 +2049,7 @@ function makeTotalBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1815,6 +2067,7 @@ function makeTotalBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1835,9 +2088,9 @@ function makeTotalBlock(
 }
 
 
-/* =========================
+/* =========================================================
    ОБЕ ЗАБЬЮТ
-   ========================= */
+   ========================================================= */
 
 function makeBttsBlock(
   match,
@@ -1866,6 +2119,7 @@ function makeBttsBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1883,6 +2137,7 @@ function makeBttsBlock(
 
       <button
         class="odd-button"
+
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1903,9 +2158,9 @@ function makeBttsBlock(
 }
 
 
-/* =========================
+/* =========================================================
    ФОРЫ
-   ========================= */
+   ========================================================= */
 
 function makeHandicapsBlock(
   match,
@@ -2041,9 +2296,9 @@ function makeHandicapsBlock(
 }
 
 
-/* =========================
+/* =========================================================
    ИНДИВИДУАЛЬНЫЕ ТОТАЛЫ
-   ========================= */
+   ========================================================= */
 
 function makeTeamTotalLines(
   match,
@@ -2232,9 +2487,9 @@ function makeTeamTotalsBlock(
 }
 
 
-/* =========================
+/* =========================================================
    ОТКРЫТИЕ МАТЧА
-   ========================= */
+   ========================================================= */
 
 function openMatch(
   index
@@ -2349,9 +2604,9 @@ function closeMatch() {
 }
 
 
-/* =========================
+/* =========================================================
    СТРАНИЦА МАТЧА
-   ========================= */
+   ========================================================= */
 
 function renderMatchDetail(
   match
@@ -2560,9 +2815,9 @@ function renderMatchDetail(
 }
 
 
-/* =========================
+/* =========================================================
    ЗАГРУЗКА МАТЧЕЙ
-   ========================= */
+   ========================================================= */
 
 async function loadMatches() {
 
@@ -2593,8 +2848,7 @@ async function loadMatches() {
 
     matches =
       data.matches
-      ||
-      [];
+      || [];
 
 
     renderMatches();
@@ -2718,9 +2972,9 @@ function renderMatches() {
 }
 
 
-/* =========================
+/* =========================================================
    ОКНО СТАВКИ
-   ========================= */
+   ========================================================= */
 
 function openBet(
   match,
@@ -2752,6 +3006,7 @@ function openBet(
 
 
   selectedBet = {
+
     match:
       match,
 
@@ -2862,9 +3117,9 @@ function closeBet() {
 }
 
 
-/* =========================
+/* =========================================================
    ВОЗМОЖНЫЙ ВЫИГРЫШ
-   ========================= */
+   ========================================================= */
 
 function calculateWin() {
 
@@ -2907,9 +3162,9 @@ function calculateWin() {
 }
 
 
-/* =========================
+/* =========================================================
    СОЗДАНИЕ СТАВКИ
-   ========================= */
+   ========================================================= */
 
 async function confirmBet() {
 
@@ -2986,6 +3241,7 @@ async function confirmBet() {
 
           body:
             JSON.stringify({
+
               initData:
                 telegramInitData,
 
@@ -3037,6 +3293,39 @@ async function confirmBet() {
       );
 
 
+    if (
+      data.xp != null
+    ) {
+
+      xp =
+        Number(
+          data.xp
+        );
+
+    }
+
+
+    if (
+      data.level != null
+    ) {
+
+      level =
+        Number(
+          data.level
+        );
+
+    }
+
+
+    currentLevelXp =
+      xp % 100;
+
+
+    xpToNextLevel =
+      100
+      - currentLevelXp;
+
+
     closeBet();
 
 
@@ -3062,6 +3351,7 @@ async function confirmBet() {
       error.message
     );
 
+
     button.disabled =
       false;
 
@@ -3070,9 +3360,9 @@ async function confirmBet() {
 }
 
 
-/* =========================
+/* =========================================================
    ИСТОРИЯ СТАВОК
-   ========================= */
+   ========================================================= */
 
 function renderBets() {
 
@@ -3234,9 +3524,9 @@ function renderBets() {
 }
 
 
-/* =========================
+/* =========================================================
    ИНТЕРФЕЙС
-   ========================= */
+   ========================================================= */
 
 function updateInterface() {
 
@@ -3280,12 +3570,14 @@ function updateInterface() {
 
   renderBets();
 
+  updateXpInterface();
+
 }
 
 
-/* =========================
+/* =========================================================
    НАВИГАЦИЯ
-   ========================= */
+   ========================================================= */
 
 async function openPage(
   page,
@@ -3417,9 +3709,9 @@ function updateNavForPage(
 }
 
 
-/* =========================
+/* =========================================================
    TELEGRAM USER
-   ========================= */
+   ========================================================= */
 
 const telegramUser =
   tg.initDataUnsafe
@@ -3443,9 +3735,9 @@ if (
 }
 
 
-/* =========================
+/* =========================================================
    START
-   ========================= */
+   ========================================================= */
 
 async function startApp() {
 

@@ -872,6 +872,208 @@ def get_user_data(
 
 
 # =========================================================
+# LEADERBOARD
+# =========================================================
+
+def get_leaderboard(
+    current_telegram_id=None,
+    limit=50
+):
+
+    init_database()
+
+
+    limit = max(
+        1,
+        min(
+            int(limit),
+            100
+        )
+    )
+
+
+    conn = get_db()
+    cur = conn.cursor()
+
+
+    cur.execute("""
+        SELECT
+            telegram_id,
+            first_name,
+            username,
+            balance,
+            xp
+
+        FROM users
+
+        ORDER BY
+            xp DESC,
+            balance DESC,
+            telegram_id ASC
+
+        LIMIT %s
+    """, (
+        limit,
+    ))
+
+
+    rows = cur.fetchall()
+
+
+    leaderboard = []
+
+
+    for index, row in enumerate(
+        rows,
+        start=1
+    ):
+
+        player_xp = int(
+            row[4]
+            or 0
+        )
+
+
+        leaderboard.append({
+            "rank":
+                index,
+
+            "telegram_id":
+                row[0],
+
+            "first_name":
+                row[1]
+                or "Игрок",
+
+            "username":
+                row[2]
+                or "",
+
+            "balance":
+                int(
+                    row[3]
+                    or 0
+                ),
+
+            "xp":
+                player_xp,
+
+            "level":
+                calculate_level(
+                    player_xp
+                )
+        })
+
+
+    my_rank = None
+    my_player = None
+
+
+    if current_telegram_id is not None:
+
+        cur.execute("""
+            SELECT
+                u.telegram_id,
+                u.first_name,
+                u.username,
+                u.balance,
+                u.xp,
+
+                (
+                    SELECT COUNT(*) + 1
+
+                    FROM users other
+
+                    WHERE
+                        other.xp > u.xp
+
+                        OR (
+                            other.xp = u.xp
+                            AND
+                            other.balance > u.balance
+                        )
+
+                        OR (
+                            other.xp = u.xp
+                            AND
+                            other.balance = u.balance
+                            AND
+                            other.telegram_id < u.telegram_id
+                        )
+                ) AS rank
+
+            FROM users u
+
+            WHERE u.telegram_id = %s
+        """, (
+            current_telegram_id,
+        ))
+
+
+        row = cur.fetchone()
+
+
+        if row:
+
+            player_xp = int(
+                row[4]
+                or 0
+            )
+
+
+            my_rank = int(
+                row[5]
+            )
+
+
+            my_player = {
+                "rank":
+                    my_rank,
+
+                "telegram_id":
+                    row[0],
+
+                "first_name":
+                    row[1]
+                    or "Игрок",
+
+                "username":
+                    row[2]
+                    or "",
+
+                "balance":
+                    int(
+                        row[3]
+                        or 0
+                    ),
+
+                "xp":
+                    player_xp,
+
+                "level":
+                    calculate_level(
+                        player_xp
+                    )
+            }
+
+
+    cur.close()
+    conn.close()
+
+
+    return {
+        "players":
+            leaderboard,
+
+        "my_rank":
+            my_rank,
+
+        "me":
+            my_player
+    }
+
+
+# =========================================================
 # DAILY TASKS
 # =========================================================
 
@@ -3242,6 +3444,12 @@ def session():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         user = get_user_data(
             telegram_id
         )
@@ -3377,6 +3585,14 @@ def session():
                 achievements,
 
 
+            "leaderboard": {
+                "my_rank":
+                    leaderboard_data[
+                        "my_rank"
+                    ]
+            },
+
+
             "daily_reward": {
                 "amount":
                     300,
@@ -3394,6 +3610,73 @@ def session():
                         else None
                     )
             }
+        })
+
+
+    except Exception as error:
+
+        return jsonify({
+            "success":
+                False,
+
+            "error":
+                str(error)
+        }), 500
+
+
+# =========================================================
+# LEADERBOARD API
+# =========================================================
+
+@app.route(
+    "/api/leaderboard",
+    methods=["POST"]
+)
+def leaderboard():
+
+    telegram_user, error = require_telegram_user()
+
+
+    if error:
+        return error
+
+
+    try:
+
+        user = get_or_create_user(
+            telegram_user
+        )
+
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+
+        data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
+        return jsonify({
+            "success":
+                True,
+
+            "players":
+                data[
+                    "players"
+                ],
+
+            "my_rank":
+                data[
+                    "my_rank"
+                ],
+
+            "me":
+                data[
+                    "me"
+                ]
         })
 
 
@@ -3690,6 +3973,12 @@ def create_bet():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -3740,7 +4029,12 @@ def create_bet():
                 tasks,
 
             "achievements":
-                achievements
+                achievements,
+
+            "my_rank":
+                leaderboard_data[
+                    "my_rank"
+                ]
         })
 
 
@@ -3939,6 +4233,12 @@ def daily_reward():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -3984,6 +4284,11 @@ def daily_reward():
 
             "achievements":
                 achievements,
+
+            "my_rank":
+                leaderboard_data[
+                    "my_rank"
+                ],
 
             "next_claim":
                 (
@@ -4334,6 +4639,12 @@ def claim_daily_task():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -4380,7 +4691,12 @@ def claim_daily_task():
                 tasks,
 
             "achievements":
-                achievements
+                achievements,
+
+            "my_rank":
+                leaderboard_data[
+                    "my_rank"
+                ]
         })
 
 
@@ -4600,6 +4916,12 @@ def claim_achievement():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -4614,7 +4936,12 @@ def claim_achievement():
                 final_balance,
 
             "achievements":
-                achievements
+                achievements,
+
+            "my_rank":
+                leaderboard_data[
+                    "my_rank"
+                ]
         })
 
 
@@ -4687,6 +5014,12 @@ def settle():
         )
 
 
+        leaderboard_data = get_leaderboard(
+            telegram_id,
+            50
+        )
+
+
         return jsonify({
             "success":
                 True,
@@ -4727,7 +5060,12 @@ def settle():
                 tasks,
 
             "achievements":
-                achievements
+                achievements,
+
+            "my_rank":
+                leaderboard_data[
+                    "my_rank"
+                ]
         })
 
 

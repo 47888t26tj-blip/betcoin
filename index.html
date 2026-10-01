@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -61,7 +62,7 @@
         #1f6feb,
         #6148d8
       );
-      margin-bottom: 25px;
+      margin-bottom: 14px;
     }
 
     .balance-card p {
@@ -72,6 +73,66 @@
     .balance-card h1 {
       margin: 8px 0 0;
       font-size: 34px;
+    }
+
+    .daily-card {
+      background: linear-gradient(
+        135deg,
+        #d98b17,
+        #b65d15
+      );
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 25px;
+    }
+
+    .daily-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .daily-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .daily-reward {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .daily-description {
+      color: rgba(255,255,255,0.78);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .daily-button {
+      margin-top: 15px;
+      width: 100%;
+      border: none;
+      background: white;
+      color: #161616;
+      padding: 13px;
+      border-radius: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .daily-button:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .daily-timer {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
     }
 
     h2 {
@@ -224,13 +285,6 @@
       border-radius: 12px;
       text-align: center;
       font-size: 13px;
-    }
-
-    .bookmaker {
-      color: #6f7788;
-      font-size: 11px;
-      margin-top: 10px;
-      text-align: center;
     }
 
     .nav {
@@ -420,7 +474,6 @@
 <div class="container">
 
   <div class="header">
-
     <div class="logo">
       ⚽ BetCoin
     </div>
@@ -428,7 +481,6 @@
     <div class="balance-small">
       🪙 <span id="topBalance">...</span>
     </div>
-
   </div>
 
 
@@ -439,6 +491,7 @@
 
 
   <!-- ГЛАВНАЯ -->
+
   <div
     id="home"
     class="page active"
@@ -456,9 +509,58 @@
 
     </div>
 
+
+    <!-- ЕЖЕДНЕВНЫЙ БОНУС -->
+
+    <div class="daily-card">
+
+      <div class="daily-top">
+
+        <div>
+
+          <div class="daily-title">
+            🎁 Ежедневный бонус
+          </div>
+
+          <div class="daily-reward">
+            +300 🪙
+          </div>
+
+          <div class="daily-description">
+            Забирай бонус каждые 24 часа
+          </div>
+
+        </div>
+
+        <div style="font-size:45px;">
+          🎁
+        </div>
+
+      </div>
+
+
+      <button
+        id="dailyButton"
+        class="daily-button"
+        onclick="claimDailyReward()"
+        disabled
+      >
+        Загрузка...
+      </button>
+
+
+      <div
+        id="dailyTimer"
+        class="daily-timer"
+      ></div>
+
+    </div>
+
+
     <h2>
       🔥 Матчи
     </h2>
+
 
     <div id="homeMatches">
 
@@ -471,7 +573,8 @@
   </div>
 
 
-  <!-- ВСЕ МАТЧИ -->
+  <!-- МАТЧИ -->
+
   <div
     id="matches"
     class="page"
@@ -492,7 +595,8 @@
   </div>
 
 
-  <!-- ОТДЕЛЬНЫЙ МАТЧ -->
+  <!-- МАТЧ -->
+
   <div
     id="matchDetail"
     class="page"
@@ -513,6 +617,7 @@
 
 
   <!-- СТАВКИ -->
+
   <div
     id="bets"
     class="page"
@@ -534,6 +639,7 @@
 
 
   <!-- ПРОФИЛЬ -->
+
   <div
     id="profile"
     class="page"
@@ -614,7 +720,7 @@
 </div>
 
 
-<!-- ОКНО СТАВКИ -->
+<!-- СТАВКА -->
 
 <div
   id="overlay"
@@ -697,6 +803,17 @@ let bets = [];
 
 let matches = [];
 
+let dailyReward = {
+  amount: 300,
+  available: false,
+  seconds_left: 0,
+  next_claim: null
+};
+
+let dailySecondsLeft = 0;
+
+let dailyTimerInterval = null;
+
 let selectedBet = null;
 
 let selectedMatch = null;
@@ -773,7 +890,7 @@ function hideError() {
 
 
 /* =========================
-   СЕССИЯ И БАЗА
+   SESSION
    ========================= */
 
 async function loadSession() {
@@ -781,7 +898,7 @@ async function loadSession() {
   if (!telegramInitData) {
 
     showError(
-      "Не удалось получить Telegram-сессию. Открой BetCoin через кнопку Играть в Telegram."
+      "Открой BetCoin через кнопку Играть в Telegram."
     );
 
     return false;
@@ -841,6 +958,24 @@ async function loadSession() {
 
 
     if (
+      data.daily_reward
+    ) {
+
+      dailyReward =
+        data.daily_reward;
+
+      dailySecondsLeft =
+        Number(
+          data.daily_reward
+            .seconds_left
+          ||
+          0
+        );
+
+    }
+
+
+    if (
       data.user
       &&
       data.user.first_name
@@ -864,6 +999,7 @@ async function loadSession() {
 
     updateInterface();
 
+    updateDailyReward();
 
     return true;
 
@@ -876,8 +1012,323 @@ async function loadSession() {
       + error.message
     );
 
-
     return false;
+
+  }
+
+}
+
+
+/* =========================
+   DAILY REWARD
+   ========================= */
+
+function formatDailyTime(
+  seconds
+) {
+
+  seconds =
+    Math.max(
+      0,
+      Number(seconds)
+    );
+
+
+  const hours =
+    Math.floor(
+      seconds / 3600
+    );
+
+
+  const minutes =
+    Math.floor(
+      (
+        seconds % 3600
+      )
+      / 60
+    );
+
+
+  const secs =
+    Math.floor(
+      seconds % 60
+    );
+
+
+  const h =
+    String(hours)
+      .padStart(
+        2,
+        "0"
+      );
+
+
+  const m =
+    String(minutes)
+      .padStart(
+        2,
+        "0"
+      );
+
+
+  const s =
+    String(secs)
+      .padStart(
+        2,
+        "0"
+      );
+
+
+  return `${h}:${m}:${s}`;
+
+}
+
+
+function updateDailyReward() {
+
+  const button =
+    document.getElementById(
+      "dailyButton"
+    );
+
+
+  const timer =
+    document.getElementById(
+      "dailyTimer"
+    );
+
+
+  if (
+    dailyTimerInterval
+  ) {
+
+    clearInterval(
+      dailyTimerInterval
+    );
+
+    dailyTimerInterval =
+      null;
+
+  }
+
+
+  if (
+    dailyReward.available
+  ) {
+
+    button.disabled =
+      false;
+
+    button.innerText =
+      "Получить +300 🪙";
+
+    timer.innerText =
+      "Бонус доступен!";
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.innerText =
+    "Бонус уже получен";
+
+
+  timer.innerText =
+    "Следующий бонус через "
+    + formatDailyTime(
+        dailySecondsLeft
+      );
+
+
+  dailyTimerInterval =
+    setInterval(
+      () => {
+
+        dailySecondsLeft--;
+
+
+        if (
+          dailySecondsLeft <= 0
+        ) {
+
+          clearInterval(
+            dailyTimerInterval
+          );
+
+          dailyTimerInterval =
+            null;
+
+
+          dailyReward.available =
+            true;
+
+
+          dailySecondsLeft =
+            0;
+
+
+          button.disabled =
+            false;
+
+          button.innerText =
+            "Получить +300 🪙";
+
+          timer.innerText =
+            "Бонус доступен!";
+
+          return;
+
+        }
+
+
+        timer.innerText =
+          "Следующий бонус через "
+          + formatDailyTime(
+              dailySecondsLeft
+            );
+
+      },
+      1000
+    );
+
+}
+
+
+async function claimDailyReward() {
+
+  const button =
+    document.getElementById(
+      "dailyButton"
+    );
+
+
+  button.disabled =
+    true;
+
+  button.innerText =
+    "Получаем...";
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${SERVER_URL}/api/daily-reward`,
+        {
+          method:
+            "POST",
+
+          headers:
+            authHeaders(),
+
+          body:
+            JSON.stringify({
+              initData:
+                telegramInitData
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+      ||
+      !data.success
+    ) {
+
+      if (
+        data.seconds_left
+        != null
+      ) {
+
+        dailyReward.available =
+          false;
+
+        dailySecondsLeft =
+          Number(
+            data.seconds_left
+          );
+
+        updateDailyReward();
+
+      }
+
+
+      throw new Error(
+        data.error
+        ||
+        "Не удалось получить бонус"
+      );
+
+    }
+
+
+    balance =
+      Number(
+        data.balance
+      );
+
+
+    dailyReward.available =
+      false;
+
+    dailySecondsLeft =
+      Number(
+        data.seconds_left
+        ||
+        86400
+      );
+
+
+    updateInterface();
+
+    updateDailyReward();
+
+
+    if (
+      tg.HapticFeedback
+    ) {
+
+      tg.HapticFeedback
+        .notificationOccurred(
+          "success"
+        );
+
+    }
+
+
+    alert(
+      `🎁 Ты получил +${data.reward} монет!`
+    );
+
+  }
+
+  catch (error) {
+
+    alert(
+      error.message
+    );
+
+
+    if (
+      dailyReward.available
+    ) {
+
+      button.disabled =
+        false;
+
+      button.innerText =
+        "Получить +300 🪙";
+
+    }
 
   }
 
@@ -952,7 +1403,7 @@ function handicapLabel(
 
 
 /* =========================
-   КОМПАКТНАЯ КАРТОЧКА
+   КАРТОЧКА МАТЧА
    ========================= */
 
 function createCompactMatch(
@@ -976,14 +1427,11 @@ function createCompactMatch(
   if (
     match.odds
     &&
-    match.odds.home
-      != null
+    match.odds.home != null
     &&
-    match.odds.draw
-      != null
+    match.odds.draw != null
     &&
-    match.odds.away
-      != null
+    match.odds.away != null
   ) {
 
     oddsBlock = `
@@ -992,7 +1440,6 @@ function createCompactMatch(
         <button
           class="odd-button"
           onclick="
-            event.stopPropagation();
             openBet(
               '${safeName}',
               ${match.fixture_id},
@@ -1011,7 +1458,6 @@ function createCompactMatch(
         <button
           class="odd-button"
           onclick="
-            event.stopPropagation();
             openBet(
               '${safeName}',
               ${match.fixture_id},
@@ -1030,7 +1476,6 @@ function createCompactMatch(
         <button
           class="odd-button"
           onclick="
-            event.stopPropagation();
             openBet(
               '${safeName}',
               ${match.fixture_id},
@@ -1116,7 +1561,7 @@ function createCompactMatch(
 
 
 /* =========================
-   ОСНОВНОЙ ИСХОД
+   ИСХОД
    ========================= */
 
 function makeMainOdds(
@@ -1127,14 +1572,11 @@ function makeMainOdds(
   if (
     !match.odds
     ||
-    match.odds.home
-      == null
+    match.odds.home == null
     ||
-    match.odds.draw
-      == null
+    match.odds.draw == null
     ||
-    match.odds.away
-      == null
+    match.odds.away == null
   ) {
 
     return `
@@ -1225,24 +1667,13 @@ function makeDoubleChanceBlock(
 
 
   const oneX =
-    match
-      .double_chance[
-        "1x"
-      ];
-
+    match.double_chance["1x"];
 
   const oneTwo =
-    match
-      .double_chance[
-        "12"
-      ];
-
+    match.double_chance["12"];
 
   const xTwo =
-    match
-      .double_chance[
-        "x2"
-      ];
+    match.double_chance["x2"];
 
 
   return `
@@ -1250,11 +1681,7 @@ function makeDoubleChanceBlock(
 
       <button
         class="odd-button"
-        ${oneX == null
-          ? "disabled"
-          : ""
-        }
-
+        ${oneX == null ? "disabled" : ""}
         onclick="${
           oneX == null
             ? ""
@@ -1279,11 +1706,7 @@ function makeDoubleChanceBlock(
 
       <button
         class="odd-button"
-        ${oneTwo == null
-          ? "disabled"
-          : ""
-        }
-
+        ${oneTwo == null ? "disabled" : ""}
         onclick="${
           oneTwo == null
             ? ""
@@ -1308,11 +1731,7 @@ function makeDoubleChanceBlock(
 
       <button
         class="odd-button"
-        ${xTwo == null
-          ? "disabled"
-          : ""
-        }
-
+        ${xTwo == null ? "disabled" : ""}
         onclick="${
           xTwo == null
             ? ""
@@ -1341,7 +1760,7 @@ function makeDoubleChanceBlock(
 
 
 /* =========================
-   ТОТАЛЫ
+   ТОТАЛ
    ========================= */
 
 function makeTotalBlock(
@@ -1360,11 +1779,9 @@ function makeTotalBlock(
   if (
     !total
     ||
-    total.over
-      == null
+    total.over == null
     ||
-    total.under
-      == null
+    total.under == null
   ) {
 
     return `
@@ -1381,7 +1798,6 @@ function makeTotalBlock(
 
       <button
         class="odd-button"
-
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1399,7 +1815,6 @@ function makeTotalBlock(
 
       <button
         class="odd-button"
-
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1432,11 +1847,9 @@ function makeBttsBlock(
   if (
     !match.btts
     ||
-    match.btts.yes
-      == null
+    match.btts.yes == null
     ||
-    match.btts.no
-      == null
+    match.btts.no == null
   ) {
 
     return `
@@ -1453,7 +1866,6 @@ function makeBttsBlock(
 
       <button
         class="odd-button"
-
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1471,7 +1883,6 @@ function makeBttsBlock(
 
       <button
         class="odd-button"
-
         onclick="openBet(
           '${safeName}',
           ${match.fixture_id},
@@ -1567,11 +1978,7 @@ function makeHandicapsBlock(
 
           <button
             class="odd-button"
-
-            ${homeOdd == null
-              ? "disabled"
-              : ""
-            }
+            ${homeOdd == null ? "disabled" : ""}
 
             onclick="${
               homeOdd == null
@@ -1598,11 +2005,7 @@ function makeHandicapsBlock(
 
           <button
             class="odd-button"
-
-            ${awayOdd == null
-              ? "disabled"
-              : ""
-            }
+            ${awayOdd == null ? "disabled" : ""}
 
             onclick="${
               awayOdd == null
@@ -1639,7 +2042,7 @@ function makeHandicapsBlock(
 
 
 /* =========================
-   ИНД. ТОТАЛЫ
+   ИНДИВИДУАЛЬНЫЕ ТОТАЛЫ
    ========================= */
 
 function makeTeamTotalLines(
@@ -1703,11 +2106,7 @@ function makeTeamTotalLines(
 
           <button
             class="odd-button"
-
-            ${over == null
-              ? "disabled"
-              : ""
-            }
+            ${over == null ? "disabled" : ""}
 
             onclick="${
               over == null
@@ -1734,11 +2133,7 @@ function makeTeamTotalLines(
 
           <button
             class="odd-button"
-
-            ${under == null
-              ? "disabled"
-              : ""
-            }
+            ${under == null ? "disabled" : ""}
 
             onclick="${
               under == null
@@ -2513,7 +2908,7 @@ function calculateWin() {
 
 
 /* =========================
-   СОЗДАНИЕ СТАВКИ В БД
+   СОЗДАНИЕ СТАВКИ
    ========================= */
 
 async function confirmBet() {
@@ -2941,15 +3336,6 @@ async function openPage(
   );
 
 
-  /*
-    Когда пользователь открывает
-    Ставки или Профиль,
-    ещё раз проверяем базу.
-
-    Если матч уже закончился,
-    сервер сам рассчитает ставку.
-  */
-
   if (
     page === "bets"
     ||
@@ -3058,7 +3444,7 @@ if (
 
 
 /* =========================
-   СТАРТ
+   START
    ========================= */
 
 async function startApp() {

@@ -67,7 +67,6 @@ cache_data = {
 
 @app.route("/")
 def home():
-
     return jsonify({
         "status": "ok",
         "message": "BetCoin server is working"
@@ -75,143 +74,74 @@ def home():
 
 
 def normalize_team(name):
-
     if not name:
         return ""
 
     name = str(name).lower().strip()
 
     replacements = {
-
-        "manchester united fc":
-            "manchester united",
-
-        "manchester city fc":
-            "manchester city",
-
-        "arsenal fc":
-            "arsenal",
-
-        "chelsea fc":
-            "chelsea",
-
-        "liverpool fc":
-            "liverpool",
-
-        "tottenham hotspur fc":
-            "tottenham hotspur",
-
-        "newcastle united fc":
-            "newcastle united",
-
-        "west ham united fc":
-            "west ham united",
-
-        "brighton & hove albion fc":
-            "brighton and hove albion",
-
-        "wolverhampton wanderers fc":
-            "wolverhampton wanderers",
-
-        "nottingham forest fc":
-            "nottingham forest",
-
-        "aston villa fc":
-            "aston villa",
-
-        "everton fc":
-            "everton",
-
-        "fulham fc":
-            "fulham",
-
-        "crystal palace fc":
-            "crystal palace"
+        "manchester united fc": "manchester united",
+        "manchester city fc": "manchester city",
+        "arsenal fc": "arsenal",
+        "chelsea fc": "chelsea",
+        "liverpool fc": "liverpool",
+        "tottenham hotspur fc": "tottenham hotspur",
+        "newcastle united fc": "newcastle united",
+        "west ham united fc": "west ham united",
+        "brighton & hove albion fc": "brighton and hove albion",
+        "wolverhampton wanderers fc": "wolverhampton wanderers",
+        "nottingham forest fc": "nottingham forest",
+        "aston villa fc": "aston villa",
+        "everton fc": "everton",
+        "fulham fc": "fulham",
+        "crystal palace fc": "crystal palace"
     }
-
 
     if name in replacements:
         name = replacements[name]
 
-
-    name = name.replace(
-        "&",
-        "and"
-    )
-
-
-    name = re.sub(
-        r"\bfc\b",
-        "",
-        name
-    )
-
-
-    name = re.sub(
-        r"\s+",
-        " ",
-        name
-    )
-
+    name = name.replace("&", "and")
+    name = re.sub(r"\bfc\b", "", name)
+    name = re.sub(r"\s+", " ", name)
 
     return name.strip()
 
 
 def point_key(point):
-
     number = float(point)
 
     if number.is_integer():
-        return str(
-            int(number)
-        )
+        return str(int(number))
 
     return str(number)
 
 
 def get_football_matches():
-
     headers = {
-        "X-Auth-Token":
-            FOOTBALL_TOKEN
+        "X-Auth-Token": FOOTBALL_TOKEN
     }
-
 
     today = datetime.now(
         timezone.utc
     ).date()
 
-
-    date_to = (
-        today
-        + timedelta(days=14)
+    date_to = today + timedelta(
+        days=14
     )
 
-
     params = {
-        "dateFrom":
-            today.isoformat(),
-
-        "dateTo":
-            date_to.isoformat()
+        "dateFrom": today.isoformat(),
+        "dateTo": date_to.isoformat()
     }
 
-
     response = requests.get(
-
-        (
-            f"{FOOTBALL_API_URL}"
-            f"/competitions/PL/matches"
-        ),
-
+        f"{FOOTBALL_API_URL}/competitions/PL/matches",
         headers=headers,
         params=params,
         timeout=20
     )
 
-
     response.raise_for_status()
-
 
     return (
         response.json(),
@@ -221,50 +151,29 @@ def get_football_matches():
 
 
 def get_featured_odds():
-
     params = {
-
-        "apiKey":
-            ODDS_API_KEY,
-
-        "regions":
-            "eu",
-
-        "markets":
-            "h2h,totals",
-
-        "oddsFormat":
-            "decimal",
-
-        "dateFormat":
-            "iso"
+        "apiKey": ODDS_API_KEY,
+        "regions": "eu",
+        "markets": "h2h,totals",
+        "oddsFormat": "decimal",
+        "dateFormat": "iso"
     }
 
-
     response = requests.get(
-
-        (
-            f"{ODDS_API_URL}"
-            f"/sports/soccer_epl/odds"
-        ),
-
+        f"{ODDS_API_URL}/sports/soccer_epl/odds",
         params=params,
         timeout=20
     )
 
-
     response.raise_for_status()
-
 
     return response.json()
 
 
 def empty_totals():
-
     result = {}
 
     for point in TOTAL_POINTS:
-
         result[
             point_key(point)
         ] = {
@@ -276,61 +185,38 @@ def empty_totals():
 
 
 def empty_handicaps():
-
     result = {
         "home": {},
         "away": {}
     }
 
-
     for point in HANDICAP_POINTS:
+        key = point_key(point)
 
-        key = point_key(
-            point
-        )
-
-        result[
-            "home"
-        ][key] = None
-
-        result[
-            "away"
-        ][key] = None
-
+        result["home"][key] = None
+        result["away"][key] = None
 
     return result
 
 
 def empty_team_totals():
-
     result = {
         "home": {},
         "away": {}
     }
 
-
     for point in TEAM_TOTAL_POINTS:
+        key = point_key(point)
 
-        key = point_key(
-            point
-        )
-
-
-        result[
-            "home"
-        ][key] = {
+        result["home"][key] = {
             "over": None,
             "under": None
         }
 
-
-        result[
-            "away"
-        ][key] = {
+        result["away"][key] = {
             "over": None,
             "under": None
         }
-
 
     return result
 
@@ -340,74 +226,44 @@ def find_odds_event(
     away_team,
     odds_events
 ):
-
-    home_normalized = (
-        normalize_team(
-            home_team
-        )
+    home_normalized = normalize_team(
+        home_team
     )
 
-
-    away_normalized = (
-        normalize_team(
-            away_team
-        )
+    away_normalized = normalize_team(
+        away_team
     )
-
 
     for event in odds_events:
-
         odds_home = normalize_team(
-            event.get(
-                "home_team"
-            )
+            event.get("home_team")
         )
-
 
         odds_away = normalize_team(
-            event.get(
-                "away_team"
-            )
+            event.get("away_team")
         )
 
-
         if (
-            home_normalized
-            == odds_home
+            home_normalized == odds_home
             and
-            away_normalized
-            == odds_away
+            away_normalized == odds_away
         ):
-
             return event
-
 
     return None
 
 
 def get_main_markets(event):
-
     if not event:
         return None
 
-
-    home_normalized = (
-        normalize_team(
-            event.get(
-                "home_team"
-            )
-        )
+    home_normalized = normalize_team(
+        event.get("home_team")
     )
 
-
-    away_normalized = (
-        normalize_team(
-            event.get(
-                "away_team"
-            )
-        )
+    away_normalized = normalize_team(
+        event.get("away_team")
     )
-
 
     for bookmaker in event.get(
         "bookmakers",
@@ -415,29 +271,16 @@ def get_main_markets(event):
     ):
 
         h2h_data = None
-
-        totals_data = (
-            empty_totals()
-        )
+        totals_data = empty_totals()
 
         found_something = False
-
 
         for market in bookmaker.get(
             "markets",
             []
         ):
 
-            market_key = (
-                market.get(
-                    "key"
-                )
-            )
-
-
-            # ======================
-            # П1 / X / П2
-            # ======================
+            market_key = market.get("key")
 
             if market_key == "h2h":
 
@@ -445,45 +288,28 @@ def get_main_markets(event):
                 draw_odd = None
                 away_odd = None
 
-
                 for outcome in market.get(
                     "outcomes",
                     []
                 ):
 
-                    name = (
-                        outcome.get(
-                            "name"
-                        )
-                    )
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
-                    )
-
+                    name = outcome.get("name")
+                    price = outcome.get("price")
 
                     if name == "Draw":
-
                         draw_odd = price
-
 
                     elif (
                         normalize_team(name)
                         == home_normalized
                     ):
-
                         home_odd = price
-
 
                     elif (
                         normalize_team(name)
                         == away_normalized
                     ):
-
                         away_odd = price
-
 
                 if (
                     home_odd is not None
@@ -492,25 +318,13 @@ def get_main_markets(event):
                     and
                     away_odd is not None
                 ):
-
                     h2h_data = {
-
-                        "home":
-                            home_odd,
-
-                        "draw":
-                            draw_odd,
-
-                        "away":
-                            away_odd
+                        "home": home_odd,
+                        "draw": draw_odd,
+                        "away": away_odd
                     }
 
                     found_something = True
-
-
-            # ======================
-            # ОБЫЧНЫЕ ТОТАЛЫ
-            # ======================
 
             elif market_key == "totals":
 
@@ -519,90 +333,91 @@ def get_main_markets(event):
                     []
                 ):
 
-                    point = (
-                        outcome.get(
-                            "point"
-                        )
-                    )
-
-                    name = (
-                        outcome.get(
-                            "name"
-                        )
-                    )
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
-                    )
-
+                    point = outcome.get("point")
+                    name = outcome.get("name")
+                    price = outcome.get("price")
 
                     if point is None:
-
                         continue
-
 
                     try:
-
-                        point = float(
-                            point
-                        )
-
+                        point = float(point)
                     except Exception:
-
                         continue
-
 
                     if point not in TOTAL_POINTS:
-
                         continue
 
-
-                    key = point_key(
-                        point
-                    )
-
+                    key = point_key(point)
 
                     if name == "Over":
-
-                        totals_data[
-                            key
-                        ][
-                            "over"
-                        ] = price
-
+                        totals_data[key]["over"] = price
                         found_something = True
-
 
                     elif name == "Under":
-
-                        totals_data[
-                            key
-                        ][
-                            "under"
-                        ] = price
-
+                        totals_data[key]["under"] = price
                         found_something = True
-
 
         if found_something:
 
             return {
-
-                "h2h":
-                    h2h_data,
-
-                "totals":
-                    totals_data,
-
-                "bookmaker":
-                    bookmaker.get(
-                        "title",
-                        "Bookmaker"
-                    )
+                "h2h": h2h_data,
+                "totals": totals_data,
+                "bookmaker": bookmaker.get(
+                    "title",
+                    "Bookmaker"
+                )
             }
 
+    return None
+
+
+def detect_team_side(
+    outcome,
+    home_normalized,
+    away_normalized
+):
+    name = str(
+        outcome.get("name", "")
+    )
+
+    description = str(
+        outcome.get("description", "")
+    )
+
+    combined = normalize_team(
+        name + " " + description
+    )
+
+    if home_normalized in combined:
+        return "home"
+
+    if away_normalized in combined:
+        return "away"
+
+    return None
+
+
+def detect_over_under(outcome):
+    name = str(
+        outcome.get("name", "")
+    ).lower()
+
+    description = str(
+        outcome.get("description", "")
+    ).lower()
+
+    combined = (
+        name
+        + " "
+        + description
+    )
+
+    if "over" in combined:
+        return "over"
+
+    if "under" in combined:
+        return "under"
 
     return None
 
@@ -612,105 +427,64 @@ def get_extra_markets(
     home_team,
     away_team
 ):
-
     if not event_id:
-
         return None
 
-
     params = {
-
-        "apiKey":
-            ODDS_API_KEY,
-
-        "regions":
-            "eu",
-
-        "markets":
-            (
-                "btts,"
-                "double_chance,"
-                "alternate_spreads,"
-                "team_totals,"
-                "alternate_team_totals"
-            ),
-
-        "oddsFormat":
-            "decimal",
-
-        "dateFormat":
-            "iso"
+        "apiKey": ODDS_API_KEY,
+        "regions": "eu",
+        "markets": (
+            "btts,"
+            "double_chance,"
+            "alternate_spreads,"
+            "team_totals,"
+            "alternate_team_totals"
+        ),
+        "oddsFormat": "decimal",
+        "dateFormat": "iso"
     }
 
-
     try:
-
         response = requests.get(
-
             (
-                f"{ODDS_API_URL}"
-                f"/sports/soccer_epl/"
-                f"events/{event_id}/odds"
+                f"{ODDS_API_URL}/sports/"
+                f"soccer_epl/events/"
+                f"{event_id}/odds"
             ),
-
             params=params,
             timeout=20
         )
 
-
         if response.status_code != 200:
-
             return None
-
 
         data = response.json()
 
-
     except Exception:
-
         return None
 
 
-    home_normalized = (
-        normalize_team(
-            home_team
-        )
+    home_normalized = normalize_team(
+        home_team
     )
 
-
-    away_normalized = (
-        normalize_team(
-            away_team
-        )
+    away_normalized = normalize_team(
+        away_team
     )
 
 
     result = {
+        "btts": None,
+        "double_chance": None,
+        "handicaps": None,
+        "team_totals": None,
 
-        "btts":
-            None,
+        "btts_bookmaker": None,
+        "double_chance_bookmaker": None,
+        "handicaps_bookmaker": None,
+        "team_totals_bookmaker": None,
 
-        "double_chance":
-            None,
-
-        "handicaps":
-            None,
-
-        "team_totals":
-            None,
-
-
-        "btts_bookmaker":
-            None,
-
-        "double_chance_bookmaker":
-            None,
-
-        "handicaps_bookmaker":
-            None,
-
-        "team_totals_bookmaker":
-            None
+        "available_extra_markets": []
     }
 
 
@@ -719,34 +493,36 @@ def get_extra_markets(
         []
     ):
 
-        local_team_totals = (
-            empty_team_totals()
-        )
-
-        found_team_total = False
-
-
         for market in bookmaker.get(
             "markets",
             []
         ):
 
-            market_key = (
-                market.get(
-                    "key"
+            market_key = market.get("key")
+
+            if (
+                market_key
+                and
+                market_key
+                not in result[
+                    "available_extra_markets"
+                ]
+            ):
+                result[
+                    "available_extra_markets"
+                ].append(
+                    market_key
                 )
-            )
 
 
-            # ======================
+            # =========================
             # ОБЕ ЗАБЬЮТ
-            # ======================
+            # =========================
 
             if market_key == "btts":
 
                 yes_odd = None
                 no_odd = None
-
 
                 for outcome in market.get(
                     "outcomes",
@@ -760,27 +536,18 @@ def get_extra_markets(
                         )
                     ).lower()
 
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
+                    price = outcome.get(
+                        "price"
                     )
 
-
                     if name == "yes":
-
                         yes_odd = price
 
-
                     elif name == "no":
-
                         no_odd = price
 
-
                 if (
-                    result["btts"]
-                    is None
+                    result["btts"] is None
                     and
                     yes_odd is not None
                     and
@@ -788,14 +555,9 @@ def get_extra_markets(
                 ):
 
                     result["btts"] = {
-
-                        "yes":
-                            yes_odd,
-
-                        "no":
-                            no_odd
+                        "yes": yes_odd,
+                        "no": no_odd
                     }
-
 
                     result[
                         "btts_bookmaker"
@@ -805,19 +567,15 @@ def get_extra_markets(
                     )
 
 
-            # ======================
+            # =========================
             # ДВОЙНОЙ ШАНС
-            # ======================
+            # =========================
 
-            elif (
-                market_key
-                == "double_chance"
-            ):
+            elif market_key == "double_chance":
 
                 one_x = None
                 one_two = None
                 x_two = None
-
 
                 for outcome in market.get(
                     "outcomes",
@@ -831,20 +589,13 @@ def get_extra_markets(
                         )
                     )
 
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
+                    price = outcome.get(
+                        "price"
                     )
 
-
-                    normalized_name = (
-                        normalize_team(
-                            name
-                        )
+                    normalized_name = normalize_team(
+                        name
                     )
-
 
                     if (
                         home_normalized
@@ -853,9 +604,7 @@ def get_extra_markets(
                         "draw"
                         in normalized_name
                     ):
-
                         one_x = price
-
 
                     elif (
                         away_normalized
@@ -864,9 +613,7 @@ def get_extra_markets(
                         "draw"
                         in normalized_name
                     ):
-
                         x_two = price
-
 
                     elif (
                         home_normalized
@@ -875,15 +622,12 @@ def get_extra_markets(
                         away_normalized
                         in normalized_name
                     ):
-
                         one_two = price
-
 
                 if (
                     result[
                         "double_chance"
-                    ]
-                    is None
+                    ] is None
                     and
                     (
                         one_x is not None
@@ -897,17 +641,10 @@ def get_extra_markets(
                     result[
                         "double_chance"
                     ] = {
-
-                        "1x":
-                            one_x,
-
-                        "12":
-                            one_two,
-
-                        "x2":
-                            x_two
+                        "1x": one_x,
+                        "12": one_two,
+                        "x2": x_two
                     }
-
 
                     result[
                         "double_chance_bookmaker"
@@ -917,88 +654,55 @@ def get_extra_markets(
                     )
 
 
-            # ======================
+            # =========================
             # ФОРЫ
-            # ======================
+            # =========================
 
-            elif (
-                market_key
-                == "alternate_spreads"
-            ):
+            elif market_key == "alternate_spreads":
 
-                handicap_data = (
-                    empty_handicaps()
-                )
+                if result["handicaps"] is not None:
+                    continue
 
-
+                handicap_data = empty_handicaps()
                 found_handicap = False
-
 
                 for outcome in market.get(
                     "outcomes",
                     []
                 ):
 
-                    name = (
-                        normalize_team(
-                            outcome.get(
-                                "name"
-                            )
-                        )
-                    )
-
-
-                    point = (
+                    name = normalize_team(
                         outcome.get(
-                            "point"
+                            "name"
                         )
                     )
 
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
+                    point = outcome.get(
+                        "point"
                     )
 
+                    price = outcome.get(
+                        "price"
+                    )
 
                     if (
                         point is None
                         or
                         price is None
                     ):
-
                         continue
-
 
                     try:
-
-                        point = float(
-                            point
-                        )
-
+                        point = float(point)
                     except Exception:
-
                         continue
 
-
-                    if (
-                        point
-                        not in HANDICAP_POINTS
-                    ):
-
+                    if point not in HANDICAP_POINTS:
                         continue
 
+                    key = point_key(point)
 
-                    key = point_key(
-                        point
-                    )
-
-
-                    if (
-                        name
-                        == home_normalized
-                    ):
+                    if name == home_normalized:
 
                         handicap_data[
                             "home"
@@ -1006,11 +710,7 @@ def get_extra_markets(
 
                         found_handicap = True
 
-
-                    elif (
-                        name
-                        == away_normalized
-                    ):
+                    elif name == away_normalized:
 
                         handicap_data[
                             "away"
@@ -1018,20 +718,11 @@ def get_extra_markets(
 
                         found_handicap = True
 
-
-                if (
-                    result[
-                        "handicaps"
-                    ]
-                    is None
-                    and
-                    found_handicap
-                ):
+                if found_handicap:
 
                     result[
                         "handicaps"
                     ] = handicap_data
-
 
                     result[
                         "handicaps_bookmaker"
@@ -1041,196 +732,141 @@ def get_extra_markets(
                     )
 
 
-            # ======================
+            # =========================
             # ИНДИВИДУАЛЬНЫЕ ТОТАЛЫ
-            # ======================
+            # =========================
 
-            elif market_key in [
+            elif market_key in (
                 "team_totals",
                 "alternate_team_totals"
-            ]:
+            ):
+
+                if result[
+                    "team_totals"
+                ] is None:
+
+                    result[
+                        "team_totals"
+                    ] = empty_team_totals()
+
+                found_team_total = False
 
                 for outcome in market.get(
                     "outcomes",
                     []
                 ):
 
-                    name = str(
-                        outcome.get(
-                            "name",
-                            ""
-                        )
+                    point = outcome.get(
+                        "point"
                     )
 
-
-                    description = str(
-                        outcome.get(
-                            "description",
-                            ""
-                        )
+                    price = outcome.get(
+                        "price"
                     )
-
-
-                    point = (
-                        outcome.get(
-                            "point"
-                        )
-                    )
-
-
-                    price = (
-                        outcome.get(
-                            "price"
-                        )
-                    )
-
 
                     if (
                         point is None
                         or
                         price is None
                     ):
-
                         continue
-
 
                     try:
-
-                        point = float(
-                            point
-                        )
-
+                        point = float(point)
                     except Exception:
-
                         continue
 
+                    if point not in TEAM_TOTAL_POINTS:
+                        continue
+
+                    team_side = detect_team_side(
+                        outcome,
+                        home_normalized,
+                        away_normalized
+                    )
+
+                    over_under = detect_over_under(
+                        outcome
+                    )
 
                     if (
-                        point
-                        not in TEAM_TOTAL_POINTS
+                        team_side is None
+                        or
+                        over_under is None
                     ):
-
                         continue
-
 
                     key = point_key(
                         point
                     )
 
+                    result[
+                        "team_totals"
+                    ][
+                        team_side
+                    ][
+                        key
+                    ][
+                        over_under
+                    ] = price
 
-                    outcome_type = (
-                        name.lower()
+                    found_team_total = True
+
+                if (
+                    found_team_total
+                    and
+                    result[
+                        "team_totals_bookmaker"
+                    ] is None
+                ):
+
+                    result[
+                        "team_totals_bookmaker"
+                    ] = bookmaker.get(
+                        "title",
+                        "Bookmaker"
                     )
 
 
-                    description_team = (
-                        normalize_team(
-                            description
-                        )
-                    )
+    # Если рынок вообще не пришёл,
+    # оставляем None
 
+    team_totals = result[
+        "team_totals"
+    ]
 
-                    name_team = (
-                        normalize_team(
-                            name
-                        )
-                    )
+    if team_totals:
 
+        any_team_total = False
 
-                    team_side = None
-
-
-                    if (
-                        description_team
-                        == home_normalized
-                        or
-                        home_normalized
-                        in description_team
-                    ):
-
-                        team_side = "home"
-
-
-                    elif (
-                        description_team
-                        == away_normalized
-                        or
-                        away_normalized
-                        in description_team
-                    ):
-
-                        team_side = "away"
-
-
-                    elif (
-                        home_normalized
-                        in name_team
-                    ):
-
-                        team_side = "home"
-
-
-                    elif (
-                        away_normalized
-                        in name_team
-                    ):
-
-                        team_side = "away"
-
-
-                    if not team_side:
-
-                        continue
-
-
-                    if "over" in outcome_type:
-
-                        local_team_totals[
-                            team_side
-                        ][key][
-                            "over"
-                        ] = price
-
-                        found_team_total = True
-
-
-                    elif (
-                        "under"
-                        in outcome_type
-                    ):
-
-                        local_team_totals[
-                            team_side
-                        ][key][
-                            "under"
-                        ] = price
-
-                        found_team_total = True
-
-
-        # Берём первого букмекера,
-        # который реально дал ИТ
-
-        if (
-            result[
-                "team_totals"
-            ]
-            is None
-            and
-            found_team_total
+        for side in (
+            "home",
+            "away"
         ):
 
+            for line in team_totals[
+                side
+            ].values():
+
+                if (
+                    line.get("over")
+                    is not None
+                    or
+                    line.get("under")
+                    is not None
+                ):
+
+                    any_team_total = True
+
+        if not any_team_total:
+
             result[
                 "team_totals"
-            ] = local_team_totals
-
+            ] = None
 
             result[
                 "team_totals_bookmaker"
-            ] = bookmaker.get(
-                "title",
-                "Bookmaker"
-            )
+            ] = None
 
 
     return result
@@ -1239,54 +875,34 @@ def get_extra_markets(
 @app.route("/api/matches")
 def matches():
 
-    # Кэш на 10 минут
-
     if (
-        cache_data[
-            "response"
-        ]
+        cache_data["response"]
         is not None
         and
         time.time()
-        - cache_data[
-            "time"
-        ]
+        - cache_data["time"]
         < CACHE_SECONDS
     ):
-
         return jsonify(
-            cache_data[
-                "response"
-            ]
+            cache_data["response"]
         )
 
 
     if not FOOTBALL_TOKEN:
 
         return jsonify({
-
-            "success":
-                False,
-
+            "success": False,
             "error":
-                (
-                    "FOOTBALL_DATA_TOKEN "
-                    "not found"
-                )
-
+                "FOOTBALL_DATA_TOKEN not found"
         }), 500
 
 
     if not ODDS_API_KEY:
 
         return jsonify({
-
-            "success":
-                False,
-
+            "success": False,
             "error":
                 "ODDS_API_KEY not found"
-
         }), 500
 
 
@@ -1299,56 +915,31 @@ def matches():
 
         ) = get_football_matches()
 
-
-        odds_events = (
-            get_featured_odds()
-        )
-
+        odds_events = get_featured_odds()
 
     except requests.exceptions.HTTPError as error:
 
-        response = (
-            error.response
-        )
-
+        response = error.response
 
         try:
-
-            api_error = (
-                response.json()
-            )
+            api_error = response.json()
 
         except Exception:
-
-            api_error = (
-                response.text
-            )
-
+            api_error = response.text
 
         return jsonify({
-
-            "success":
-                False,
-
+            "success": False,
             "status_code":
                 response.status_code,
-
             "api_error":
                 api_error
-
         }), response.status_code
-
 
     except Exception as error:
 
         return jsonify({
-
-            "success":
-                False,
-
-            "error":
-                str(error)
-
+            "success": False,
+            "error": str(error)
         }), 500
 
 
@@ -1365,78 +956,52 @@ def matches():
             {}
         )
 
-
         away_team = item.get(
             "awayTeam",
             {}
         )
-
 
         competition = item.get(
             "competition",
             {}
         )
 
-
-        home_name = (
-            home_team.get(
-                "name"
-            )
+        home_name = home_team.get(
+            "name"
         )
 
-
-        away_name = (
-            away_team.get(
-                "name"
-            )
+        away_name = away_team.get(
+            "name"
         )
 
-
-        odds_event = (
-            find_odds_event(
-                home_name,
-                away_name,
-                odds_events
-            )
+        odds_event = find_odds_event(
+            home_name,
+            away_name,
+            odds_events
         )
 
-
-        markets = (
-            get_main_markets(
-                odds_event
-            )
+        markets = get_main_markets(
+            odds_event
         )
-
 
         extra_markets = None
 
-
         if odds_event:
 
-            extra_markets = (
-                get_extra_markets(
-
-                    odds_event.get(
-                        "id"
-                    ),
-
-                    home_name,
-                    away_name
-                )
+            extra_markets = get_extra_markets(
+                odds_event.get("id"),
+                home_name,
+                away_name
             )
 
 
         match = {
 
             "fixture_id":
-                item.get(
-                    "id"
-                ),
+                item.get("id"),
 
             "date":
-                item.get(
-                    "utcDate"
-                ),
+                item.get("utcDate"),
 
             "league":
                 competition.get(
@@ -1473,17 +1038,11 @@ def matches():
                     "SCHEDULED"
                 ),
 
-
-            # П1 / X / П2
-
             "bookmaker":
                 None,
 
             "odds":
                 None,
-
-
-            # ОБЫЧНЫЕ ТОТАЛЫ
 
             "total_1_5":
                 None,
@@ -1497,17 +1056,11 @@ def matches():
             "total_4_5":
                 None,
 
-
-            # ОЗ
-
             "btts":
                 None,
 
             "btts_bookmaker":
                 None,
-
-
-            # ДВОЙНОЙ ШАНС
 
             "double_chance":
                 None,
@@ -1515,29 +1068,22 @@ def matches():
             "double_chance_bookmaker":
                 None,
 
-
-            # ФОРЫ
-
             "handicaps":
                 None,
 
             "handicaps_bookmaker":
                 None,
 
-
-            # ИНДИВИДУАЛЬНЫЕ ТОТАЛЫ
-
             "team_totals":
                 None,
 
             "team_totals_bookmaker":
-                None
+                None,
+
+            "available_extra_markets":
+                []
         }
 
-
-        # ======================
-        # ОСНОВНЫЕ РЫНКИ
-        # ======================
 
         if markets:
 
@@ -1547,19 +1093,16 @@ def matches():
                 "bookmaker"
             )
 
-
             match[
                 "odds"
             ] = markets.get(
                 "h2h"
             )
 
-
             totals = markets.get(
                 "totals",
                 {}
             )
-
 
             for point in TOTAL_POINTS:
 
@@ -1567,11 +1110,9 @@ def matches():
                     point
                 )
 
-
                 total = totals.get(
                     key
                 )
-
 
                 if (
                     total
@@ -1597,7 +1138,6 @@ def matches():
                         )
                     )
 
-
                     match[
                         field_name
                     ] = {
@@ -1617,10 +1157,6 @@ def matches():
                     }
 
 
-        # ======================
-        # ДОПОЛНИТЕЛЬНЫЕ РЫНКИ
-        # ======================
-
         if extra_markets:
 
             match[
@@ -1629,13 +1165,11 @@ def matches():
                 "btts"
             )
 
-
             match[
                 "btts_bookmaker"
             ] = extra_markets.get(
                 "btts_bookmaker"
             )
-
 
             match[
                 "double_chance"
@@ -1643,13 +1177,11 @@ def matches():
                 "double_chance"
             )
 
-
             match[
                 "double_chance_bookmaker"
             ] = extra_markets.get(
                 "double_chance_bookmaker"
             )
-
 
             match[
                 "handicaps"
@@ -1657,13 +1189,11 @@ def matches():
                 "handicaps"
             )
 
-
             match[
                 "handicaps_bookmaker"
             ] = extra_markets.get(
                 "handicaps_bookmaker"
             )
-
 
             match[
                 "team_totals"
@@ -1671,11 +1201,17 @@ def matches():
                 "team_totals"
             )
 
-
             match[
                 "team_totals_bookmaker"
             ] = extra_markets.get(
                 "team_totals_bookmaker"
+            )
+
+            match[
+                "available_extra_markets"
+            ] = extra_markets.get(
+                "available_extra_markets",
+                []
             )
 
 
@@ -1696,9 +1232,7 @@ def matches():
             date_to.isoformat(),
 
         "count":
-            len(
-                matches_list
-            ),
+            len(matches_list),
 
         "matches":
             matches_list
@@ -1708,7 +1242,6 @@ def matches():
     cache_data[
         "time"
     ] = time.time()
-
 
     cache_data[
         "response"
@@ -1723,19 +1256,13 @@ def matches():
 if __name__ == "__main__":
 
     port = int(
-
         os.environ.get(
             "PORT",
             10000
         )
-
     )
 
-
     app.run(
-
         host="0.0.0.0",
-
         port=port
-
     )

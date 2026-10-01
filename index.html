@@ -19,7 +19,7 @@
 
     body {
       margin: 0;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
       background: #0b0d12;
       color: white;
       font-family: Arial, sans-serif;
@@ -54,6 +54,18 @@
       font-weight: bold;
     }
 
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    h2 {
+      font-size: 21px;
+    }
+
     .balance-card {
       padding: 22px;
       border-radius: 22px;
@@ -75,6 +87,8 @@
       font-size: 34px;
     }
 
+    /* DAILY */
+
     .daily-card {
       background: linear-gradient(
         135deg,
@@ -90,7 +104,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 15px;
     }
 
     .daily-title {
@@ -105,46 +118,32 @@
     }
 
     .daily-description {
-      color: rgba(255,255,255,0.78);
       font-size: 13px;
+      opacity: 0.8;
       margin-top: 5px;
     }
 
     .daily-button {
-      margin-top: 15px;
       width: 100%;
+      margin-top: 15px;
       border: none;
-      background: white;
-      color: #161616;
-      padding: 13px;
       border-radius: 13px;
-      font-size: 15px;
+      padding: 13px;
+      background: white;
+      color: #111;
       font-weight: bold;
-      cursor: pointer;
+      font-size: 15px;
     }
 
     .daily-button:disabled {
       opacity: 0.55;
-      cursor: default;
     }
 
     .daily-timer {
-      margin-top: 10px;
       text-align: center;
+      margin-top: 10px;
       font-size: 13px;
-      color: rgba(255,255,255,0.85);
-    }
-
-    h2 {
-      font-size: 21px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
+      opacity: 0.85;
     }
 
     /* TASKS */
@@ -188,46 +187,38 @@
     .task-top {
       display: flex;
       justify-content: space-between;
-      gap: 15px;
-      align-items: flex-start;
-    }
-
-    .task-info {
-      flex: 1;
+      gap: 12px;
     }
 
     .task-title {
       font-weight: bold;
       font-size: 15px;
-      margin-bottom: 5px;
     }
 
     .task-description {
       color: #8e95a5;
       font-size: 12px;
-      line-height: 1.4;
+      margin-top: 4px;
     }
 
     .task-reward {
-      white-space: nowrap;
       font-weight: bold;
-      font-size: 14px;
       color: #ffd96a;
+      white-space: nowrap;
     }
 
     .task-progress-row {
       display: flex;
       justify-content: space-between;
-      margin-top: 13px;
-      margin-bottom: 7px;
+      margin: 12px 0 7px;
       font-size: 12px;
       color: #969dac;
     }
 
     .task-progress {
       height: 8px;
-      background: #292e3b;
       border-radius: 999px;
+      background: #292e3b;
       overflow: hidden;
     }
 
@@ -238,164 +229,27 @@
         #2775ff,
         #8c57ff
       );
-      border-radius: 999px;
     }
 
     .task-button {
       width: 100%;
-      border: none;
       margin-top: 12px;
+      border: none;
       border-radius: 12px;
       padding: 11px;
       font-weight: bold;
       background: #2775ff;
       color: white;
-      cursor: pointer;
     }
 
     .task-button:disabled {
       background: #292e3b;
       color: #858c9c;
-      cursor: default;
     }
 
     .task-button.claimed {
       background: #1f4930;
       color: #6fe298;
-    }
-
-    /* ACHIEVEMENTS */
-
-    .achievements-section {
-      margin-top: 18px;
-    }
-
-    .achievement-card {
-      background: #161922;
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #282d39;
-    }
-
-    .achievement-card.completed {
-      border-color: #d79e2b;
-    }
-
-    .achievement-card.claimed {
-      border-color: #3b8f5b;
-      opacity: 0.82;
-    }
-
-    .achievement-top {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .achievement-icon {
-      width: 46px;
-      height: 46px;
-      flex-shrink: 0;
-      border-radius: 14px;
-      background: #232836;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 23px;
-    }
-
-    .achievement-main {
-      flex: 1;
-    }
-
-    .achievement-title {
-      font-size: 15px;
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-
-    .achievement-description {
-      color: #8e95a5;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    .achievement-reward {
-      margin-top: 7px;
-      color: #ffd66b;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .achievement-progress-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 13px;
-      margin-bottom: 7px;
-      font-size: 12px;
-      color: #969dac;
-    }
-
-    .achievement-progress {
-      height: 8px;
-      background: #292e3b;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .achievement-progress-fill {
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        #e1a52c,
-        #ffdf6b
-      );
-      border-radius: 999px;
-    }
-
-    .achievement-button {
-      width: 100%;
-      border: none;
-      margin-top: 12px;
-      border-radius: 12px;
-      padding: 11px;
-      font-weight: bold;
-      background: #d99a20;
-      color: #171717;
-      cursor: pointer;
-    }
-
-    .achievement-button:disabled {
-      background: #292e3b;
-      color: #858c9c;
-      cursor: default;
-    }
-
-    .achievement-button.claimed {
-      background: #1f4930;
-      color: #6fe298;
-    }
-
-    .achievement-summary {
-      background: linear-gradient(
-        135deg,
-        #35244f,
-        #222b57
-      );
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-
-    .achievement-summary-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .achievement-summary-text {
-      font-size: 13px;
-      color: #c1c5d2;
     }
 
     /* MATCHES */
@@ -415,10 +269,9 @@
 
     .teams {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
     }
 
     .team {
@@ -444,8 +297,8 @@
     .time {
       text-align: center;
       color: #9097a8;
+      margin: 12px 0;
       font-size: 13px;
-      margin-bottom: 14px;
     }
 
     .odds-3 {
@@ -462,31 +315,27 @@
     }
 
     .odd-button {
-      background: #232836;
-      color: white;
       border: none;
       border-radius: 12px;
       padding: 11px 5px;
+      background: #232836;
+      color: white;
       font-weight: bold;
-      cursor: pointer;
     }
 
     .odd-button:disabled {
       opacity: 0.4;
-      cursor: default;
     }
 
     .open-match-button {
       width: 100%;
       margin-top: 12px;
-      padding: 13px;
       border: none;
       border-radius: 13px;
+      padding: 13px;
       background: #2775ff;
       color: white;
-      font-size: 14px;
       font-weight: bold;
-      cursor: pointer;
     }
 
     .back-button {
@@ -538,52 +387,6 @@
       border-radius: 12px;
       text-align: center;
       font-size: 13px;
-    }
-
-    /* NAV */
-
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #13161e;
-      border-top: 1px solid #272b36;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 5px 18px;
-      z-index: 5;
-    }
-
-    .nav button {
-      border: none;
-      background: none;
-      color: #858c9c;
-      font-size: 12px;
-    }
-
-    .nav button.active {
-      color: white;
-    }
-
-    .nav-icon {
-      display: block;
-      font-size: 22px;
-      margin-bottom: 3px;
-    }
-
-    .empty {
-      background: #161922;
-      border-radius: 18px;
-      padding: 30px 20px;
-      text-align: center;
-      color: #9299a8;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: #9299a8;
     }
 
     /* BETS */
@@ -649,16 +452,24 @@
       margin: 0 auto 12px;
     }
 
+    .rank-box {
+      margin-top: 12px;
+      background: #242938;
+      border-radius: 13px;
+      padding: 12px;
+      font-weight: bold;
+    }
+
     .level-card {
       background: #161922;
       border-radius: 20px;
       padding: 18px;
+      margin-bottom: 18px;
     }
 
     .level-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 12px;
     }
 
@@ -675,13 +486,12 @@
     .xp-row {
       display: flex;
       justify-content: space-between;
-      color: #b8bfcd;
       font-size: 13px;
       margin-bottom: 8px;
+      color: #b8bfcd;
     }
 
     .xp-bar {
-      width: 100%;
       height: 12px;
       background: #292e3b;
       border-radius: 999px;
@@ -690,14 +500,11 @@
 
     .xp-fill {
       height: 100%;
-      width: 0%;
       background: linear-gradient(
         90deg,
         #2775ff,
         #8c57ff
       );
-      border-radius: 999px;
-      transition: width 0.4s ease;
     }
 
     .xp-info {
@@ -706,21 +513,285 @@
       font-size: 12px;
     }
 
+    /* ACHIEVEMENTS */
+
+    .achievement-card {
+      background: #161922;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #282d39;
+    }
+
+    .achievement-card.completed {
+      border-color: #d79e2b;
+    }
+
+    .achievement-card.claimed {
+      border-color: #3b8f5b;
+      opacity: 0.82;
+    }
+
+    .achievement-top {
+      display: flex;
+      gap: 12px;
+    }
+
+    .achievement-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #232836;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+      flex-shrink: 0;
+    }
+
+    .achievement-main {
+      flex: 1;
+    }
+
+    .achievement-title {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .achievement-description {
+      margin-top: 4px;
+      color: #8e95a5;
+      font-size: 12px;
+    }
+
+    .achievement-reward {
+      margin-top: 7px;
+      color: #ffd66b;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .achievement-progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0 7px;
+      font-size: 12px;
+      color: #969dac;
+    }
+
+    .achievement-progress {
+      height: 8px;
+      background: #292e3b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .achievement-progress-fill {
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e1a52c,
+        #ffdf6b
+      );
+    }
+
+    .achievement-button {
+      width: 100%;
+      margin-top: 12px;
+      border: none;
+      border-radius: 12px;
+      padding: 11px;
+      background: #d99a20;
+      font-weight: bold;
+    }
+
+    .achievement-button:disabled {
+      background: #292e3b;
+      color: #858c9c;
+    }
+
+    .achievement-button.claimed {
+      background: #1f4930;
+      color: #6fe298;
+    }
+
+    /* LEADERBOARD */
+
+    .leaderboard-info {
+      background: linear-gradient(
+        135deg,
+        #3b245c,
+        #263b78
+      );
+      padding: 18px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .leaderboard-info-title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .leaderboard-info-text {
+      margin-top: 7px;
+      font-size: 13px;
+      color: #d1d4df;
+    }
+
+    .my-rank-card {
+      background: #182338;
+      border: 1px solid #3563a8;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .my-rank-title {
+      color: #9cbcff;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .my-rank-number {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .leader-row {
+      background: #161922;
+      border-radius: 16px;
+      padding: 13px;
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .leader-row.me {
+      border: 1px solid #3478ff;
+      background: #172039;
+    }
+
+    .leader-position {
+      width: 40px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .leader-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #293044;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .leader-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .leader-name {
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .leader-sub {
+      color: #8991a2;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .leader-stats {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .leader-xp {
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .leader-balance {
+      color: #c5cad5;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* NAV */
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #13161e;
+      border-top: 1px solid #272b36;
+      display: flex;
+      justify-content: space-around;
+      padding: 9px 2px 17px;
+      z-index: 5;
+    }
+
+    .nav button {
+      width: 20%;
+      border: none;
+      background: none;
+      color: #858c9c;
+      font-size: 10px;
+      padding: 0;
+    }
+
+    .nav button.active {
+      color: white;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 21px;
+      margin-bottom: 3px;
+    }
+
+    /* COMMON */
+
+    .empty {
+      background: #161922;
+      border-radius: 18px;
+      padding: 30px 20px;
+      text-align: center;
+      color: #9299a8;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #9299a8;
+    }
+
     .server-error {
+      display: none;
       background: #3a1717;
       border: 1px solid #8a3434;
       color: #ffb3b3;
       padding: 14px;
       border-radius: 14px;
       margin-bottom: 15px;
-      display: none;
     }
 
     /* MODALS */
 
     .overlay {
-      position: fixed;
       display: none;
+      position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.7);
       z-index: 9;
@@ -731,8 +802,8 @@
     }
 
     .modal {
-      position: fixed;
       display: none;
+      position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
@@ -749,35 +820,30 @@
     .modal input {
       width: 100%;
       padding: 15px;
-      border-radius: 12px;
+      margin: 12px 0;
       border: none;
+      border-radius: 12px;
       background: #292e3b;
       color: white;
       font-size: 18px;
-      margin: 12px 0;
     }
 
     .confirm {
       width: 100%;
-      background: #2775ff;
       border: none;
-      color: white;
-      padding: 15px;
       border-radius: 13px;
-      font-size: 16px;
+      padding: 15px;
+      background: #2775ff;
+      color: white;
       font-weight: bold;
-    }
-
-    .confirm:disabled {
-      opacity: 0.5;
     }
 
     .cancel {
       width: 100%;
-      margin-top: 8px;
-      background: none;
       border: none;
+      background: none;
       color: #999;
+      margin-top: 8px;
       padding: 10px;
     }
 
@@ -787,19 +853,18 @@
     }
 
     .levelup-modal {
-      position: fixed;
       display: none;
+      position: fixed;
       top: 50%;
       left: 50%;
+      transform: translate(-50%, -50%);
       width: calc(100% - 40px);
       max-width: 420px;
-      transform: translate(-50%, -50%);
       background: #171a23;
       border-radius: 24px;
       padding: 28px 22px;
       z-index: 20;
       text-align: center;
-      box-shadow: 0 20px 70px rgba(0,0,0,0.6);
     }
 
     .levelup-modal.active {
@@ -808,37 +873,34 @@
 
     .levelup-icon {
       font-size: 62px;
-      margin-bottom: 10px;
     }
 
     .levelup-title {
       font-size: 26px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-top: 8px;
     }
 
     .levelup-level {
       font-size: 20px;
-      margin-bottom: 15px;
+      margin-top: 8px;
     }
 
     .levelup-reward {
       background: #222735;
       border-radius: 15px;
       padding: 15px;
-      margin-bottom: 18px;
-      font-size: 18px;
+      margin: 15px 0;
       font-weight: bold;
     }
 
     .levelup-button {
       width: 100%;
-      padding: 14px;
       border: none;
+      padding: 14px;
       border-radius: 13px;
       background: #2775ff;
       color: white;
-      font-size: 16px;
       font-weight: bold;
     }
 
@@ -853,7 +915,6 @@
 <div class="container">
 
   <div class="header">
-
     <div class="logo">
       ⚽ BetCoin
     </div>
@@ -861,9 +922,7 @@
     <div class="balance-small">
       🪙 <span id="topBalance">...</span>
     </div>
-
   </div>
-
 
   <div
     id="serverError"
@@ -879,15 +938,11 @@
   >
 
     <div class="balance-card">
-
-      <p>
-        Твой баланс
-      </p>
+      <p>Твой баланс</p>
 
       <h1>
         🪙 <span id="balance">...</span>
       </h1>
-
     </div>
 
 
@@ -896,7 +951,6 @@
       <div class="daily-top">
 
         <div>
-
           <div class="daily-title">
             🎁 Ежедневный бонус
           </div>
@@ -908,7 +962,6 @@
           <div class="daily-description">
             +15 XP • раз в 24 часа
           </div>
-
         </div>
 
         <div style="font-size:45px;">
@@ -916,7 +969,6 @@
         </div>
 
       </div>
-
 
       <button
         id="dailyButton"
@@ -926,7 +978,6 @@
       >
         Загрузка...
       </button>
-
 
       <div
         id="dailyTimer"
@@ -939,7 +990,6 @@
     <div class="tasks-section">
 
       <div class="tasks-header">
-
         <h2>
           🎯 Ежедневные задания
         </h2>
@@ -947,16 +997,12 @@
         <div class="tasks-reset">
           каждый день
         </div>
-
       </div>
 
-
       <div id="tasksList">
-
         <div class="loading">
           Загружаем задания...
         </div>
-
       </div>
 
     </div>
@@ -966,13 +1012,10 @@
       🔥 Матчи
     </h2>
 
-
     <div id="homeMatches">
-
       <div class="loading">
         Загружаем матчи...
       </div>
-
     </div>
 
   </div>
@@ -989,13 +1032,10 @@
       ⚽ Все матчи
     </h2>
 
-
     <div id="allMatches">
-
       <div class="loading">
         Загружаем матчи...
       </div>
-
     </div>
 
   </div>
@@ -1015,10 +1055,7 @@
       ← Назад
     </button>
 
-
-    <div
-      id="matchDetailContent"
-    ></div>
+    <div id="matchDetailContent"></div>
 
   </div>
 
@@ -1034,11 +1071,64 @@
       🎫 Мои ставки
     </h2>
 
-
     <div id="betsList">
-
       <div class="loading">
         Загружаем ставки...
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- LEADERBOARD -->
+
+  <div
+    id="leaders"
+    class="page"
+  >
+
+    <h2>
+      🏆 Лидеры
+    </h2>
+
+
+    <div class="leaderboard-info">
+
+      <div class="leaderboard-info-title">
+        Рейтинг BetCoin
+      </div>
+
+      <div class="leaderboard-info-text">
+        Игроки сортируются по XP.
+        При одинаковом XP выше игрок с большим балансом.
+      </div>
+
+    </div>
+
+
+    <div
+      id="myRankCard"
+      class="my-rank-card"
+    >
+
+      <div class="my-rank-title">
+        Твоё место
+      </div>
+
+      <div
+        id="myRankNumber"
+        class="my-rank-number"
+      >
+        #—
+      </div>
+
+    </div>
+
+
+    <div id="leaderboardList">
+
+      <div class="loading">
+        Загружаем рейтинг...
       </div>
 
     </div>
@@ -1077,6 +1167,12 @@
         Сделано ставок:
         <span id="betsCount">0</span>
       </p>
+
+
+      <div class="rank-box">
+        🏆 Место в рейтинге:
+        <span id="profileRank">#—</span>
+      </div>
 
     </div>
 
@@ -1135,42 +1231,15 @@
     </div>
 
 
-    <!-- ACHIEVEMENTS -->
-
-    <div class="achievements-section">
-
-      <h2>
-        🏆 Достижения
-      </h2>
+    <h2>
+      🏆 Достижения
+    </h2>
 
 
-      <div
-        id="achievementSummary"
-        class="achievement-summary"
-      >
-
-        <div class="achievement-summary-title">
-          Твои достижения
-        </div>
-
-        <div
-          id="achievementSummaryText"
-          class="achievement-summary-text"
-        >
-          Загружаем...
-        </div>
-
+    <div id="achievementsList">
+      <div class="loading">
+        Загружаем достижения...
       </div>
-
-
-      <div id="achievementsList">
-
-        <div class="loading">
-          Загружаем достижения...
-        </div>
-
-      </div>
-
     </div>
 
   </div>
@@ -1204,6 +1273,14 @@
   >
     <span class="nav-icon">🎫</span>
     Ставки
+  </button>
+
+
+  <button
+    onclick="openPage('leaders', this)"
+  >
+    <span class="nav-icon">🏆</span>
+    Лидеры
   </button>
 
 
@@ -1249,7 +1326,6 @@
     За ставку: +10 XP
   </p>
 
-
   <input
     id="betAmount"
     type="number"
@@ -1258,12 +1334,10 @@
     oninput="calculateWin()"
   >
 
-
   <div class="potential">
     Возможный выигрыш:
     🪙 <span id="possibleWin">0</span>
   </div>
-
 
   <button
     id="confirmBetButton"
@@ -1272,7 +1346,6 @@
   >
     Поставить
   </button>
-
 
   <button
     class="cancel"
@@ -1304,11 +1377,9 @@
     🎉
   </div>
 
-
   <div class="levelup-title">
     Новый уровень!
   </div>
-
 
   <div
     id="levelUpLevel"
@@ -1317,14 +1388,12 @@
     Уровень 2
   </div>
 
-
   <div
     id="levelUpReward"
     class="levelup-reward"
   >
     Награда: +100 🪙
   </div>
-
 
   <button
     class="levelup-button"
@@ -1355,24 +1424,18 @@ const telegramInitData =
 
 
 let balance = 0;
-
 let bets = [];
-
 let matches = [];
-
 let tasks = [];
-
 let achievements = [];
 
+let leaderboardPlayers = [];
+let myRank = null;
 
 let xp = 0;
-
 let level = 1;
-
 let currentLevelXp = 0;
-
 let xpToNextLevel = 100;
-
 
 let dailyReward = {
   amount: 300,
@@ -1381,17 +1444,13 @@ let dailyReward = {
   next_claim: null
 };
 
-
 let dailySecondsLeft = 0;
-
 let dailyTimerInterval = null;
 
 let selectedBet = null;
-
 let selectedMatch = null;
 
 let previousPage = "home";
-
 let sessionLoaded = false;
 
 
@@ -1416,9 +1475,7 @@ const TEAM_TOTAL_POINTS = [
 ];
 
 
-/* =========================================================
-   LEVEL UP
-   ========================================================= */
+/* LEVEL */
 
 function calculateClientLevelReward(
   oldLevel,
@@ -1426,7 +1483,6 @@ function calculateClientLevelReward(
 ) {
 
   let reward = 0;
-
 
   for (
     let lvl = oldLevel + 1;
@@ -1436,20 +1492,14 @@ function calculateClientLevelReward(
 
     reward += 100;
 
-
     if (
       lvl % 5 === 0
     ) {
-
       reward += 500;
-
     }
-
   }
 
-
   return reward;
-
 }
 
 
@@ -1457,17 +1507,6 @@ function showLevelUp(
   newLevel,
   reward
 ) {
-
-  if (
-    !newLevel
-    ||
-    newLevel <= 1
-  ) {
-
-    return;
-
-  }
-
 
   const special =
     newLevel % 5 === 0;
@@ -1516,18 +1555,6 @@ function showLevelUp(
       "active"
     );
 
-
-  if (
-    tg.HapticFeedback
-  ) {
-
-    tg.HapticFeedback
-      .notificationOccurred(
-        "success"
-      );
-
-  }
-
 }
 
 
@@ -1553,9 +1580,7 @@ function closeLevelUp() {
 }
 
 
-/* =========================================================
-   API
-   ========================================================= */
+/* API */
 
 function authHeaders() {
 
@@ -1577,10 +1602,8 @@ function showError(message) {
       "serverError"
     );
 
-
   box.innerText =
     message;
-
 
   box.style.display =
     "block";
@@ -1600,29 +1623,25 @@ function hideError() {
 }
 
 
-/* =========================================================
-   SESSION
-   ========================================================= */
+/* SESSION */
 
 async function loadSession() {
 
   if (!telegramInitData) {
 
     showError(
-      "Открой BetCoin через кнопку Играть в Telegram."
+      "Открой BetCoin через Telegram."
     );
 
     return false;
-
   }
-
-
-  const alreadyLoaded =
-    sessionLoaded;
 
 
   const oldLevel =
     level;
+
+  const wasLoaded =
+    sessionLoaded;
 
 
   try {
@@ -1631,17 +1650,12 @@ async function loadSession() {
       await fetch(
         `${SERVER_URL}/api/session`,
         {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData
-            })
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            initData:
+              telegramInitData
+          })
         }
       );
 
@@ -1659,60 +1673,62 @@ async function loadSession() {
       throw new Error(
         data.error
         ||
-        "Ошибка авторизации"
+        "Ошибка загрузки"
       );
-
     }
 
 
     balance =
       Number(
-        data.balance
-        || 0
+        data.balance || 0
       );
 
 
     bets =
-      data.bets
-      || [];
+      data.bets || [];
 
 
     tasks =
-      data.tasks
-      || [];
+      data.tasks || [];
 
 
     achievements =
-      data.achievements
-      || [];
+      data.achievements || [];
 
 
     xp =
       Number(
-        data.xp
-        || 0
+        data.xp || 0
       );
 
 
     level =
       Number(
-        data.level
-        || 1
+        data.level || 1
       );
 
 
     currentLevelXp =
       Number(
-        data.current_level_xp
-        || 0
+        data.current_level_xp || 0
       );
 
 
     xpToNextLevel =
       Number(
-        data.xp_to_next_level
-        || 100
+        data.xp_to_next_level || 100
       );
+
+
+    if (
+      data.leaderboard
+    ) {
+
+      myRank =
+        data.leaderboard.my_rank
+        ?? myRank;
+
+    }
 
 
     if (
@@ -1725,8 +1741,7 @@ async function loadSession() {
 
       dailySecondsLeft =
         Number(
-          data.daily_reward
-            .seconds_left
+          data.daily_reward.seconds_left
           || 0
         );
 
@@ -1745,7 +1760,6 @@ async function loadSession() {
         )
         .innerText =
           data.user.first_name;
-
     }
 
 
@@ -1761,21 +1775,17 @@ async function loadSession() {
 
 
     if (
-      alreadyLoaded
+      wasLoaded
       &&
       level > oldLevel
     ) {
 
-      const reward =
+      showLevelUp(
+        level,
         calculateClientLevelReward(
           oldLevel,
           level
-        );
-
-
-      showLevelUp(
-        level,
-        reward
+        )
       );
 
     }
@@ -1792,7 +1802,6 @@ async function loadSession() {
       + error.message
     );
 
-
     return false;
 
   }
@@ -1800,255 +1809,22 @@ async function loadSession() {
 }
 
 
-/* =========================================================
-   TASKS
-   ========================================================= */
+/* LEADERBOARD */
 
-function renderTasks() {
-
-  const container =
-    document.getElementById(
-      "tasksList"
-    );
-
-
-  if (
-    !sessionLoaded
-  ) {
-
-    container.innerHTML = `
-      <div class="loading">
-        Загружаем задания...
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  if (
-    !tasks
-    ||
-    tasks.length === 0
-  ) {
-
-    container.innerHTML = `
-      <div class="empty">
-        Заданий пока нет
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    tasks
-      .map(
-        task => {
-
-          const progress =
-            Math.min(
-              Number(
-                task.progress
-                || 0
-              ),
-              Number(
-                task.target
-                || 1
-              )
-            );
-
-
-          const target =
-            Number(
-              task.target
-              || 1
-            );
-
-
-          const percent =
-            Math.min(
-              100,
-              Math.round(
-                (
-                  progress
-                  / target
-                )
-                * 100
-              )
-            );
-
-
-          const rewardText =
-            task.reward_type
-            === "xp"
-              ? `+${task.reward} XP`
-              : `+${task.reward} 🪙`;
-
-
-          let buttonText =
-            "Выполнить";
-
-
-          let buttonDisabled =
-            true;
-
-
-          let buttonClass =
-            "task-button";
-
-
-          if (
-            task.claimed
-          ) {
-
-            buttonText =
-              "✓ Получено";
-
-            buttonDisabled =
-              true;
-
-            buttonClass +=
-              " claimed";
-
-          }
-
-          else if (
-            task.completed
-          ) {
-
-            buttonText =
-              "Забрать";
-
-            buttonDisabled =
-              false;
-
-          }
-
-
-          let cardClass =
-            "task-card";
-
-
-          if (
-            task.completed
-          ) {
-
-            cardClass +=
-              " completed";
-
-          }
-
-
-          if (
-            task.claimed
-          ) {
-
-            cardClass +=
-              " claimed";
-
-          }
-
-
-          return `
-            <div class="${cardClass}">
-
-              <div class="task-top">
-
-                <div class="task-info">
-
-                  <div class="task-title">
-                    ${task.title}
-                  </div>
-
-                  <div class="task-description">
-                    ${task.description}
-                  </div>
-
-                </div>
-
-
-                <div class="task-reward">
-                  ${rewardText}
-                </div>
-
-              </div>
-
-
-              <div class="task-progress-row">
-
-                <span>
-                  Прогресс
-                </span>
-
-                <span>
-                  ${progress} / ${target}
-                </span>
-
-              </div>
-
-
-              <div class="task-progress">
-
-                <div
-                  class="task-progress-fill"
-                  style="width:${percent}%"
-                ></div>
-
-              </div>
-
-
-              <button
-                class="${buttonClass}"
-                ${buttonDisabled ? "disabled" : ""}
-                onclick="claimTask('${task.key}')"
-              >
-                ${buttonText}
-              </button>
-
-            </div>
-          `;
-
-        }
-      )
-      .join(
-        ""
-      );
-
-}
-
-
-async function claimTask(
-  taskKey
-) {
-
-  const oldLevel =
-    level;
-
+async function loadLeaderboard() {
 
   try {
 
     const response =
       await fetch(
-        `${SERVER_URL}/api/tasks/claim`,
+        `${SERVER_URL}/api/leaderboard`,
         {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              task_key:
-                taskKey
-            })
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            initData:
+              telegramInitData
+          })
         }
       );
 
@@ -2066,7 +1842,371 @@ async function claimTask(
       throw new Error(
         data.error
         ||
-        "Не удалось получить награду"
+        "Ошибка рейтинга"
+      );
+
+    }
+
+
+    leaderboardPlayers =
+      data.players || [];
+
+
+    myRank =
+      data.my_rank || null;
+
+
+    renderLeaderboard();
+
+    updateProfileRank();
+
+  }
+
+  catch (error) {
+
+    document
+      .getElementById(
+        "leaderboardList"
+      )
+      .innerHTML = `
+        <div class="empty">
+          Не удалось загрузить рейтинг
+        </div>
+      `;
+
+  }
+
+}
+
+
+function rankText(rank) {
+
+  if (rank === 1) {
+    return "🥇";
+  }
+
+  if (rank === 2) {
+    return "🥈";
+  }
+
+  if (rank === 3) {
+    return "🥉";
+  }
+
+  return `#${rank}`;
+}
+
+
+function renderLeaderboard() {
+
+  const list =
+    document.getElementById(
+      "leaderboardList"
+    );
+
+
+  document
+    .getElementById(
+      "myRankNumber"
+    )
+    .innerText =
+      myRank
+        ? `#${myRank}`
+        : "#—";
+
+
+  if (
+    leaderboardPlayers.length === 0
+  ) {
+
+    list.innerHTML = `
+      <div class="empty">
+        В рейтинге пока никого нет
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const currentTelegramId =
+    tg.initDataUnsafe
+      ?.user
+      ?.id;
+
+
+  list.innerHTML =
+    leaderboardPlayers
+      .map(
+        player => {
+
+          const isMe =
+            String(
+              player.telegram_id
+            )
+            ===
+            String(
+              currentTelegramId
+            );
+
+
+          const firstLetter =
+            String(
+              player.first_name
+              || "И"
+            )
+            .charAt(0)
+            .toUpperCase();
+
+
+          return `
+            <div
+              class="leader-row ${isMe ? "me" : ""}"
+            >
+
+              <div class="leader-position">
+                ${rankText(player.rank)}
+              </div>
+
+
+              <div class="leader-avatar">
+                ${firstLetter}
+              </div>
+
+
+              <div class="leader-main">
+
+                <div class="leader-name">
+                  ${player.first_name}
+                  ${isMe ? " • Ты" : ""}
+                </div>
+
+                <div class="leader-sub">
+                  ⭐ Уровень ${player.level}
+                  ${
+                    player.username
+                      ? ` • @${player.username}`
+                      : ""
+                  }
+                </div>
+
+              </div>
+
+
+              <div class="leader-stats">
+
+                <div class="leader-xp">
+                  ${player.xp} XP
+                </div>
+
+                <div class="leader-balance">
+                  🪙 ${player.balance}
+                </div>
+
+              </div>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+function updateProfileRank() {
+
+  document
+    .getElementById(
+      "profileRank"
+    )
+    .innerText =
+      myRank
+        ? `#${myRank}`
+        : "#—";
+
+}
+
+
+/* TASKS */
+
+function renderTasks() {
+
+  const container =
+    document.getElementById(
+      "tasksList"
+    );
+
+
+  if (
+    !sessionLoaded
+  ) {
+    return;
+  }
+
+
+  container.innerHTML =
+    tasks
+      .map(
+        task => {
+
+          const progress =
+            Number(
+              task.progress || 0
+            );
+
+
+          const target =
+            Number(
+              task.target || 1
+            );
+
+
+          const percent =
+            Math.min(
+              100,
+              Math.round(
+                progress
+                /
+                target
+                *
+                100
+              )
+            );
+
+
+          let buttonText =
+            "Выполнить";
+
+          let disabled =
+            true;
+
+          let buttonClass =
+            "task-button";
+
+
+          if (
+            task.claimed
+          ) {
+
+            buttonText =
+              "✓ Получено";
+
+            buttonClass +=
+              " claimed";
+
+          }
+
+          else if (
+            task.completed
+          ) {
+
+            buttonText =
+              "Забрать";
+
+            disabled =
+              false;
+
+          }
+
+
+          return `
+            <div
+              class="task-card
+              ${task.completed ? "completed" : ""}
+              ${task.claimed ? "claimed" : ""}"
+            >
+
+              <div class="task-top">
+
+                <div>
+                  <div class="task-title">
+                    ${task.title}
+                  </div>
+
+                  <div class="task-description">
+                    ${task.description}
+                  </div>
+                </div>
+
+
+                <div class="task-reward">
+                  ${
+                    task.reward_type === "xp"
+                    ? `+${task.reward} XP`
+                    : `+${task.reward} 🪙`
+                  }
+                </div>
+
+              </div>
+
+
+              <div class="task-progress-row">
+                <span>Прогресс</span>
+                <span>${progress} / ${target}</span>
+              </div>
+
+
+              <div class="task-progress">
+                <div
+                  class="task-progress-fill"
+                  style="width:${percent}%"
+                ></div>
+              </div>
+
+
+              <button
+                class="${buttonClass}"
+                ${disabled ? "disabled" : ""}
+                onclick="claimTask('${task.key}')"
+              >
+                ${buttonText}
+              </button>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+async function claimTask(taskKey) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${SERVER_URL}/api/tasks/claim`,
+        {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            initData:
+              telegramInitData,
+            task_key:
+              taskKey
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+      ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
       );
 
     }
@@ -2075,46 +2215,35 @@ async function claimTask(
     balance =
       Number(
         data.balance
-        || balance
       );
 
 
     xp =
       Number(
         data.xp
-        ?? xp
       );
 
 
     level =
       Number(
         data.level
-        || level
       );
 
 
     currentLevelXp =
       Number(
         data.current_level_xp
-        ?? (
-          xp % 100
-        )
       );
 
 
     xpToNextLevel =
       Number(
         data.xp_to_next_level
-        ?? (
-          100
-          - currentLevelXp
-        )
       );
 
 
     tasks =
-      data.tasks
-      || tasks;
+      data.tasks || tasks;
 
 
     achievements =
@@ -2122,60 +2251,22 @@ async function claimTask(
       || achievements;
 
 
+    myRank =
+      data.my_rank
+      || myRank;
+
+
     updateInterface();
 
 
-    if (
-      tg.HapticFeedback
-    ) {
-
-      tg.HapticFeedback
-        .notificationOccurred(
-          "success"
-        );
-
-    }
+    alert(
+      data.reward_type === "xp"
+        ? `🎯 +${data.reward} XP`
+        : `🎯 +${data.reward} монет`
+    );
 
 
-    const levelReward =
-      Number(
-        data.level_reward
-        || 0
-      );
-
-
-    if (
-      level > oldLevel
-      &&
-      levelReward > 0
-    ) {
-
-      showLevelUp(
-        level,
-        levelReward
-      );
-
-    }
-
-
-    if (
-      data.reward_type
-      === "xp"
-    ) {
-
-      alert(
-        `🎯 +${data.reward} XP`
-      );
-
-    }
-
-    else {
-
-      alert(
-        `🎯 +${data.reward} монет`
-      );
-
-    }
+    await loadLeaderboard();
 
   }
 
@@ -2190,61 +2281,31 @@ async function claimTask(
 }
 
 
-/* =========================================================
-   ACHIEVEMENTS
-   ========================================================= */
+/* ACHIEVEMENTS */
 
-function achievementIcon(
-  key
-) {
+function achievementIcon(key) {
 
-  if (
-    key === "bets_10"
-  ) {
-
+  if (key === "bets_10") {
     return "🎫";
-
   }
 
-
-  if (
-    key === "wins_5"
-  ) {
-
+  if (key === "wins_5") {
     return "🔥";
-
   }
 
-
-  if (
-    key === "level_5"
-  ) {
-
+  if (key === "level_5") {
     return "⭐";
-
   }
 
-
-  if (
-    key === "xp_500"
-  ) {
-
+  if (key === "xp_500") {
     return "⚡";
-
   }
 
-
-  if (
-    key === "high_odd_win"
-  ) {
-
+  if (key === "high_odd_win") {
     return "🎯";
-
   }
-
 
   return "🏆";
-
 }
 
 
@@ -2256,91 +2317,27 @@ function renderAchievements() {
     );
 
 
-  const summary =
-    document.getElementById(
-      "achievementSummaryText"
-    );
-
-
   if (
     !sessionLoaded
   ) {
-
-    container.innerHTML = `
-      <div class="loading">
-        Загружаем достижения...
-      </div>
-    `;
-
-
-    summary.innerText =
-      "Загружаем...";
-
-
     return;
-
   }
-
-
-  if (
-    !achievements
-    ||
-    achievements.length === 0
-  ) {
-
-    container.innerHTML = `
-      <div class="empty">
-        Достижений пока нет
-      </div>
-    `;
-
-
-    summary.innerText =
-      "0 достижений";
-
-
-    return;
-
-  }
-
-
-  const claimedCount =
-    achievements.filter(
-      item =>
-        item.claimed
-    ).length;
-
-
-  const completedCount =
-    achievements.filter(
-      item =>
-        item.completed
-    ).length;
-
-
-  summary.innerText =
-    `Получено: ${claimedCount} из ${achievements.length} • Выполнено: ${completedCount}`;
 
 
   container.innerHTML =
     achievements
       .map(
-        achievement => {
+        item => {
 
-          const target =
+          const progress =
             Number(
-              achievement.target
-              || 1
+              item.progress || 0
             );
 
 
-          const progress =
-            Math.min(
-              Number(
-                achievement.progress
-                || 0
-              ),
-              target
+          const target =
+            Number(
+              item.target || 1
             );
 
 
@@ -2348,42 +2345,31 @@ function renderAchievements() {
             Math.min(
               100,
               Math.round(
-                (
-                  progress
-                  / target
-                )
-                * 100
+                progress
+                /
+                target
+                *
+                100
               )
             );
-
-
-          let cardClass =
-            "achievement-card";
-
-
-          let buttonClass =
-            "achievement-button";
 
 
           let buttonText =
             "Не выполнено";
 
-
           let disabled =
             true;
 
+          let buttonClass =
+            "achievement-button";
+
 
           if (
-            achievement.completed
+            item.completed
           ) {
-
-            cardClass +=
-              " completed";
-
 
             buttonText =
               "Забрать";
-
 
             disabled =
               false;
@@ -2392,53 +2378,47 @@ function renderAchievements() {
 
 
           if (
-            achievement.claimed
+            item.claimed
           ) {
-
-            cardClass +=
-              " claimed";
-
-
-            buttonClass +=
-              " claimed";
-
 
             buttonText =
               "✓ Получено";
 
-
             disabled =
               true;
+
+            buttonClass +=
+              " claimed";
 
           }
 
 
           return `
-            <div class="${cardClass}">
+            <div
+              class="achievement-card
+              ${item.completed ? "completed" : ""}
+              ${item.claimed ? "claimed" : ""}"
+            >
 
               <div class="achievement-top">
 
                 <div class="achievement-icon">
-                  ${achievementIcon(
-                    achievement.key
-                  )}
+                  ${achievementIcon(item.key)}
                 </div>
 
 
                 <div class="achievement-main">
 
                   <div class="achievement-title">
-                    ${achievement.title}
+                    ${item.title}
                   </div>
-
 
                   <div class="achievement-description">
-                    ${achievement.description}
+                    ${item.description}
                   </div>
 
-
                   <div class="achievement-reward">
-                    Награда: +${achievement.reward} 🪙
+                    +${item.reward} 🪙
                   </div>
 
                 </div>
@@ -2447,32 +2427,23 @@ function renderAchievements() {
 
 
               <div class="achievement-progress-row">
-
-                <span>
-                  Прогресс
-                </span>
-
-                <span>
-                  ${progress} / ${target}
-                </span>
-
+                <span>Прогресс</span>
+                <span>${progress} / ${target}</span>
               </div>
 
 
               <div class="achievement-progress">
-
                 <div
                   class="achievement-progress-fill"
                   style="width:${percent}%"
                 ></div>
-
               </div>
 
 
               <button
                 class="${buttonClass}"
                 ${disabled ? "disabled" : ""}
-                onclick="claimAchievement('${achievement.key}')"
+                onclick="claimAchievement('${item.key}')"
               >
                 ${buttonText}
               </button>
@@ -2482,9 +2453,7 @@ function renderAchievements() {
 
         }
       )
-      .join(
-        ""
-      );
+      .join("");
 
 }
 
@@ -2499,20 +2468,14 @@ async function claimAchievement(
       await fetch(
         `${SERVER_URL}/api/achievements/claim`,
         {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              achievement_key:
-                achievementKey
-            })
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            initData:
+              telegramInitData,
+            achievement_key:
+              achievementKey
+          })
         }
       );
 
@@ -2529,8 +2492,6 @@ async function claimAchievement(
 
       throw new Error(
         data.error
-        ||
-        "Не удалось получить достижение"
       );
 
     }
@@ -2539,7 +2500,6 @@ async function claimAchievement(
     balance =
       Number(
         data.balance
-        || balance
       );
 
 
@@ -2548,24 +2508,20 @@ async function claimAchievement(
       || achievements;
 
 
+    myRank =
+      data.my_rank
+      || myRank;
+
+
     updateInterface();
 
 
-    if (
-      tg.HapticFeedback
-    ) {
-
-      tg.HapticFeedback
-        .notificationOccurred(
-          "success"
-        );
-
-    }
-
-
     alert(
-      `🏆 Достижение получено! +${data.reward} монет`
+      `🏆 +${data.reward} монет`
     );
+
+
+    await loadLeaderboard();
 
   }
 
@@ -2580,74 +2536,14 @@ async function claimAchievement(
 }
 
 
-/* =========================================================
-   XP
-   ========================================================= */
+/* DAILY */
 
-function updateXpInterface() {
-
-  document
-    .getElementById(
-      "levelNumber"
-    )
-    .innerText =
-      `⭐ Уровень ${level}`;
-
-
-  document
-    .getElementById(
-      "totalXp"
-    )
-    .innerText =
-      `${xp} XP`;
-
-
-  document
-    .getElementById(
-      "xpProgressText"
-    )
-    .innerText =
-      `${currentLevelXp} / 100 XP`;
-
-
-  document
-    .getElementById(
-      "xpInfo"
-    )
-    .innerText =
-      `До следующего уровня: ${xpToNextLevel} XP`;
-
-
-  document
-    .getElementById(
-      "xpFill"
-    )
-    .style.width =
-      `${Math.min(
-        100,
-        Math.max(
-          0,
-          currentLevelXp
-        )
-      )}%`;
-
-}
-
-
-/* =========================================================
-   DAILY
-   ========================================================= */
-
-function formatDailyTime(
-  seconds
-) {
+function formatDailyTime(seconds) {
 
   seconds =
     Math.max(
       0,
-      Number(
-        seconds
-      )
+      Number(seconds)
     );
 
 
@@ -2667,32 +2563,18 @@ function formatDailyTime(
 
 
   const secs =
-    Math.floor(
-      seconds % 60
-    );
+    seconds % 60;
 
 
   return (
-    String(
-      hours
-    ).padStart(
-      2,
-      "0"
-    )
+    String(hours)
+      .padStart(2, "0")
     + ":"
-    + String(
-      minutes
-    ).padStart(
-      2,
-      "0"
-    )
+    + String(minutes)
+      .padStart(2, "0")
     + ":"
-    + String(
-      secs
-    ).padStart(
-      2,
-      "0"
-    )
+    + String(secs)
+      .padStart(2, "0")
   );
 
 }
@@ -2720,10 +2602,6 @@ function updateDailyReward() {
       dailyTimerInterval
     );
 
-
-    dailyTimerInterval =
-      null;
-
   }
 
 
@@ -2734,14 +2612,11 @@ function updateDailyReward() {
     button.disabled =
       false;
 
-
     button.innerText =
       "Получить +300 🪙";
 
-
     timer.innerText =
       "Бонус доступен!";
-
 
     return;
 
@@ -2750,7 +2625,6 @@ function updateDailyReward() {
 
   button.disabled =
     true;
-
 
   button.innerText =
     "Бонус уже получен";
@@ -2779,16 +2653,8 @@ function updateDailyReward() {
           );
 
 
-          dailyTimerInterval =
-            null;
-
-
           dailyReward.available =
             true;
-
-
-          dailySecondsLeft =
-            0;
 
 
           button.disabled =
@@ -2823,37 +2689,18 @@ function updateDailyReward() {
 
 async function claimDailyReward() {
 
-  const button =
-    document.getElementById(
-      "dailyButton"
-    );
-
-
-  button.disabled =
-    true;
-
-
-  button.innerText =
-    "Получаем...";
-
-
   try {
 
     const response =
       await fetch(
         `${SERVER_URL}/api/daily-reward`,
         {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData
-            })
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            initData:
+              telegramInitData
+          })
         }
       );
 
@@ -2868,30 +2715,8 @@ async function claimDailyReward() {
       !data.success
     ) {
 
-      if (
-        data.seconds_left
-        != null
-      ) {
-
-        dailyReward.available =
-          false;
-
-
-        dailySecondsLeft =
-          Number(
-            data.seconds_left
-          );
-
-
-        updateDailyReward();
-
-      }
-
-
       throw new Error(
         data.error
-        ||
-        "Не удалось получить бонус"
       );
 
     }
@@ -2906,39 +2731,35 @@ async function claimDailyReward() {
     xp =
       Number(
         data.xp
-        ?? xp
       );
 
 
     level =
       Number(
         data.level
-        || level
       );
 
 
     currentLevelXp =
       Number(
         data.current_level_xp
-        ?? (
-          xp % 100
-        )
       );
 
 
     xpToNextLevel =
       Number(
         data.xp_to_next_level
-        ?? (
-          100
-          - currentLevelXp
-        )
       );
 
 
     achievements =
       data.achievements
       || achievements;
+
+
+    myRank =
+      data.my_rank
+      || myRank;
 
 
     dailyReward.available =
@@ -2957,20 +2778,15 @@ async function claimDailyReward() {
     updateDailyReward();
 
 
-    const levelReward =
-      Number(
-        data.level_reward
-        || 0
-      );
-
-
     if (
-      levelReward > 0
+      Number(
+        data.level_reward || 0
+      ) > 0
     ) {
 
       showLevelUp(
         level,
-        levelReward
+        data.level_reward
       );
 
     }
@@ -2978,10 +2794,13 @@ async function claimDailyReward() {
     else {
 
       alert(
-        `🎁 +${data.reward} монет и +${data.xp_gained || 15} XP!`
+        `🎁 +${data.reward} монет и +${data.xp_gained} XP`
       );
 
     }
+
+
+    await loadLeaderboard();
 
   }
 
@@ -2991,7 +2810,6 @@ async function claimDailyReward() {
       error.message
     );
 
-
     updateDailyReward();
 
   }
@@ -2999,34 +2817,19 @@ async function claimDailyReward() {
 }
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+/* HELPERS */
 
-function formatDate(
-  dateString
-) {
+function formatDate(dateString) {
 
-  const date =
-    new Date(
-      dateString
-    );
-
-
-  return date.toLocaleString(
+  return new Date(
+    dateString
+  ).toLocaleString(
     "ru-RU",
     {
-      day:
-        "2-digit",
-
-      month:
-        "2-digit",
-
-      hour:
-        "2-digit",
-
-      minute:
-        "2-digit"
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
     }
   );
 
@@ -3035,9 +2838,7 @@ function formatDate(
 
 function safeMatchName(name) {
 
-  return String(
-    name
-  )
+  return String(name)
     .replace(
       /\\/g,
       "\\\\"
@@ -3050,27 +2851,18 @@ function safeMatchName(name) {
 }
 
 
-function handicapLabel(
-  point
-) {
+function handicapLabel(point) {
 
-  if (
+  return (
     point > 0
-  ) {
-
-    return `+${point}`;
-
-  }
-
-
-  return `${point}`;
+      ? `+${point}`
+      : `${point}`
+  );
 
 }
 
 
-/* =========================================================
-   MATCH CARD
-   ========================================================= */
+/* MATCHES */
 
 function createCompactMatch(
   match,
@@ -3113,11 +2905,8 @@ function createCompactMatch(
           )"
         >
           П1<br>
-          ${Number(
-            match.odds.home
-          ).toFixed(2)}
+          ${Number(match.odds.home).toFixed(2)}
         </button>
-
 
         <button
           class="odd-button"
@@ -3129,11 +2918,8 @@ function createCompactMatch(
           )"
         >
           X<br>
-          ${Number(
-            match.odds.draw
-          ).toFixed(2)}
+          ${Number(match.odds.draw).toFixed(2)}
         </button>
-
 
         <button
           class="odd-button"
@@ -3145,9 +2931,7 @@ function createCompactMatch(
           )"
         >
           П2<br>
-          ${Number(
-            match.odds.away
-          ).toFixed(2)}
+          ${Number(match.odds.away).toFixed(2)}
         </button>
 
       </div>
@@ -3165,47 +2949,29 @@ function createCompactMatch(
         ${match.league}
       </div>
 
-
       <div class="teams">
 
         <div class="team">
-
-          <img
-            src="${match.home_logo}"
-          >
-
+          <img src="${match.home_logo}">
           ${match.home}
-
         </div>
-
 
         <div class="vs">
           VS
         </div>
 
-
         <div class="team">
-
-          <img
-            src="${match.away_logo}"
-          >
-
+          <img src="${match.away_logo}">
           ${match.away}
-
         </div>
 
       </div>
 
-
       <div class="time">
-        ${formatDate(
-          match.date
-        )}
+        ${formatDate(match.date)}
       </div>
 
-
       ${oddsBlock}
-
 
       <button
         class="open-match-button"
@@ -3220,9 +2986,7 @@ function createCompactMatch(
 }
 
 
-/* =========================================================
-   MARKETS
-   ========================================================= */
+/* MARKETS */
 
 function makeMainOdds(
   match,
@@ -3260,12 +3024,8 @@ function makeMainOdds(
           ${match.odds.home}
         )"
       >
-        П1<br>
-        ${Number(
-          match.odds.home
-        ).toFixed(2)}
+        П1<br>${Number(match.odds.home).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3276,12 +3036,8 @@ function makeMainOdds(
           ${match.odds.draw}
         )"
       >
-        X<br>
-        ${Number(
-          match.odds.draw
-        ).toFixed(2)}
+        X<br>${Number(match.odds.draw).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3292,10 +3048,7 @@ function makeMainOdds(
           ${match.odds.away}
         )"
       >
-        П2<br>
-        ${Number(
-          match.odds.away
-        ).toFixed(2)}
+        П2<br>${Number(match.odds.away).toFixed(2)}
       </button>
 
     </div>
@@ -3325,10 +3078,8 @@ function makeDoubleChanceBlock(
   const oneX =
     match.double_chance["1x"];
 
-
   const oneTwo =
     match.double_chance["12"];
-
 
   const xTwo =
     match.double_chance["x2"];
@@ -3351,10 +3102,8 @@ function makeDoubleChanceBlock(
               )`
         }"
       >
-        1X<br>
-        ${oneX == null ? "—" : Number(oneX).toFixed(2)}
+        1X<br>${oneX == null ? "—" : Number(oneX).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3370,10 +3119,8 @@ function makeDoubleChanceBlock(
               )`
         }"
       >
-        12<br>
-        ${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
+        12<br>${oneTwo == null ? "—" : Number(oneTwo).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3389,8 +3136,7 @@ function makeDoubleChanceBlock(
               )`
         }"
       >
-        X2<br>
-        ${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
+        X2<br>${xTwo == null ? "—" : Number(xTwo).toFixed(2)}
       </button>
 
     </div>
@@ -3407,9 +3153,7 @@ function makeTotalBlock(
 ) {
 
   const total =
-    match[
-      fieldName
-    ];
+    match[fieldName];
 
 
   if (
@@ -3442,11 +3186,8 @@ function makeTotalBlock(
         )"
       >
         ТБ ${point}<br>
-        ${Number(
-          total.over
-        ).toFixed(2)}
+        ${Number(total.over).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3458,9 +3199,7 @@ function makeTotalBlock(
         )"
       >
         ТМ ${point}<br>
-        ${Number(
-          total.under
-        ).toFixed(2)}
+        ${Number(total.under).toFixed(2)}
       </button>
 
     </div>
@@ -3504,11 +3243,8 @@ function makeBttsBlock(
         )"
       >
         ОЗ Да<br>
-        ${Number(
-          match.btts.yes
-        ).toFixed(2)}
+        ${Number(match.btts.yes).toFixed(2)}
       </button>
-
 
       <button
         class="odd-button"
@@ -3520,9 +3256,7 @@ function makeBttsBlock(
         )"
       >
         ОЗ Нет<br>
-        ${Number(
-          match.btts.no
-        ).toFixed(2)}
+        ${Number(match.btts.no).toFixed(2)}
       </button>
 
     </div>
@@ -3538,10 +3272,6 @@ function makeHandicapsBlock(
 
   if (
     !match.handicaps
-    ||
-    !match.handicaps.home
-    ||
-    !match.handicaps.away
   ) {
 
     return `
@@ -3557,44 +3287,24 @@ function makeHandicapsBlock(
 
 
   HANDICAP_POINTS.forEach(
-    homePoint => {
+    point => {
 
       const awayPoint =
-        homePoint === 0
+        point === 0
           ? 0
-          : -homePoint;
+          : -point;
 
 
       const homeOdd =
-        match
-          .handicaps
-          .home[
-            String(
-              homePoint
-            )
-          ];
+        match.handicaps.home?.[
+          String(point)
+        ];
 
 
       const awayOdd =
-        match
-          .handicaps
-          .away[
-            String(
-              awayPoint
-            )
-          ];
-
-
-      const homeLabel =
-        handicapLabel(
-          homePoint
-        );
-
-
-      const awayLabel =
-        handicapLabel(
-          awayPoint
-        );
+        match.handicaps.away?.[
+          String(awayPoint)
+        ];
 
 
       html += `
@@ -3609,15 +3319,14 @@ function makeHandicapsBlock(
                 : `openBet(
                     '${safeName}',
                     ${match.fixture_id},
-                    'Ф1(${homeLabel})',
+                    'Ф1(${handicapLabel(point)})',
                     ${homeOdd}
                   )`
             }"
           >
-            Ф1(${homeLabel})<br>
+            Ф1(${handicapLabel(point)})<br>
             ${homeOdd == null ? "—" : Number(homeOdd).toFixed(2)}
           </button>
-
 
           <button
             class="odd-button"
@@ -3628,12 +3337,12 @@ function makeHandicapsBlock(
                 : `openBet(
                     '${safeName}',
                     ${match.fixture_id},
-                    'Ф2(${awayLabel})',
+                    'Ф2(${handicapLabel(awayPoint)})',
                     ${awayOdd}
                   )`
             }"
           >
-            Ф2(${awayLabel})<br>
+            Ф2(${handicapLabel(awayPoint)})<br>
             ${awayOdd == null ? "—" : Number(awayOdd).toFixed(2)}
           </button>
 
@@ -3649,127 +3358,6 @@ function makeHandicapsBlock(
 }
 
 
-function makeTeamTotalLines(
-  match,
-  totals,
-  teamNumber,
-  safeName
-) {
-
-  if (
-    !totals
-  ) {
-
-    return `
-      <div class="no-odds">
-        Индивидуальные тоталы пока недоступны
-      </div>
-    `;
-
-  }
-
-
-  let found = false;
-
-  let html = "";
-
-
-  TEAM_TOTAL_POINTS.forEach(
-    point => {
-
-      const line =
-        totals[
-          String(
-            point
-          )
-        ];
-
-
-      const over =
-        line?.over;
-
-
-      const under =
-        line?.under;
-
-
-      if (
-        over != null
-        ||
-        under != null
-      ) {
-
-        found =
-          true;
-
-      }
-
-
-      html += `
-        <div class="odds-2">
-
-          <button
-            class="odd-button"
-            ${over == null ? "disabled" : ""}
-            onclick="${
-              over == null
-                ? ""
-                : `openBet(
-                    '${safeName}',
-                    ${match.fixture_id},
-                    'ИТБ${teamNumber}(${point})',
-                    ${over}
-                  )`
-            }"
-          >
-            ИТБ${teamNumber}(${point})<br>
-            ${over == null ? "—" : Number(over).toFixed(2)}
-          </button>
-
-
-          <button
-            class="odd-button"
-            ${under == null ? "disabled" : ""}
-            onclick="${
-              under == null
-                ? ""
-                : `openBet(
-                    '${safeName}',
-                    ${match.fixture_id},
-                    'ИТМ${teamNumber}(${point})',
-                    ${under}
-                  )`
-            }"
-          >
-            ИТМ${teamNumber}(${point})<br>
-            ${under == null ? "—" : Number(under).toFixed(2)}
-          </button>
-
-        </div>
-      `;
-
-    }
-  );
-
-
-  if (
-    !found
-  ) {
-
-    return `
-      <div class="no-odds">
-        Индивидуальные тоталы пока недоступны
-      </div>
-    `;
-
-  }
-
-
-  return html;
-
-}
-
-
 function makeTeamTotalsBlock(
   match,
   safeName
@@ -3777,10 +3365,6 @@ function makeTeamTotalsBlock(
 
   if (
     !match.team_totals
-    ||
-    !match.team_totals.home
-    ||
-    !match.team_totals.away
   ) {
 
     return `
@@ -3792,54 +3376,127 @@ function makeTeamTotalsBlock(
   }
 
 
-  return `
-    <div class="team-total-title">
-      ${match.home}
-    </div>
-
-    ${makeTeamTotalLines(
-      match,
-      match.team_totals.home,
-      1,
-      safeName
-    )}
+  let html = "";
 
 
-    <div class="team-total-title">
-      ${match.away}
-    </div>
+  [
+    {
+      side:
+        "home",
 
-    ${makeTeamTotalLines(
-      match,
-      match.team_totals.away,
-      2,
-      safeName
-    )}
-  `;
+      number:
+        1,
+
+      name:
+        match.home
+    },
+
+    {
+      side:
+        "away",
+
+      number:
+        2,
+
+      name:
+        match.away
+    }
+  ]
+  .forEach(
+    team => {
+
+      html += `
+        <div class="team-total-title">
+          ${team.name}
+        </div>
+      `;
+
+
+      TEAM_TOTAL_POINTS.forEach(
+        point => {
+
+          const line =
+            match.team_totals
+              ?.[
+                team.side
+              ]
+              ?.[
+                String(point)
+              ];
+
+
+          const over =
+            line?.over;
+
+
+          const under =
+            line?.under;
+
+
+          html += `
+            <div class="odds-2">
+
+              <button
+                class="odd-button"
+                ${over == null ? "disabled" : ""}
+                onclick="${
+                  over == null
+                    ? ""
+                    : `openBet(
+                        '${safeName}',
+                        ${match.fixture_id},
+                        'ИТБ${team.number}(${point})',
+                        ${over}
+                      )`
+                }"
+              >
+                ИТБ${team.number}(${point})<br>
+                ${over == null ? "—" : Number(over).toFixed(2)}
+              </button>
+
+              <button
+                class="odd-button"
+                ${under == null ? "disabled" : ""}
+                onclick="${
+                  under == null
+                    ? ""
+                    : `openBet(
+                        '${safeName}',
+                        ${match.fixture_id},
+                        'ИТМ${team.number}(${point})',
+                        ${under}
+                      )`
+                }"
+              >
+                ИТМ${team.number}(${point})<br>
+                ${under == null ? "—" : Number(under).toFixed(2)}
+              </button>
+
+            </div>
+          `;
+
+        }
+      );
+
+    }
+  );
+
+
+  return html;
 
 }
 
 
-/* =========================================================
-   MATCH DETAIL
-   ========================================================= */
+/* MATCH DETAIL */
 
-function openMatch(
-  index
-) {
+function openMatch(index) {
 
   selectedMatch =
-    matches[
-      index
-    ];
+    matches[index];
 
 
-  if (
-    !selectedMatch
-  ) {
-
+  if (!selectedMatch) {
     return;
-
   }
 
 
@@ -3881,12 +3538,6 @@ function openMatch(
       "active"
     );
 
-
-  window.scrollTo(
-    0,
-    0
-  );
-
 }
 
 
@@ -3917,26 +3568,14 @@ function closeMatch() {
     previousPage
   );
 
-
-  window.scrollTo(
-    0,
-    0
-  );
-
 }
 
 
-function renderMatchDetail(
-  match
-) {
-
-  const matchName =
-    `${match.home} — ${match.away}`;
-
+function renderMatchDetail(match) {
 
   const safeName =
     safeMatchName(
-      matchName
+      `${match.home} — ${match.away}`
     );
 
 
@@ -3954,7 +3593,6 @@ function renderMatchDetail(
           ${match.league}
         </div>
 
-
         <div class="teams">
 
           <div class="team">
@@ -3962,11 +3600,9 @@ function renderMatchDetail(
             ${match.home}
           </div>
 
-
           <div class="vs">
             VS
           </div>
-
 
           <div class="team">
             <img src="${match.away_logo}">
@@ -3975,11 +3611,8 @@ function renderMatchDetail(
 
         </div>
 
-
         <div class="time">
-          ${formatDate(
-            match.date
-          )}
+          ${formatDate(match.date)}
         </div>
 
       </div>
@@ -4011,7 +3644,7 @@ function renderMatchDetail(
 
       <div class="market-box">
         <div class="market-title">
-          Тотал голов 1.5
+          Тотал 1.5
         </div>
 
         ${makeTotalBlock(
@@ -4025,7 +3658,7 @@ function renderMatchDetail(
 
       <div class="market-box">
         <div class="market-title">
-          Тотал голов 2.5
+          Тотал 2.5
         </div>
 
         ${makeTotalBlock(
@@ -4039,7 +3672,7 @@ function renderMatchDetail(
 
       <div class="market-box">
         <div class="market-title">
-          Тотал голов 3.5
+          Тотал 3.5
         </div>
 
         ${makeTotalBlock(
@@ -4053,7 +3686,7 @@ function renderMatchDetail(
 
       <div class="market-box">
         <div class="market-title">
-          Тотал голов 4.5
+          Тотал 4.5
         </div>
 
         ${makeTotalBlock(
@@ -4105,9 +3738,7 @@ function renderMatchDetail(
 }
 
 
-/* =========================================================
-   LOAD MATCHES
-   ========================================================= */
+/* LOAD MATCHES */
 
 async function loadMatches() {
 
@@ -4123,19 +3754,6 @@ async function loadMatches() {
       await response.json();
 
 
-    if (
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "API error"
-      );
-
-    }
-
-
     matches =
       data.matches
       || [];
@@ -4147,27 +3765,26 @@ async function loadMatches() {
 
   catch (error) {
 
-    const text = `
-      <div class="empty">
-        Не удалось загрузить матчи
-      </div>
-    `;
-
-
     document
       .getElementById(
         "homeMatches"
       )
-      .innerHTML =
-        text;
+      .innerHTML = `
+        <div class="empty">
+          Не удалось загрузить матчи
+        </div>
+      `;
 
 
     document
       .getElementById(
         "allMatches"
       )
-      .innerHTML =
-        text;
+      .innerHTML = `
+        <div class="empty">
+          Не удалось загрузить матчи
+        </div>
+      `;
 
   }
 
@@ -4180,7 +3797,7 @@ function renderMatches() {
     matches.length === 0
   ) {
 
-    const text = `
+    const empty = `
       <div class="empty">
         Матчей пока нет
       </div>
@@ -4192,7 +3809,7 @@ function renderMatches() {
         "homeMatches"
       )
       .innerHTML =
-        text;
+        empty;
 
 
     document
@@ -4200,7 +3817,7 @@ function renderMatches() {
         "allMatches"
       )
       .innerHTML =
-        text;
+        empty;
 
 
     return;
@@ -4219,24 +3836,15 @@ function renderMatches() {
           4
         )
         .map(
-          match => {
-
-            const index =
+          match =>
+            createCompactMatch(
+              match,
               matches.indexOf(
                 match
-              );
-
-
-            return createCompactMatch(
-              match,
-              index
-            );
-
-          }
+              )
+            )
         )
-        .join(
-          ""
-        );
+        .join("");
 
 
   document
@@ -4255,16 +3863,12 @@ function renderMatches() {
               index
             )
         )
-        .join(
-          ""
-        );
+        .join("");
 
 }
 
 
-/* =========================================================
-   BET
-   ========================================================= */
+/* BET */
 
 function openBet(
   match,
@@ -4273,30 +3877,10 @@ function openBet(
   odd
 ) {
 
-  if (
-    !sessionLoaded
-  ) {
-
-    alert(
-      "Профиль ещё загружается"
-    );
-
-    return;
-
-  }
-
-
   selectedBet = {
-
-    match:
-      match,
-
-    fixtureId:
-      fixtureId,
-
-    selection:
-      selection,
-
+    match,
+    fixtureId,
+    selection,
     odd:
       Number(
         odd
@@ -4387,25 +3971,13 @@ function closeBet() {
       "active"
     );
 
-
-  document
-    .getElementById(
-      "confirmBetButton"
-    )
-    .disabled =
-      false;
-
 }
 
 
 function calculateWin() {
 
-  if (
-    !selectedBet
-  ) {
-
+  if (!selectedBet) {
     return;
-
   }
 
 
@@ -4437,15 +4009,6 @@ function calculateWin() {
 
 async function confirmBet() {
 
-  if (
-    !selectedBet
-  ) {
-
-    return;
-
-  }
-
-
   const amount =
     Number(
       document
@@ -4465,7 +4028,7 @@ async function confirmBet() {
   ) {
 
     alert(
-      "Введите целое количество монет"
+      "Введите сумму ставки"
     );
 
     return;
@@ -4486,24 +4049,13 @@ async function confirmBet() {
   }
 
 
-  const button =
-    document.getElementById(
-      "confirmBetButton"
-    );
-
-
-  button.disabled =
-    true;
-
-
   try {
 
     const response =
       await fetch(
         `${SERVER_URL}/api/bets`,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers:
             authHeaders(),
@@ -4544,8 +4096,6 @@ async function confirmBet() {
 
       throw new Error(
         data.error
-        ||
-        "Не удалось сделать ставку"
       );
 
     }
@@ -4560,33 +4110,24 @@ async function confirmBet() {
     xp =
       Number(
         data.xp
-        ?? xp
       );
 
 
     level =
       Number(
         data.level
-        || level
       );
 
 
     currentLevelXp =
       Number(
         data.current_level_xp
-        ?? (
-          xp % 100
-        )
       );
 
 
     xpToNextLevel =
       Number(
         data.xp_to_next_level
-        ?? (
-          100
-          - currentLevelXp
-        )
       );
 
 
@@ -4600,43 +4141,34 @@ async function confirmBet() {
       || achievements;
 
 
+    myRank =
+      data.my_rank
+      || myRank;
+
+
     closeBet();
 
     updateInterface();
 
 
-    const levelReward =
+    if (
       Number(
         data.level_reward
         || 0
-      );
-
-
-    if (
-      levelReward > 0
+      ) > 0
     ) {
 
       showLevelUp(
         level,
-        levelReward
+        data.level_reward
       );
-
-    }
-
-
-    if (
-      tg.HapticFeedback
-    ) {
-
-      tg.HapticFeedback
-        .notificationOccurred(
-          "success"
-        );
 
     }
 
 
     await loadSession();
+
+    await loadLeaderboard();
 
   }
 
@@ -4646,18 +4178,12 @@ async function confirmBet() {
       error.message
     );
 
-
-    button.disabled =
-      false;
-
   }
 
 }
 
 
-/* =========================================================
-   BET LIST
-   ========================================================= */
+/* BET LIST */
 
 function renderBets() {
 
@@ -4665,21 +4191,6 @@ function renderBets() {
     document.getElementById(
       "betsList"
     );
-
-
-  if (
-    !sessionLoaded
-  ) {
-
-    list.innerHTML = `
-      <div class="loading">
-        Загружаем ставки...
-      </div>
-    `;
-
-    return;
-
-  }
 
 
   if (
@@ -4702,16 +4213,11 @@ function renderBets() {
       .map(
         bet => {
 
-          let cardClass =
-            "";
-
-
+          let cardClass = "";
           let statusClass =
             "status-active";
 
-
-          let icon =
-            "⏳";
+          let icon = "⏳";
 
 
           if (
@@ -4722,10 +4228,8 @@ function renderBets() {
             cardClass =
               "bet-win";
 
-
             statusClass =
               "status-win";
-
 
             icon =
               "✅";
@@ -4740,10 +4244,8 @@ function renderBets() {
             cardClass =
               "bet-loss";
 
-
             statusClass =
               "status-loss";
-
 
             icon =
               "❌";
@@ -4758,26 +4260,13 @@ function renderBets() {
             cardClass =
               "bet-refund";
 
-
             statusClass =
               "status-refund";
-
 
             icon =
               "↩️";
 
           }
-
-
-          const score =
-            bet.score
-              ? `
-                <p>
-                  Финальный счёт:
-                  <b>${bet.score}</b>
-                </p>
-              `
-              : "";
 
 
           return `
@@ -4787,30 +4276,27 @@ function renderBets() {
                 ${bet.match}
               </b>
 
-
               <p>
                 ${bet.selection}
                 •
-                ${Number(
-                  bet.odd
-                ).toFixed(2)}
+                ${Number(bet.odd).toFixed(2)}
               </p>
-
 
               <p>
                 Ставка:
                 🪙 ${bet.amount}
               </p>
 
-
               <p>
                 Возможный выигрыш:
                 🪙 ${bet.possible}
               </p>
 
-
-              ${score}
-
+              ${
+                bet.score
+                  ? `<p>Счёт: <b>${bet.score}</b></p>`
+                  : ""
+              }
 
               <p class="${statusClass}">
                 ${icon}
@@ -4822,31 +4308,67 @@ function renderBets() {
 
         }
       )
-      .join(
-        ""
-      );
+      .join("");
 
 }
 
 
-/* =========================================================
-   INTERFACE
-   ========================================================= */
+/* XP */
+
+function updateXpInterface() {
+
+  document
+    .getElementById(
+      "levelNumber"
+    )
+    .innerText =
+      `⭐ Уровень ${level}`;
+
+
+  document
+    .getElementById(
+      "totalXp"
+    )
+    .innerText =
+      `${xp} XP`;
+
+
+  document
+    .getElementById(
+      "xpProgressText"
+    )
+    .innerText =
+      `${currentLevelXp} / 100 XP`;
+
+
+  document
+    .getElementById(
+      "xpInfo"
+    )
+    .innerText =
+      `До следующего уровня: ${xpToNextLevel} XP`;
+
+
+  document
+    .getElementById(
+      "xpFill"
+    )
+    .style.width =
+      `${currentLevelXp}%`;
+
+}
+
+
+/* INTERFACE */
 
 function updateInterface() {
-
-  const balanceText =
-    sessionLoaded
-      ? balance
-      : "...";
-
 
   document
     .getElementById(
       "balance"
     )
     .innerText =
-      balanceText;
+      balance;
 
 
   document
@@ -4854,7 +4376,7 @@ function updateInterface() {
       "topBalance"
     )
     .innerText =
-      balanceText;
+      balance;
 
 
   document
@@ -4862,7 +4384,7 @@ function updateInterface() {
       "profileBalance"
     )
     .innerText =
-      balanceText;
+      balance;
 
 
   document
@@ -4873,20 +4395,20 @@ function updateInterface() {
       bets.length;
 
 
-  renderBets();
-
   renderTasks();
+
+  renderBets();
 
   renderAchievements();
 
   updateXpInterface();
 
+  updateProfileRank();
+
 }
 
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+/* NAV */
 
 async function openPage(
   page,
@@ -4938,6 +4460,15 @@ async function openPage(
 
 
   if (
+    page === "leaders"
+  ) {
+
+    await loadLeaderboard();
+
+  }
+
+
+  if (
     page === "bets"
     ||
     page === "profile"
@@ -4950,9 +4481,7 @@ async function openPage(
 }
 
 
-function updateNavForPage(
-  page
-) {
+function updateNavForPage(page) {
 
   const buttons =
     document.querySelectorAll(
@@ -4968,59 +4497,30 @@ function updateNavForPage(
   );
 
 
-  if (
-    page === "home"
-  ) {
-
-    buttons[0]
-      .classList.add(
-        "active"
-      );
-
+  if (page === "home") {
+    buttons[0].classList.add("active");
   }
 
-
-  if (
-    page === "matches"
-  ) {
-
-    buttons[1]
-      .classList.add(
-        "active"
-      );
-
+  if (page === "matches") {
+    buttons[1].classList.add("active");
   }
 
-
-  if (
-    page === "bets"
-  ) {
-
-    buttons[2]
-      .classList.add(
-        "active"
-      );
-
+  if (page === "bets") {
+    buttons[2].classList.add("active");
   }
 
+  if (page === "leaders") {
+    buttons[3].classList.add("active");
+  }
 
-  if (
-    page === "profile"
-  ) {
-
-    buttons[3]
-      .classList.add(
-        "active"
-      );
-
+  if (page === "profile") {
+    buttons[4].classList.add("active");
   }
 
 }
 
 
-/* =========================================================
-   TELEGRAM
-   ========================================================= */
+/* TELEGRAM */
 
 const telegramUser =
   tg.initDataUnsafe
@@ -5043,18 +4543,14 @@ if (
 }
 
 
-/* =========================================================
-   START
-   ========================================================= */
+/* START */
 
 async function startApp() {
 
-  updateInterface();
-
-
   await Promise.all([
     loadSession(),
-    loadMatches()
+    loadMatches(),
+    loadLeaderboard()
   ]);
 
 }

@@ -688,9 +688,7 @@
     <section id="page-home" class="page active">
 
         <div class="topbar">
-            <div class="brand">
-                ⚽ BetCoin
-            </div>
+            <div class="brand">⚽ BetCoin</div>
 
             <div class="balance">
                 🪙 <span id="balanceTop">0</span>
@@ -1299,6 +1297,9 @@
         "man united":
             "https://crests.football-data.org/66.png",
 
+        "man utd":
+            "https://crests.football-data.org/66.png",
+
         "newcastle united":
             "https://crests.football-data.org/67.png",
 
@@ -1323,11 +1324,29 @@
         "burnley":
             "https://crests.football-data.org/328.png",
 
+        "hull city":
+            "https://crests.football-data.org/322.png",
+
+        "hull":
+            "https://crests.football-data.org/322.png",
+
         "leeds united":
             "https://crests.football-data.org/341.png",
 
         "leeds":
             "https://crests.football-data.org/341.png",
+
+        "ipswich town":
+            "https://crests.football-data.org/349.png",
+
+        "ipswich":
+            "https://crests.football-data.org/349.png",
+
+        "nottingham forest":
+            "https://crests.football-data.org/351.png",
+
+        "nottm forest":
+            "https://crests.football-data.org/351.png",
 
         "crystal palace":
             "https://crests.football-data.org/354.png",
@@ -1347,14 +1366,17 @@
         "west ham":
             "https://crests.football-data.org/563.png",
 
-        "nottingham forest":
-            "https://crests.football-data.org/351.png",
-
         "bournemouth":
             "https://crests.football-data.org/1044.png",
 
         "afc bournemouth":
-            "https://crests.football-data.org/1044.png"
+            "https://crests.football-data.org/1044.png",
+
+        "coventry city":
+            "https://crests.football-data.org/1076.png",
+
+        "coventry":
+            "https://crests.football-data.org/1076.png"
     };
 
 
@@ -1443,26 +1465,11 @@
         return String(
             value ?? ""
         )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
 
@@ -1473,18 +1480,9 @@
         return String(
             value ?? ""
         )
-        .replaceAll(
-            "\\",
-            "\\\\"
-        )
-        .replaceAll(
-            "'",
-            "\\'"
-        )
-        .replaceAll(
-            "\n",
-            " "
-        );
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll("\n", " ");
     }
 
 
@@ -1493,15 +1491,11 @@
     ) {
 
         const number =
-            Number(
-                value
-            );
+            Number(value);
 
 
         if (
-            !Number.isFinite(
-                number
-            )
+            !Number.isFinite(number)
             ||
             number <= 1
         ) {
@@ -1510,9 +1504,7 @@
         }
 
 
-        return number.toFixed(
-            2
-        );
+        return number.toFixed(2);
     }
 
 
@@ -1521,15 +1513,12 @@
     ) {
 
         if (!value) {
-
             return "";
         }
 
 
         const date =
-            new Date(
-                value
-            );
+            new Date(value);
 
 
         if (
@@ -1570,11 +1559,9 @@
 
             return `
                 <div class="team-logo-wrap">
-
                     <div class="fallback-logo">
                         ⚽
                     </div>
-
                 </div>
             `;
         }
@@ -1584,13 +1571,8 @@
             <div class="team-logo-wrap">
 
                 <img
-                    src="${escapeHtml(
-                        logo
-                    )}"
-
-                    alt="${escapeHtml(
-                        team
-                    )}"
+                    src="${escapeHtml(logo)}"
+                    alt="${escapeHtml(team)}"
 
                     onerror="
                         this.style.display='none';
@@ -1603,28 +1585,18 @@
     }
 
 
-    /*
-        Главное правило BetCoin:
-
-        если время начала матча наступило,
-        больше поставить нельзя.
-    */
-
     function canBetOnMatch(
         match
     ) {
 
         if (!match) {
-
             return false;
         }
 
 
         const status =
             String(
-                match.status
-                ||
-                ""
+                match.status || ""
             ).toUpperCase();
 
 
@@ -1659,15 +1631,12 @@
         }
 
 
-        if (
-            match.date
-        ) {
+        if (match.date) {
 
             const start =
                 new Date(
                     match.date
-                )
-                .getTime();
+                ).getTime();
 
 
             if (
@@ -1675,9 +1644,7 @@
                     start
                 )
                 &&
-                Date.now()
-                >=
-                start
+                Date.now() >= start
             ) {
 
                 return false;
@@ -1695,9 +1662,7 @@
 
         const status =
             String(
-                match?.status
-                ||
-                ""
+                match?.status || ""
             ).toUpperCase();
 
 
@@ -1716,9 +1681,7 @@
         ) {
 
             return {
-                className:
-                    "closed",
-
+                className: "closed",
                 text:
                     "✅ Матч завершён • ставки закрыты"
             };
@@ -1732,18 +1695,14 @@
         ) {
 
             return {
-                className:
-                    "closed",
-
+                className: "closed",
                 text:
                     "🔴 LIVE • ставки закрыты"
             };
         }
 
 
-        if (
-            !match?.date
-        ) {
+        if (!match?.date) {
 
             return {
                 className: "",
@@ -1759,19 +1718,13 @@
 
 
         const diff =
-            start
-            -
-            Date.now();
+            start - Date.now();
 
 
-        if (
-            diff <= 0
-        ) {
+        if (diff <= 0) {
 
             return {
-                className:
-                    "closed",
-
+                className: "closed",
                 text:
                     "🔴 LIVE • ставки закрыты"
             };
@@ -1789,9 +1742,7 @@
         ) {
 
             return {
-                className:
-                    "soon",
-
+                className: "soon",
                 text:
                     `⏰ Начало через ${totalMinutes} мин`
             };
@@ -1803,9 +1754,7 @@
         ) {
 
             return {
-                className:
-                    "soon",
-
+                className: "soon",
                 text:
                     `🕒 Через ${totalMinutes} мин`
             };
@@ -1912,8 +1861,7 @@
             await fetch(
                 SERVER_URL + path,
                 {
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
                         "Content-Type":
@@ -1938,9 +1886,7 @@
             await response.json();
 
 
-        if (
-            !response.ok
-        ) {
+        if (!response.ok) {
 
             throw new Error(
                 data.error
@@ -1972,7 +1918,6 @@
 
 
                 if (el) {
-
                     el.textContent =
                         balance;
                 }
@@ -1986,113 +1931,70 @@
     ) {
 
         if (
-            data.balance
-            !==
-            undefined
+            data.balance !== undefined
         ) {
-
             balance =
-                Number(
-                    data.balance
-                );
+                Number(data.balance);
         }
 
 
         if (
-            data.bets
-            !==
-            undefined
+            data.bets !== undefined
         ) {
-
             bets =
-                data.bets
-                ||
-                [];
+                data.bets || [];
         }
 
 
         if (
-            data.parlays
-            !==
-            undefined
+            data.parlays !== undefined
         ) {
-
             parlays =
-                data.parlays
-                ||
-                [];
+                data.parlays || [];
         }
 
 
         if (
-            data.tasks
-            !==
-            undefined
+            data.tasks !== undefined
         ) {
-
             tasks =
-                data.tasks
-                ||
-                [];
+                data.tasks || [];
         }
 
 
         if (
-            data.achievements
-            !==
-            undefined
+            data.achievements !== undefined
         ) {
-
             achievements =
-                data.achievements
-                ||
-                [];
+                data.achievements || [];
         }
 
 
         if (
-            data.stats
-            !==
-            undefined
+            data.stats !== undefined
         ) {
-
             stats =
-                data.stats
-                ||
-                {};
+                data.stats || {};
         }
 
 
         if (
-            data.xp
-            !==
-            undefined
+            data.xp !== undefined
         ) {
-
             xp =
-                Number(
-                    data.xp
-                );
+                Number(data.xp);
         }
 
 
         if (
-            data.level
-            !==
-            undefined
+            data.level !== undefined
         ) {
-
             level =
-                Number(
-                    data.level
-                );
+                Number(data.level);
         }
 
 
-        if (
-            data.league
-        ) {
-
+        if (data.league) {
             league =
                 data.league;
         }
@@ -2103,7 +2005,6 @@
             !==
             undefined
         ) {
-
             currentLevelXp =
                 Number(
                     data.current_level_xp
@@ -2112,11 +2013,8 @@
 
 
         if (
-            data.my_rank
-            !==
-            undefined
+            data.my_rank !== undefined
         ) {
-
             myRank =
                 data.my_rank;
         }
@@ -2137,9 +2035,7 @@
 
 
             currentUser =
-                data.user
-                ||
-                null;
+                data.user || null;
 
 
             dailyReward =
@@ -2155,7 +2051,6 @@
                 !==
                 undefined
             ) {
-
                 myRank =
                     data.leaderboard.my_rank;
             }
@@ -2206,9 +2101,7 @@
 
 
             matches =
-                data.matches
-                ||
-                [];
+                data.matches || [];
 
 
             renderMatches();
@@ -2267,9 +2160,7 @@
     ) {
 
         const numeric =
-            Number(
-                odd
-            );
+            Number(odd);
 
 
         const bettingClosed =
@@ -2301,9 +2192,8 @@
                             :
                             ""
                         }
-                        ${escapeHtml(
-                            label
-                        )}
+
+                        ${escapeHtml(label)}
                     </span>
 
                     <span class="odd-value">
@@ -2375,9 +2265,7 @@
     ) {
 
         const odds =
-            match.odds
-            ||
-            {};
+            match.odds || {};
 
 
         const timeStatus =
@@ -2519,9 +2407,7 @@
 
     function renderMatches() {
 
-        if (
-            !matches.length
-        ) {
+        if (!matches.length) {
 
             const html = `
                 <div class="empty">
@@ -2651,9 +2537,7 @@
                 );
 
 
-            if (
-                listMatch
-            ) {
+            if (listMatch) {
 
                 data.home_logo =
                     data.home_logo
@@ -2728,9 +2612,7 @@
     ) {
 
         const numericOdd =
-            Number(
-                odd
-            );
+            Number(odd);
 
 
         const bettingClosed =
@@ -2762,9 +2644,8 @@
                             :
                             ""
                         }
-                        ${escapeHtml(
-                            label
-                        )}
+
+                        ${escapeHtml(label)}
                     </span>
 
                     <span class="odd-value">
@@ -2838,22 +2719,16 @@
     ) {
 
         const number =
-            Number(
-                line
-            );
+            Number(line);
 
 
-        if (
-            number > 0
-        ) {
+        if (number > 0) {
 
             return `+${number}`;
         }
 
 
-        return String(
-            number
-        );
+        return String(number);
     }
 
 
@@ -2865,24 +2740,17 @@
             match.handicaps;
 
 
-        if (
-            !handicaps
-        ) {
-
+        if (!handicaps) {
             return "";
         }
 
 
         const homeLines =
-            handicaps.home
-            ||
-            {};
+            handicaps.home || {};
 
 
         const awayLines =
-            handicaps.away
-            ||
-            {};
+            handicaps.away || {};
 
 
         const homeRows =
@@ -2892,14 +2760,10 @@
             .filter(
                 ([line,odd]) =>
                     Number.isFinite(
-                        Number(
-                            odd
-                        )
+                        Number(odd)
                     )
                     &&
-                    Number(
-                        odd
-                    ) > 1
+                    Number(odd) > 1
             );
 
 
@@ -2910,14 +2774,10 @@
             .filter(
                 ([line,odd]) =>
                     Number.isFinite(
-                        Number(
-                            odd
-                        )
+                        Number(odd)
                     )
                     &&
-                    Number(
-                        odd
-                    ) > 1
+                    Number(odd) > 1
             );
 
 
@@ -3046,9 +2906,7 @@
 
 
         const odds =
-            match.odds
-            ||
-            {};
+            match.odds || {};
 
 
         const timeStatus =
@@ -3200,25 +3058,10 @@
 
 
         const totals = [
-            [
-                1.5,
-                match.total_1_5
-            ],
-
-            [
-                2.5,
-                match.total_2_5
-            ],
-
-            [
-                3.5,
-                match.total_3_5
-            ],
-
-            [
-                4.5,
-                match.total_4_5
-            ]
+            [1.5, match.total_1_5],
+            [2.5, match.total_2_5],
+            [3.5, match.total_3_5],
+            [4.5, match.total_4_5]
         ];
 
 
@@ -3228,15 +3071,9 @@
                     item[1]
                     &&
                     (
-                        item[1].over
-                        !==
-                        null
-
+                        item[1].over !== null
                         ||
-
-                        item[1].under
-                        !==
-                        null
+                        item[1].under !== null
                     )
             );
 
@@ -3290,15 +3127,9 @@
             match.btts
             &&
             (
-                match.btts.yes
-                !==
-                null
-
+                match.btts.yes !== null
                 ||
-
-                match.btts.no
-                !==
-                null
+                match.btts.no !== null
             )
         ) {
 
@@ -3454,10 +3285,7 @@
         );
 
 
-        if (
-            !selectedBet
-        ) {
-
+        if (!selectedBet) {
             return;
         }
 
@@ -3524,10 +3352,7 @@
 
     function updateSinglePossible() {
 
-        if (
-            !selectedBet
-        ) {
-
+        if (!selectedBet) {
             return;
         }
 
@@ -3574,10 +3399,7 @@
 
     async function confirmSingleBet() {
 
-        if (
-            !selectedBet
-        ) {
-
+        if (!selectedBet) {
             return;
         }
 
@@ -3587,14 +3409,6 @@
                 selectedBet.fixture_id
             );
 
-
-        /*
-            Защита №1 на телефоне.
-
-            Даже если окно ставки было открыто
-            за минуту до начала, после старта
-            отправить ставку уже нельзя.
-        */
 
         if (
             !canBetOnMatch(
@@ -3657,13 +3471,6 @@
 
 
         try {
-
-            /*
-                Защита №2 — сервер.
-
-                Сервер снова проверяет матч
-                и коэффициент перед созданием ставки.
-            */
 
             const data =
                 await apiPost(
@@ -3750,10 +3557,7 @@
 
     function addSelectedToParlay() {
 
-        if (
-            !selectedBet
-        ) {
-
+        if (!selectedBet) {
             return;
         }
 
@@ -3804,9 +3608,7 @@
 
 
         if (
-            exactIndex
-            !==
-            -1
+            exactIndex !== -1
         ) {
 
             parlaySlip.splice(
@@ -3854,9 +3656,7 @@
 
 
         if (
-            parlaySlip.length
-            >=
-            15
+            parlaySlip.length >= 15
         ) {
 
             tg.showAlert(
@@ -3907,12 +3707,12 @@
 
 
         if (
-            before
-            !==
+            before !==
             parlaySlip.length
         ) {
 
             updateParlayFloat();
+
 
             if (
                 document
@@ -3973,9 +3773,7 @@
 
         removeStartedMatchesFromParlay();
 
-
         renderParlaySlip();
-
 
         openModal(
             "parlayOverlay"
@@ -4102,8 +3900,7 @@
 
     function clearParlay() {
 
-        parlaySlip =
-            [];
+        parlaySlip = [];
 
 
         document.getElementById(
@@ -4168,11 +3965,6 @@
 
     async function confirmParlay() {
 
-        /*
-            Перед отправкой экспресса ещё раз
-            убираем матчи, которые успели начаться.
-        */
-
         const previousCount =
             parlaySlip.length;
 
@@ -4181,8 +3973,7 @@
 
 
         if (
-            previousCount
-            !==
+            previousCount !==
             parlaySlip.length
         ) {
 
@@ -4193,15 +3984,12 @@
 
             renderParlaySlip();
 
-
             return;
         }
 
 
         if (
-            parlaySlip.length
-            <
-            2
+            parlaySlip.length < 2
         ) {
 
             tg.showAlert(
@@ -4284,8 +4072,7 @@
             );
 
 
-            parlaySlip =
-                [];
+            parlaySlip = [];
 
 
             updateParlayFloat();
@@ -4333,7 +4120,6 @@
             ===
             "all"
         ) {
-
             return true;
         }
 
@@ -4420,31 +4206,25 @@
     ) {
 
         if (
-            status
-            ===
+            status ===
             "Выиграла"
         ) {
-
             return "win";
         }
 
 
         if (
-            status
-            ===
+            status ===
             "Проиграла"
         ) {
-
             return "loss";
         }
 
 
         if (
-            status
-            ===
+            status ===
             "Возврат"
         ) {
-
             return "refund";
         }
 
@@ -4750,13 +4530,9 @@
             "singleBets"
         ).style.display =
             type === "single"
-
             ?
-
             "block"
-
             :
-
             "none";
 
 
@@ -4764,13 +4540,9 @@
             "parlayBets"
         ).style.display =
             type === "parlay"
-
             ?
-
             "block"
-
             :
-
             "none";
     }
 
@@ -4786,9 +4558,7 @@
 
 
             leaderboardPlayers =
-                data.players
-                ||
-                [];
+                data.players || [];
 
 
             myRank =
@@ -4875,9 +4645,7 @@
 
                                     •
 
-                                    уровень
-
-                                    ${player.level}
+                                    уровень ${player.level}
 
                                 </div>
 
@@ -4913,68 +4681,42 @@
         const values = [
 
             [
-                stats.total_bets
-                ||
-                0,
-
+                stats.total_bets || 0,
                 "Ординаров"
             ],
 
             [
-                stats.wins
-                ||
-                0,
-
+                stats.wins || 0,
                 "Побед"
             ],
 
             [
-                `${
-                    stats.win_rate
-                    ||
-                    0
-                }%`,
-
+                `${stats.win_rate || 0}%`,
                 "Процент побед"
             ],
 
             [
-                stats.current_win_streak
-                ||
-                0,
-
+                stats.current_win_streak || 0,
                 "Серия побед"
             ],
 
             [
-                stats.total_parlays
-                ||
-                0,
-
+                stats.total_parlays || 0,
                 "Экспрессов"
             ],
 
             [
-                stats.parlay_wins
-                ||
-                0,
-
+                stats.parlay_wins || 0,
                 "Выиграно экспрессов"
             ],
 
             [
-                stats.net_profit
-                ||
-                0,
-
+                stats.net_profit || 0,
                 "Профит 🪙"
             ],
 
             [
-                stats.total_won
-                ||
-                0,
-
+                stats.total_won || 0,
                 "Выиграно 🪙"
             ]
         ];
@@ -5281,18 +5023,14 @@
 
         const hours =
             Math.floor(
-                seconds
-                /
-                3600
+                seconds / 3600
             );
 
 
         const minutes =
             Math.floor(
                 (
-                    seconds
-                    %
-                    3600
+                    seconds % 3600
                 )
                 /
                 60
@@ -5323,13 +5061,9 @@
             "leagueName"
         ).textContent =
             `${
-                league?.icon
-                ||
-                ""
+                league?.icon || ""
             } ${
-                league?.name
-                ||
-                ""
+                league?.name || ""
             }`;
 
 
@@ -5425,8 +5159,7 @@
                 await apiPost(
                     "/api/tasks/claim",
                     {
-                        task_key:
-                            key
+                        task_key: key
                     }
                 );
 
@@ -5562,8 +5295,7 @@
 
 
         if (
-            name
-            ===
+            name ===
             "leaderboard"
         ) {
 
@@ -5572,8 +5304,7 @@
 
 
         if (
-            name
-            ===
+            name ===
             "profile"
         ) {
 
@@ -5584,8 +5315,7 @@
 
 
         if (
-            name
-            ===
+            name ===
             "bets"
         ) {
 
@@ -5648,13 +5378,6 @@
     }
 
 
-    /*
-        Обновляем таймеры автоматически.
-
-        Каждые 15 секунд приложение проверяет:
-        не начался ли какой-то матч.
-    */
-
     function refreshMatchTimers() {
 
         renderMatches();
@@ -5681,12 +5404,6 @@
             );
         }
 
-
-        /*
-            Если пользователь держит открытым
-            окно ординара, а матч уже начался,
-            закрываем окно.
-        */
 
         if (
             selectedBet

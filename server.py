@@ -41,7 +41,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get(
 FIVE_API_URL = "https://api.5dollarfootballapi.com"
 FOOTBALL_DATA_URL = "https://api.football-data.org/v4"
 
-PREMIER_LEAGUE_ID = 3120672213
+PREMIER_LEAGUE_ID = 4160026622
 
 FIXTURES_CACHE_SECONDS = 1800
 ODDS_CACHE_SECONDS = 3600

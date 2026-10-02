@@ -1,1273 +1,1052 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
-
-    <title>BetCoin</title>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --bg: #0b0d12;
-            --card: #161922;
-            --card2: #1c202b;
-            --border: #2a2f3b;
-            --text: #ffffff;
-            --muted: #9298a7;
-            --accent: #2f80ff;
-            --green: #25c06d;
-            --red: #ff5252;
-            --orange: #ff9f43;
-            --gold: #ffd166;
-        }
-
-        html,
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-            min-height: 100%;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            border: 0;
-        }
-
-        .app {
-            max-width: 900px;
-            margin: 0 auto;
-            min-height: 100vh;
-            padding-bottom: 110px;
-        }
-
-        .page {
-            display: none;
-            padding: 18px 16px 30px;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
-
-        .brand {
-            font-size: 30px;
-            font-weight: 900;
-        }
-
-        .balance {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 18px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        .title {
-            font-size: 25px;
-            font-weight: 900;
-            margin: 0 0 18px;
-        }
-
-        .subtitle,
-        .notice {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 800;
-            margin: 18px 0 10px;
-            color: #d5d8e1;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .search-box {
-            width: 100%;
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: white;
-            outline: none;
-            padding: 14px 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            margin-bottom: 12px;
-        }
-
-        .search-box:focus {
-            border-color: var(--accent);
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding-bottom: 4px;
-            margin-bottom: 14px;
-        }
-
-        .filter-row::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-btn,
-        .league-filter,
-        .bet-filter {
-            flex: 0 0 auto;
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--muted);
-            border-radius: 999px;
-            padding: 9px 14px;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .filter-btn.active,
-        .league-filter.active,
-        .bet-filter.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-        }
-
-        .league-group {
-            margin-bottom: 14px;
-        }
-
-        .league-group-title {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .league-buttons {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .league-buttons::-webkit-scrollbar {
-            display: none;
-        }
-
-        .match-card {
-            cursor: pointer;
-        }
-
-        .match-top {
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .match-date {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .league-badge {
-            background: var(--card2);
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 5px 9px;
-            font-size: 12px;
-            color: #d6dae5;
-        }
-
-        .favorite-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            background: var(--card2);
-            color: var(--muted);
-            font-size: 21px;
-            cursor: pointer;
-            border: 1px solid var(--border);
-        }
-
-        .favorite-btn.active {
-            color: var(--gold);
-            border-color: rgba(255, 209, 102, .45);
-            background: rgba(255, 209, 102, .10);
-        }
-
-        .match-countdown {
-            text-align: center;
-            margin-bottom: 14px;
-            font-size: 13px;
-            font-weight: 800;
-            color: #8eb8ff;
-        }
-
-        .match-countdown.soon {
-            color: var(--orange);
-        }
-
-        .match-countdown.closed {
-            color: var(--red);
-        }
-
-        .notification-note {
-            background: rgba(47, 128, 255, .10);
-            border: 1px solid rgba(47, 128, 255, .25);
-            color: #9fc0ff;
-            padding: 11px 13px;
-            border-radius: 14px;
-            font-size: 13px;
-            margin-bottom: 14px;
-            text-align: center;
-        }
-
-        .teams {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .team {
-            text-align: center;
-            font-weight: 800;
-            min-width: 0;
-        }
-
-        .team-name {
-            word-break: break-word;
-        }
-
-        .team-favorite-btn {
-            margin-top: 8px;
-            background: var(--card2);
-            border: 1px solid var(--border);
-            color: var(--muted);
-            border-radius: 10px;
-            padding: 6px 9px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .team-favorite-btn.active {
-            color: var(--gold);
-            border-color: rgba(255, 209, 102, .4);
-            background: rgba(255, 209, 102, .08);
-        }
-
-        .team-logo-wrap {
-            width: 54px;
-            height: 54px;
-            margin: 0 auto 8px;
-            border-radius: 50%;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .team-logo-wrap img {
-            max-width: 42px;
-            max-height: 42px;
-            object-fit: contain;
-        }
-
-        .fallback-logo {
-            font-size: 30px;
-        }
-
-        .vs {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .odds-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .odd-btn {
-            background: var(--card2);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            min-height: 52px;
-            padding: 8px;
-            cursor: pointer;
-            font-weight: 800;
-        }
-
-        .odd-btn.selected {
-            border-color: var(--accent);
-            background: rgba(47, 128, 255, .18);
-        }
-
-        .odd-btn.disabled {
-            opacity: .35;
-            pointer-events: none;
-        }
-
-        .odd-name {
-            font-size: 12px;
-            color: var(--muted);
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .odd-value {
-            font-size: 17px;
-        }
-
-        .market {
-            margin-bottom: 22px;
-        }
-
-        .market-title {
-            font-weight: 900;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .market-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .market-grid.three {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .market-line {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .closed-market {
-            background: rgba(255, 82, 82, .09);
-            border: 1px solid rgba(255, 82, 82, .25);
-            color: #ff8181;
-            padding: 13px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: 800;
-            margin-bottom: 18px;
-        }
-
-        .back-btn {
-            background: transparent;
-            color: var(--accent);
-            padding: 0;
-            font-size: 17px;
-            cursor: pointer;
-            margin-bottom: 18px;
-        }
-
-        .loader,
-        .empty {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px 16px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .bottom-nav {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 50;
-            background: #12151d;
-            border-top: 1px solid var(--border);
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            min-height: 82px;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .nav-btn {
-            background: transparent;
-            color: var(--muted);
-            padding: 9px 2px;
-            cursor: pointer;
-        }
-
-        .nav-btn.active {
-            color: #fff;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 12px;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .72);
-            z-index: 100;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal {
-            width: 100%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            background: #151820;
-            border: 1px solid var(--border);
-            border-radius: 26px 26px 0 0;
-            padding: 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        }
-
-        .modal-title {
-            font-size: 22px;
-            font-weight: 900;
-            margin-bottom: 16px;
-        }
-
-        .selected-info {
-            background: var(--card2);
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 14px;
-        }
-
-        .input {
-            width: 100%;
-            background: #0e1117;
-            border: 1px solid var(--border);
-            color: #fff;
-            border-radius: 14px;
-            padding: 14px;
-            outline: none;
-            font-size: 17px;
-        }
-
-        .big-btn {
-            width: 100%;
-            min-height: 50px;
-            border-radius: 15px;
-            background: var(--accent);
-            color: #fff;
-            font-weight: 900;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .secondary-btn {
-            background: var(--card2);
-        }
-
-        .danger-btn {
-            background: rgba(255, 82, 82, .12);
-            color: var(--red);
-        }
-
-        .choice-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .parlay-float {
-            position: fixed;
-            z-index: 45;
-            right: 14px;
-            bottom: 96px;
-            border-radius: 18px;
-            background: var(--accent);
-            color: #fff;
-            padding: 13px 16px;
-            font-weight: 900;
-            box-shadow: 0 8px 30px rgba(47, 128, 255, .35);
-            display: none;
-            cursor: pointer;
-        }
-
-        .parlay-float.show {
-            display: block;
-        }
-
-        .slip-leg,
-        .parlay-leg-history {
-            background: var(--card2);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 9px;
-        }
-
-        .slip-leg-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .slip-number,
-        .parlay-leg-number {
-            width: 28px;
-            height: 28px;
-            flex: 0 0 28px;
-            border-radius: 50%;
-            background: rgba(47, 128, 255, .18);
-            color: #8eb8ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 900;
-        }
-
-        .slip-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .remove-leg {
-            background: transparent;
-            color: var(--red);
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .parlay-summary {
-            background: linear-gradient(135deg, rgba(47, 128, 255, .20), rgba(28, 32, 43, 1));
-            border: 1px solid rgba(47, 128, 255, .35);
-            border-radius: 18px;
-            padding: 15px;
-            margin: 14px 0;
-        }
-
-        .parlay-total-big {
-            font-size: 26px;
-            font-weight: 900;
-        }
-
-        .tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: var(--card);
-            padding: 4px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-        }
-
-        .tab {
-            background: transparent;
-            color: var(--muted);
-            padding: 11px;
-            border-radius: 13px;
-            cursor: pointer;
-            font-weight: 800;
-        }
-
-        .tab.active {
-            background: var(--card2);
-            color: #fff;
-        }
-
-        .status {
-            display: inline-block;
-            border-radius: 999px;
-            padding: 5px 9px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .status.active {
-            color: var(--orange);
-            background: rgba(255, 159, 67, .12);
-        }
-
-        .status.win {
-            color: var(--green);
-            background: rgba(37, 192, 109, .12);
-        }
-
-        .status.loss {
-            color: var(--red);
-            background: rgba(255, 82, 82, .12);
-        }
-
-        .status.refund {
-            color: var(--muted);
-            background: rgba(146, 152, 167, .12);
-        }
-
-        .bet-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 8px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .bet-main {
-            font-weight: 900;
-            margin: 8px 0;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .stat {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 14px;
-        }
-
-        .stat-value {
-            font-size: 22px;
-            font-weight: 900;
-        }
-
-        .stat-label {
-            color: var(--muted);
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .xp-bar {
-            height: 10px;
-            border-radius: 999px;
-            background: #0f1117;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .xp-fill {
-            height: 100%;
-            background: var(--accent);
-            width: 0;
-        }
-
-        .task {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .task-btn {
-            border-radius: 12px;
-            padding: 9px 12px;
-            background: var(--accent);
-            color: #fff;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .task-btn:disabled {
-            opacity: .4;
-        }
-
-        .leader-row {
-            display: grid;
-            grid-template-columns: 46px 1fr auto;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .leader-rank {
-            font-weight: 900;
-            font-size: 18px;
-        }
-
-        .leader-name {
-            font-weight: 800;
-        }
-
-        .leader-xp {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .daily-card {
-            background: linear-gradient(135deg, rgba(47, 128, 255, .18), rgba(22, 25, 34, 1));
-        }
-
-        .favorite-teams-box {
-            margin-bottom: 18px;
-        }
-
-        .favorite-team-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin: 4px 5px 4px 0;
-            background: rgba(255, 209, 102, .10);
-            border: 1px solid rgba(255, 209, 102, .28);
-            color: var(--gold);
-            border-radius: 999px;
-            padding: 7px 10px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        @media (min-width: 700px) {
-            .page {
-                padding-left: 24px;
-                padding-right: 24px;
-            }
-
-            .stat-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>BetCoin</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --bg:#0b0d12;
+    --card:#161922;
+    --card2:#1c202b;
+    --border:#2a2f3b;
+    --text:#fff;
+    --muted:#9298a7;
+    --accent:#2f80ff;
+    --green:#25c06d;
+    --red:#ff5252;
+    --orange:#ff9f43;
+    --gold:#ffd166;
+}
+
+html,
+body {
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,sans-serif;
+}
+
+body {
+    padding-bottom:100px;
+}
+
+button,
+input {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+.app {
+    max-width:700px;
+    margin:auto;
+}
+
+.page {
+    display:none;
+    padding:18px;
+}
+
+.page.active {
+    display:block;
+}
+
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.brand {
+    font-size:28px;
+    font-weight:900;
+}
+
+.balance {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:10px 14px;
+    font-weight:900;
+}
+
+.title {
+    font-size:25px;
+    font-weight:900;
+    margin:0 0 18px;
+}
+
+.card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:15px;
+    margin-bottom:12px;
+}
+
+.notice {
+    color:var(--muted);
+    font-size:13px;
+}
+
+.loader,
+.empty {
+    background:var(--card);
+    border:1px solid var(--border);
+    color:var(--muted);
+    border-radius:20px;
+    padding:26px;
+    text-align:center;
+}
+
+.search-box {
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px;
+    color:white;
+    outline:none;
+    margin-bottom:12px;
+}
+
+.search-box:focus {
+    border-color:var(--accent);
+}
+
+.filters {
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    margin-bottom:12px;
+}
+
+.filter-btn,
+.league-btn,
+.bet-filter {
+    flex:0 0 auto;
+    background:var(--card);
+    border:1px solid var(--border);
+    color:var(--muted);
+    border-radius:999px;
+    padding:9px 13px;
+    font-weight:800;
+}
+
+.filter-btn.active,
+.league-btn.active,
+.bet-filter.active {
+    background:var(--accent);
+    color:white;
+    border-color:var(--accent);
+}
+
+.league-group {
+    margin-bottom:12px;
+}
+
+.league-title {
+    color:var(--muted);
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.league-row {
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+}
+
+.match-top {
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.match-date {
+    color:var(--muted);
+    font-size:13px;
+}
+
+.league-label {
+    border:1px solid var(--border);
+    background:var(--card2);
+    border-radius:999px;
+    padding:5px 8px;
+    font-size:11px;
+}
+
+.star-btn {
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--card2);
+    color:var(--muted);
+    font-size:21px;
+}
+
+.star-btn.active {
+    color:var(--gold);
+}
+
+.teams {
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.team {
+    text-align:center;
+    font-weight:800;
+}
+
+.team-logo {
+    width:54px;
+    height:54px;
+    margin:0 auto 8px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.team-logo img {
+    max-width:43px;
+    max-height:43px;
+}
+
+.team-fav {
+    margin-top:8px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--muted);
+    padding:6px 9px;
+    font-size:11px;
+}
+
+.team-fav.active {
+    color:var(--gold);
+    border-color:rgba(255,209,102,.4);
+}
+
+.vs {
+    color:var(--muted);
+    font-size:12px;
+}
+
+.odds {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.odd {
+    min-height:52px;
+    border-radius:13px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    color:white;
+    font-weight:900;
+}
+
+.odd.selected {
+    border-color:var(--accent);
+    background:rgba(47,128,255,.18);
+}
+
+.odd.disabled {
+    opacity:.35;
+    pointer-events:none;
+}
+
+.odd small {
+    display:block;
+    color:var(--muted);
+    margin-bottom:3px;
+}
+
+.favorite-team-chip {
+    display:inline-block;
+    margin:4px;
+    padding:7px 10px;
+    border-radius:999px;
+    color:var(--gold);
+    border:1px solid rgba(255,209,102,.3);
+    background:rgba(255,209,102,.08);
+    font-size:12px;
+    font-weight:800;
+}
+
+.market-title {
+    font-size:18px;
+    font-weight:900;
+    margin:20px 0 10px;
+}
+
+.market-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.market-grid.three {
+    grid-template-columns:repeat(3,1fr);
+}
+
+.back {
+    background:transparent;
+    border:0;
+    color:var(--accent);
+    padding:0;
+    margin-bottom:15px;
+    font-size:17px;
+}
+
+.bottom-nav {
+    position:fixed;
+    z-index:50;
+    left:0;
+    right:0;
+    bottom:0;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    min-height:80px;
+    background:#12151d;
+    border-top:1px solid var(--border);
+}
+
+.nav {
+    background:transparent;
+    border:0;
+    color:var(--muted);
+}
+
+.nav.active {
+    color:white;
+}
+
+.nav-icon {
+    display:block;
+    font-size:23px;
+}
+
+.nav-text {
+    display:block;
+    font-size:11px;
+}
+
+.tabs {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    padding:4px;
+    background:var(--card);
+    border-radius:15px;
+    margin-bottom:10px;
+}
+
+.tab {
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:10px;
+    border-radius:12px;
+}
+
+.tab.active {
+    background:var(--card2);
+    color:white;
+}
+
+.status {
+    display:inline-block;
+    padding:5px 8px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:900;
+}
+
+.status.active {
+    color:var(--orange);
+    background:rgba(255,159,67,.12);
+}
+
+.status.win {
+    color:var(--green);
+    background:rgba(37,192,109,.12);
+}
+
+.status.loss {
+    color:var(--red);
+    background:rgba(255,82,82,.12);
+}
+
+.status.refund {
+    color:var(--muted);
+}
+
+.stat-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.stat {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:13px;
+}
+
+.stat-value {
+    font-size:21px;
+    font-weight:900;
+}
+
+.stat-name {
+    color:var(--muted);
+    font-size:11px;
+}
+
+.big-btn {
+    width:100%;
+    background:var(--accent);
+    border:0;
+    border-radius:14px;
+    min-height:50px;
+    color:white;
+    font-weight:900;
+    margin-top:10px;
+}
+
+.secondary {
+    background:var(--card2);
+}
+
+.danger {
+    background:rgba(255,82,82,.13);
+    color:var(--red);
+}
+
+.input {
+    width:100%;
+    padding:14px;
+    background:#0e1117;
+    color:white;
+    border:1px solid var(--border);
+    border-radius:14px;
+    outline:none;
+}
+
+.overlay {
+    position:fixed;
+    z-index:100;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    display:none;
+    align-items:flex-end;
+}
+
+.overlay.show {
+    display:flex;
+}
+
+.modal {
+    width:100%;
+    max-width:700px;
+    margin:auto;
+    background:#151820;
+    border-radius:25px 25px 0 0;
+    border:1px solid var(--border);
+    padding:20px;
+    max-height:90vh;
+    overflow:auto;
+}
+
+.parlay-float {
+    display:none;
+    position:fixed;
+    z-index:45;
+    right:15px;
+    bottom:95px;
+    padding:13px 15px;
+    border:0;
+    border-radius:16px;
+    background:var(--accent);
+    color:white;
+    font-weight:900;
+}
+
+.parlay-float.show {
+    display:block;
+}
+
+.parlay-leg {
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:11px;
+    margin-bottom:8px;
+}
+
+.xp-bar {
+    height:10px;
+    background:#0f1117;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.xp-fill {
+    height:100%;
+    background:var(--accent);
+}
+
+.task-row {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+}
+
+.task-btn {
+    background:var(--accent);
+    color:white;
+    border:0;
+    border-radius:11px;
+    padding:8px 10px;
+}
+
+.task-btn:disabled {
+    opacity:.4;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <section id="page-home" class="page active">
+<section
+    id="page-home"
+    class="page active"
+>
 
-        <div class="topbar">
-            <div class="brand">⚽ BetCoin</div>
+    <div class="topbar">
 
-            <div class="balance">
-                🪙 <span id="balanceTop">0</span>
-            </div>
+        <div class="brand">
+            ⚽ BetCoin
         </div>
 
-        <div id="homeFavoriteTeams"></div>
-
-        <h2 class="title">
-            ⚽ Ближайшие матчи
-        </h2>
-
-        <div id="homeMatches">
-            <div class="loader">
-                Загружаем матчи...
-            </div>
+        <div class="balance">
+            🪙
+            <span id="balanceHome">
+                0
+            </span>
         </div>
 
-    </section>
+    </div>
+
+    <div id="homeFavoriteTeams"></div>
+
+    <h2>
+        Ближайшие матчи
+    </h2>
+
+    <div id="homeMatches">
+        <div class="loader">
+            Загрузка...
+        </div>
+    </div>
+
+</section>
 
 
-    <section id="page-matches" class="page">
+<section
+    id="page-matches"
+    class="page"
+>
 
-        <div class="topbar">
-            <h2 class="title" style="margin:0;">
-                Матчи
-            </h2>
+    <div class="topbar">
 
-            <div class="balance">
-                🪙 <span id="balanceMatches">0</span>
-            </div>
+        <h1 class="title">
+            Матчи
+        </h1>
+
+        <div class="balance">
+            🪙
+            <span id="balanceMatches">
+                0
+            </span>
         </div>
 
-        <input
-            id="matchSearch"
-            class="search-box"
-            type="text"
-            placeholder="🔎 Поиск команды или матча..."
-            oninput="setSearchQuery(this.value)"
-        >
+    </div>
 
-        <div class="filter-row">
+    <input
+        id="search"
+        class="search-box"
+        placeholder="🔎 Найти команду или матч..."
+        oninput="changeSearch(this.value)"
+    >
 
-            <button
-                class="filter-btn active"
-                data-date-filter="all"
-                onclick="setDateFilter('all')"
-            >
-                Все
-            </button>
-
-            <button
-                class="filter-btn"
-                data-date-filter="today"
-                onclick="setDateFilter('today')"
-            >
-                Сегодня
-            </button>
-
-            <button
-                class="filter-btn"
-                data-date-filter="tomorrow"
-                onclick="setDateFilter('tomorrow')"
-            >
-                Завтра
-            </button>
-
-            <button
-                class="filter-btn"
-                data-date-filter="myteams"
-                onclick="setDateFilter('myteams')"
-            >
-                ⭐ Мои команды
-            </button>
-
-        </div>
-
-        <div class="notification-note">
-            🔔 Матчи в избранном напомнят о себе примерно за 30 минут до начала
-        </div>
-
-        <div class="league-group">
-
-            <div class="league-group-title">
-                Популярные
-            </div>
-
-            <div class="league-buttons">
-
-                <button
-                    class="league-filter active"
-                    data-league="top5"
-                    onclick="selectLeague('top5')"
-                >
-                    ⚽ Топ-5
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="premier_league"
-                    onclick="selectLeague('premier_league')"
-                >
-                    🏴 АПЛ
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="la_liga"
-                    onclick="selectLeague('la_liga')"
-                >
-                    🇪🇸 Ла Лига
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="serie_a"
-                    onclick="selectLeague('serie_a')"
-                >
-                    🇮🇹 Серия А
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="bundesliga"
-                    onclick="selectLeague('bundesliga')"
-                >
-                    🇩🇪 Бундеслига
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="ligue_1"
-                    onclick="selectLeague('ligue_1')"
-                >
-                    🇫🇷 Лига 1
-                </button>
-
-            </div>
-        </div>
-
-
-        <div class="league-group">
-
-            <div class="league-group-title">
-                Еврокубки
-            </div>
-
-            <div class="league-buttons">
-
-                <button
-                    class="league-filter"
-                    data-league="champions_league"
-                    onclick="selectLeague('champions_league')"
-                >
-                    🏆 ЛЧ
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="europa_league"
-                    onclick="selectLeague('europa_league')"
-                >
-                    🟠 ЛЕ
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="conference_league"
-                    onclick="selectLeague('conference_league')"
-                >
-                    🟢 ЛК
-                </button>
-
-            </div>
-        </div>
-
-
-        <div class="league-group">
-
-            <div class="league-group-title">
-                Другие
-            </div>
-
-            <div class="league-buttons">
-
-                <button
-                    class="league-filter"
-                    data-league="championship"
-                    onclick="selectLeague('championship')"
-                >
-                    🏴 Чемпионшип
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="eredivisie"
-                    onclick="selectLeague('eredivisie')"
-                >
-                    🇳🇱 Эредивизи
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="primeira_liga"
-                    onclick="selectLeague('primeira_liga')"
-                >
-                    🇵🇹 Португалия
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="mls"
-                    onclick="selectLeague('mls')"
-                >
-                    🇺🇸 MLS
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="saudi_pro_league"
-                    onclick="selectLeague('saudi_pro_league')"
-                >
-                    🇸🇦 Саудовская
-                </button>
-
-                <button
-                    class="league-filter"
-                    data-league="favorites"
-                    onclick="selectLeague('favorites')"
-                >
-                    ⭐ Избранные матчи
-                </button>
-
-            </div>
-        </div>
-
-        <div id="favoriteTeamsBox"></div>
-
-        <div id="matchesList">
-            <div class="loader">
-                Загружаем матчи...
-            </div>
-        </div>
-
-    </section>
-
-
-    <section id="page-match" class="page">
+    <div class="filters">
 
         <button
-            class="back-btn"
-            onclick="backFromMatch()"
+            class="filter-btn active"
+            data-date="all"
+            onclick="changeDateFilter('all')"
         >
-            ← Назад
+            Все
         </button>
 
-        <div id="matchDetail">
-            <div class="loader">
-                Загружаем коэффициенты...
-            </div>
+        <button
+            class="filter-btn"
+            data-date="today"
+            onclick="changeDateFilter('today')"
+        >
+            Сегодня
+        </button>
+
+        <button
+            class="filter-btn"
+            data-date="tomorrow"
+            onclick="changeDateFilter('tomorrow')"
+        >
+            Завтра
+        </button>
+
+        <button
+            class="filter-btn"
+            data-date="myteams"
+            onclick="changeDateFilter('myteams')"
+        >
+            ⭐ Мои команды
+        </button>
+
+    </div>
+
+    <div class="league-group">
+
+        <div class="league-title">
+            ПОПУЛЯРНЫЕ
         </div>
 
-    </section>
-
-
-    <section id="page-bets" class="page">
-
-        <div class="topbar">
-            <h2 class="title" style="margin:0;">
-                🎟 Ставки
-            </h2>
-
-            <div class="balance">
-                🪙 <span id="balanceBets">0</span>
-            </div>
-        </div>
-
-        <div class="tabs">
+        <div class="league-row">
 
             <button
-                id="singleTab"
-                class="tab active"
-                onclick="switchBetTab('single')"
+                class="league-btn active"
+                data-league="top5"
+                onclick="selectLeague('top5')"
             >
-                Ординары
+                Топ-5
             </button>
 
             <button
-                id="parlayTab"
-                class="tab"
-                onclick="switchBetTab('parlay')"
+                class="league-btn"
+                data-league="premier_league"
+                onclick="selectLeague('premier_league')"
             >
-                Экспрессы
-            </button>
-
-        </div>
-
-        <div class="filter-row">
-
-            <button
-                class="bet-filter active"
-                data-filter="all"
-                onclick="setBetFilter('all')"
-            >
-                Все
+                🏴 АПЛ
             </button>
 
             <button
-                class="bet-filter"
-                data-filter="active"
-                onclick="setBetFilter('active')"
+                class="league-btn"
+                data-league="la_liga"
+                onclick="selectLeague('la_liga')"
             >
-                Активные
+                🇪🇸 Ла Лига
             </button>
 
             <button
-                class="bet-filter"
-                data-filter="win"
-                onclick="setBetFilter('win')"
+                class="league-btn"
+                data-league="serie_a"
+                onclick="selectLeague('serie_a')"
             >
-                Выигранные
+                🇮🇹 Серия А
             </button>
 
             <button
-                class="bet-filter"
-                data-filter="loss"
-                onclick="setBetFilter('loss')"
+                class="league-btn"
+                data-league="bundesliga"
+                onclick="selectLeague('bundesliga')"
             >
-                Проигранные
+                🇩🇪 Германия
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="ligue_1"
+                onclick="selectLeague('ligue_1')"
+            >
+                🇫🇷 Франция
             </button>
 
         </div>
 
-        <div id="singleBets"></div>
+    </div>
+
+
+    <div class="league-group">
+
+        <div class="league-title">
+            ЕВРОКУБКИ
+        </div>
+
+        <div class="league-row">
+
+            <button
+                class="league-btn"
+                data-league="champions_league"
+                onclick="selectLeague('champions_league')"
+            >
+                🏆 ЛЧ
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="europa_league"
+                onclick="selectLeague('europa_league')"
+            >
+                🟠 ЛЕ
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="conference_league"
+                onclick="selectLeague('conference_league')"
+            >
+                🟢 ЛК
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="league-group">
+
+        <div class="league-title">
+            ДРУГИЕ
+        </div>
+
+        <div class="league-row">
+
+            <button
+                class="league-btn"
+                data-league="championship"
+                onclick="selectLeague('championship')"
+            >
+                Чемпионшип
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="eredivisie"
+                onclick="selectLeague('eredivisie')"
+            >
+                🇳🇱 Нидерланды
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="primeira_liga"
+                onclick="selectLeague('primeira_liga')"
+            >
+                🇵🇹 Португалия
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="mls"
+                onclick="selectLeague('mls')"
+            >
+                🇺🇸 MLS
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="saudi_pro_league"
+                onclick="selectLeague('saudi_pro_league')"
+            >
+                🇸🇦 Саудовская
+            </button>
+
+            <button
+                class="league-btn"
+                data-league="favorites"
+                onclick="selectLeague('favorites')"
+            >
+                ⭐ Матчи
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="favoriteTeamsBox"></div>
+
+    <div id="matchesList">
+        <div class="loader">
+            Загружаем матчи...
+        </div>
+    </div>
+
+</section>
+
+
+<section
+    id="page-match"
+    class="page"
+>
+
+    <button
+        class="back"
+        onclick="showPage('matches')"
+    >
+        ← Назад
+    </button>
+
+    <div id="matchDetail"></div>
+
+</section>
+
+
+<section
+    id="page-bets"
+    class="page"
+>
+
+    <div class="topbar">
+
+        <h1 class="title">
+            🎟 Ставки
+        </h1>
+
+        <div class="balance">
+            🪙
+            <span id="balanceBets">
+                0
+            </span>
+        </div>
+
+    </div>
+
+    <div class="tabs">
+
+        <button
+            id="singleTab"
+            class="tab active"
+            onclick="switchBetTab('single')"
+        >
+            Ординары
+        </button>
+
+        <button
+            id="parlayTab"
+            class="tab"
+            onclick="switchBetTab('parlay')"
+        >
+            Экспрессы
+        </button>
+
+    </div>
+
+    <div class="filters">
+
+        <button
+            class="bet-filter active"
+            data-filter="all"
+            onclick="changeBetFilter('all')"
+        >
+            Все
+        </button>
+
+        <button
+            class="bet-filter"
+            data-filter="active"
+            onclick="changeBetFilter('active')"
+        >
+            Активные
+        </button>
+
+        <button
+            class="bet-filter"
+            data-filter="win"
+            onclick="changeBetFilter('win')"
+        >
+            Выигранные
+        </button>
+
+        <button
+            class="bet-filter"
+            data-filter="loss"
+            onclick="changeBetFilter('loss')"
+        >
+            Проигранные
+        </button>
+
+    </div>
+
+    <div id="singleBets"></div>
+
+    <div
+        id="parlayBets"
+        style="display:none;"
+    ></div>
+
+</section>
+
+
+<section
+    id="page-leaderboard"
+    class="page"
+>
+
+    <h1 class="title">
+        🏆 Лидеры
+    </h1>
+
+    <div id="leaderboard"></div>
+
+</section>
+
+
+<section
+    id="page-profile"
+    class="page"
+>
+
+    <div class="topbar">
+
+        <h1 class="title">
+            👤 Профиль
+        </h1>
+
+        <div class="balance">
+            🪙
+            <span id="balanceProfile">
+                0
+            </span>
+        </div>
+
+    </div>
+
+    <div class="card">
 
         <div
-            id="parlayBets"
-            style="display:none;"
+            id="profileName"
+            style="font-size:21px;font-weight:900;"
+        >
+            Игрок
+        </div>
+
+        <div
+            id="profileLeague"
+            class="notice"
         ></div>
 
-    </section>
-
-
-    <section id="page-leaderboard" class="page">
-
-        <h2 class="title">
-            🏆 Лидеры
-        </h2>
-
-        <div id="leaderboardList">
-            <div class="loader">
-                Загружаем рейтинг...
-            </div>
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                margin-top:14px;
+            "
+        >
+            <span id="profileLevel"></span>
+            <span id="profileXp"></span>
         </div>
 
-    </section>
-
-
-    <section id="page-profile" class="page">
-
-        <div class="topbar">
-
-            <h2 class="title" style="margin:0;">
-                👤 Профиль
-            </h2>
-
-            <div class="balance">
-                🪙 <span id="balanceProfile">0</span>
-            </div>
-
-        </div>
-
-        <div class="card">
-
+        <div class="xp-bar">
             <div
-                id="profileName"
-                style="font-size:22px;font-weight:900;"
-            >
-                Игрок
-            </div>
-
-            <div
-                id="leagueName"
-                class="subtitle"
-                style="margin-top:6px;"
-            >
-                🥉 Бронза
-            </div>
-
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-top:14px;
-                "
-            >
-
-                <span id="levelText">
-                    Уровень 1
-                </span>
-
-                <span id="xpText">
-                    0 XP
-                </span>
-
-            </div>
-
-            <div class="xp-bar">
-                <div
-                    id="xpFill"
-                    class="xp-fill"
-                ></div>
-            </div>
-
-            <div
-                id="rankText"
-                class="subtitle"
-                style="margin-top:10px;"
-            >
-                Место: —
-            </div>
-
-        </div>
-
-
-        <div class="card daily-card">
-
-            <div style="font-size:19px;font-weight:900;">
-                🎁 Ежедневный бонус
-            </div>
-
-            <div
-                class="subtitle"
-                style="margin-top:5px;"
-            >
-                +300 🪙 каждые 24 часа
-            </div>
-
-            <button
-                id="dailyBtn"
-                class="big-btn"
-                onclick="claimDailyReward()"
-            >
-                Получить +300 🪙
-            </button>
-
-            <div
-                id="dailyTimer"
-                class="notice"
-                style="margin-top:8px;"
+                id="xpFill"
+                class="xp-fill"
             ></div>
-
         </div>
 
-
-        <h3>
-            📊 Статистика
-        </h3>
-
         <div
-            id="statsGrid"
-            class="stat-grid"
+            id="profileRank"
+            class="notice"
+            style="margin-top:8px;"
         ></div>
 
+    </div>
 
-        <h3 style="margin-top:26px;">
-            ✅ Задания
-        </h3>
+    <div class="card">
 
-        <div id="tasksList"></div>
+        <b>
+            🎁 Ежедневный бонус
+        </b>
 
+        <div class="notice">
+            +300 монет каждые 24 часа
+        </div>
 
-        <h3 style="margin-top:26px;">
-            🏅 Достижения
-        </h3>
+        <button
+            id="dailyBtn"
+            class="big-btn"
+            onclick="claimDaily()"
+        >
+            Получить +300
+        </button>
 
-        <div id="achievementsList"></div>
+        <div
+            id="dailyTimer"
+            class="notice"
+            style="margin-top:8px;"
+        ></div>
 
-    </section>
+    </div>
+
+    <h3>
+        📊 Статистика
+    </h3>
+
+    <div
+        id="stats"
+        class="stat-grid"
+    ></div>
+
+    <h3>
+        ✅ Задания
+    </h3>
+
+    <div id="tasks"></div>
+
+    <h3>
+        🏅 Достижения
+    </h3>
+
+    <div id="achievements"></div>
+
+</section>
 
 </div>
 
@@ -1275,7 +1054,7 @@
 <button
     id="parlayFloat"
     class="parlay-float"
-    onclick="openParlayModal()"
+    onclick="openParlay()"
 >
     🧾 Экспресс • 0
 </button>
@@ -1283,229 +1062,160 @@
 
 <nav class="bottom-nav">
 
-    <button
-        id="nav-home"
-        class="nav-btn active"
-        onclick="showPage('home')"
-    >
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Главная</span>
-    </button>
+<button
+    id="nav-home"
+    class="nav active"
+    onclick="showPage('home')"
+>
+    <span class="nav-icon">🏠</span>
+    <span class="nav-text">Главная</span>
+</button>
 
-    <button
-        id="nav-matches"
-        class="nav-btn"
-        onclick="showPage('matches')"
-    >
-        <span class="nav-icon">⚽</span>
-        <span class="nav-label">Матчи</span>
-    </button>
+<button
+    id="nav-matches"
+    class="nav"
+    onclick="showPage('matches')"
+>
+    <span class="nav-icon">⚽</span>
+    <span class="nav-text">Матчи</span>
+</button>
 
-    <button
-        id="nav-bets"
-        class="nav-btn"
-        onclick="showPage('bets')"
-    >
-        <span class="nav-icon">🎟</span>
-        <span class="nav-label">Ставки</span>
-    </button>
+<button
+    id="nav-bets"
+    class="nav"
+    onclick="showPage('bets')"
+>
+    <span class="nav-icon">🎟</span>
+    <span class="nav-text">Ставки</span>
+</button>
 
-    <button
-        id="nav-leaderboard"
-        class="nav-btn"
-        onclick="showPage('leaderboard')"
-    >
-        <span class="nav-icon">🏆</span>
-        <span class="nav-label">Лидеры</span>
-    </button>
+<button
+    id="nav-leaderboard"
+    class="nav"
+    onclick="showPage('leaderboard')"
+>
+    <span class="nav-icon">🏆</span>
+    <span class="nav-text">Лидеры</span>
+</button>
 
-    <button
-        id="nav-profile"
-        class="nav-btn"
-        onclick="showPage('profile')"
-    >
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Профиль</span>
-    </button>
+<button
+    id="nav-profile"
+    class="nav"
+    onclick="showPage('profile')"
+>
+    <span class="nav-icon">👤</span>
+    <span class="nav-text">Профиль</span>
+</button>
 
 </nav>
 
 
 <div
-    id="betChoiceOverlay"
-    class="modal-overlay"
-    onclick="overlayClose(event,'betChoiceOverlay')"
+    id="singleOverlay"
+    class="overlay"
 >
-    <div class="modal">
+<div class="modal">
 
-        <div class="modal-title">
-            Выберите тип ставки
-        </div>
-
-        <div
-            id="choiceInfo"
-            class="selected-info"
-        ></div>
-
-        <div class="choice-row">
-
-            <button
-                class="big-btn"
-                onclick="openSingleModalFromChoice()"
-            >
-                Ординар
-            </button>
-
-            <button
-                id="parlayChoiceBtn"
-                class="big-btn secondary-btn"
-                onclick="addSelectedToParlay()"
-            >
-                + Экспресс
-            </button>
-
-        </div>
-
-        <button
-            class="big-btn danger-btn"
-            onclick="closeModal('betChoiceOverlay')"
-        >
-            Отмена
-        </button>
-
-    </div>
-</div>
-
+<h2>
+    Ординар
+</h2>
 
 <div
-    id="singleOverlay"
-    class="modal-overlay"
-    onclick="overlayClose(event,'singleOverlay')"
+    id="singleInfo"
+    class="card"
+></div>
+
+<input
+    id="singleAmount"
+    class="input"
+    type="number"
+    placeholder="Сумма"
+    oninput="updateSingleWin()"
 >
-    <div class="modal">
 
-        <div class="modal-title">
-            Ординар
-        </div>
+<div
+    id="singleWin"
+    class="notice"
+    style="margin-top:8px;"
+></div>
 
-        <div
-            id="singleInfo"
-            class="selected-info"
-        ></div>
+<button
+    class="big-btn"
+    onclick="confirmSingle()"
+>
+    Поставить
+</button>
 
-        <input
-            id="singleAmount"
-            class="input"
-            type="number"
-            min="1"
-            placeholder="Сумма ставки"
-            oninput="updateSinglePossible()"
-        >
+<button
+    class="big-btn danger"
+    onclick="closeOverlay('singleOverlay')"
+>
+    Закрыть
+</button>
 
-        <div
-            id="singlePossible"
-            class="notice"
-            style="margin-top:8px;"
-        ></div>
-
-        <button
-            id="confirmSingleBtn"
-            class="big-btn"
-            onclick="confirmSingleBet()"
-        >
-            Сделать ставку
-        </button>
-
-        <button
-            class="big-btn danger-btn"
-            onclick="closeModal('singleOverlay')"
-        >
-            Отмена
-        </button>
-
-    </div>
+</div>
 </div>
 
 
 <div
     id="parlayOverlay"
-    class="modal-overlay"
-    onclick="overlayClose(event,'parlayOverlay')"
+    class="overlay"
 >
-    <div class="modal">
+<div class="modal">
 
-        <div class="modal-title">
-            🧾 Экспресс
-        </div>
+<h2>
+    🧾 Экспресс
+</h2>
 
-        <div id="parlaySlipList"></div>
+<div id="parlayList"></div>
 
-        <div class="parlay-summary">
+<div class="card">
 
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:8px;
-                "
-            >
-                <span>Событий</span>
+<div>
+    Событий:
+    <b id="parlayCount">
+        0
+    </b>
+</div>
 
-                <b id="parlayCount">
-                    0
-                </b>
-            </div>
+<div>
+    Общий кэф:
+    <b id="parlayOdd">
+        1.00
+    </b>
+</div>
 
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                "
-            >
-                <span>Общий коэффициент</span>
+</div>
 
-                <span
-                    id="parlayTotalOdd"
-                    class="parlay-total-big"
-                >
-                    1.00
-                </span>
-            </div>
+<input
+    id="parlayAmount"
+    class="input"
+    type="number"
+    placeholder="Сумма"
+    oninput="updateParlayWin()"
+>
 
-        </div>
+<div
+    id="parlayWin"
+    class="notice"
+    style="margin-top:8px;"
+></div>
 
-        <input
-            id="parlayAmount"
-            class="input"
-            type="number"
-            min="1"
-            placeholder="Сумма экспресса"
-            oninput="updateParlayPossible()"
-        >
+<button
+    class="big-btn"
+    onclick="confirmParlay()"
+>
+    Поставить экспресс
+</button>
 
-        <div
-            id="parlayPossible"
-            class="notice"
-            style="margin-top:8px;"
-        ></div>
+<button
+    class="big-btn danger"
+    onclick="clearParlay()"
+>
+    Очистить
+</button>
 
-        <button
-            id="confirmParlayBtn"
-            class="big-btn"
-            onclick="confirmParlay()"
-        >
-            Поставить экспресс
-        </button>
-
-        <button
-            class="big-btn danger-btn"
-            onclick="clearParlay()"
-        >
-            Очистить экспресс
-        </button>
-
-    </div>
+</div>
 </div>
 
 
@@ -1514,466 +1224,76 @@
 const SERVER_URL =
     "https://betcoin-gu5c.onrender.com";
 
-
 const tg =
     window.Telegram.WebApp;
-
 
 tg.ready();
 tg.expand();
 
-
-const telegramInitData =
+const initData =
     tg.initData || "";
 
 
 let balance = 0;
 
 let matches = [];
+let loadedMatches = {};
 
 let bets = [];
-
 let parlays = [];
 
-let tasks = [];
+let favoriteMatches =
+    JSON.parse(
+        localStorage.getItem(
+            "betcoin_favorites"
+        )
+        ||
+        "[]"
+    );
 
-let achievements = [];
-
-let leaderboardPlayers = [];
-
-let stats = {};
-
-let currentUser = null;
-
-let myRank = null;
-
-let xp = 0;
-
-let level = 1;
-
-let playerLeague = {
-    icon: "🥉",
-    name: "Бронза"
-};
-
-let currentLevelXp = 0;
-
-let dailyReward = {
-    amount: 300,
-    available: true,
-    seconds_left: 0
-};
-
-let selectedMatch = null;
-
-let selectedBet = null;
-
-let previousPage = "matches";
+let favoriteTeams =
+    JSON.parse(
+        localStorage.getItem(
+            "betcoin_favorite_teams"
+        )
+        ||
+        "[]"
+    );
 
 let parlaySlip = [];
 
-let currentBetTab = "single";
-
-let currentBetFilter = "all";
-
 let currentLeague = "top5";
-
-let currentDateFilter = "all";
-
+let dateFilter = "all";
 let searchQuery = "";
 
-const loadedLeagueMatches = {};
+let currentBetFilter = "all";
+let currentBetTab = "single";
+
+let selectedBet = null;
+let currentUser = null;
+
+let profileXp = 0;
+let profileLevel = 1;
+let profileLeague = {};
+let currentLevelXp = 0;
+let profileStats = {};
+let tasks = [];
+let achievements = [];
+let myRank = null;
+let dailyReward = {};
 
 
-/* =========================================================
-   LEAGUES
-========================================================= */
-
-const LEAGUES = {
-
-    premier_league: {
-        flag: "🏴",
-        name: "АПЛ"
-    },
-
-    la_liga: {
-        flag: "🇪🇸",
-        name: "Ла Лига"
-    },
-
-    serie_a: {
-        flag: "🇮🇹",
-        name: "Серия А"
-    },
-
-    bundesliga: {
-        flag: "🇩🇪",
-        name: "Бундеслига"
-    },
-
-    ligue_1: {
-        flag: "🇫🇷",
-        name: "Лига 1"
-    },
-
-    champions_league: {
-        flag: "🏆",
-        name: "Лига чемпионов"
-    },
-
-    europa_league: {
-        flag: "🟠",
-        name: "Лига Европы"
-    },
-
-    conference_league: {
-        flag: "🟢",
-        name: "Лига конференций"
-    },
-
-    championship: {
-        flag: "🏴",
-        name: "Чемпионшип"
-    },
-
-    eredivisie: {
-        flag: "🇳🇱",
-        name: "Эредивизи"
-    },
-
-    primeira_liga: {
-        flag: "🇵🇹",
-        name: "Примейра"
-    },
-
-    mls: {
-        flag: "🇺🇸",
-        name: "MLS"
-    },
-
-    saudi_pro_league: {
-        flag: "🇸🇦",
-        name: "Saudi Pro League"
-    }
-};
-
-
-/* =========================================================
-   FALLBACK LOGOS
-========================================================= */
-
-const TEAM_LOGOS = {
-
-    "arsenal":
-        "https://crests.football-data.org/57.png",
-
-    "aston villa":
-        "https://crests.football-data.org/58.png",
-
-    "chelsea":
-        "https://crests.football-data.org/61.png",
-
-    "everton":
-        "https://crests.football-data.org/62.png",
-
-    "fulham":
-        "https://crests.football-data.org/63.png",
-
-    "liverpool":
-        "https://crests.football-data.org/64.png",
-
-    "manchester city":
-        "https://crests.football-data.org/65.png",
-
-    "man city":
-        "https://crests.football-data.org/65.png",
-
-    "manchester united":
-        "https://crests.football-data.org/66.png",
-
-    "man united":
-        "https://crests.football-data.org/66.png",
-
-    "newcastle":
-        "https://crests.football-data.org/67.png",
-
-    "tottenham":
-        "https://crests.football-data.org/73.png",
-
-    "wolves":
-        "https://crests.football-data.org/76.png",
-
-    "barcelona":
-        "https://crests.football-data.org/81.png",
-
-    "real madrid":
-        "https://crests.football-data.org/86.png",
-
-    "atletico madrid":
-        "https://crests.football-data.org/78.png",
-
-    "athletic club":
-        "https://crests.football-data.org/77.png",
-
-    "real betis":
-        "https://crests.football-data.org/90.png",
-
-    "real sociedad":
-        "https://crests.football-data.org/92.png",
-
-    "villarreal":
-        "https://crests.football-data.org/94.png",
-
-    "valencia":
-        "https://crests.football-data.org/95.png"
-};
-
-
-/* =========================================================
-   FAVORITE MATCHES
-========================================================= */
-
-function loadLocalFavorites() {
-
-    try {
-
-        const raw =
-            localStorage.getItem(
-                "betcoin_favorites"
-            );
-
-
-        if (!raw) {
-            return [];
-        }
-
-
-        const parsed =
-            JSON.parse(raw);
-
-
-        return Array.isArray(parsed)
-            ?
-            parsed
-                .map(Number)
-                .filter(Number.isFinite)
-            :
-            [];
-
-    } catch {
-
-        return [];
-    }
-}
-
-
-let favoriteMatches =
-    loadLocalFavorites();
-
-
-function saveLocalFavorites() {
-
-    localStorage.setItem(
-        "betcoin_favorites",
-        JSON.stringify(
-            favoriteMatches
-        )
-    );
-}
-
-
-function isFavorite(
-    fixtureId
-) {
-
-    return favoriteMatches.includes(
-        Number(
-            fixtureId
-        )
-    );
-}
-
-
-/* =========================================================
-   FAVORITE TEAMS
-========================================================= */
-
-function normalizeTeamFavoriteName(
-    name
-) {
-
-    return String(
-        name || ""
-    )
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, " ");
-}
-
-
-function loadFavoriteTeams() {
-
-    try {
-
-        const raw =
-            localStorage.getItem(
-                "betcoin_favorite_teams"
-            );
-
-
-        if (!raw) {
-            return [];
-        }
-
-
-        const parsed =
-            JSON.parse(raw);
-
-
-        return Array.isArray(parsed)
-            ?
-            parsed
-            :
-            [];
-
-    } catch {
-
-        return [];
-    }
-}
-
-
-let favoriteTeams =
-    loadFavoriteTeams();
-
-
-function saveFavoriteTeams() {
-
-    localStorage.setItem(
-        "betcoin_favorite_teams",
-        JSON.stringify(
-            favoriteTeams
-        )
-    );
-}
-
-
-function isFavoriteTeam(
-    teamName
-) {
-
-    const normalized =
-        normalizeTeamFavoriteName(
-            teamName
-        );
-
-
-    return favoriteTeams.some(
-        item =>
-            normalizeTeamFavoriteName(
-                item
-            )
-            ===
-            normalized
-    );
-}
-
-
-function toggleFavoriteTeam(
-    teamName
-) {
-
-    const normalized =
-        normalizeTeamFavoriteName(
-            teamName
-        );
-
-
-    if (!normalized) {
-        return;
-    }
-
-
-    const exists =
-        favoriteTeams.findIndex(
-            item =>
-                normalizeTeamFavoriteName(
-                    item
-                )
-                ===
-                normalized
-        );
-
-
-    if (exists >= 0) {
-
-        favoriteTeams.splice(
-            exists,
-            1
-        );
-
-    } else {
-
-        favoriteTeams.push(
-            teamName
-        );
-
-
-        tg.HapticFeedback
-            ?.impactOccurred(
-                "light"
-            );
-    }
-
-
-    saveFavoriteTeams();
-
-    renderMatches();
-
-    renderFavoriteTeamsBox();
-
-    renderHomeFavoriteTeams();
-
-
-    if (selectedMatch) {
-
-        renderMatchDetail(
-            selectedMatch
-        );
-    }
-}
-
-
-function matchHasFavoriteTeam(
-    match
-) {
-
-    return (
-        isFavoriteTeam(
-            match.home
-        )
-        ||
-        isFavoriteTeam(
-            match.away
-        )
-    );
-}
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
 
 function escapeHtml(value) {
 
     return String(
         value ?? ""
     )
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 
@@ -1982,603 +1302,44 @@ function jsString(value) {
     return String(
         value ?? ""
     )
-    .replaceAll("\\", "\\\\")
-    .replaceAll("'", "\\'")
-    .replaceAll("\n", " ");
+    .replaceAll("\\","\\\\")
+    .replaceAll("'","\\'")
+    .replaceAll("\n"," ");
 }
 
 
-function formatOdd(value) {
-
-    const number =
-        Number(value);
-
-
-    if (
-        !Number.isFinite(number)
-        ||
-        number <= 1
-    ) {
-
-        return "—";
-    }
-
-
-    return number.toFixed(2);
-}
-
-
-function formatDate(value) {
-
-    if (!value) {
-        return "";
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return "";
-    }
-
-
-    return date.toLocaleString(
-        "ru-RU",
-        {
-            day: "2-digit",
-            month: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
-}
-
-
-function isSameLocalDay(
-    first,
-    second
-) {
-
-    return (
-        first.getFullYear()
-        ===
-        second.getFullYear()
-
-        &&
-
-        first.getMonth()
-        ===
-        second.getMonth()
-
-        &&
-
-        first.getDate()
-        ===
-        second.getDate()
-    );
-}
-
-
-function isToday(
-    value
-) {
-
-    const date =
-        new Date(value);
-
-
-    return isSameLocalDay(
-        date,
-        new Date()
-    );
-}
-
-
-function isTomorrow(
-    value
-) {
-
-    const tomorrow =
-        new Date();
-
-
-    tomorrow.setDate(
-        tomorrow.getDate()
-        +
-        1
-    );
-
-
-    return isSameLocalDay(
-        new Date(value),
-        tomorrow
-    );
-}
-
-
-function normalizeTeamName(name) {
-
-    return String(
-        name || ""
-    )
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, " ");
-}
-
-
-function getTeamLogo(
-    teamName,
-    serverLogo
-) {
-
-    if (
-        serverLogo
-        &&
-        String(
-            serverLogo
-        ).startsWith(
-            "http"
-        )
-    ) {
-
-        return serverLogo;
-    }
-
-
-    const name =
-        normalizeTeamName(
-            teamName
-        );
-
-
-    if (
-        TEAM_LOGOS[
-            name
-        ]
-    ) {
-
-        return TEAM_LOGOS[
-            name
-        ];
-    }
-
-
-    for (
-        const [key, logo]
-        of
-        Object.entries(
-            TEAM_LOGOS
-        )
-    ) {
-
-        if (
-            name.includes(
-                key
-            )
-            ||
-            key.includes(
-                name
-            )
-        ) {
-
-            return logo;
-        }
-    }
-
-
-    return "";
-}
-
-
-function safeTeamLogo(
-    serverLogo,
-    team
-) {
-
-    const logo =
-        getTeamLogo(
-            team,
-            serverLogo
-        );
-
-
-    if (!logo) {
-
-        return `
-            <div class="team-logo-wrap">
-                <div class="fallback-logo">
-                    ⚽
-                </div>
-            </div>
-        `;
-    }
-
-
-    return `
-        <div class="team-logo-wrap">
-
-            <img
-                src="${escapeHtml(logo)}"
-                alt="${escapeHtml(team)}"
-                onerror="
-                    this.style.display='none';
-                    this.parentElement.innerHTML='<div class=&quot;fallback-logo&quot;>⚽</div>';
-                "
-            >
-
-        </div>
-    `;
-}
-
-
-function getLeagueLabel(
-    match
-) {
-
-    const key =
-        String(
-            match.league_key
-            ||
-            ""
-        );
-
-
-    if (
-        LEAGUES[
-            key
-        ]
-    ) {
-
-        return (
-            LEAGUES[
-                key
-            ].flag
-            +
-            " "
-            +
-            LEAGUES[
-                key
-            ].name
-        );
-    }
-
-
-    return (
-        match.league
-        ||
-        "Футбол"
-    );
-}
-
-
-/* =========================================================
-   MATCH STATUS
-========================================================= */
-
-function canBetOnMatch(
-    match
-) {
-
-    if (!match) {
-        return false;
-    }
-
-
-    const status =
-        String(
-            match.status || ""
-        ).toUpperCase();
-
-
-    const closedStatuses = [
-        "1H",
-        "2H",
-        "HT",
-        "ET",
-        "P",
-        "BT",
-        "INT",
-        "LIVE",
-        "FT",
-        "AET",
-        "PEN",
-        "FINISHED",
-        "CANC",
-        "PST",
-        "ABD",
-        "AWD",
-        "WO"
-    ];
-
-
-    if (
-        closedStatuses.includes(
-            status
-        )
-    ) {
-
-        return false;
-    }
-
-
-    if (match.date) {
-
-        const start =
-            new Date(
-                match.date
-            ).getTime();
-
-
-        if (
-            Number.isFinite(start)
-            &&
-            Date.now() >= start
-        ) {
-
-            return false;
-        }
-    }
-
-
-    return true;
-}
-
-
-function getMatchTimeStatus(
-    match
-) {
-
-    const status =
-        String(
-            match?.status || ""
-        ).toUpperCase();
-
-
-    if (
-        status === "CANC"
-    ) {
-
-        return {
-            className: "closed",
-            text: "❌ Матч отменён"
-        };
-    }
-
-
-    if (
-        status === "PST"
-    ) {
-
-        return {
-            className: "closed",
-            text: "📅 Матч перенесён"
-        };
-    }
-
-
-    if (
-        status === "ABD"
-    ) {
-
-        return {
-            className: "closed",
-            text: "⚠️ Матч прерван"
-        };
-    }
-
-
-    if (
-        [
-            "FT",
-            "AET",
-            "PEN",
-            "FINISHED"
-        ].includes(
-            status
-        )
-    ) {
-
-        return {
-            className: "closed",
-            text: "✅ Матч завершён"
-        };
-    }
-
-
-    if (
-        !canBetOnMatch(
-            match
-        )
-    ) {
-
-        return {
-            className: "closed",
-            text: "🔴 LIVE • ставки закрыты"
-        };
-    }
-
-
-    if (
-        !match?.date
-    ) {
-
-        return {
-            className: "",
-            text: ""
-        };
-    }
-
-
-    const diff =
-        new Date(
-            match.date
-        ).getTime()
-        -
-        Date.now();
-
-
-    if (
-        diff <= 0
-    ) {
-
-        return {
-            className: "closed",
-            text: "🔴 LIVE • ставки закрыты"
-        };
-    }
-
-
-    const totalMinutes =
-        Math.ceil(
-            diff
-            /
-            60000
-        );
-
-
-    if (
-        totalMinutes <= 10
-    ) {
-
-        return {
-            className: "soon",
-            text:
-                `⏰ Начало через ${totalMinutes} мин`
-        };
-    }
-
-
-    if (
-        totalMinutes < 60
-    ) {
-
-        return {
-            className: "soon",
-            text:
-                `🕒 Через ${totalMinutes} мин`
-        };
-    }
-
-
-    const hours =
-        Math.floor(
-            totalMinutes
-            /
-            60
-        );
-
-
-    const minutes =
-        totalMinutes
-        %
-        60;
-
-
-    if (
-        hours < 24
-    ) {
-
-        return {
-            className: "",
-            text:
-                minutes
-                ?
-                `🕒 Через ${hours} ч ${minutes} мин`
-                :
-                `🕒 Через ${hours} ч`
-        };
-    }
-
-
-    const days =
-        Math.floor(
-            hours
-            /
-            24
-        );
-
-
-    const restHours =
-        hours
-        %
-        24;
-
-
-    return {
-        className: "",
-        text:
-            restHours
-            ?
-            `🗓 Через ${days} дн ${restHours} ч`
-            :
-            `🗓 Через ${days} дн`
-    };
-}
-
-
-/* =========================================================
-   API
-========================================================= */
-
-async function apiPost(
+async function post(
     path,
-    payload={}
+    body={}
 ) {
 
     const response =
         await fetch(
-            SERVER_URL
-            +
-            path,
+            SERVER_URL + path,
             {
-                method: "POST",
+                method:"POST",
 
-                headers: {
+                headers:{
                     "Content-Type":
                         "application/json",
 
                     "X-Telegram-Init-Data":
-                        telegramInitData
+                        initData
                 },
 
-                body:
-                    JSON.stringify({
-                        ...payload,
-
-                        initData:
-                            telegramInitData
-                    })
+                body:JSON.stringify({
+                    ...body,
+                    initData
+                })
             }
         );
 
 
-    let data;
+    const data =
+        await response.json();
 
 
-    try {
-
-        data =
-            await response.json();
-
-    } catch {
-
-        throw new Error(
-            "Сервер вернул неправильный ответ"
-        );
-    }
-
-
-    if (
-        !response.ok
-    ) {
+    if (!response.ok) {
 
         throw new Error(
             data.error
@@ -2592,11 +1353,33 @@ async function apiPost(
 }
 
 
-/* =========================================================
-   FAVORITE MATCH SERVER SYNC
-========================================================= */
+function updateBalance() {
 
-function setFavoritesFromServer(
+    [
+        "balanceHome",
+        "balanceMatches",
+        "balanceBets",
+        "balanceProfile"
+    ].forEach(
+        id => {
+
+            const el =
+                document.getElementById(
+                    id
+                );
+
+
+            if (el) {
+
+                el.textContent =
+                    balance;
+            }
+        }
+    );
+}
+
+
+function setFavoriteMatches(
     serverFavorites
 ) {
 
@@ -2623,19 +1406,155 @@ function setFavoritesFromServer(
         );
 
 
-    saveLocalFavorites();
+    localStorage.setItem(
+        "betcoin_favorites",
+        JSON.stringify(
+            favoriteMatches
+        )
+    );
 }
 
 
-async function syncOldFavorites() {
+function setFavoriteTeams(
+    serverTeams
+) {
 
-    const migrationKey =
-        "betcoin_favorites_synced_v1";
+    if (
+        !Array.isArray(
+            serverTeams
+        )
+    ) {
+
+        return;
+    }
+
+
+    favoriteTeams =
+        serverTeams
+        .map(
+            String
+        )
+        .filter(Boolean);
+
+
+    localStorage.setItem(
+        "betcoin_favorite_teams",
+        JSON.stringify(
+            favoriteTeams
+        )
+    );
+}
+
+
+function teamKey(name) {
+
+    return String(
+        name || ""
+    )
+    .trim()
+    .toLowerCase();
+}
+
+
+function isFavoriteTeam(name) {
+
+    const key =
+        teamKey(name);
+
+
+    return favoriteTeams.some(
+        team =>
+            teamKey(team)
+            ===
+            key
+    );
+}
+
+
+async function toggleFavoriteTeam(
+    name
+) {
+
+    const wasFavorite =
+        isFavoriteTeam(
+            name
+        );
+
+
+    if (wasFavorite) {
+
+        favoriteTeams =
+            favoriteTeams.filter(
+                team =>
+                    teamKey(team)
+                    !==
+                    teamKey(name)
+            );
+
+    } else {
+
+        favoriteTeams.push(
+            name
+        );
+    }
+
+
+    localStorage.setItem(
+        "betcoin_favorite_teams",
+        JSON.stringify(
+            favoriteTeams
+        )
+    );
+
+
+    renderMatches();
+    renderHome();
+    renderFavoriteTeamsBox();
+
+
+    try {
+
+        const data =
+            await post(
+                "/api/favorite-teams/toggle",
+                {
+                    team_name:name,
+                    favorite:
+                        !wasFavorite
+                }
+            );
+
+
+        setFavoriteTeams(
+            data.favorite_teams
+            ||
+            []
+        );
+
+
+        renderMatches();
+        renderHome();
+        renderFavoriteTeamsBox();
+
+
+    } catch(error) {
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function syncOldFavoriteTeams() {
+
+    const key =
+        "betcoin_team_sync_v1";
 
 
     if (
         localStorage.getItem(
-            migrationKey
+            key
         )
         ===
         "1"
@@ -2648,47 +1567,36 @@ async function syncOldFavorites() {
     try {
 
         const data =
-            await apiPost(
-                "/api/favorites/sync",
+            await post(
+                "/api/favorite-teams/sync",
                 {
-                    fixture_ids:
-                        favoriteMatches
+                    teams:
+                        favoriteTeams
                 }
             );
 
 
-        if (
-            data.success
-            &&
-            Array.isArray(
-                data.favorites
-            )
-        ) {
-
-            setFavoritesFromServer(
-                data.favorites
-            );
-        }
+        setFavoriteTeams(
+            data.favorite_teams
+            ||
+            []
+        );
 
 
         localStorage.setItem(
-            migrationKey,
+            key,
             "1"
         );
 
 
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
     }
 }
 
 
-async function toggleFavoriteMatch(
+async function toggleMatchFavorite(
     fixtureId
 ) {
 
@@ -2698,120 +1606,138 @@ async function toggleFavoriteMatch(
         );
 
 
-    const wasFavorite =
-        isFavorite(
+    const was =
+        favoriteMatches.includes(
             id
         );
 
 
-    const newFavorite =
-        !wasFavorite;
+    if (was) {
 
+        favoriteMatches =
+            favoriteMatches.filter(
+                value =>
+                    value !== id
+            );
 
-    if (
-        newFavorite
-    ) {
+    } else {
 
         favoriteMatches.push(
             id
         );
-
-    } else {
-
-        favoriteMatches =
-            favoriteMatches.filter(
-                item =>
-                    item !== id
-            );
     }
 
 
-    favoriteMatches = [
-        ...new Set(
+    localStorage.setItem(
+        "betcoin_favorites",
+        JSON.stringify(
             favoriteMatches
         )
-    ];
+    );
 
-
-    saveLocalFavorites();
 
     renderMatches();
+    renderHome();
 
-    renderHomeMatches();
+
+    try {
+
+        const data =
+            await post(
+                "/api/favorites/toggle",
+                {
+                    fixture_id:id,
+                    favorite:
+                        !was
+                }
+            );
+
+
+        setFavoriteMatches(
+            data.favorites
+            ||
+            []
+        );
+
+
+        renderMatches();
+        renderHome();
+
+
+    } catch(error) {
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function syncOldFavoriteMatches() {
+
+    const key =
+        "betcoin_match_sync_v1";
 
 
     if (
-        selectedMatch
+        localStorage.getItem(
+            key
+        )
+        ===
+        "1"
     ) {
 
-        renderMatchDetail(
-            selectedMatch
-        );
+        return;
     }
 
 
     try {
 
         const data =
-            await apiPost(
-                "/api/favorites/toggle",
+            await post(
+                "/api/favorites/sync",
                 {
-                    fixture_id:
-                        id,
-
-                    favorite:
-                        newFavorite
+                    fixture_ids:
+                        favoriteMatches
                 }
             );
 
 
-        if (
-            Array.isArray(
-                data.favorites
-            )
-        ) {
-
-            setFavoritesFromServer(
-                data.favorites
-            );
-        }
-
-
-        if (
-            newFavorite
-        ) {
-
-            tg.HapticFeedback
-                ?.impactOccurred(
-                    "light"
-                );
-        }
-
-
-    } catch (
-        error
-    ) {
-
-        tg.showAlert(
-            error.message
+        setFavoriteMatches(
+            data.favorites
             ||
-            "Не удалось сохранить избранное"
+            []
         );
+
+
+        localStorage.setItem(
+            key,
+            "1"
+        );
+
+
+    } catch(error) {
+
+        console.error(error);
     }
 }
 
-
-/* =========================================================
-   SESSION
-========================================================= */
 
 async function loadSession() {
 
     try {
 
         const data =
-            await apiPost(
+            await post(
                 "/api/session"
+            );
+
+
+        balance =
+            Number(
+                data.balance
+                ||
+                0
             );
 
 
@@ -2821,33 +1747,101 @@ async function loadSession() {
             null;
 
 
+        bets =
+            data.bets
+            ||
+            [];
+
+
+        parlays =
+            data.parlays
+            ||
+            [];
+
+
+        profileXp =
+            Number(
+                data.xp
+                ||
+                0
+            );
+
+
+        profileLevel =
+            Number(
+                data.level
+                ||
+                1
+            );
+
+
+        profileLeague =
+            data.league
+            ||
+            {};
+
+
+        currentLevelXp =
+            Number(
+                data.current_level_xp
+                ||
+                0
+            );
+
+
+        profileStats =
+            data.stats
+            ||
+            {};
+
+
+        tasks =
+            data.tasks
+            ||
+            [];
+
+
+        achievements =
+            data.achievements
+            ||
+            [];
+
+
         dailyReward =
             data.daily_reward
             ||
-            dailyReward;
+            {};
 
 
-        if (
-            data.leaderboard
-            &&
-            data.leaderboard.my_rank
-            !==
-            undefined
-        ) {
-
-            myRank =
-                data.leaderboard.my_rank;
-        }
+        myRank =
+            data.leaderboard?.my_rank
+            ??
+            null;
 
 
-        applyCommonData(
-            data
+        setFavoriteMatches(
+            data.favorites
+            ||
+            []
         );
 
 
-    } catch (
-        error
-    ) {
+        setFavoriteTeams(
+            data.favorite_teams
+            ||
+            []
+        );
+
+
+        updateBalance();
+
+        renderBets();
+        renderProfile();
+        renderHome();
+        renderFavoriteTeamsBox();
+
+
+    } catch(error) {
 
         console.error(
             error
@@ -2856,174 +1850,34 @@ async function loadSession() {
 }
 
 
-function applyCommonData(
-    data
-) {
-
-    if (
-        data.balance
-        !==
-        undefined
-    ) {
-
-        balance =
-            Number(
-                data.balance
-            );
-    }
-
-
-    if (
-        data.bets
-        !==
-        undefined
-    ) {
-
-        bets =
-            data.bets
-            ||
-            [];
-    }
-
-
-    if (
-        data.parlays
-        !==
-        undefined
-    ) {
-
-        parlays =
-            data.parlays
-            ||
-            [];
-    }
-
-
-    if (
-        data.tasks
-        !==
-        undefined
-    ) {
-
-        tasks =
-            data.tasks
-            ||
-            [];
-    }
-
-
-    if (
-        data.achievements
-        !==
-        undefined
-    ) {
-
-        achievements =
-            data.achievements
-            ||
-            [];
-    }
-
-
-    if (
-        data.stats
-        !==
-        undefined
-    ) {
-
-        stats =
-            data.stats
-            ||
-            {};
-    }
-
-
-    if (
-        data.xp
-        !==
-        undefined
-    ) {
-
-        xp =
-            Number(
-                data.xp
-            );
-    }
-
-
-    if (
-        data.level
-        !==
-        undefined
-    ) {
-
-        level =
-            Number(
-                data.level
-            );
-    }
-
-
-    if (
-        data.league
-    ) {
-
-        playerLeague =
-            data.league;
-    }
-
-
-    if (
-        data.current_level_xp
-        !==
-        undefined
-    ) {
-
-        currentLevelXp =
-            Number(
-                data.current_level_xp
-            );
-    }
-
-
-    if (
-        data.my_rank
-        !==
-        undefined
-    ) {
-
-        myRank =
-            data.my_rank;
-    }
-
-
-    if (
-        Array.isArray(
-            data.favorites
-        )
-    ) {
-
-        setFavoritesFromServer(
-            data.favorites
-        );
-    }
-
-
-    updateInterface();
-}
-
-
-/* =========================================================
-   LEAGUE LOADING
-========================================================= */
-
 async function loadLeague(
-    leagueKey,
-    force=false
+    leagueKey
 ) {
 
+    currentLeague =
+        leagueKey;
+
+
+    document
+    .querySelectorAll(
+        ".league-btn"
+    )
+    .forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.league
+                ===
+                leagueKey
+            );
+        }
+    );
+
+
     if (
-        leagueKey ===
+        leagueKey
+        ===
         "favorites"
     ) {
 
@@ -3034,15 +1888,13 @@ async function loadLeague(
 
 
     if (
-        !force
-        &&
-        loadedLeagueMatches[
+        loadedMatches[
             leagueKey
         ]
     ) {
 
         matches =
-            loadedLeagueMatches[
+            loadedMatches[
                 leagueKey
             ];
 
@@ -3072,8 +1924,7 @@ async function loadLeague(
 
         if (
             leagueKey
-            &&
-            leagueKey !==
+            !==
             "top5"
         ) {
 
@@ -3105,49 +1956,28 @@ async function loadLeague(
             throw new Error(
                 data.error
                 ||
-                "Не удалось загрузить матчи"
+                "Ошибка загрузки"
             );
         }
 
 
-        const incoming =
+        matches =
             data.matches
             ||
             [];
 
 
-        incoming.sort(
-            (a, b) =>
-                new Date(
-                    a.date
-                )
-                -
-                new Date(
-                    b.date
-                )
-        );
-
-
-        loadedLeagueMatches[
+        loadedMatches[
             leagueKey
         ] =
-            incoming;
-
-
-        matches =
-            incoming;
+            matches;
 
 
         renderMatches();
-
-        renderHomeMatches();
-
-        renderHomeFavoriteTeams();
+        renderHome();
 
 
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
         document.getElementById(
             "matchesList"
@@ -3162,108 +1992,156 @@ async function loadLeague(
 }
 
 
-async function selectLeague(
-    leagueKey
-) {
+function selectLeague(key) {
 
-    currentLeague =
-        leagueKey;
+    loadLeague(key);
+}
 
 
-    document
-    .querySelectorAll(
-        ".league-filter"
-    )
-    .forEach(
-        button => {
+function allLoadedMatches() {
 
-            button.classList.toggle(
-                "active",
-                button.dataset.league
-                ===
-                leagueKey
+    const result = {};
+
+
+    Object.values(
+        loadedMatches
+    ).forEach(
+        list => {
+
+            (list || [])
+            .forEach(
+                match => {
+
+                    result[
+                        String(
+                            match.fixture_id
+                        )
+                    ] =
+                        match;
+                }
             );
         }
     );
 
 
-    if (
-        leagueKey ===
-        "favorites"
-    ) {
+    return Object.values(
+        result
+    );
+}
 
-        renderMatches();
 
-        return;
+function formatDate(value) {
+
+    if (!value) {
+        return "";
     }
 
 
-    await loadLeague(
-        leagueKey
-    );
-}
-
-
-/* =========================================================
-   SEARCH + DATE FILTERS
-========================================================= */
-
-function setSearchQuery(
-    value
-) {
-
-    searchQuery =
-        String(
-            value || ""
-        )
-        .toLowerCase()
-        .trim();
-
-
-    renderMatches();
-}
-
-
-function setDateFilter(
-    filter
-) {
-
-    currentDateFilter =
-        filter;
-
-
-    document
-    .querySelectorAll(
-        ".filter-btn"
-    )
-    .forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.dateFilter
-                ===
-                filter
-            );
+    return new Date(
+        value
+    ).toLocaleString(
+        "ru-RU",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
         }
     );
-
-
-    renderMatches();
 }
 
 
-function filterMatches(
-    list
+function isToday(value) {
+
+    const date =
+        new Date(value);
+
+
+    const now =
+        new Date();
+
+
+    return (
+        date.getFullYear()
+        ===
+        now.getFullYear()
+
+        &&
+
+        date.getMonth()
+        ===
+        now.getMonth()
+
+        &&
+
+        date.getDate()
+        ===
+        now.getDate()
+    );
+}
+
+
+function isTomorrow(value) {
+
+    const tomorrow =
+        new Date();
+
+
+    tomorrow.setDate(
+        tomorrow.getDate()
+        +
+        1
+    );
+
+
+    const date =
+        new Date(value);
+
+
+    return (
+        date.getFullYear()
+        ===
+        tomorrow.getFullYear()
+
+        &&
+
+        date.getMonth()
+        ===
+        tomorrow.getMonth()
+
+        &&
+
+        date.getDate()
+        ===
+        tomorrow.getDate()
+    );
+}
+
+
+function matchHasFavoriteTeam(
+    match
 ) {
+
+    return (
+        isFavoriteTeam(
+            match.home
+        )
+        ||
+        isFavoriteTeam(
+            match.away
+        )
+    );
+}
+
+
+function filteredMatches(list) {
 
     let result =
         [...list];
 
 
     if (
-        currentDateFilter
-        ===
+        dateFilter ===
         "today"
     ) {
 
@@ -3278,8 +2156,7 @@ function filterMatches(
 
 
     if (
-        currentDateFilter
-        ===
+        dateFilter ===
         "tomorrow"
     ) {
 
@@ -3294,8 +2171,7 @@ function filterMatches(
 
 
     if (
-        currentDateFilter
-        ===
+        dateFilter ===
         "myteams"
     ) {
 
@@ -3309,39 +2185,38 @@ function filterMatches(
     }
 
 
-    if (
-        searchQuery
-    ) {
+    if (searchQuery) {
 
         result =
             result.filter(
-                match => {
-
-                    const text =
-                        (
-                            String(
-                                match.home || ""
-                            )
-                            +
-                            " "
-                            +
-                            String(
-                                match.away || ""
-                            )
-                            +
-                            " "
-                            +
-                            String(
-                                match.league || ""
-                            )
+                match =>
+                    (
+                        String(
+                            match.home
+                            ||
+                            ""
                         )
-                        .toLowerCase();
-
-
-                    return text.includes(
+                        +
+                        " "
+                        +
+                        String(
+                            match.away
+                            ||
+                            ""
+                        )
+                        +
+                        " "
+                        +
+                        String(
+                            match.league
+                            ||
+                            ""
+                        )
+                    )
+                    .toLowerCase()
+                    .includes(
                         searchQuery
-                    );
-                }
+                    )
             );
     }
 
@@ -3350,442 +2225,160 @@ function filterMatches(
 }
 
 
-/* =========================================================
-   ALL LOADED MATCHES
-========================================================= */
+function changeSearch(value) {
 
-function getAllLoadedMatches() {
-
-    const all = {};
-
-
-    for (
-        const list
-        of
-        Object.values(
-            loadedLeagueMatches
+    searchQuery =
+        String(
+            value
         )
-    ) {
-
-        for (
-            const match
-            of
-            list
-        ) {
-
-            all[
-                String(
-                    match.fixture_id
-                )
-            ] =
-                match;
-        }
-    }
+        .toLowerCase()
+        .trim();
 
 
-    return Object.values(
-        all
-    );
+    renderMatches();
 }
 
 
-function findMatchByFixtureId(
-    fixtureId
+function changeDateFilter(value) {
+
+    dateFilter =
+        value;
+
+
+    document
+    .querySelectorAll(
+        ".filter-btn"
+    )
+    .forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.date
+                ===
+                value
+            );
+        }
+    );
+
+
+    renderMatches();
+}
+
+
+function teamLogo(
+    url,
+    name
 ) {
 
-    if (
-        selectedMatch
-        &&
-        Number(
-            selectedMatch.fixture_id
-        )
-        ===
-        Number(
-            fixtureId
-        )
-    ) {
+    if (!url) {
 
-        return selectedMatch;
+        return `
+            <div class="team-logo">
+                ⚽
+            </div>
+        `;
     }
 
 
-    return getAllLoadedMatches()
-        .find(
-            match =>
-                Number(
-                    match.fixture_id
-                )
-                ===
-                Number(
-                    fixtureId
-                )
-        );
-}
+    return `
+        <div class="team-logo">
 
+            <img
+                src="${escapeHtml(url)}"
+                alt="${escapeHtml(name)}"
 
-/* =========================================================
-   FAVORITE TEAMS UI
-========================================================= */
-
-function renderFavoriteTeamsBox() {
-
-    const box =
-        document.getElementById(
-            "favoriteTeamsBox"
-        );
-
-
-    if (
-        !box
-    ) {
-
-        return;
-    }
-
-
-    if (
-        !favoriteTeams.length
-    ) {
-
-        box.innerHTML = "";
-
-        return;
-    }
-
-
-    box.innerHTML = `
-        <div class="card favorite-teams-box">
-
-            <div
-                style="
-                    font-weight:900;
-                    margin-bottom:8px;
+                onerror="
+                    this.parentElement.innerHTML='⚽';
                 "
             >
-                ⭐ Мои команды
-            </div>
-
-            <div>
-
-                ${
-                    favoriteTeams
-                    .map(
-                        team => `
-                            <span
-                                class="favorite-team-chip"
-                                onclick="
-                                    document.getElementById('matchSearch').value='${jsString(team)}';
-                                    setSearchQuery('${jsString(team)}');
-                                "
-                            >
-                                ${escapeHtml(team)}
-                            </span>
-                        `
-                    )
-                    .join("")
-                }
-
-            </div>
 
         </div>
     `;
 }
 
 
-function renderHomeFavoriteTeams() {
-
-    const container =
-        document.getElementById(
-            "homeFavoriteTeams"
-        );
-
-
-    if (
-        !container
-    ) {
-
-        return;
-    }
-
-
-    if (
-        !favoriteTeams.length
-    ) {
-
-        container.innerHTML =
-            "";
-
-        return;
-    }
-
-
-    const matches =
-        getAllLoadedMatches()
-        .filter(
-            match =>
-                matchHasFavoriteTeam(
-                    match
-                )
-        )
-        .filter(
-            match =>
-                canBetOnMatch(
-                    match
-                )
-        )
-        .sort(
-            (a, b) =>
-                new Date(
-                    a.date
-                )
-                -
-                new Date(
-                    b.date
-                )
-        )
-        .slice(
-            0,
-            3
-        );
-
-
-    if (
-        !matches.length
-    ) {
-
-        container.innerHTML = `
-            <div class="card">
-
-                <div
-                    style="
-                        font-weight:900;
-                        margin-bottom:6px;
-                    "
-                >
-                    ⭐ Мои команды
-                </div>
-
-                <div class="notice">
-                    Любимые команды сохранены. Их ближайшие загруженные матчи появятся здесь.
-                </div>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML = `
-        <div
-            style="
-                font-size:20px;
-                font-weight:900;
-                margin-bottom:12px;
-            "
-        >
-            ⭐ Мои команды
-        </div>
-
-        ${
-            matches
-            .map(
-                renderMatchCard
-            )
-            .join("")
-        }
-    `;
-}
-
-
-/* =========================================================
-   HOME
-========================================================= */
-
-function renderHomeMatches() {
-
-    let homeMatches =
-        loadedLeagueMatches.top5
-        ||
-        [];
-
-
-    homeMatches =
-        [...homeMatches]
-        .sort(
-            (a, b) =>
-                new Date(
-                    a.date
-                )
-                -
-                new Date(
-                    b.date
-                )
-        )
-        .slice(
-            0,
-            5
-        );
-
-
-    document.getElementById(
-        "homeMatches"
-    ).innerHTML =
-        homeMatches.length
-        ?
-        homeMatches
-            .map(
-                renderMatchCard
-            )
-            .join("")
-        :
-        `
-            <div class="empty">
-                Сейчас нет ближайших матчей
-            </div>
-        `;
-}
-
-
-/* =========================================================
-   PARLAY SELECT
-========================================================= */
-
-function isParlaySelected(
-    fixtureId,
-    selection
-) {
-
-    return parlaySlip.some(
-        leg =>
-            Number(
-                leg.fixture_id
-            )
-            ===
-            Number(
-                fixtureId
-            )
-            &&
-            leg.selection
-            ===
-            selection
-    );
-}
-
-
-function oddButtonHtml(
+function oddButton(
     match,
     selection,
     odd,
     label
 ) {
 
-    const numeric =
-        Number(
-            odd
-        );
-
-
-    const closed =
-        !canBetOnMatch(
-            match
-        );
+    const number =
+        Number(odd);
 
 
     if (
-        !Number.isFinite(
-            numeric
-        )
+        !Number.isFinite(number)
         ||
-        numeric <= 1
-        ||
-        closed
+        number <= 1
     ) {
 
         return `
             <button
-                class="odd-btn disabled"
+                class="odd disabled"
             >
+                <small>
+                    ${escapeHtml(label)}
+                </small>
 
-                <span class="odd-name">
-                    ${
-                        closed
-                        ?
-                        "🔒 "
-                        :
-                        ""
-                    }
-
-                    ${escapeHtml(
-                        label
-                    )}
-                </span>
-
-                <span class="odd-value">
-                    ${
-                        Number.isFinite(
-                            numeric
-                        )
-                        &&
-                        numeric > 1
-                        ?
-                        formatOdd(
-                            numeric
-                        )
-                        :
-                        "—"
-                    }
-                </span>
-
+                —
             </button>
         `;
     }
 
 
     const selected =
-        isParlaySelected(
-            match.fixture_id,
-            selection
+        parlaySlip.some(
+            leg =>
+                Number(
+                    leg.fixture_id
+                )
+                ===
+                Number(
+                    match.fixture_id
+                )
+                &&
+                leg.selection
+                ===
+                selection
         );
 
 
     return `
         <button
             class="
-                odd-btn
+                odd
                 ${selected ? "selected" : ""}
             "
 
             onclick="
-                selectOdd(
+                event.stopPropagation();
+
+                selectBet(
                     ${Number(match.fixture_id)},
                     '${jsString(match.home)}',
                     '${jsString(match.away)}',
                     '${jsString(selection)}',
-                    ${numeric}
-                )
+                    ${number}
+                );
             "
         >
 
-            <span class="odd-name">
+            <small>
                 ${selected ? "✓ " : ""}
                 ${escapeHtml(label)}
-            </span>
+            </small>
 
-            <span class="odd-value">
-                ${formatOdd(numeric)}
-            </span>
+            ${number.toFixed(2)}
 
         </button>
     `;
 }
 
 
-/* =========================================================
-   MATCH CARD
-========================================================= */
-
-function renderMatchCard(
+function renderMatch(
     match
 ) {
 
@@ -3795,34 +2388,17 @@ function renderMatchCard(
         {};
 
 
-    const timeStatus =
-        getMatchTimeStatus(
-            match
-        );
-
-
     const favorite =
-        isFavorite(
-            match.fixture_id
-        );
-
-
-    const homeFavorite =
-        isFavoriteTeam(
-            match.home
-        );
-
-
-    const awayFavorite =
-        isFavoriteTeam(
-            match.away
+        favoriteMatches.includes(
+            Number(
+                match.fixture_id
+            )
         );
 
 
     return `
         <div
-            class="card match-card"
-
+            class="card"
             onclick="
                 openMatch(
                     ${Number(match.fixture_id)}
@@ -3833,31 +2409,29 @@ function renderMatchCard(
             <div class="match-top">
 
                 <div class="match-date">
-                    ${escapeHtml(
-                        formatDate(
-                            match.date
-                        )
+                    ${formatDate(
+                        match.date
                     )}
                 </div>
 
-                <div class="league-badge">
+                <div class="league-label">
                     ${escapeHtml(
-                        getLeagueLabel(
-                            match
-                        )
+                        match.league
+                        ||
+                        "Футбол"
                     )}
                 </div>
 
                 <button
                     class="
-                        favorite-btn
+                        star-btn
                         ${favorite ? "active" : ""}
                     "
 
                     onclick="
                         event.stopPropagation();
 
-                        toggleFavoriteMatch(
+                        toggleMatchFavorite(
                             ${Number(match.fixture_id)}
                         );
                     "
@@ -3867,47 +2441,16 @@ function renderMatchCard(
 
             </div>
 
-            ${
-                favorite
-                ?
-                `
-                    <div class="notification-note">
-                        🔔 Уведомление за 30 минут включено
-                    </div>
-                `
-                :
-                ""
-            }
-
-            ${
-                timeStatus.text
-                ?
-                `
-                    <div
-                        class="
-                            match-countdown
-                            ${timeStatus.className}
-                        "
-                    >
-                        ${escapeHtml(
-                            timeStatus.text
-                        )}
-                    </div>
-                `
-                :
-                ""
-            }
-
             <div class="teams">
 
                 <div class="team">
 
-                    ${safeTeamLogo(
+                    ${teamLogo(
                         match.home_logo,
                         match.home
                     )}
 
-                    <div class="team-name">
+                    <div>
                         ${escapeHtml(
                             match.home
                         )}
@@ -3915,8 +2458,16 @@ function renderMatchCard(
 
                     <button
                         class="
-                            team-favorite-btn
-                            ${homeFavorite ? "active" : ""}
+                            team-fav
+                            ${
+                                isFavoriteTeam(
+                                    match.home
+                                )
+                                ?
+                                "active"
+                                :
+                                ""
+                            }
                         "
 
                         onclick="
@@ -3928,7 +2479,9 @@ function renderMatchCard(
                         "
                     >
                         ${
-                            homeFavorite
+                            isFavoriteTeam(
+                                match.home
+                            )
                             ?
                             "★ Любимая"
                             :
@@ -3944,12 +2497,12 @@ function renderMatchCard(
 
                 <div class="team">
 
-                    ${safeTeamLogo(
+                    ${teamLogo(
                         match.away_logo,
                         match.away
                     )}
 
-                    <div class="team-name">
+                    <div>
                         ${escapeHtml(
                             match.away
                         )}
@@ -3957,8 +2510,16 @@ function renderMatchCard(
 
                     <button
                         class="
-                            team-favorite-btn
-                            ${awayFavorite ? "active" : ""}
+                            team-fav
+                            ${
+                                isFavoriteTeam(
+                                    match.away
+                                )
+                                ?
+                                "active"
+                                :
+                                ""
+                            }
                         "
 
                         onclick="
@@ -3970,7 +2531,9 @@ function renderMatchCard(
                         "
                     >
                         ${
-                            awayFavorite
+                            isFavoriteTeam(
+                                match.away
+                            )
                             ?
                             "★ Любимая"
                             :
@@ -3982,26 +2545,23 @@ function renderMatchCard(
 
             </div>
 
-            <div
-                class="odds-row"
-                onclick="event.stopPropagation()"
-            >
+            <div class="odds">
 
-                ${oddButtonHtml(
+                ${oddButton(
                     match,
                     "П1",
                     odds.home,
                     "П1"
                 )}
 
-                ${oddButtonHtml(
+                ${oddButton(
                     match,
                     "X",
                     odds.draw,
                     "X"
                 )}
 
-                ${oddButtonHtml(
+                ${oddButton(
                     match,
                     "П2",
                     odds.away,
@@ -4015,96 +2575,193 @@ function renderMatchCard(
 }
 
 
-function renderMatches() {
+function renderFavoriteTeamsBox() {
 
-    renderHomeMatches();
-
-    renderFavoriteTeamsBox();
-
-    renderHomeFavoriteTeams();
-
-
-    let list = [];
+    const box =
+        document.getElementById(
+            "favoriteTeamsBox"
+        );
 
 
     if (
-        currentLeague
-        ===
+        !favoriteTeams.length
+    ) {
+
+        box.innerHTML = "";
+
+        return;
+    }
+
+
+    box.innerHTML = `
+        <div class="card">
+
+            <b>
+                ⭐ Мои команды
+            </b>
+
+            <div style="margin-top:8px;">
+
+                ${
+                    favoriteTeams
+                    .map(
+                        team => `
+                            <span
+                                class="favorite-team-chip"
+
+                                onclick="
+                                    document.getElementById('search').value='${jsString(team)}';
+
+                                    changeSearch(
+                                        '${jsString(team)}'
+                                    );
+                                "
+                            >
+                                ${escapeHtml(team)}
+                            </span>
+                        `
+                    )
+                    .join("")
+                }
+
+            </div>
+
+            <div
+                class="notice"
+                style="margin-top:8px;"
+            >
+                🔔 Бот напомнит примерно за 30 минут до матча любимой команды.
+            </div>
+
+        </div>
+    `;
+}
+
+
+function renderMatches() {
+
+    renderFavoriteTeamsBox();
+
+
+    let list;
+
+
+    if (
+        currentLeague ===
         "favorites"
     ) {
 
         list =
-            getAllLoadedMatches()
+            allLoadedMatches()
             .filter(
                 match =>
-                    isFavorite(
-                        match.fixture_id
+                    favoriteMatches.includes(
+                        Number(
+                            match.fixture_id
+                        )
                     )
             );
 
     } else {
 
         list =
-            matches
-            ||
-            [];
+            matches;
     }
 
 
     list =
-        filterMatches(
+        filteredMatches(
             list
         );
-
-
-    if (
-        !list.length
-    ) {
-
-        document.getElementById(
-            "matchesList"
-        ).innerHTML = `
-            <div class="empty">
-                Ничего не найдено
-            </div>
-        `;
-
-        return;
-    }
 
 
     document.getElementById(
         "matchesList"
     ).innerHTML =
-        list
-        .map(
-            renderMatchCard
-        )
-        .join("");
+        list.length
+        ?
+        list.map(
+            renderMatch
+        ).join("")
+        :
+        `
+            <div class="empty">
+                Матчи не найдены
+            </div>
+        `;
 }
 
 
-/* =========================================================
-   MATCH DETAIL
-========================================================= */
+function renderHome() {
+
+    const top =
+        (
+            loadedMatches.top5
+            ||
+            []
+        )
+        .slice(
+            0,
+            5
+        );
+
+
+    document.getElementById(
+        "homeMatches"
+    ).innerHTML =
+        top.length
+        ?
+        top.map(
+            renderMatch
+        ).join("")
+        :
+        `
+            <div class="empty">
+                Нет матчей
+            </div>
+        `;
+
+
+    const favoriteTeamMatches =
+        allLoadedMatches()
+        .filter(
+            match =>
+                matchHasFavoriteTeam(
+                    match
+                )
+        )
+        .slice(
+            0,
+            3
+        );
+
+
+    document.getElementById(
+        "homeFavoriteTeams"
+    ).innerHTML =
+        favoriteTeamMatches.length
+        ?
+        `
+            <h2>
+                ⭐ Мои команды
+            </h2>
+
+            ${
+                favoriteTeamMatches
+                .map(
+                    renderMatch
+                )
+                .join("")
+            }
+        `
+        :
+        "";
+}
+
 
 async function openMatch(
     fixtureId
 ) {
-
-    previousPage =
-        document
-        .querySelector(
-            ".page.active"
-        )
-        ?.id
-        ?.replace(
-            "page-",
-            ""
-        )
-        ||
-        "matches";
-
 
     showPage(
         "match",
@@ -4112,11 +2769,15 @@ async function openMatch(
     );
 
 
-    document.getElementById(
-        "matchDetail"
-    ).innerHTML = `
+    const detail =
+        document.getElementById(
+            "matchDetail"
+        );
+
+
+    detail.innerHTML = `
         <div class="loader">
-            Загружаем коэффициенты...
+            Загрузка...
         </div>
     `;
 
@@ -4133,87 +2794,202 @@ async function openMatch(
             );
 
 
-        const data =
+        const match =
             await response.json();
 
 
-        if (
-            !response.ok
-            ||
-            !data.success
-        ) {
+        if (!response.ok) {
 
             throw new Error(
-                data.error
+                match.error
                 ||
-                "Не удалось загрузить матч"
+                "Ошибка"
             );
         }
 
 
-        const listMatch =
-            findMatchByFixtureId(
-                fixtureId
-            );
+        const odds =
+            match.odds
+            ||
+            {};
 
 
-        if (
-            listMatch
-        ) {
+        let html = `
+            ${renderMatch(match)}
 
-            data.home_logo =
-                data.home_logo
-                ||
-                listMatch.home_logo;
+            <div class="market-title">
+                Исход матча
+            </div>
 
+            <div class="market-grid three">
 
-            data.away_logo =
-                data.away_logo
-                ||
-                listMatch.away_logo;
+                ${oddButton(
+                    match,
+                    "П1",
+                    odds.home,
+                    "П1"
+                )}
 
+                ${oddButton(
+                    match,
+                    "X",
+                    odds.draw,
+                    "X"
+                )}
 
-            data.league_key =
-                data.league_key
-                ||
-                listMatch.league_key;
+                ${oddButton(
+                    match,
+                    "П2",
+                    odds.away,
+                    "П2"
+                )}
 
-
-            data.league =
-                data.league
-                ||
-                listMatch.league;
-
-
-            data.date =
-                data.date
-                ||
-                listMatch.date;
-
-
-            data.status =
-                data.status
-                ||
-                listMatch.status;
-        }
+            </div>
+        `;
 
 
-        selectedMatch =
-            data;
+        [
+            1.5,
+            2.5,
+            3.5,
+            4.5
+        ].forEach(
+            line => {
+
+                const key =
+                    "total_"
+                    +
+                    String(
+                        line
+                    )
+                    .replace(
+                        ".",
+                        "_"
+                    );
 
 
-        renderMatchDetail(
-            data
+                const total =
+                    match[key];
+
+
+                if (!total) {
+                    return;
+                }
+
+
+                html += `
+                    <div class="market-title">
+                        Тотал ${line}
+                    </div>
+
+                    <div class="market-grid">
+
+                        ${oddButton(
+                            match,
+                            `ТБ ${line}`,
+                            total.over,
+                            `ТБ ${line}`
+                        )}
+
+                        ${oddButton(
+                            match,
+                            `ТМ ${line}`,
+                            total.under,
+                            `ТМ ${line}`
+                        )}
+
+                    </div>
+                `;
+            }
         );
 
 
-    } catch (
-        error
-    ) {
+        if (match.btts) {
 
-        document.getElementById(
-            "matchDetail"
-        ).innerHTML = `
+            html += `
+                <div class="market-title">
+                    Обе забьют
+                </div>
+
+                <div class="market-grid">
+
+                    ${oddButton(
+                        match,
+                        "ОЗ Да",
+                        match.btts.yes,
+                        "Да"
+                    )}
+
+                    ${oddButton(
+                        match,
+                        "ОЗ Нет",
+                        match.btts.no,
+                        "Нет"
+                    )}
+
+                </div>
+            `;
+        }
+
+
+        if (match.handicaps) {
+
+            const home =
+                Object.entries(
+                    match.handicaps.home
+                    ||
+                    {}
+                )[0];
+
+
+            const away =
+                Object.entries(
+                    match.handicaps.away
+                    ||
+                    {}
+                )[0];
+
+
+            if (
+                home
+                &&
+                away
+            ) {
+
+                html += `
+                    <div class="market-title">
+                        Фора
+                    </div>
+
+                    <div class="market-grid">
+
+                        ${oddButton(
+                            match,
+                            `Ф1(${home[0]})`,
+                            home[1],
+                            `Ф1 (${home[0]})`
+                        )}
+
+                        ${oddButton(
+                            match,
+                            `Ф2(${away[0]})`,
+                            away[1],
+                            `Ф2 (${away[0]})`
+                        )}
+
+                    </div>
+                `;
+            }
+        }
+
+
+        detail.innerHTML =
+            html;
+
+
+    } catch(error) {
+
+        detail.innerHTML = `
             <div class="empty">
                 ${escapeHtml(
                     error.message
@@ -4224,534 +3000,7 @@ async function openMatch(
 }
 
 
-function backFromMatch() {
-
-    showPage(
-        previousPage === "match"
-        ?
-        "matches"
-        :
-        previousPage
-    );
-}
-
-
-function handicapText(
-    line
-) {
-
-    const number =
-        Number(
-            line
-        );
-
-
-    return number > 0
-        ?
-        `+${number}`
-        :
-        String(
-            number
-        );
-}
-
-
-function renderHandicaps(
-    match
-) {
-
-    const handicaps =
-        match.handicaps;
-
-
-    if (
-        !handicaps
-    ) {
-
-        return "";
-    }
-
-
-    const homeRows =
-        Object.entries(
-            handicaps.home
-            ||
-            {}
-        )
-        .filter(
-            ([line, odd]) =>
-                Number(
-                    odd
-                )
-                >
-                1
-        );
-
-
-    const awayRows =
-        Object.entries(
-            handicaps.away
-            ||
-            {}
-        )
-        .filter(
-            ([line, odd]) =>
-                Number(
-                    odd
-                )
-                >
-                1
-        );
-
-
-    const home =
-        homeRows[0];
-
-
-    const away =
-        awayRows[0];
-
-
-    if (
-        !home
-        &&
-        !away
-    ) {
-
-        return "";
-    }
-
-
-    let html = `
-        <div class="market">
-
-            <div class="market-title">
-                Фора
-            </div>
-
-            <div class="market-line">
-    `;
-
-
-    if (
-        home
-    ) {
-
-        const [
-            line,
-            odd
-        ] =
-            home;
-
-
-        const signed =
-            handicapText(
-                line
-            );
-
-
-        html += oddButtonHtml(
-            match,
-            `Ф1(${signed})`,
-            odd,
-            `Ф1 (${signed})`
-        );
-
-    } else {
-
-        html += `<div></div>`;
-    }
-
-
-    if (
-        away
-    ) {
-
-        const [
-            line,
-            odd
-        ] =
-            away;
-
-
-        const signed =
-            handicapText(
-                line
-            );
-
-
-        html += oddButtonHtml(
-            match,
-            `Ф2(${signed})`,
-            odd,
-            `Ф2 (${signed})`
-        );
-
-    } else {
-
-        html += `<div></div>`;
-    }
-
-
-    html += `
-            </div>
-        </div>
-    `;
-
-
-    return html;
-}
-
-
-function renderMatchDetail(
-    match
-) {
-
-    const odds =
-        match.odds
-        ||
-        {};
-
-
-    const favorite =
-        isFavorite(
-            match.fixture_id
-        );
-
-
-    const homeFavorite =
-        isFavoriteTeam(
-            match.home
-        );
-
-
-    const awayFavorite =
-        isFavoriteTeam(
-            match.away
-        );
-
-
-    const status =
-        getMatchTimeStatus(
-            match
-        );
-
-
-    let html = `
-        <div class="card">
-
-            <div class="match-top">
-
-                <div class="match-date">
-                    ${escapeHtml(
-                        formatDate(
-                            match.date
-                        )
-                    )}
-                </div>
-
-                <div class="league-badge">
-                    ${escapeHtml(
-                        getLeagueLabel(
-                            match
-                        )
-                    )}
-                </div>
-
-                <button
-                    class="
-                        favorite-btn
-                        ${favorite ? "active" : ""}
-                    "
-
-                    onclick="
-                        toggleFavoriteMatch(
-                            ${Number(match.fixture_id)}
-                        )
-                    "
-                >
-                    ${favorite ? "★" : "☆"}
-                </button>
-
-            </div>
-
-            ${
-                status.text
-                ?
-                `
-                    <div
-                        class="
-                            match-countdown
-                            ${status.className}
-                        "
-                    >
-                        ${escapeHtml(
-                            status.text
-                        )}
-                    </div>
-                `
-                :
-                ""
-            }
-
-            <div class="teams">
-
-                <div class="team">
-
-                    ${safeTeamLogo(
-                        match.home_logo,
-                        match.home
-                    )}
-
-                    <div>
-                        ${escapeHtml(
-                            match.home
-                        )}
-                    </div>
-
-                    <button
-                        class="
-                            team-favorite-btn
-                            ${homeFavorite ? "active" : ""}
-                        "
-
-                        onclick="
-                            toggleFavoriteTeam(
-                                '${jsString(match.home)}'
-                            )
-                        "
-                    >
-                        ${
-                            homeFavorite
-                            ?
-                            "★ Любимая"
-                            :
-                            "☆ В любимые"
-                        }
-                    </button>
-
-                </div>
-
-                <div class="vs">
-                    VS
-                </div>
-
-                <div class="team">
-
-                    ${safeTeamLogo(
-                        match.away_logo,
-                        match.away
-                    )}
-
-                    <div>
-                        ${escapeHtml(
-                            match.away
-                        )}
-                    </div>
-
-                    <button
-                        class="
-                            team-favorite-btn
-                            ${awayFavorite ? "active" : ""}
-                        "
-
-                        onclick="
-                            toggleFavoriteTeam(
-                                '${jsString(match.away)}'
-                            )
-                        "
-                    >
-                        ${
-                            awayFavorite
-                            ?
-                            "★ Любимая"
-                            :
-                            "☆ В любимые"
-                        }
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-
-
-    if (
-        !canBetOnMatch(
-            match
-        )
-    ) {
-
-        html += `
-            <div class="closed-market">
-                🔒 Приём ставок закрыт
-            </div>
-        `;
-    }
-
-
-    html += `
-        <div class="market">
-
-            <div class="market-title">
-                Исход матча
-            </div>
-
-            <div class="market-grid three">
-
-                ${oddButtonHtml(
-                    match,
-                    "П1",
-                    odds.home,
-                    "П1"
-                )}
-
-                ${oddButtonHtml(
-                    match,
-                    "X",
-                    odds.draw,
-                    "X"
-                )}
-
-                ${oddButtonHtml(
-                    match,
-                    "П2",
-                    odds.away,
-                    "П2"
-                )}
-
-            </div>
-
-        </div>
-    `;
-
-
-    [
-        1.5,
-        2.5,
-        3.5,
-        4.5
-    ]
-    .forEach(
-        line => {
-
-            const key =
-                "total_"
-                +
-                String(
-                    line
-                )
-                .replace(
-                    ".",
-                    "_"
-                );
-
-
-            const total =
-                match[
-                    key
-                ];
-
-
-            if (
-                !total
-            ) {
-
-                return;
-            }
-
-
-            html += `
-                <div class="market">
-
-                    <div class="market-title">
-                        Тотал ${line}
-                    </div>
-
-                    <div class="market-line">
-
-                        ${oddButtonHtml(
-                            match,
-                            `ТБ ${line}`,
-                            total.over,
-                            `ТБ ${line}`
-                        )}
-
-                        ${oddButtonHtml(
-                            match,
-                            `ТМ ${line}`,
-                            total.under,
-                            `ТМ ${line}`
-                        )}
-
-                    </div>
-
-                </div>
-            `;
-        }
-    );
-
-
-    if (
-        match.btts
-        &&
-        (
-            match.btts.yes
-            ||
-            match.btts.no
-        )
-    ) {
-
-        html += `
-            <div class="market">
-
-                <div class="market-title">
-                    Обе забьют
-                </div>
-
-                <div class="market-grid">
-
-                    ${oddButtonHtml(
-                        match,
-                        "ОЗ Да",
-                        match.btts.yes,
-                        "Да"
-                    )}
-
-                    ${oddButtonHtml(
-                        match,
-                        "ОЗ Нет",
-                        match.btts.no,
-                        "Нет"
-                    )}
-
-                </div>
-
-            </div>
-        `;
-    }
-
-
-    html +=
-        renderHandicaps(
-            match
-        );
-
-
-    document.getElementById(
-        "matchDetail"
-    ).innerHTML =
-        html;
-}
-
-
-/* =========================================================
-   SELECT BET
-========================================================= */
-
-function selectOdd(
+function selectBet(
     fixtureId,
     home,
     away,
@@ -4759,21 +3008,38 @@ function selectOdd(
     odd
 ) {
 
-    const match =
-        findMatchByFixtureId(
-            fixtureId
+    const matchText =
+        `${home} — ${away}`;
+
+
+    const same =
+        parlaySlip.findIndex(
+            leg =>
+                Number(
+                    leg.fixture_id
+                )
+                ===
+                Number(
+                    fixtureId
+                )
+                &&
+                leg.selection
+                ===
+                selection
         );
 
 
-    if (
-        !canBetOnMatch(
-            match
-        )
-    ) {
+    if (same >= 0) {
 
-        tg.showAlert(
-            "Матч уже начался. Ставки закрыты."
+        parlaySlip.splice(
+            same,
+            1
         );
+
+
+        updateParlay();
+
+        renderMatches();
 
         return;
     }
@@ -4786,94 +3052,13 @@ function selectOdd(
             ),
 
         match:
-            `${home} — ${away}`,
+            matchText,
 
         selection,
 
         odd:
-            Number(
-                odd
-            )
+            Number(odd)
     };
-
-
-    document.getElementById(
-        "choiceInfo"
-    ).innerHTML = `
-        <b>
-            ${escapeHtml(
-                selectedBet.match
-            )}
-        </b>
-
-        <div class="notice">
-            ${escapeHtml(
-                selectedBet.selection
-            )}
-            •
-            ${formatOdd(
-                selectedBet.odd
-            )}
-        </div>
-    `;
-
-
-    document.getElementById(
-        "parlayChoiceBtn"
-    ).textContent =
-        isParlaySelected(
-            fixtureId,
-            selection
-        )
-        ?
-        "✓ Убрать из экспресса"
-        :
-        "+ Экспресс";
-
-
-    openModal(
-        "betChoiceOverlay"
-    );
-}
-
-
-/* =========================================================
-   SINGLE
-========================================================= */
-
-function openSingleModalFromChoice() {
-
-    closeModal(
-        "betChoiceOverlay"
-    );
-
-
-    if (
-        !selectedBet
-    ) {
-
-        return;
-    }
-
-
-    const match =
-        findMatchByFixtureId(
-            selectedBet.fixture_id
-        );
-
-
-    if (
-        !canBetOnMatch(
-            match
-        )
-    ) {
-
-        tg.showAlert(
-            "Матч уже начался."
-        );
-
-        return;
-    }
 
 
     document.getElementById(
@@ -4881,18 +3066,14 @@ function openSingleModalFromChoice() {
     ).innerHTML = `
         <b>
             ${escapeHtml(
-                selectedBet.match
+                matchText
             )}
         </b>
 
         <div class="notice">
-            ${escapeHtml(
-                selectedBet.selection
-            )}
+            ${escapeHtml(selection)}
             •
-            ${formatOdd(
-                selectedBet.odd
-            )}
+            ${Number(odd).toFixed(2)}
         </div>
     `;
 
@@ -4903,23 +3084,15 @@ function openSingleModalFromChoice() {
         "";
 
 
-    updateSinglePossible();
-
-    openModal(
+    document.getElementById(
         "singleOverlay"
+    ).classList.add(
+        "show"
     );
 }
 
 
-function updateSinglePossible() {
-
-    if (
-        !selectedBet
-    ) {
-
-        return;
-    }
-
+function updateSingleWin() {
 
     const amount =
         Number(
@@ -4930,51 +3103,25 @@ function updateSinglePossible() {
 
 
     document.getElementById(
-        "singlePossible"
+        "singleWin"
     ).textContent =
+        selectedBet
+        &&
         amount > 0
         ?
-        `Возможный выигрыш: ${Math.round(amount * selectedBet.odd)} 🪙`
+        `Возможный выигрыш: ${
+            Math.round(
+                amount
+                *
+                selectedBet.odd
+            )
+        } 🪙`
         :
         "";
 }
 
 
-async function confirmSingleBet() {
-
-    if (
-        !selectedBet
-    ) {
-
-        return;
-    }
-
-
-    const match =
-        findMatchByFixtureId(
-            selectedBet.fixture_id
-        );
-
-
-    if (
-        match
-        &&
-        !canBetOnMatch(
-            match
-        )
-    ) {
-
-        tg.showAlert(
-            "Матч уже начался."
-        );
-
-        closeModal(
-            "singleOverlay"
-        );
-
-        return;
-    }
-
+async function confirmSingle() {
 
     const amount =
         Number(
@@ -4985,39 +3132,19 @@ async function confirmSingleBet() {
 
 
     if (
-        !Number.isInteger(
-            amount
-        )
+        !selectedBet
         ||
         amount <= 0
     ) {
-
-        tg.showAlert(
-            "Введите сумму ставки"
-        );
 
         return;
     }
 
 
-    const button =
-        document.getElementById(
-            "confirmSingleBtn"
-        );
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Проверяем коэффициент...";
-
-
     try {
 
         const data =
-            await apiPost(
+            await post(
                 "/api/bets",
                 {
                     fixture_id:
@@ -5026,17 +3153,31 @@ async function confirmSingleBet() {
                     selection:
                         selectedBet.selection,
 
-                    amount
+                    amount:
+                        Math.floor(
+                            amount
+                        )
                 }
             );
 
 
-        applyCommonData(
-            data
-        );
+        balance =
+            Number(
+                data.balance
+            );
 
 
-        closeModal(
+        bets =
+            data.bets
+            ||
+            bets;
+
+
+        updateBalance();
+        renderBets();
+
+
+        closeOverlay(
             "singleOverlay"
         );
 
@@ -5046,116 +3187,20 @@ async function confirmSingleBet() {
         );
 
 
-        await loadSession();
-
-
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
         tg.showAlert(
             error.message
         );
-
-
-    } finally {
-
-        button.disabled =
-            false;
-
-
-        button.textContent =
-            "Сделать ставку";
     }
 }
 
 
-/* =========================================================
-   PARLAY BUILD
-========================================================= */
-
-function addSelectedToParlay() {
+function addToParlay(
+    bet
+) {
 
     if (
-        !selectedBet
-    ) {
-
-        return;
-    }
-
-
-    const match =
-        findMatchByFixtureId(
-            selectedBet.fixture_id
-        );
-
-
-    if (
-        !canBetOnMatch(
-            match
-        )
-    ) {
-
-        tg.showAlert(
-            "Матч уже начался."
-        );
-
-        return;
-    }
-
-
-    const exactIndex =
-        parlaySlip.findIndex(
-            leg =>
-                Number(
-                    leg.fixture_id
-                )
-                ===
-                Number(
-                    selectedBet.fixture_id
-                )
-                &&
-                leg.selection
-                ===
-                selectedBet.selection
-        );
-
-
-    if (
-        exactIndex !== -1
-    ) {
-
-        parlaySlip.splice(
-            exactIndex,
-            1
-        );
-
-
-        closeModal(
-            "betChoiceOverlay"
-        );
-
-
-        updateParlayFloat();
-
-        renderMatches();
-
-
-        if (
-            selectedMatch
-        ) {
-
-            renderMatchDetail(
-                selectedMatch
-            );
-        }
-
-
-        return;
-    }
-
-
-    const sameMatch =
         parlaySlip.some(
             leg =>
                 Number(
@@ -5163,211 +3208,100 @@ function addSelectedToParlay() {
                 )
                 ===
                 Number(
-                    selectedBet.fixture_id
+                    bet.fixture_id
                 )
-        );
-
-
-    if (
-        sameMatch
+        )
     ) {
 
         tg.showAlert(
-            "В экспрессе уже есть другой исход этого матча."
+            "Этот матч уже есть в экспрессе"
         );
 
         return;
     }
 
 
-    if (
-        parlaySlip.length
-        >=
-        15
-    ) {
-
-        tg.showAlert(
-            "Максимум 15 событий в экспрессе."
-        );
-
-        return;
-    }
-
-
-    parlaySlip.push({
-        ...selectedBet
-    });
-
-
-    closeModal(
-        "betChoiceOverlay"
+    parlaySlip.push(
+        bet
     );
 
 
-    updateParlayFloat();
-
-    renderMatches();
-
-
-    if (
-        selectedMatch
-    ) {
-
-        renderMatchDetail(
-            selectedMatch
-        );
-    }
+    updateParlay();
 }
 
 
-function removeStartedMatchesFromParlay() {
+function updateParlay() {
 
-    parlaySlip =
-        parlaySlip.filter(
-            leg => {
-
-                const match =
-                    findMatchByFixtureId(
-                        leg.fixture_id
-                    );
-
-
-                return (
-                    !match
-                    ||
-                    canBetOnMatch(
-                        match
-                    )
-                );
-            }
-        );
-
-
-    updateParlayFloat();
-}
-
-
-function updateParlayFloat() {
-
-    const button =
+    const float =
         document.getElementById(
             "parlayFloat"
         );
 
 
-    button.textContent =
+    float.textContent =
         `🧾 Экспресс • ${parlaySlip.length}`;
 
 
-    button.classList.toggle(
+    float.classList.toggle(
         "show",
         parlaySlip.length > 0
     );
 }
 
 
-function calculateParlayOdd() {
-
-    return parlaySlip.reduce(
-        (
-            total,
-            leg
-        ) =>
-            total
-            *
-            Number(
-                leg.odd
-            ),
-        1
-    );
-}
-
-
-function openParlayModal() {
-
-    removeStartedMatchesFromParlay();
-
-    renderParlaySlip();
-
-    openModal(
-        "parlayOverlay"
-    );
-}
-
-
-function renderParlaySlip() {
+function openParlay() {
 
     const container =
         document.getElementById(
-            "parlaySlipList"
+            "parlayList"
         );
 
 
-    if (
-        !parlaySlip.length
-    ) {
+    container.innerHTML =
+        parlaySlip
+        .map(
+            (
+                leg,
+                index
+            ) => `
+                <div class="parlay-leg">
 
-        container.innerHTML = `
-            <div class="empty">
-                В экспрессе пока нет событий
-            </div>
-        `;
+                    <b>
+                        ${index + 1}.
+                        ${escapeHtml(
+                            leg.match
+                        )}
+                    </b>
 
-    } else {
-
-        container.innerHTML =
-            parlaySlip
-            .map(
-                (
-                    leg,
-                    index
-                ) => `
-                    <div class="slip-leg">
-
-                        <div class="slip-leg-top">
-
-                            <div class="slip-number">
-                                ${index + 1}
-                            </div>
-
-                            <div class="slip-content">
-
-                                <b>
-                                    ${escapeHtml(
-                                        leg.match
-                                    )}
-                                </b>
-
-                                <div class="notice">
-                                    ${escapeHtml(
-                                        leg.selection
-                                    )}
-                                    •
-                                    ${formatOdd(
-                                        leg.odd
-                                    )}
-                                </div>
-
-                            </div>
-
-                            <button
-                                class="remove-leg"
-                                onclick="
-                                    removeParlayLeg(
-                                        ${index}
-                                    )
-                                "
-                            >
-                                ×
-                            </button>
-
-                        </div>
-
+                    <div class="notice">
+                        ${escapeHtml(
+                            leg.selection
+                        )}
+                        •
+                        ${Number(
+                            leg.odd
+                        ).toFixed(2)}
                     </div>
-                `
-            )
-            .join("");
-    }
+
+                    <button
+                        class="task-btn"
+                        onclick="
+                            parlaySlip.splice(
+                                ${index},
+                                1
+                            );
+
+                            openParlay();
+                            updateParlay();
+                        "
+                    >
+                        Удалить
+                    </button>
+
+                </div>
+            `
+        )
+        .join("");
 
 
     document.getElementById(
@@ -5377,71 +3311,33 @@ function renderParlaySlip() {
 
 
     document.getElementById(
-        "parlayTotalOdd"
+        "parlayOdd"
     ).textContent =
-        calculateParlayOdd()
-        .toFixed(
-            2
-        );
-
-
-    updateParlayPossible();
-}
-
-
-function removeParlayLeg(
-    index
-) {
-
-    parlaySlip.splice(
-        index,
-        1
-    );
-
-
-    renderParlaySlip();
-
-    updateParlayFloat();
-
-    renderMatches();
-
-
-    if (
-        selectedMatch
-    ) {
-
-        renderMatchDetail(
-            selectedMatch
-        );
-    }
-}
-
-
-function clearParlay() {
-
-    parlaySlip =
-        [];
+        parlaySlip
+        .reduce(
+            (
+                total,
+                leg
+            ) =>
+                total
+                *
+                Number(
+                    leg.odd
+                ),
+            1
+        )
+        .toFixed(2);
 
 
     document.getElementById(
-        "parlayAmount"
-    ).value =
-        "";
-
-
-    updateParlayFloat();
-
-    renderParlaySlip();
-
-    renderMatches();
-
-    closeModal(
         "parlayOverlay"
+    ).classList.add(
+        "show"
     );
 }
 
 
-function updateParlayPossible() {
+function updateParlayWin() {
 
     const amount =
         Number(
@@ -5451,12 +3347,33 @@ function updateParlayPossible() {
         );
 
 
+    const odd =
+        parlaySlip.reduce(
+            (
+                total,
+                leg
+            ) =>
+                total
+                *
+                Number(
+                    leg.odd
+                ),
+            1
+        );
+
+
     document.getElementById(
-        "parlayPossible"
+        "parlayWin"
     ).textContent =
         amount > 0
         ?
-        `Возможный выигрыш: ${Math.round(amount * calculateParlayOdd())} 🪙`
+        `Возможный выигрыш: ${
+            Math.round(
+                amount
+                *
+                odd
+            )
+        } 🪙`
         :
         "";
 }
@@ -5464,17 +3381,12 @@ function updateParlayPossible() {
 
 async function confirmParlay() {
 
-    removeStartedMatchesFromParlay();
-
-
     if (
-        parlaySlip.length
-        <
-        2
+        parlaySlip.length < 2
     ) {
 
         tg.showAlert(
-            "Для экспресса нужно минимум 2 события."
+            "Нужно минимум 2 события"
         );
 
         return;
@@ -5489,43 +3401,21 @@ async function confirmParlay() {
         );
 
 
-    if (
-        !Number.isInteger(
-            amount
-        )
-        ||
-        amount <= 0
-    ) {
-
-        tg.showAlert(
-            "Введите сумму экспресса."
-        );
-
+    if (amount <= 0) {
         return;
     }
-
-
-    const button =
-        document.getElementById(
-            "confirmParlayBtn"
-        );
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Проверяем коэффициенты...";
 
 
     try {
 
         const data =
-            await apiPost(
+            await post(
                 "/api/parlays",
                 {
-                    amount,
+                    amount:
+                        Math.floor(
+                            amount
+                        ),
 
                     legs:
                         parlaySlip.map(
@@ -5541,30 +3431,31 @@ async function confirmParlay() {
             );
 
 
-        applyCommonData(
-            data
-        );
+        balance =
+            Number(
+                data.balance
+            );
+
+
+        parlays =
+            data.parlays
+            ||
+            parlays;
 
 
         parlaySlip =
             [];
 
 
-        updateParlayFloat();
+        updateParlay();
 
-        renderMatches();
-
-        closeModal(
+        closeOverlay(
             "parlayOverlay"
         );
 
 
-        tg.showAlert(
-            "Экспресс принят ✅"
-        );
-
-
-        await loadSession();
+        renderBets();
+        updateBalance();
 
 
         showPage(
@@ -5577,78 +3468,97 @@ async function confirmParlay() {
         );
 
 
-    } catch (
-        error
-    ) {
+        tg.showAlert(
+            "Экспресс принят ✅"
+        );
+
+
+    } catch(error) {
 
         tg.showAlert(
             error.message
         );
-
-
-    } finally {
-
-        button.disabled =
-            false;
-
-
-        button.textContent =
-            "Поставить экспресс";
     }
 }
 
 
-/* =========================================================
-   BET HISTORY
-========================================================= */
+function clearParlay() {
 
-function matchesBetFilter(
-    item
-) {
+    parlaySlip =
+        [];
+
+
+    updateParlay();
+
+
+    closeOverlay(
+        "parlayOverlay"
+    );
+}
+
+
+function closeOverlay(id) {
+
+    document.getElementById(
+        id
+    ).classList.remove(
+        "show"
+    );
+}
+
+
+function statusClass(status) {
+
+    if (status === "Выиграла") {
+        return "win";
+    }
+
+
+    if (status === "Проиграла") {
+        return "loss";
+    }
+
+
+    if (status === "Возврат") {
+        return "refund";
+    }
+
+
+    return "active";
+}
+
+
+function passesBetFilter(item) {
 
     if (
-        currentBetFilter
-        ===
+        currentBetFilter ===
         "all"
     ) {
-
         return true;
     }
 
 
     if (
-        currentBetFilter
-        ===
+        currentBetFilter ===
         "active"
     ) {
-
-        return item.status
-            ===
-            "Активна";
+        return item.status === "Активна";
     }
 
 
     if (
-        currentBetFilter
-        ===
+        currentBetFilter ===
         "win"
     ) {
-
-        return item.status
-            ===
-            "Выиграла";
+        return item.status === "Выиграла";
     }
 
 
     if (
-        currentBetFilter
-        ===
+        currentBetFilter ===
         "loss"
     ) {
-
-        return item.status
-            ===
-            "Проиграла";
+        return item.status === "Проиграла";
     }
 
 
@@ -5656,12 +3566,10 @@ function matchesBetFilter(
 }
 
 
-function setBetFilter(
-    filter
-) {
+function changeBetFilter(value) {
 
     currentBetFilter =
-        filter;
+        value;
 
 
     document
@@ -5675,7 +3583,7 @@ function setBetFilter(
                 "active",
                 button.dataset.filter
                 ===
-                filter
+                value
             );
         }
     );
@@ -5685,339 +3593,7 @@ function setBetFilter(
 }
 
 
-function statusClass(
-    status
-) {
-
-    if (
-        status ===
-        "Выиграла"
-    ) {
-
-        return "win";
-    }
-
-
-    if (
-        status ===
-        "Проиграла"
-    ) {
-
-        return "loss";
-    }
-
-
-    if (
-        status ===
-        "Возврат"
-    ) {
-
-        return "refund";
-    }
-
-
-    return "active";
-}
-
-
-function renderParlayLeg(
-    leg,
-    index
-) {
-
-    return `
-        <div class="parlay-leg-history">
-
-            <div
-                style="
-                    display:flex;
-                    gap:9px;
-                "
-            >
-
-                <div class="parlay-leg-number">
-                    ${index + 1}
-                </div>
-
-                <div style="flex:1;">
-
-                    <div style="font-weight:800;">
-                        ${escapeHtml(
-                            leg.match
-                        )}
-                    </div>
-
-                    <div class="notice">
-                        Исход:
-                        <b style="color:#fff;">
-                            ${escapeHtml(
-                                leg.selection
-                            )}
-                        </b>
-
-                        • Кэф:
-                        <b style="color:#fff;">
-                            ${formatOdd(
-                                leg.odd
-                            )}
-                        </b>
-                    </div>
-
-                    ${
-                        leg.score
-                        ?
-                        `
-                            <div class="notice">
-                                Счёт:
-                                ${escapeHtml(
-                                    leg.score
-                                )}
-                            </div>
-                        `
-                        :
-                        ""
-                    }
-
-                    <div style="margin-top:8px;">
-
-                        <span
-                            class="
-                                status
-                                ${statusClass(
-                                    leg.status
-                                )}
-                            "
-                        >
-                            ${escapeHtml(
-                                leg.status
-                                ||
-                                "Активна"
-                            )}
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-function renderBets() {
-
-    const filteredSingles =
-        bets.filter(
-            matchesBetFilter
-        );
-
-
-    document.getElementById(
-        "singleBets"
-    ).innerHTML =
-        filteredSingles.length
-        ?
-        filteredSingles
-            .map(
-                bet => `
-                    <div class="card">
-
-                        <span
-                            class="
-                                status
-                                ${statusClass(
-                                    bet.status
-                                )}
-                            "
-                        >
-                            ${escapeHtml(
-                                bet.status
-                            )}
-                        </span>
-
-                        <div class="bet-main">
-                            ${escapeHtml(
-                                bet.match
-                            )}
-                        </div>
-
-                        <div>
-                            ${escapeHtml(
-                                bet.selection
-                            )}
-                            •
-                            ${formatOdd(
-                                bet.odd
-                            )}
-                        </div>
-
-                        ${
-                            bet.score
-                            ?
-                            `
-                                <div class="notice">
-                                    Счёт:
-                                    ${escapeHtml(
-                                        bet.score
-                                    )}
-                                </div>
-                            `
-                            :
-                            ""
-                        }
-
-                        <div class="bet-row">
-                            <span>Ставка</span>
-                            <b>${bet.amount} 🪙</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Возможный выигрыш</span>
-                            <b>${bet.possible} 🪙</b>
-                        </div>
-
-                    </div>
-                `
-            )
-            .join("")
-        :
-        `
-            <div class="empty">
-                Ставок в этом разделе нет
-            </div>
-        `;
-
-
-    const filteredParlays =
-        parlays.filter(
-            matchesBetFilter
-        );
-
-
-    document.getElementById(
-        "parlayBets"
-    ).innerHTML =
-        filteredParlays.length
-        ?
-        filteredParlays
-            .map(
-                parlay => {
-
-                    const legs =
-                        Array.isArray(
-                            parlay.legs
-                        )
-                        ?
-                        parlay.legs
-                        :
-                        [];
-
-
-                    return `
-                        <div class="card">
-
-                            <div
-                                style="
-                                    display:flex;
-                                    justify-content:space-between;
-                                    gap:10px;
-                                "
-                            >
-
-                                <div>
-
-                                    <div
-                                        style="
-                                            font-size:18px;
-                                            font-weight:900;
-                                        "
-                                    >
-                                        🧾 Экспресс #${parlay.id}
-                                    </div>
-
-                                    <div class="notice">
-                                        ${legs.length}
-                                        событий
-                                        •
-                                        общий кэф
-                                        ${formatOdd(
-                                            parlay.total_odd
-                                        )}
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="
-                                        status
-                                        ${statusClass(
-                                            parlay.status
-                                        )}
-                                    "
-                                >
-                                    ${escapeHtml(
-                                        parlay.status
-                                    )}
-                                </span>
-
-                            </div>
-
-                            <div class="bet-row">
-                                <span>Ставка</span>
-                                <b>${parlay.amount} 🪙</b>
-                            </div>
-
-                            <div class="bet-row">
-                                <span>Возможный выигрыш</span>
-                                <b>${parlay.possible} 🪙</b>
-                            </div>
-
-                            <div class="section-title">
-                                События экспресса
-                            </div>
-
-                            ${
-                                legs.length
-                                ?
-                                legs
-                                    .map(
-                                        (
-                                            leg,
-                                            index
-                                        ) =>
-                                            renderParlayLeg(
-                                                leg,
-                                                index
-                                            )
-                                    )
-                                    .join("")
-                                :
-                                `
-                                    <div class="notice">
-                                        События не найдены
-                                    </div>
-                                `
-                            }
-
-                        </div>
-                    `;
-                }
-            )
-            .join("")
-        :
-        `
-            <div class="empty">
-                Экспрессов в этом разделе нет
-            </div>
-        `;
-}
-
-
-function switchBetTab(
-    type
-) {
+function switchBetTab(type) {
 
     currentBetTab =
         type;
@@ -6060,219 +3636,389 @@ function switchBetTab(
 }
 
 
-/* =========================================================
-   LEADERBOARD
-========================================================= */
+function renderBets() {
+
+    const singles =
+        bets.filter(
+            passesBetFilter
+        );
+
+
+    document.getElementById(
+        "singleBets"
+    ).innerHTML =
+        singles.length
+        ?
+        singles.map(
+            bet => `
+                <div class="card">
+
+                    <span
+                        class="
+                            status
+                            ${statusClass(
+                                bet.status
+                            )}
+                        "
+                    >
+                        ${escapeHtml(
+                            bet.status
+                        )}
+                    </span>
+
+                    <h3>
+                        ${escapeHtml(
+                            bet.match
+                        )}
+                    </h3>
+
+                    <div>
+                        ${escapeHtml(
+                            bet.selection
+                        )}
+                        •
+                        ${Number(
+                            bet.odd
+                        ).toFixed(2)}
+                    </div>
+
+                    ${
+                        bet.score
+                        ?
+                        `
+                            <div class="notice">
+                                Счёт:
+                                ${escapeHtml(
+                                    bet.score
+                                )}
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+                    <div class="notice">
+                        Ставка:
+                        ${bet.amount} 🪙
+                    </div>
+
+                    <div class="notice">
+                        Возможный выигрыш:
+                        ${bet.possible} 🪙
+                    </div>
+
+                </div>
+            `
+        ).join("")
+        :
+        `
+            <div class="empty">
+                Нет ставок
+            </div>
+        `;
+
+
+    const express =
+        parlays.filter(
+            passesBetFilter
+        );
+
+
+    document.getElementById(
+        "parlayBets"
+    ).innerHTML =
+        express.length
+        ?
+        express.map(
+            parlay => `
+                <div class="card">
+
+                    <span
+                        class="
+                            status
+                            ${statusClass(
+                                parlay.status
+                            )}
+                        "
+                    >
+                        ${escapeHtml(
+                            parlay.status
+                        )}
+                    </span>
+
+                    <h3>
+                        🧾 Экспресс #${parlay.id}
+                    </h3>
+
+                    <div class="notice">
+                        Общий кэф:
+                        ${Number(
+                            parlay.total_odd
+                        ).toFixed(2)}
+                    </div>
+
+                    <div class="notice">
+                        Ставка:
+                        ${parlay.amount} 🪙
+                    </div>
+
+                    <div class="notice">
+                        Возможный выигрыш:
+                        ${parlay.possible} 🪙
+                    </div>
+
+                    <h4>
+                        События
+                    </h4>
+
+                    ${
+                        (
+                            parlay.legs
+                            ||
+                            []
+                        )
+                        .map(
+                            (
+                                leg,
+                                index
+                            ) => `
+                                <div class="parlay-leg">
+
+                                    <b>
+                                        ${index + 1}.
+                                        ${escapeHtml(
+                                            leg.match
+                                        )}
+                                    </b>
+
+                                    <div>
+                                        ${escapeHtml(
+                                            leg.selection
+                                        )}
+                                        •
+                                        ${Number(
+                                            leg.odd
+                                        ).toFixed(2)}
+                                    </div>
+
+                                    ${
+                                        leg.score
+                                        ?
+                                        `
+                                            <div class="notice">
+                                                Счёт:
+                                                ${escapeHtml(
+                                                    leg.score
+                                                )}
+                                            </div>
+                                        `
+                                        :
+                                        ""
+                                    }
+
+                                    <span
+                                        class="
+                                            status
+                                            ${statusClass(
+                                                leg.status
+                                            )}
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            leg.status
+                                        )}
+                                    </span>
+
+                                </div>
+                            `
+                        )
+                        .join("")
+                    }
+
+                </div>
+            `
+        ).join("")
+        :
+        `
+            <div class="empty">
+                Нет экспрессов
+            </div>
+        `;
+}
+
 
 async function loadLeaderboard() {
 
     try {
 
         const data =
-            await apiPost(
+            await post(
                 "/api/leaderboard"
             );
-
-
-        leaderboardPlayers =
-            data.players
-            ||
-            [];
 
 
         myRank =
             data.my_rank;
 
 
-        renderLeaderboard();
+        document.getElementById(
+            "leaderboard"
+        ).innerHTML =
+            (
+                data.players
+                ||
+                []
+            )
+            .map(
+                player => `
+                    <div class="card">
+
+                        <b>
+                            #${player.rank}
+                            ${escapeHtml(
+                                player.first_name
+                            )}
+                        </b>
+
+                        <div class="notice">
+                            ${player.league?.icon || ""}
+                            ${escapeHtml(
+                                player.league?.name
+                                ||
+                                ""
+                            )}
+                            • Уровень
+                            ${player.level}
+                        </div>
+
+                        <div>
+                            ${player.xp} XP
+                            •
+                            ${player.balance} 🪙
+                        </div>
+
+                    </div>
+                `
+            )
+            .join("");
+
 
         renderProfile();
 
 
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
     }
 }
 
 
-function renderLeaderboard() {
+function renderProfile() {
 
-    const container =
-        document.getElementById(
-            "leaderboardList"
-        );
-
-
-    if (
-        !leaderboardPlayers.length
-    ) {
-
-        container.innerHTML = `
-            <div class="empty">
-                Пока нет игроков
-            </div>
-        `;
-
-        return;
-    }
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        currentUser?.first_name
+        ||
+        "Игрок";
 
 
-    container.innerHTML =
-        leaderboardPlayers
-        .map(
-            player => `
-                <div class="card">
-
-                    <div class="leader-row">
-
-                        <div class="leader-rank">
-                            #${player.rank}
-                        </div>
-
-                        <div>
-
-                            <div class="leader-name">
-                                ${escapeHtml(
-                                    player.first_name
-                                    ||
-                                    "Игрок"
-                                )}
-                            </div>
-
-                            <div class="leader-xp">
-                                ${player.league?.icon || ""}
-                                ${escapeHtml(
-                                    player.league?.name
-                                    ||
-                                    ""
-                                )}
-                                • уровень ${player.level}
-                            </div>
-
-                        </div>
-
-                        <div style="text-align:right;">
-
-                            <b>
-                                ${player.xp} XP
-                            </b>
-
-                            <div class="leader-xp">
-                                ${player.balance} 🪙
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `
-        )
-        .join("");
-}
+    document.getElementById(
+        "profileLeague"
+    ).textContent =
+        `${profileLeague.icon || ""} ${profileLeague.name || ""}`;
 
 
-/* =========================================================
-   PROFILE
-========================================================= */
+    document.getElementById(
+        "profileLevel"
+    ).textContent =
+        `Уровень ${profileLevel}`;
 
-function renderStats() {
 
-    const values = [
+    document.getElementById(
+        "profileXp"
+    ).textContent =
+        `${profileXp} XP`;
+
+
+    document.getElementById(
+        "profileRank"
+    ).textContent =
+        myRank
+        ?
+        `Место: #${myRank}`
+        :
+        "Место: —";
+
+
+    document.getElementById(
+        "xpFill"
+    ).style.width =
+        `${Math.min(
+            currentLevelXp,
+            100
+        )}%`;
+
+
+    const statItems = [
         [
-            stats.total_bets || 0,
+            profileStats.total_bets || 0,
             "Ординаров"
         ],
+
         [
-            stats.wins || 0,
+            profileStats.wins || 0,
             "Побед"
         ],
+
         [
-            `${stats.win_rate || 0}%`,
+            `${profileStats.win_rate || 0}%`,
             "Процент побед"
         ],
+
         [
-            stats.current_win_streak || 0,
-            "Серия побед"
-        ],
-        [
-            stats.total_parlays || 0,
+            profileStats.total_parlays || 0,
             "Экспрессов"
         ],
+
         [
-            stats.parlay_wins || 0,
-            "Выиграно экспрессов"
-        ],
-        [
-            stats.net_profit || 0,
+            profileStats.net_profit || 0,
             "Профит 🪙"
         ],
+
         [
-            stats.total_won || 0,
-            "Выиграно 🪙"
+            profileStats.best_win_streak || 0,
+            "Лучшая серия"
         ]
     ];
 
 
     document.getElementById(
-        "statsGrid"
+        "stats"
     ).innerHTML =
-        values
-        .map(
+        statItems.map(
             item => `
                 <div class="stat">
 
                     <div class="stat-value">
-                        ${escapeHtml(
-                            item[0]
-                        )}
+                        ${item[0]}
                     </div>
 
-                    <div class="stat-label">
-                        ${escapeHtml(
-                            item[1]
-                        )}
+                    <div class="stat-name">
+                        ${item[1]}
                     </div>
 
                 </div>
             `
-        )
-        .join("");
-}
+        ).join("");
 
 
-function renderTasks() {
-
-    const container =
-        document.getElementById(
-            "tasksList"
-        );
-
-
-    if (
-        !tasks.length
-    ) {
-
-        container.innerHTML = `
-            <div class="empty">
-                Заданий пока нет
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        tasks
-        .map(
+    document.getElementById(
+        "tasks"
+    ).innerHTML =
+        tasks.map(
             task => `
-                <div class="card task">
+                <div class="card task-row">
 
                     <div>
 
@@ -6283,19 +4029,18 @@ function renderTasks() {
                         </b>
 
                         <div class="notice">
-
                             ${task.progress}/${task.target}
-
                             •
-
+                            +${task.reward}
                             ${
-                                task.reward_type === "xp"
+                                task.reward_type
+                                ===
+                                "xp"
                                 ?
-                                `+${task.reward} XP`
+                                "XP"
                                 :
-                                `+${task.reward} 🪙`
+                                "🪙"
                             }
-
                         </div>
 
                     </div>
@@ -6319,7 +4064,6 @@ function renderTasks() {
                             )
                         "
                     >
-
                         ${
                             task.claimed
                             ?
@@ -6331,43 +4075,19 @@ function renderTasks() {
                             :
                             "В процессе"
                         }
-
                     </button>
 
                 </div>
             `
-        )
-        .join("");
-}
+        ).join("");
 
 
-function renderAchievements() {
-
-    const container =
-        document.getElementById(
-            "achievementsList"
-        );
-
-
-    if (
-        !achievements.length
-    ) {
-
-        container.innerHTML = `
-            <div class="empty">
-                Достижений пока нет
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        achievements
-        .map(
+    document.getElementById(
+        "achievements"
+    ).innerHTML =
+        achievements.map(
             item => `
-                <div class="card task">
+                <div class="card task-row">
 
                     <div>
 
@@ -6404,7 +4124,6 @@ function renderAchievements() {
                             )
                         "
                     >
-
                         ${
                             item.claimed
                             ?
@@ -6416,163 +4135,94 @@ function renderAchievements() {
                             :
                             "Закрыто"
                         }
-
                     </button>
 
                 </div>
             `
-        )
-        .join("");
-}
+        ).join("");
 
 
-function updateDailyReward() {
-
-    const button =
+    const dailyBtn =
         document.getElementById(
             "dailyBtn"
         );
 
 
-    const timer =
-        document.getElementById(
-            "dailyTimer"
-        );
+    dailyBtn.disabled =
+        !dailyReward.available;
+
+
+    dailyBtn.textContent =
+        dailyReward.available
+        ?
+        "Получить +300"
+        :
+        "Уже получено";
 
 
     if (
-        dailyReward.available
+        !dailyReward.available
     ) {
 
-        button.disabled =
-            false;
+        const seconds =
+            Number(
+                dailyReward.seconds_left
+                ||
+                0
+            );
 
 
-        button.textContent =
-            "Получить +300 🪙";
+        const hours =
+            Math.floor(
+                seconds / 3600
+            );
 
 
-        timer.textContent =
+        const minutes =
+            Math.floor(
+                (
+                    seconds % 3600
+                )
+                /
+                60
+            );
+
+
+        document.getElementById(
+            "dailyTimer"
+        ).textContent =
+            `Следующий бонус через ${hours} ч ${minutes} мин`;
+
+    } else {
+
+        document.getElementById(
+            "dailyTimer"
+        ).textContent =
             "Бонус доступен";
-
-        return;
     }
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Бонус уже получен";
-
-
-    const seconds =
-        Number(
-            dailyReward.seconds_left
-            ||
-            0
-        );
-
-
-    const hours =
-        Math.floor(
-            seconds
-            /
-            3600
-        );
-
-
-    const minutes =
-        Math.floor(
-            (
-                seconds
-                %
-                3600
-            )
-            /
-            60
-        );
-
-
-    timer.textContent =
-        `Следующий бонус через ${hours} ч ${minutes} мин`;
 }
 
 
-function renderProfile() {
-
-    document.getElementById(
-        "profileName"
-    ).textContent =
-        currentUser?.first_name
-        ||
-        "Игрок";
-
-
-    document.getElementById(
-        "leagueName"
-    ).textContent =
-        `${playerLeague?.icon || ""} ${playerLeague?.name || ""}`;
-
-
-    document.getElementById(
-        "levelText"
-    ).textContent =
-        `Уровень ${level}`;
-
-
-    document.getElementById(
-        "xpText"
-    ).textContent =
-        `${xp} XP`;
-
-
-    document.getElementById(
-        "rankText"
-    ).textContent =
-        myRank
-        ?
-        `Место в рейтинге: #${myRank}`
-        :
-        "Место в рейтинге: —";
-
-
-    document.getElementById(
-        "xpFill"
-    ).style.width =
-        `${Math.max(
-            0,
-            Math.min(
-                100,
-                currentLevelXp
-            )
-        )}%`;
-
-
-    renderStats();
-
-    renderTasks();
-
-    renderAchievements();
-
-    updateDailyReward();
-}
-
-
-async function claimDailyReward() {
+async function claimDaily() {
 
     try {
 
         const data =
-            await apiPost(
+            await post(
                 "/api/daily-reward"
             );
 
 
-        applyCommonData(
-            data
-        );
+        balance =
+            Number(
+                data.balance
+            );
+
+
+        updateBalance();
+
+
+        await loadSession();
 
 
         tg.showAlert(
@@ -6580,12 +4230,7 @@ async function claimDailyReward() {
         );
 
 
-        await loadSession();
-
-
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
         tg.showAlert(
             error.message
@@ -6594,33 +4239,22 @@ async function claimDailyReward() {
 }
 
 
-async function claimTask(
-    key
-) {
+async function claimTask(key) {
 
     try {
 
-        const data =
-            await apiPost(
-                "/api/tasks/claim",
-                {
-                    task_key:
-                        key
-                }
-            );
-
-
-        applyCommonData(
-            data
+        await post(
+            "/api/tasks/claim",
+            {
+                task_key:key
+            }
         );
 
 
         await loadSession();
 
 
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
         tg.showAlert(
             error.message
@@ -6635,27 +4269,18 @@ async function claimAchievement(
 
     try {
 
-        const data =
-            await apiPost(
-                "/api/achievements/claim",
-                {
-                    achievement_key:
-                        key
-                }
-            );
-
-
-        applyCommonData(
-            data
+        await post(
+            "/api/achievements/claim",
+            {
+                achievement_key:key
+            }
         );
 
 
         await loadSession();
 
 
-    } catch (
-        error
-    ) {
+    } catch(error) {
 
         tg.showAlert(
             error.message
@@ -6664,58 +4289,9 @@ async function claimAchievement(
 }
 
 
-/* =========================================================
-   UI
-========================================================= */
-
-function updateBalances() {
-
-    [
-        "balanceTop",
-        "balanceMatches",
-        "balanceBets",
-        "balanceProfile"
-    ]
-    .forEach(
-        id => {
-
-            const element =
-                document.getElementById(
-                    id
-                );
-
-
-            if (
-                element
-            ) {
-
-                element.textContent =
-                    balance;
-            }
-        }
-    );
-}
-
-
-function updateInterface() {
-
-    updateBalances();
-
-    renderBets();
-
-    renderProfile();
-
-    updateParlayFloat();
-
-    renderFavoriteTeamsBox();
-
-    renderHomeFavoriteTeams();
-}
-
-
 function showPage(
     name,
-    updateNav=true
+    nav=true
 ) {
 
     document
@@ -6730,38 +4306,30 @@ function showPage(
     );
 
 
-    document
-    .getElementById(
-        "page-"
-        +
-        name
+    document.getElementById(
+        "page-" + name
     )
     ?.classList.add(
         "active"
     );
 
 
-    if (
-        updateNav
-    ) {
+    if (nav) {
 
         document
         .querySelectorAll(
-            ".nav-btn"
+            ".nav"
         )
         .forEach(
-            item =>
-                item.classList.remove(
+            button =>
+                button.classList.remove(
                     "active"
                 )
         );
 
 
-        document
-        .getElementById(
-            "nav-"
-            +
-            name
+        document.getElementById(
+            "nav-" + name
         )
         ?.classList.add(
             "active"
@@ -6781,29 +4349,12 @@ function showPage(
     if (
         name ===
         "profile"
-    ) {
-
-        loadSession();
-
-        loadLeaderboard();
-    }
-
-
-    if (
+        ||
         name ===
         "bets"
     ) {
 
         loadSession();
-    }
-
-
-    if (
-        name ===
-        "matches"
-    ) {
-
-        renderMatches();
     }
 
 
@@ -6814,116 +4365,77 @@ function showPage(
 }
 
 
-function openModal(
-    id
-) {
-
-    document
-    .getElementById(
-        id
-    )
-    .classList.add(
-        "show"
-    );
-}
-
-
-function closeModal(
-    id
-) {
-
-    document
-    .getElementById(
-        id
-    )
-    .classList.remove(
-        "show"
-    );
-}
-
-
-function overlayClose(
-    event,
-    id
-) {
-
-    if (
-        event.target.id
-        ===
-        id
-    ) {
-
-        closeModal(
-            id
-        );
-    }
-}
-
-
-function refreshMatchTimers() {
-
-    renderHomeMatches();
-
-    renderMatches();
-
-    removeStartedMatchesFromParlay();
-
-
-    if (
-        selectedMatch
-        &&
-        document
-        .getElementById(
-            "page-match"
-        )
-        .classList
-        .contains(
-            "active"
-        )
-    ) {
-
-        renderMatchDetail(
-            selectedMatch
-        );
-    }
-}
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
 async function init() {
 
     await Promise.all([
         loadSession(),
-        loadLeague(
-            "top5"
-        )
+        loadLeague("top5")
     ]);
 
 
-    await syncOldFavorites();
+    await syncOldFavoriteMatches();
+
+    await syncOldFavoriteTeams();
 
 
     renderMatches();
-
+    renderHome();
+    renderBets();
+    renderProfile();
     renderFavoriteTeamsBox();
-
-    renderHomeFavoriteTeams();
 
 
     loadLeaderboard();
 
 
-    switchBetTab(
-        currentBetTab
-    );
-
-
     setInterval(
-        refreshMatchTimers,
-        15000
+        async () => {
+
+            try {
+
+                const data =
+                    await post(
+                        "/api/settle"
+                    );
+
+
+                balance =
+                    Number(
+                        data.balance
+                        ??
+                        balance
+                    );
+
+
+                bets =
+                    data.bets
+                    ||
+                    bets;
+
+
+                parlays =
+                    data.parlays
+                    ||
+                    parlays;
+
+
+                profileStats =
+                    data.stats
+                    ||
+                    profileStats;
+
+
+                updateBalance();
+                renderBets();
+
+
+            } catch(error) {
+
+                console.error(error);
+            }
+
+        },
+        300000
     );
 }
 

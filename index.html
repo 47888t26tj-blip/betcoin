@@ -38,7 +38,7 @@ body {
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:Arial,sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
 
 body {
@@ -138,6 +138,11 @@ button {
     gap:8px;
     overflow-x:auto;
     margin-bottom:12px;
+    scrollbar-width:none;
+}
+
+.filters::-webkit-scrollbar {
+    display:none;
 }
 
 .filter-btn,
@@ -175,6 +180,11 @@ button {
     display:flex;
     gap:8px;
     overflow-x:auto;
+    scrollbar-width:none;
+}
+
+.league-row::-webkit-scrollbar {
+    display:none;
 }
 
 .match-top {
@@ -223,6 +233,7 @@ button {
 .team {
     text-align:center;
     font-weight:800;
+    min-width:0;
 }
 
 .team-logo {
@@ -410,6 +421,7 @@ button {
 
 .status.refund {
     color:var(--muted);
+    background:rgba(146,152,167,.12);
 }
 
 .stat-grid {
@@ -455,6 +467,21 @@ button {
     color:var(--red);
 }
 
+.repeat-btn {
+    width:100%;
+    min-height:43px;
+    border:1px solid rgba(47,128,255,.35);
+    border-radius:13px;
+    background:rgba(47,128,255,.12);
+    color:#8eb8ff;
+    font-weight:900;
+    margin-top:12px;
+}
+
+.repeat-btn:active {
+    transform:scale(.985);
+}
+
 .input {
     width:100%;
     padding:14px;
@@ -488,6 +515,12 @@ button {
     padding:20px;
     max-height:90vh;
     overflow:auto;
+}
+
+.choice-buttons {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
 }
 
 .parlay-float {
@@ -548,6 +581,23 @@ button {
     opacity:.4;
 }
 
+.bet-info-row {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:8px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.parlay-history-leg {
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:11px;
+    margin-top:8px;
+}
+
 </style>
 </head>
 
@@ -568,9 +618,7 @@ button {
 
         <div class="balance">
             🪙
-            <span id="balanceHome">
-                0
-            </span>
+            <span id="balanceHome">0</span>
         </div>
 
     </div>
@@ -603,9 +651,7 @@ button {
 
         <div class="balance">
             🪙
-            <span id="balanceMatches">
-                0
-            </span>
+            <span id="balanceMatches">0</span>
         </div>
 
     </div>
@@ -852,9 +898,7 @@ button {
 
         <div class="balance">
             🪙
-            <span id="balanceBets">
-                0
-            </span>
+            <span id="balanceBets">0</span>
         </div>
 
     </div>
@@ -952,9 +996,7 @@ button {
 
         <div class="balance">
             🪙
-            <span id="balanceProfile">
-                0
-            </span>
+            <span id="balanceProfile">0</span>
         </div>
 
     </div>
@@ -1111,6 +1153,51 @@ button {
 
 
 <div
+    id="betChoiceOverlay"
+    class="overlay"
+>
+<div class="modal">
+
+<h2>
+    Выбери тип ставки
+</h2>
+
+<div
+    id="choiceInfo"
+    class="card"
+></div>
+
+<div class="choice-buttons">
+
+    <button
+        class="big-btn"
+        onclick="openSingleFromChoice()"
+    >
+        Ординар
+    </button>
+
+    <button
+        id="addParlayChoice"
+        class="big-btn secondary"
+        onclick="toggleSelectedParlay()"
+    >
+        + Экспресс
+    </button>
+
+</div>
+
+<button
+    class="big-btn danger"
+    onclick="closeOverlay('betChoiceOverlay')"
+>
+    Закрыть
+</button>
+
+</div>
+</div>
+
+
+<div
     id="singleOverlay"
     class="overlay"
 >
@@ -1140,6 +1227,7 @@ button {
 ></div>
 
 <button
+    id="confirmSingleBtn"
     class="big-btn"
     onclick="confirmSingle()"
 >
@@ -1173,16 +1261,12 @@ button {
 
 <div>
     Событий:
-    <b id="parlayCount">
-        0
-    </b>
+    <b id="parlayCount">0</b>
 </div>
 
 <div>
     Общий кэф:
-    <b id="parlayOdd">
-        1.00
-    </b>
+    <b id="parlayOdd">1.00</b>
 </div>
 
 </div>
@@ -1202,6 +1286,7 @@ button {
 ></div>
 
 <button
+    id="confirmParlayBtn"
     class="big-btn"
     onclick="confirmParlay()"
 >
@@ -1283,6 +1368,9 @@ let myRank = null;
 let dailyReward = {};
 
 
+/* =========================================================
+   HELPERS
+========================================================= */
 
 function escapeHtml(value) {
 
@@ -1335,8 +1423,20 @@ async function post(
         );
 
 
-    const data =
-        await response.json();
+    let data;
+
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch {
+
+        throw new Error(
+            "Сервер вернул неправильный ответ"
+        );
+    }
 
 
     if (!response.ok) {
@@ -1379,6 +1479,10 @@ function updateBalance() {
 }
 
 
+/* =========================================================
+   FAVORITE MATCHES
+========================================================= */
+
 function setFavoriteMatches(
     serverFavorites
 ) {
@@ -1415,6 +1519,10 @@ function setFavoriteMatches(
 }
 
 
+/* =========================================================
+   FAVORITE TEAMS
+========================================================= */
+
 function setFavoriteTeams(
     serverTeams
 ) {
@@ -1431,9 +1539,7 @@ function setFavoriteTeams(
 
     favoriteTeams =
         serverTeams
-        .map(
-            String
-        )
+        .map(String)
         .filter(Boolean);
 
 
@@ -1723,6 +1829,10 @@ async function syncOldFavoriteMatches() {
 }
 
 
+/* =========================================================
+   SESSION
+========================================================= */
+
 async function loadSession() {
 
     try {
@@ -1850,6 +1960,10 @@ async function loadSession() {
 }
 
 
+/* =========================================================
+   LEAGUES
+========================================================= */
+
 async function loadLeague(
     leagueKey
 ) {
@@ -1876,8 +1990,7 @@ async function loadLeague(
 
 
     if (
-        leagueKey
-        ===
+        leagueKey ===
         "favorites"
     ) {
 
@@ -1967,6 +2080,14 @@ async function loadLeague(
             [];
 
 
+        matches.sort(
+            (a,b) =>
+                new Date(a.date)
+                -
+                new Date(b.date)
+        );
+
+
         loadedMatches[
             leagueKey
         ] =
@@ -2029,6 +2150,28 @@ function allLoadedMatches() {
     );
 }
 
+
+function findLoadedMatch(
+    fixtureId
+) {
+
+    return allLoadedMatches()
+        .find(
+            match =>
+                Number(
+                    match.fixture_id
+                )
+                ===
+                Number(
+                    fixtureId
+                )
+        );
+}
+
+
+/* =========================================================
+   MATCH FILTERS
+========================================================= */
 
 function formatDate(value) {
 
@@ -2266,6 +2409,10 @@ function changeDateFilter(value) {
 }
 
 
+/* =========================================================
+   MATCH UI
+========================================================= */
+
 function teamLogo(
     url,
     name
@@ -2295,6 +2442,28 @@ function teamLogo(
 
         </div>
     `;
+}
+
+
+function isParlaySelected(
+    fixtureId,
+    selection
+) {
+
+    return parlaySlip.some(
+        leg =>
+            Number(
+                leg.fixture_id
+            )
+            ===
+            Number(
+                fixtureId
+            )
+            &&
+            leg.selection
+            ===
+            selection
+    );
 }
 
 
@@ -2330,19 +2499,9 @@ function oddButton(
 
 
     const selected =
-        parlaySlip.some(
-            leg =>
-                Number(
-                    leg.fixture_id
-                )
-                ===
-                Number(
-                    match.fixture_id
-                )
-                &&
-                leg.selection
-                ===
-                selection
+        isParlaySelected(
+            match.fixture_id,
+            selection
         );
 
 
@@ -2759,6 +2918,10 @@ function renderHome() {
 }
 
 
+/* =========================================================
+   MATCH DETAIL
+========================================================= */
+
 async function openMatch(
     fixtureId
 ) {
@@ -3000,6 +3163,10 @@ async function openMatch(
 }
 
 
+/* =========================================================
+   SELECT BET
+========================================================= */
+
 function selectBet(
     fixtureId,
     home,
@@ -3008,43 +3175,6 @@ function selectBet(
     odd
 ) {
 
-    const matchText =
-        `${home} — ${away}`;
-
-
-    const same =
-        parlaySlip.findIndex(
-            leg =>
-                Number(
-                    leg.fixture_id
-                )
-                ===
-                Number(
-                    fixtureId
-                )
-                &&
-                leg.selection
-                ===
-                selection
-        );
-
-
-    if (same >= 0) {
-
-        parlaySlip.splice(
-            same,
-            1
-        );
-
-
-        updateParlay();
-
-        renderMatches();
-
-        return;
-    }
-
-
     selectedBet = {
         fixture_id:
             Number(
@@ -3052,7 +3182,7 @@ function selectBet(
             ),
 
         match:
-            matchText,
+            `${home} — ${away}`,
 
         selection,
 
@@ -3062,18 +3192,76 @@ function selectBet(
 
 
     document.getElementById(
-        "singleInfo"
+        "choiceInfo"
     ).innerHTML = `
         <b>
             ${escapeHtml(
-                matchText
+                selectedBet.match
             )}
         </b>
 
         <div class="notice">
-            ${escapeHtml(selection)}
+            ${escapeHtml(
+                selectedBet.selection
+            )}
             •
-            ${Number(odd).toFixed(2)}
+            ${Number(
+                selectedBet.odd
+            ).toFixed(2)}
+        </div>
+    `;
+
+
+    document.getElementById(
+        "addParlayChoice"
+    ).textContent =
+        isParlaySelected(
+            fixtureId,
+            selection
+        )
+        ?
+        "✓ Убрать"
+        :
+        "+ Экспресс";
+
+
+    document.getElementById(
+        "betChoiceOverlay"
+    ).classList.add(
+        "show"
+    );
+}
+
+
+function openSingleFromChoice() {
+
+    closeOverlay(
+        "betChoiceOverlay"
+    );
+
+
+    if (!selectedBet) {
+        return;
+    }
+
+
+    document.getElementById(
+        "singleInfo"
+    ).innerHTML = `
+        <b>
+            ${escapeHtml(
+                selectedBet.match
+            )}
+        </b>
+
+        <div class="notice">
+            ${escapeHtml(
+                selectedBet.selection
+            )}
+            •
+            ${Number(
+                selectedBet.odd
+            ).toFixed(2)}
         </div>
     `;
 
@@ -3084,6 +3272,9 @@ function selectBet(
         "";
 
 
+    updateSingleWin();
+
+
     document.getElementById(
         "singleOverlay"
     ).classList.add(
@@ -3091,6 +3282,108 @@ function selectBet(
     );
 }
 
+
+function toggleSelectedParlay() {
+
+    if (!selectedBet) {
+        return;
+    }
+
+
+    const exactIndex =
+        parlaySlip.findIndex(
+            leg =>
+                Number(
+                    leg.fixture_id
+                )
+                ===
+                Number(
+                    selectedBet.fixture_id
+                )
+                &&
+                leg.selection
+                ===
+                selectedBet.selection
+        );
+
+
+    if (
+        exactIndex >= 0
+    ) {
+
+        parlaySlip.splice(
+            exactIndex,
+            1
+        );
+
+
+        closeOverlay(
+            "betChoiceOverlay"
+        );
+
+
+        updateParlay();
+        renderMatches();
+
+        return;
+    }
+
+
+    const sameMatch =
+        parlaySlip.some(
+            leg =>
+                Number(
+                    leg.fixture_id
+                )
+                ===
+                Number(
+                    selectedBet.fixture_id
+                )
+        );
+
+
+    if (
+        sameMatch
+    ) {
+
+        tg.showAlert(
+            "В экспрессе уже есть другой исход этого матча."
+        );
+
+        return;
+    }
+
+
+    if (
+        parlaySlip.length >= 15
+    ) {
+
+        tg.showAlert(
+            "Максимум 15 событий."
+        );
+
+        return;
+    }
+
+
+    parlaySlip.push({
+        ...selectedBet
+    });
+
+
+    closeOverlay(
+        "betChoiceOverlay"
+    );
+
+
+    updateParlay();
+    renderMatches();
+}
+
+
+/* =========================================================
+   SINGLE
+========================================================= */
 
 function updateSingleWin() {
 
@@ -3134,11 +3427,31 @@ async function confirmSingle() {
     if (
         !selectedBet
         ||
+        !Number.isInteger(amount)
+        ||
         amount <= 0
     ) {
 
+        tg.showAlert(
+            "Введите правильную сумму"
+        );
+
         return;
     }
+
+
+    const button =
+        document.getElementById(
+            "confirmSingleBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Проверяем...";
 
 
     try {
@@ -3153,10 +3466,7 @@ async function confirmSingle() {
                     selection:
                         selectedBet.selection,
 
-                    amount:
-                        Math.floor(
-                            amount
-                        )
+                    amount
                 }
             );
 
@@ -3187,48 +3497,361 @@ async function confirmSingle() {
         );
 
 
+        await loadSession();
+
+
     } catch(error) {
 
         tg.showAlert(
             error.message
         );
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Поставить";
     }
 }
 
 
-function addToParlay(
-    bet
+/* =========================================================
+   🔁 REPEAT SINGLE BET
+========================================================= */
+
+async function repeatSingleBet(
+    betId
 ) {
 
-    if (
-        parlaySlip.some(
-            leg =>
+    const bet =
+        bets.find(
+            item =>
                 Number(
-                    leg.fixture_id
+                    item.id
                 )
                 ===
                 Number(
-                    bet.fixture_id
+                    betId
                 )
-        )
-    ) {
+        );
+
+
+    if (!bet) {
 
         tg.showAlert(
-            "Этот матч уже есть в экспрессе"
+            "Ставка не найдена"
         );
 
         return;
     }
 
 
-    parlaySlip.push(
-        bet
-    );
+    try {
+
+        const response =
+            await fetch(
+                SERVER_URL
+                +
+                "/api/match/"
+                +
+                Number(
+                    bet.fixture_id
+                )
+            );
 
 
-    updateParlay();
+        const match =
+            await response.json();
+
+
+        if (
+            !response.ok
+            ||
+            !match.success
+        ) {
+
+            throw new Error(
+                match.error
+                ||
+                "Матч больше недоступен"
+            );
+        }
+
+
+        const odd =
+            getSelectionOdd(
+                match,
+                bet.selection
+            );
+
+
+        if (
+            !odd
+            ||
+            Number(odd) <= 1
+        ) {
+
+            tg.showAlert(
+                "Этот исход больше недоступен"
+            );
+
+            return;
+        }
+
+
+        selectedBet = {
+            fixture_id:
+                Number(
+                    bet.fixture_id
+                ),
+
+            match:
+                bet.match,
+
+            selection:
+                bet.selection,
+
+            odd:
+                Number(
+                    odd
+                )
+        };
+
+
+        document.getElementById(
+            "singleInfo"
+        ).innerHTML = `
+            <b>
+                🔁 Повтор ставки
+            </b>
+
+            <div style="margin-top:8px;">
+                ${escapeHtml(
+                    bet.match
+                )}
+            </div>
+
+            <div class="notice">
+                ${escapeHtml(
+                    bet.selection
+                )}
+                • новый кэф
+                ${Number(
+                    odd
+                ).toFixed(2)}
+            </div>
+        `;
+
+
+        document.getElementById(
+            "singleAmount"
+        ).value =
+            Number(
+                bet.amount
+                ||
+                0
+            );
+
+
+        updateSingleWin();
+
+
+        document.getElementById(
+            "singleOverlay"
+        ).classList.add(
+            "show"
+        );
+
+
+    } catch(error) {
+
+        tg.showAlert(
+            error.message
+            ||
+            "Повторить эту ставку сейчас нельзя"
+        );
+    }
 }
 
+
+/* =========================================================
+   GET CURRENT ODD FOR OLD SELECTION
+========================================================= */
+
+function getSelectionOdd(
+    match,
+    selection
+) {
+
+    const odds =
+        match.odds
+        ||
+        {};
+
+
+    if (
+        selection ===
+        "П1"
+    ) {
+
+        return odds.home;
+    }
+
+
+    if (
+        selection ===
+        "X"
+    ) {
+
+        return odds.draw;
+    }
+
+
+    if (
+        selection ===
+        "П2"
+    ) {
+
+        return odds.away;
+    }
+
+
+    if (
+        selection ===
+        "ОЗ Да"
+    ) {
+
+        return match.btts?.yes;
+    }
+
+
+    if (
+        selection ===
+        "ОЗ Нет"
+    ) {
+
+        return match.btts?.no;
+    }
+
+
+    const totalMatch =
+        String(selection)
+        .match(
+            /^Т([БМ])\s*([0-9.]+)$/
+        );
+
+
+    if (
+        totalMatch
+    ) {
+
+        const side =
+            totalMatch[1];
+
+
+        const line =
+            Number(
+                totalMatch[2]
+            );
+
+
+        const key =
+            "total_"
+            +
+            String(line)
+            .replace(
+                ".",
+                "_"
+            );
+
+
+        const total =
+            match[key];
+
+
+        if (!total) {
+            return null;
+        }
+
+
+        return (
+            side === "Б"
+            ?
+            total.over
+            :
+            total.under
+        );
+    }
+
+
+    const handicapMatch =
+        String(selection)
+        .match(
+            /^Ф([12])\(([-+]?[0-9.]+)\)$/
+        );
+
+
+    if (
+        handicapMatch
+    ) {
+
+        const teamNumber =
+            handicapMatch[1];
+
+
+        const requestedLine =
+            Number(
+                handicapMatch[2]
+            );
+
+
+        const side =
+            teamNumber === "1"
+            ?
+            "home"
+            :
+            "away";
+
+
+        const handicapMap =
+            match.handicaps?.[
+                side
+            ]
+            ||
+            {};
+
+
+        for (
+            const [line, odd]
+            of
+            Object.entries(
+                handicapMap
+            )
+        ) {
+
+            if (
+                Number(line)
+                ===
+                requestedLine
+            ) {
+
+                return odd;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   PARLAY
+========================================================= */
 
 function updateParlay() {
 
@@ -3246,6 +3869,9 @@ function updateParlay() {
         "show",
         parlaySlip.length > 0
     );
+
+
+    renderMatches();
 }
 
 
@@ -3258,6 +3884,8 @@ function openParlay() {
 
 
     container.innerHTML =
+        parlaySlip.length
+        ?
         parlaySlip
         .map(
             (
@@ -3285,14 +3913,12 @@ function openParlay() {
 
                     <button
                         class="task-btn"
-                        onclick="
-                            parlaySlip.splice(
-                                ${index},
-                                1
-                            );
+                        style="margin-top:8px;"
 
-                            openParlay();
-                            updateParlay();
+                        onclick="
+                            removeParlayLeg(
+                                ${index}
+                            )
                         "
                     >
                         Удалить
@@ -3301,7 +3927,13 @@ function openParlay() {
                 </div>
             `
         )
-        .join("");
+        .join("")
+        :
+        `
+            <div class="empty">
+                Экспресс пуст
+            </div>
+        `;
 
 
     document.getElementById(
@@ -3329,11 +3961,30 @@ function openParlay() {
         .toFixed(2);
 
 
+    updateParlayWin();
+
+
     document.getElementById(
         "parlayOverlay"
     ).classList.add(
         "show"
     );
+}
+
+
+function removeParlayLeg(
+    index
+) {
+
+    parlaySlip.splice(
+        index,
+        1
+    );
+
+
+    updateParlay();
+
+    openParlay();
 }
 
 
@@ -3401,9 +4052,32 @@ async function confirmParlay() {
         );
 
 
-    if (amount <= 0) {
+    if (
+        !Number.isInteger(amount)
+        ||
+        amount <= 0
+    ) {
+
+        tg.showAlert(
+            "Введите правильную сумму"
+        );
+
         return;
     }
+
+
+    const button =
+        document.getElementById(
+            "confirmParlayBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Проверяем...";
 
 
     try {
@@ -3412,10 +4086,7 @@ async function confirmParlay() {
             await post(
                 "/api/parlays",
                 {
-                    amount:
-                        Math.floor(
-                            amount
-                        ),
+                    amount,
 
                     legs:
                         parlaySlip.map(
@@ -3473,11 +4144,24 @@ async function confirmParlay() {
         );
 
 
+        await loadSession();
+
+
     } catch(error) {
 
         tg.showAlert(
             error.message
         );
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Поставить экспресс";
     }
 }
 
@@ -3488,6 +4172,12 @@ function clearParlay() {
         [];
 
 
+    document.getElementById(
+        "parlayAmount"
+    ).value =
+        "";
+
+
     updateParlay();
 
 
@@ -3496,6 +4186,213 @@ function clearParlay() {
     );
 }
 
+
+/* =========================================================
+   🔁 REBUILD OLD PARLAY
+========================================================= */
+
+async function rebuildParlay(
+    parlayId
+) {
+
+    const oldParlay =
+        parlays.find(
+            item =>
+                Number(
+                    item.id
+                )
+                ===
+                Number(
+                    parlayId
+                )
+        );
+
+
+    if (
+        !oldParlay
+        ||
+        !Array.isArray(
+            oldParlay.legs
+        )
+    ) {
+
+        tg.showAlert(
+            "Экспресс не найден"
+        );
+
+        return;
+    }
+
+
+    const newSlip =
+        [];
+
+
+    let unavailable =
+        0;
+
+
+    const seen =
+        new Set();
+
+
+    for (
+        const leg
+        of
+        oldParlay.legs
+    ) {
+
+        try {
+
+            const fixtureId =
+                Number(
+                    leg.fixture_id
+                );
+
+
+            if (
+                seen.has(
+                    fixtureId
+                )
+            ) {
+
+                continue;
+            }
+
+
+            seen.add(
+                fixtureId
+            );
+
+
+            const response =
+                await fetch(
+                    SERVER_URL
+                    +
+                    "/api/match/"
+                    +
+                    fixtureId
+                );
+
+
+            const match =
+                await response.json();
+
+
+            if (
+                !response.ok
+                ||
+                !match.success
+            ) {
+
+                unavailable++;
+
+                continue;
+            }
+
+
+            const newOdd =
+                getSelectionOdd(
+                    match,
+                    leg.selection
+                );
+
+
+            if (
+                !newOdd
+                ||
+                Number(
+                    newOdd
+                )
+                <=
+                1
+            ) {
+
+                unavailable++;
+
+                continue;
+            }
+
+
+            newSlip.push({
+                fixture_id:
+                    fixtureId,
+
+                match:
+                    leg.match,
+
+                selection:
+                    leg.selection,
+
+                odd:
+                    Number(
+                        newOdd
+                    )
+            });
+
+
+        } catch {
+
+            unavailable++;
+        }
+    }
+
+
+    if (
+        newSlip.length < 2
+    ) {
+
+        tg.showAlert(
+            "Сейчас доступно меньше двух исходов из этого экспресса."
+        );
+
+        return;
+    }
+
+
+    parlaySlip =
+        newSlip.slice(
+            0,
+            15
+        );
+
+
+    document.getElementById(
+        "parlayAmount"
+    ).value =
+        Number(
+            oldParlay.amount
+            ||
+            0
+        );
+
+
+    updateParlay();
+
+    openParlay();
+
+
+    if (
+        unavailable > 0
+    ) {
+
+        setTimeout(
+            () => {
+
+                tg.showAlert(
+                    `Экспресс собран. Недоступных событий: ${unavailable}`
+                );
+
+            },
+            250
+        );
+    }
+}
+
+
+/* =========================================================
+   BET HISTORY
+========================================================= */
 
 function closeOverlay(id) {
 
@@ -3509,17 +4406,23 @@ function closeOverlay(id) {
 
 function statusClass(status) {
 
-    if (status === "Выиграла") {
+    if (
+        status === "Выиграла"
+    ) {
         return "win";
     }
 
 
-    if (status === "Проиграла") {
+    if (
+        status === "Проиграла"
+    ) {
         return "loss";
     }
 
 
-    if (status === "Возврат") {
+    if (
+        status === "Возврат"
+    ) {
         return "refund";
     }
 
@@ -3686,7 +4589,10 @@ function renderBets() {
                         bet.score
                         ?
                         `
-                            <div class="notice">
+                            <div
+                                class="notice"
+                                style="margin-top:6px;"
+                            >
                                 Счёт:
                                 ${escapeHtml(
                                     bet.score
@@ -3697,15 +4603,27 @@ function renderBets() {
                         ""
                     }
 
-                    <div class="notice">
-                        Ставка:
-                        ${bet.amount} 🪙
+                    <div class="bet-info-row">
+                        <span>Ставка</span>
+                        <b>${bet.amount} 🪙</b>
                     </div>
 
-                    <div class="notice">
-                        Возможный выигрыш:
-                        ${bet.possible} 🪙
+                    <div class="bet-info-row">
+                        <span>Возможный выигрыш</span>
+                        <b>${bet.possible} 🪙</b>
                     </div>
+
+                    <button
+                        class="repeat-btn"
+
+                        onclick="
+                            repeatSingleBet(
+                                ${Number(bet.id)}
+                            )
+                        "
+                    >
+                        🔁 Повторить ставку
+                    </button>
 
                 </div>
             `
@@ -3750,21 +4668,30 @@ function renderBets() {
                         🧾 Экспресс #${parlay.id}
                     </h3>
 
-                    <div class="notice">
-                        Общий кэф:
-                        ${Number(
-                            parlay.total_odd
-                        ).toFixed(2)}
+                    <div class="bet-info-row">
+                        <span>Общий кэф</span>
+
+                        <b>
+                            ${Number(
+                                parlay.total_odd
+                            ).toFixed(2)}
+                        </b>
                     </div>
 
-                    <div class="notice">
-                        Ставка:
-                        ${parlay.amount} 🪙
+                    <div class="bet-info-row">
+                        <span>Ставка</span>
+
+                        <b>
+                            ${parlay.amount} 🪙
+                        </b>
                     </div>
 
-                    <div class="notice">
-                        Возможный выигрыш:
-                        ${parlay.possible} 🪙
+                    <div class="bet-info-row">
+                        <span>Возможный выигрыш</span>
+
+                        <b>
+                            ${parlay.possible} 🪙
+                        </b>
                     </div>
 
                     <h4>
@@ -3782,7 +4709,7 @@ function renderBets() {
                                 leg,
                                 index
                             ) => `
-                                <div class="parlay-leg">
+                                <div class="parlay-history-leg">
 
                                     <b>
                                         ${index + 1}.
@@ -3791,7 +4718,7 @@ function renderBets() {
                                         )}
                                     </b>
 
-                                    <div>
+                                    <div style="margin-top:5px;">
                                         ${escapeHtml(
                                             leg.selection
                                         )}
@@ -3816,24 +4743,42 @@ function renderBets() {
                                         ""
                                     }
 
-                                    <span
-                                        class="
-                                            status
-                                            ${statusClass(
+                                    <div style="margin-top:7px;">
+
+                                        <span
+                                            class="
+                                                status
+                                                ${statusClass(
+                                                    leg.status
+                                                )}
+                                            "
+                                        >
+                                            ${escapeHtml(
                                                 leg.status
+                                                ||
+                                                "Активна"
                                             )}
-                                        "
-                                    >
-                                        ${escapeHtml(
-                                            leg.status
-                                        )}
-                                    </span>
+                                        </span>
+
+                                    </div>
 
                                 </div>
                             `
                         )
                         .join("")
                     }
+
+                    <button
+                        class="repeat-btn"
+
+                        onclick="
+                            rebuildParlay(
+                                ${Number(parlay.id)}
+                            )
+                        "
+                    >
+                        🔁 Собрать экспресс снова
+                    </button>
 
                 </div>
             `
@@ -3846,6 +4791,10 @@ function renderBets() {
         `;
 }
 
+
+/* =========================================================
+   LEADERBOARD
+========================================================= */
 
 async function loadLeaderboard() {
 
@@ -3912,6 +4861,10 @@ async function loadLeaderboard() {
     }
 }
 
+
+/* =========================================================
+   PROFILE
+========================================================= */
 
 function renderProfile() {
 
@@ -4289,6 +5242,10 @@ async function claimAchievement(
 }
 
 
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
 function showPage(
     name,
     nav=true
@@ -4358,12 +5315,25 @@ function showPage(
     }
 
 
+    if (
+        name ===
+        "matches"
+    ) {
+
+        renderMatches();
+    }
+
+
     window.scrollTo(
         0,
         0
     );
 }
 
+
+/* =========================================================
+   INIT
+========================================================= */
 
 async function init() {
 
@@ -4386,6 +5356,11 @@ async function init() {
 
 
     loadLeaderboard();
+
+
+    switchBetTab(
+        currentBetTab
+    );
 
 
     setInterval(

@@ -120,13 +120,29 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .match-date,
         .league {
             color: var(--muted);
             font-size: 13px;
+        }
+
+        .match-countdown {
+            text-align: center;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #8eb8ff;
+        }
+
+        .match-countdown.soon {
+            color: var(--orange);
+        }
+
+        .match-countdown.closed {
+            color: var(--red);
         }
 
         .teams {
@@ -215,6 +231,17 @@
         .odd-btn.disabled {
             opacity: .35;
             pointer-events: none;
+        }
+
+        .closed-market {
+            background: rgba(255,82,82,.09);
+            border: 1px solid rgba(255,82,82,.25);
+            color: #ff8181;
+            padding: 13px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 800;
+            margin-bottom: 18px;
         }
 
         .market {
@@ -474,8 +501,6 @@
             color: #fff;
         }
 
-        /* ФИЛЬТРЫ СТАВОК */
-
         .bet-filters {
             display: flex;
             gap: 8px;
@@ -626,10 +651,6 @@
         .leader-xp {
             color: var(--muted);
             font-size: 13px;
-        }
-
-        .me-card {
-            border-color: var(--accent);
         }
 
         .daily-card {
@@ -801,7 +822,6 @@
             </button>
 
         </div>
-
 
         <div id="singleBets"></div>
 
@@ -1192,11 +1212,13 @@
     const SERVER_URL =
         "https://betcoin-gu5c.onrender.com";
 
+
     const tg =
         window.Telegram.WebApp;
 
     tg.ready();
     tg.expand();
+
 
     const telegramInitData =
         tg.initData || "";
@@ -1223,7 +1245,6 @@
     };
 
     let currentLevelXp = 0;
-    let xpToNextLevel = 100;
 
     let dailyReward = {
         amount: 300,
@@ -1234,7 +1255,8 @@
     let selectedMatch = null;
     let selectedBet = null;
 
-    let previousPage = "matches";
+    let previousPage =
+        "matches";
 
     let parlaySlip = [];
 
@@ -1245,16 +1267,8 @@
         "all";
 
 
-    /*
-        Резервные логотипы АПЛ.
-
-        Если сервер уже пришлёт home_logo / away_logo,
-        приложение использует серверную картинку.
-
-        Если нет — попробуем подобрать crest здесь.
-    */
-
     const TEAM_LOGOS = {
+
         "arsenal":
             "https://crests.football-data.org/57.png",
 
@@ -1291,6 +1305,9 @@
         "newcastle":
             "https://crests.football-data.org/67.png",
 
+        "sunderland":
+            "https://crests.football-data.org/71.png",
+
         "tottenham hotspur":
             "https://crests.football-data.org/73.png",
 
@@ -1302,6 +1319,15 @@
 
         "wolves":
             "https://crests.football-data.org/76.png",
+
+        "burnley":
+            "https://crests.football-data.org/328.png",
+
+        "leeds united":
+            "https://crests.football-data.org/341.png",
+
+        "leeds":
+            "https://crests.football-data.org/341.png",
 
         "crystal palace":
             "https://crests.football-data.org/354.png",
@@ -1328,31 +1354,7 @@
             "https://crests.football-data.org/1044.png",
 
         "afc bournemouth":
-            "https://crests.football-data.org/1044.png",
-
-        "leeds united":
-            "https://crests.football-data.org/341.png",
-
-        "leeds":
-            "https://crests.football-data.org/341.png",
-
-        "burnley":
-            "https://crests.football-data.org/328.png",
-
-        "sunderland":
-            "https://crests.football-data.org/71.png",
-
-        "leicester city":
-            "https://crests.football-data.org/338.png",
-
-        "leicester":
-            "https://crests.football-data.org/338.png",
-
-        "southampton":
-            "https://crests.football-data.org/340.png",
-
-        "ipswich town":
-            "https://crests.football-data.org/349.png"
+            "https://crests.football-data.org/1044.png"
     };
 
 
@@ -1377,7 +1379,9 @@
         if (
             serverLogo
             &&
-            String(serverLogo).startsWith(
+            String(
+                serverLogo
+            ).startsWith(
                 "http"
             )
         ) {
@@ -1385,14 +1389,20 @@
             return serverLogo;
         }
 
+
         const name =
             normalizeTeamName(
                 teamName
             );
 
-        if (TEAM_LOGOS[name]) {
 
-            return TEAM_LOGOS[name];
+        if (
+            TEAM_LOGOS[name]
+        ) {
+
+            return TEAM_LOGOS[
+                name
+            ];
         }
 
 
@@ -1408,9 +1418,13 @@
         ) {
 
             if (
-                name.includes(key)
+                name.includes(
+                    key
+                )
                 ||
-                key.includes(name)
+                key.includes(
+                    name
+                )
             ) {
 
                 return logo;
@@ -1429,11 +1443,26 @@
         return String(
             value ?? ""
         )
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
     }
 
 
@@ -1444,9 +1473,18 @@
         return String(
             value ?? ""
         )
-        .replaceAll("\\","\\\\")
-        .replaceAll("'","\\'")
-        .replaceAll("\n"," ");
+        .replaceAll(
+            "\\",
+            "\\\\"
+        )
+        .replaceAll(
+            "'",
+            "\\'"
+        )
+        .replaceAll(
+            "\n",
+            " "
+        );
     }
 
 
@@ -1455,10 +1493,15 @@
     ) {
 
         const number =
-            Number(value);
+            Number(
+                value
+            );
+
 
         if (
-            !Number.isFinite(number)
+            !Number.isFinite(
+                number
+            )
             ||
             number <= 1
         ) {
@@ -1466,7 +1509,10 @@
             return "—";
         }
 
-        return number.toFixed(2);
+
+        return number.toFixed(
+            2
+        );
     }
 
 
@@ -1479,8 +1525,12 @@
             return "";
         }
 
+
         const date =
-            new Date(value);
+            new Date(
+                value
+            );
+
 
         if (
             Number.isNaN(
@@ -1490,6 +1540,7 @@
 
             return "";
         }
+
 
         return date.toLocaleString(
             "ru-RU",
@@ -1514,23 +1565,32 @@
                 serverUrl
             );
 
+
         if (!logo) {
 
             return `
                 <div class="team-logo-wrap">
+
                     <div class="fallback-logo">
                         ⚽
                     </div>
+
                 </div>
             `;
         }
+
 
         return `
             <div class="team-logo-wrap">
 
                 <img
-                    src="${escapeHtml(logo)}"
-                    alt="${escapeHtml(team)}"
+                    src="${escapeHtml(
+                        logo
+                    )}"
+
+                    alt="${escapeHtml(
+                        team
+                    )}"
 
                     onerror="
                         this.style.display='none';
@@ -1543,6 +1603,306 @@
     }
 
 
+    /*
+        Главное правило BetCoin:
+
+        если время начала матча наступило,
+        больше поставить нельзя.
+    */
+
+    function canBetOnMatch(
+        match
+    ) {
+
+        if (!match) {
+
+            return false;
+        }
+
+
+        const status =
+            String(
+                match.status
+                ||
+                ""
+            ).toUpperCase();
+
+
+        const closedStatuses = [
+            "1H",
+            "2H",
+            "HT",
+            "ET",
+            "P",
+            "BT",
+            "INT",
+            "LIVE",
+            "FT",
+            "AET",
+            "PEN",
+            "FINISHED",
+            "CANC",
+            "PST",
+            "ABD",
+            "AWD",
+            "WO"
+        ];
+
+
+        if (
+            closedStatuses.includes(
+                status
+            )
+        ) {
+
+            return false;
+        }
+
+
+        if (
+            match.date
+        ) {
+
+            const start =
+                new Date(
+                    match.date
+                )
+                .getTime();
+
+
+            if (
+                Number.isFinite(
+                    start
+                )
+                &&
+                Date.now()
+                >=
+                start
+            ) {
+
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+
+
+    function getMatchTimeStatus(
+        match
+    ) {
+
+        const status =
+            String(
+                match?.status
+                ||
+                ""
+            ).toUpperCase();
+
+
+        const finishedStatuses = [
+            "FT",
+            "AET",
+            "PEN",
+            "FINISHED"
+        ];
+
+
+        if (
+            finishedStatuses.includes(
+                status
+            )
+        ) {
+
+            return {
+                className:
+                    "closed",
+
+                text:
+                    "✅ Матч завершён • ставки закрыты"
+            };
+        }
+
+
+        if (
+            !canBetOnMatch(
+                match
+            )
+        ) {
+
+            return {
+                className:
+                    "closed",
+
+                text:
+                    "🔴 LIVE • ставки закрыты"
+            };
+        }
+
+
+        if (
+            !match?.date
+        ) {
+
+            return {
+                className: "",
+                text: ""
+            };
+        }
+
+
+        const start =
+            new Date(
+                match.date
+            ).getTime();
+
+
+        const diff =
+            start
+            -
+            Date.now();
+
+
+        if (
+            diff <= 0
+        ) {
+
+            return {
+                className:
+                    "closed",
+
+                text:
+                    "🔴 LIVE • ставки закрыты"
+            };
+        }
+
+
+        const totalMinutes =
+            Math.ceil(
+                diff / 60000
+            );
+
+
+        if (
+            totalMinutes <= 10
+        ) {
+
+            return {
+                className:
+                    "soon",
+
+                text:
+                    `⏰ Начало через ${totalMinutes} мин`
+            };
+        }
+
+
+        if (
+            totalMinutes < 60
+        ) {
+
+            return {
+                className:
+                    "soon",
+
+                text:
+                    `🕒 Через ${totalMinutes} мин`
+            };
+        }
+
+
+        const hours =
+            Math.floor(
+                totalMinutes / 60
+            );
+
+
+        const minutes =
+            totalMinutes % 60;
+
+
+        if (
+            hours < 24
+        ) {
+
+            return {
+                className: "",
+
+                text:
+                    minutes > 0
+
+                    ?
+
+                    `🕒 Через ${hours} ч ${minutes} мин`
+
+                    :
+
+                    `🕒 Через ${hours} ч`
+            };
+        }
+
+
+        const days =
+            Math.floor(
+                hours / 24
+            );
+
+
+        const remainingHours =
+            hours % 24;
+
+
+        return {
+            className: "",
+
+            text:
+                remainingHours > 0
+
+                ?
+
+                `🗓 Через ${days} дн ${remainingHours} ч`
+
+                :
+
+                `🗓 Через ${days} дн`
+        };
+    }
+
+
+    function findMatchByFixtureId(
+        fixtureId
+    ) {
+
+        if (
+            selectedMatch
+            &&
+            Number(
+                selectedMatch.fixture_id
+            )
+            ===
+            Number(
+                fixtureId
+            )
+        ) {
+
+            return selectedMatch;
+        }
+
+
+        return matches.find(
+            match =>
+                Number(
+                    match.fixture_id
+                )
+                ===
+                Number(
+                    fixtureId
+                )
+        );
+    }
+
+
     async function apiPost(
         path,
         payload={}
@@ -1552,7 +1912,8 @@
             await fetch(
                 SERVER_URL + path,
                 {
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
                         "Content-Type":
@@ -1565,16 +1926,21 @@
                     body:
                         JSON.stringify({
                             ...payload,
+
                             initData:
                                 telegramInitData
                         })
                 }
             );
 
+
         const data =
             await response.json();
 
-        if (!response.ok) {
+
+        if (
+            !response.ok
+        ) {
 
             throw new Error(
                 data.error
@@ -1582,6 +1948,7 @@
                 "Ошибка сервера"
             );
         }
+
 
         return data;
     }
@@ -1602,6 +1969,7 @@
                     document.getElementById(
                         id
                     );
+
 
                 if (el) {
 
@@ -1629,6 +1997,7 @@
                 );
         }
 
+
         if (
             data.bets
             !==
@@ -1636,8 +2005,11 @@
         ) {
 
             bets =
-                data.bets || [];
+                data.bets
+                ||
+                [];
         }
+
 
         if (
             data.parlays
@@ -1646,8 +2018,11 @@
         ) {
 
             parlays =
-                data.parlays || [];
+                data.parlays
+                ||
+                [];
         }
+
 
         if (
             data.tasks
@@ -1656,8 +2031,11 @@
         ) {
 
             tasks =
-                data.tasks || [];
+                data.tasks
+                ||
+                [];
         }
+
 
         if (
             data.achievements
@@ -1671,6 +2049,7 @@
                 [];
         }
 
+
         if (
             data.stats
             !==
@@ -1678,8 +2057,11 @@
         ) {
 
             stats =
-                data.stats || {};
+                data.stats
+                ||
+                {};
         }
+
 
         if (
             data.xp
@@ -1693,6 +2075,7 @@
                 );
         }
 
+
         if (
             data.level
             !==
@@ -1705,11 +2088,15 @@
                 );
         }
 
-        if (data.league) {
+
+        if (
+            data.league
+        ) {
 
             league =
                 data.league;
         }
+
 
         if (
             data.current_level_xp
@@ -1723,17 +2110,6 @@
                 );
         }
 
-        if (
-            data.xp_to_next_level
-            !==
-            undefined
-        ) {
-
-            xpToNextLevel =
-                Number(
-                    data.xp_to_next_level
-                );
-        }
 
         if (
             data.my_rank
@@ -1744,6 +2120,7 @@
             myRank =
                 data.my_rank;
         }
+
 
         updateInterface();
     }
@@ -1758,13 +2135,18 @@
                     "/api/session"
                 );
 
+
             currentUser =
-                data.user || null;
+                data.user
+                ||
+                null;
+
 
             dailyReward =
                 data.daily_reward
                 ||
                 dailyReward;
+
 
             if (
                 data.leaderboard
@@ -1778,9 +2160,11 @@
                     data.leaderboard.my_rank;
             }
 
+
             applyCommonData(
                 data
             );
+
 
         } catch (error) {
 
@@ -1802,8 +2186,10 @@
                     "/api/matches"
                 );
 
+
             const data =
                 await response.json();
+
 
             if (
                 !response.ok
@@ -1818,10 +2204,15 @@
                 );
             }
 
+
             matches =
-                data.matches || [];
+                data.matches
+                ||
+                [];
+
 
             renderMatches();
+
 
         } catch (error) {
 
@@ -1831,13 +2222,17 @@
                 </div>
             `;
 
+
             document.getElementById(
                 "homeMatches"
-            ).innerHTML = html;
+            ).innerHTML =
+                html;
+
 
             document.getElementById(
                 "matchesList"
-            ).innerHTML = html;
+            ).innerHTML =
+                html;
         }
     }
 
@@ -1872,7 +2267,16 @@
     ) {
 
         const numeric =
-            Number(odd);
+            Number(
+                odd
+            );
+
+
+        const bettingClosed =
+            !canBetOnMatch(
+                match
+            );
+
 
         if (
             !Number.isFinite(
@@ -1880,6 +2284,8 @@
             )
             ||
             numeric <= 1
+            ||
+            bettingClosed
         ) {
 
             return `
@@ -1888,11 +2294,36 @@
                 >
 
                     <span class="odd-name">
-                        ${escapeHtml(label)}
+                        ${
+                            bettingClosed
+                            ?
+                            "🔒 "
+                            :
+                            ""
+                        }
+                        ${escapeHtml(
+                            label
+                        )}
                     </span>
 
                     <span class="odd-value">
-                        —
+                        ${
+                            Number.isFinite(
+                                numeric
+                            )
+                            &&
+                            numeric > 1
+
+                            ?
+
+                            formatOdd(
+                                numeric
+                            )
+
+                            :
+
+                            "—"
+                        }
                     </span>
 
                 </button>
@@ -1944,7 +2375,16 @@
     ) {
 
         const odds =
-            match.odds || {};
+            match.odds
+            ||
+            {};
+
+
+        const timeStatus =
+            getMatchTimeStatus(
+                match
+            );
+
 
         return `
             <div
@@ -1978,6 +2418,30 @@
                     </div>
 
                 </div>
+
+
+                ${
+                    timeStatus.text
+
+                    ?
+
+                    `
+                        <div
+                            class="
+                                match-countdown
+                                ${timeStatus.className}
+                            "
+                        >
+                            ${escapeHtml(
+                                timeStatus.text
+                            )}
+                        </div>
+                    `
+
+                    :
+
+                    ""
+                }
 
 
                 <div class="teams">
@@ -2019,6 +2483,7 @@
 
                 <div
                     class="odds-row"
+
                     onclick="
                         event.stopPropagation()
                     "
@@ -2054,7 +2519,9 @@
 
     function renderMatches() {
 
-        if (!matches.length) {
+        if (
+            !matches.length
+        ) {
 
             const html = `
                 <div class="empty">
@@ -2062,13 +2529,18 @@
                 </div>
             `;
 
+
             document.getElementById(
                 "homeMatches"
-            ).innerHTML = html;
+            ).innerHTML =
+                html;
+
 
             document.getElementById(
                 "matchesList"
-            ).innerHTML = html;
+            ).innerHTML =
+                html;
+
 
             return;
         }
@@ -2166,11 +2638,6 @@
             }
 
 
-            /*
-                Если подробный endpoint не прислал logo,
-                берём их из списка матчей.
-            */
-
             const listMatch =
                 matches.find(
                     item =>
@@ -2184,17 +2651,32 @@
                 );
 
 
-            if (listMatch) {
+            if (
+                listMatch
+            ) {
 
                 data.home_logo =
                     data.home_logo
                     ||
                     listMatch.home_logo;
 
+
                 data.away_logo =
                     data.away_logo
                     ||
                     listMatch.away_logo;
+
+
+                data.date =
+                    data.date
+                    ||
+                    listMatch.date;
+
+
+                data.status =
+                    data.status
+                    ||
+                    listMatch.status;
             }
 
 
@@ -2226,9 +2708,13 @@
             previousPage
             ===
             "match"
+
             ?
+
             "matches"
+
             :
+
             previousPage
         );
     }
@@ -2242,7 +2728,15 @@
     ) {
 
         const numericOdd =
-            Number(odd);
+            Number(
+                odd
+            );
+
+
+        const bettingClosed =
+            !canBetOnMatch(
+                match
+            );
 
 
         if (
@@ -2251,6 +2745,8 @@
             )
             ||
             numericOdd <= 1
+            ||
+            bettingClosed
         ) {
 
             return `
@@ -2259,11 +2755,36 @@
                 >
 
                     <span class="odd-name">
-                        ${escapeHtml(label)}
+                        ${
+                            bettingClosed
+                            ?
+                            "🔒 "
+                            :
+                            ""
+                        }
+                        ${escapeHtml(
+                            label
+                        )}
                     </span>
 
                     <span class="odd-value">
-                        —
+                        ${
+                            Number.isFinite(
+                                numericOdd
+                            )
+                            &&
+                            numericOdd > 1
+
+                            ?
+
+                            formatOdd(
+                                numericOdd
+                            )
+
+                            :
+
+                            "—"
+                        }
                     </span>
 
                 </button>
@@ -2317,7 +2838,10 @@
     ) {
 
         const number =
-            Number(line);
+            Number(
+                line
+            );
+
 
         if (
             number > 0
@@ -2326,7 +2850,10 @@
             return `+${number}`;
         }
 
-        return String(number);
+
+        return String(
+            number
+        );
     }
 
 
@@ -2337,17 +2864,25 @@
         const handicaps =
             match.handicaps;
 
-        if (!handicaps) {
+
+        if (
+            !handicaps
+        ) {
 
             return "";
         }
 
 
         const homeLines =
-            handicaps.home || {};
+            handicaps.home
+            ||
+            {};
+
 
         const awayLines =
-            handicaps.away || {};
+            handicaps.away
+            ||
+            {};
 
 
         const homeRows =
@@ -2357,10 +2892,14 @@
             .filter(
                 ([line,odd]) =>
                     Number.isFinite(
-                        Number(odd)
+                        Number(
+                            odd
+                        )
                     )
                     &&
-                    Number(odd) > 1
+                    Number(
+                        odd
+                    ) > 1
             );
 
 
@@ -2371,10 +2910,14 @@
             .filter(
                 ([line,odd]) =>
                     Number.isFinite(
-                        Number(odd)
+                        Number(
+                            odd
+                        )
                     )
                     &&
-                    Number(odd) > 1
+                    Number(
+                        odd
+                    ) > 1
             );
 
 
@@ -2503,7 +3046,21 @@
 
 
         const odds =
-            match.odds || {};
+            match.odds
+            ||
+            {};
+
+
+        const timeStatus =
+            getMatchTimeStatus(
+                match
+            );
+
+
+        const bettingClosed =
+            !canBetOnMatch(
+                match
+            );
 
 
         let html = `
@@ -2528,6 +3085,30 @@
                     </div>
 
                 </div>
+
+
+                ${
+                    timeStatus.text
+
+                    ?
+
+                    `
+                        <div
+                            class="
+                                match-countdown
+                                ${timeStatus.className}
+                            "
+                        >
+                            ${escapeHtml(
+                                timeStatus.text
+                            )}
+                        </div>
+                    `
+
+                    :
+
+                    ""
+                }
 
 
                 <div class="teams">
@@ -2567,8 +3148,22 @@
                 </div>
 
             </div>
+        `;
 
 
+        if (
+            bettingClosed
+        ) {
+
+            html += `
+                <div class="closed-market">
+                    🔒 Матч уже начался. Ставки закрыты.
+                </div>
+            `;
+        }
+
+
+        html += `
             <div class="market">
 
                 <div class="market-title">
@@ -2756,6 +3351,28 @@
         odd
     ) {
 
+        const match =
+            findMatchByFixtureId(
+                fixtureId
+            );
+
+
+        if (
+            !canBetOnMatch(
+                match
+            )
+        ) {
+
+            tg.showAlert(
+                "Матч уже начался. Ставки закрыты."
+            );
+
+            refreshMatchTimers();
+
+            return;
+        }
+
+
         selectedBet = {
             fixture_id:
                 Number(
@@ -2800,7 +3417,9 @@
                 ${escapeHtml(
                     selectedBet.selection
                 )}
+
                 •
+
                 ${formatOdd(
                     selectedBet.odd
                 )}
@@ -2812,9 +3431,13 @@
             "parlayChoiceBtn"
         ).textContent =
             alreadySelected
+
             ?
+
             "✓ Убрать из экспресса"
+
             :
+
             "+ Экспресс";
 
 
@@ -2831,7 +3454,29 @@
         );
 
 
-        if (!selectedBet) {
+        if (
+            !selectedBet
+        ) {
+
+            return;
+        }
+
+
+        const match =
+            findMatchByFixtureId(
+                selectedBet.fixture_id
+            );
+
+
+        if (
+            !canBetOnMatch(
+                match
+            )
+        ) {
+
+            tg.showAlert(
+                "Матч уже начался. Ставки закрыты."
+            );
 
             return;
         }
@@ -2846,9 +3491,8 @@
                 )}
             </b>
 
-            <div
-                class="notice"
-            >
+            <div class="notice">
+
                 ${escapeHtml(
                     selectedBet.selection
                 )}
@@ -2858,13 +3502,15 @@
                 ${formatOdd(
                     selectedBet.odd
                 )}
+
             </div>
         `;
 
 
         document.getElementById(
             "singleAmount"
-        ).value = "";
+        ).value =
+            "";
 
 
         updateSinglePossible();
@@ -2878,7 +3524,9 @@
 
     function updateSinglePossible() {
 
-        if (!selectedBet) {
+        if (
+            !selectedBet
+        ) {
 
             return;
         }
@@ -2906,7 +3554,8 @@
             amount <= 0
         ) {
 
-            el.textContent = "";
+            el.textContent =
+                "";
 
             return;
         }
@@ -2925,7 +3574,45 @@
 
     async function confirmSingleBet() {
 
-        if (!selectedBet) {
+        if (
+            !selectedBet
+        ) {
+
+            return;
+        }
+
+
+        const match =
+            findMatchByFixtureId(
+                selectedBet.fixture_id
+            );
+
+
+        /*
+            Защита №1 на телефоне.
+
+            Даже если окно ставки было открыто
+            за минуту до начала, после старта
+            отправить ставку уже нельзя.
+        */
+
+        if (
+            !canBetOnMatch(
+                match
+            )
+        ) {
+
+            closeModal(
+                "singleOverlay"
+            );
+
+
+            tg.showAlert(
+                "Матч уже начался. Ставка не принята."
+            );
+
+
+            refreshMatchTimers();
 
             return;
         }
@@ -2961,13 +3648,22 @@
             );
 
 
-        btn.disabled = true;
+        btn.disabled =
+            true;
+
 
         btn.textContent =
             "Проверяем коэффициент...";
 
 
         try {
+
+            /*
+                Защита №2 — сервер.
+
+                Сервер снова проверяет матч
+                и коэффициент перед созданием ставки.
+            */
 
             const data =
                 await apiPost(
@@ -3020,6 +3716,7 @@
             btn.disabled =
                 false;
 
+
             btn.textContent =
                 "Сделать ставку";
         }
@@ -3053,7 +3750,37 @@
 
     function addSelectedToParlay() {
 
-        if (!selectedBet) {
+        if (
+            !selectedBet
+        ) {
+
+            return;
+        }
+
+
+        const match =
+            findMatchByFixtureId(
+                selectedBet.fixture_id
+            );
+
+
+        if (
+            !canBetOnMatch(
+                match
+            )
+        ) {
+
+            closeModal(
+                "betChoiceOverlay"
+            );
+
+
+            tg.showAlert(
+                "Матч уже начался. Его нельзя добавить в экспресс."
+            );
+
+
+            refreshMatchTimers();
 
             return;
         }
@@ -3156,6 +3883,54 @@
     }
 
 
+    function removeStartedMatchesFromParlay() {
+
+        const before =
+            parlaySlip.length;
+
+
+        parlaySlip =
+            parlaySlip.filter(
+                leg => {
+
+                    const match =
+                        findMatchByFixtureId(
+                            leg.fixture_id
+                        );
+
+
+                    return canBetOnMatch(
+                        match
+                    );
+                }
+            );
+
+
+        if (
+            before
+            !==
+            parlaySlip.length
+        ) {
+
+            updateParlayFloat();
+
+            if (
+                document
+                .getElementById(
+                    "parlayOverlay"
+                )
+                .classList
+                .contains(
+                    "show"
+                )
+            ) {
+
+                renderParlaySlip();
+            }
+        }
+    }
+
+
     function updateParlayFloat() {
 
         const btn =
@@ -3196,7 +3971,11 @@
 
     function openParlayModal() {
 
+        removeStartedMatchesFromParlay();
+
+
         renderParlaySlip();
+
 
         openModal(
             "parlayOverlay"
@@ -3323,12 +4102,14 @@
 
     function clearParlay() {
 
-        parlaySlip = [];
+        parlaySlip =
+            [];
 
 
         document.getElementById(
             "parlayAmount"
-        ).value = "";
+        ).value =
+            "";
 
 
         renderParlaySlip();
@@ -3367,7 +4148,8 @@
             amount <= 0
         ) {
 
-            el.textContent = "";
+            el.textContent =
+                "";
 
             return;
         }
@@ -3385,6 +4167,36 @@
 
 
     async function confirmParlay() {
+
+        /*
+            Перед отправкой экспресса ещё раз
+            убираем матчи, которые успели начаться.
+        */
+
+        const previousCount =
+            parlaySlip.length;
+
+
+        removeStartedMatchesFromParlay();
+
+
+        if (
+            previousCount
+            !==
+            parlaySlip.length
+        ) {
+
+            tg.showAlert(
+                "Один из матчей уже начался и был удалён из экспресса."
+            );
+
+
+            renderParlaySlip();
+
+
+            return;
+        }
+
 
         if (
             parlaySlip.length
@@ -3472,7 +4284,8 @@
             );
 
 
-            parlaySlip = [];
+            parlaySlip =
+                [];
 
 
             updateParlayFloat();
@@ -3503,6 +4316,7 @@
 
             btn.disabled =
                 false;
+
 
             btn.textContent =
                 "Поставить экспресс";
@@ -3690,13 +4504,11 @@
                                 )}
                             </span>
 
-
                             <div class="bet-main">
                                 ${escapeHtml(
                                     bet.match
                                 )}
                             </div>
-
 
                             <div>
                                 ${escapeHtml(
@@ -3710,10 +4522,11 @@
                                 )}
                             </div>
 
-
                             ${
                                 bet.score
+
                                 ?
+
                                 `
                                     <div class="notice">
                                         Счёт:
@@ -3722,10 +4535,11 @@
                                         )}
                                     </div>
                                 `
+
                                 :
+
                                 ""
                             }
-
 
                             <div class="bet-row">
 
@@ -3738,7 +4552,6 @@
                                 </b>
 
                             </div>
-
 
                             <div class="bet-row">
 
@@ -3796,11 +4609,9 @@
                                 )}
                             </span>
 
-
                             <div class="bet-main">
                                 Экспресс #${parlay.id}
                             </div>
-
 
                             <div class="notice">
 
@@ -3822,7 +4633,6 @@
                                 )}
 
                             </div>
-
 
                             ${
                                 (
@@ -3854,11 +4664,15 @@
 
                                                 ${
                                                     leg.score
+
                                                     ?
+
                                                     ` • ${escapeHtml(
                                                         leg.score
                                                     )}`
+
                                                     :
+
                                                     ""
                                                 }
 
@@ -3869,7 +4683,6 @@
                                 )
                                 .join("")
                             }
-
 
                             <div class="bet-row">
 
@@ -3882,7 +4695,6 @@
                                 </b>
 
                             </div>
-
 
                             <div class="bet-row">
 
@@ -3938,9 +4750,13 @@
             "singleBets"
         ).style.display =
             type === "single"
+
             ?
+
             "block"
+
             :
+
             "none";
 
 
@@ -3948,9 +4764,13 @@
             "parlayBets"
         ).style.display =
             type === "parlay"
+
             ?
+
             "block"
+
             :
+
             "none";
     }
 
@@ -3966,7 +4786,9 @@
 
 
             leaderboardPlayers =
-                data.players || [];
+                data.players
+                ||
+                [];
 
 
             myRank =
@@ -4089,36 +4911,70 @@
     function renderStats() {
 
         const values = [
+
             [
-                stats.total_bets || 0,
+                stats.total_bets
+                ||
+                0,
+
                 "Ординаров"
             ],
+
             [
-                stats.wins || 0,
+                stats.wins
+                ||
+                0,
+
                 "Побед"
             ],
+
             [
-                `${stats.win_rate || 0}%`,
+                `${
+                    stats.win_rate
+                    ||
+                    0
+                }%`,
+
                 "Процент побед"
             ],
+
             [
-                stats.current_win_streak || 0,
+                stats.current_win_streak
+                ||
+                0,
+
                 "Серия побед"
             ],
+
             [
-                stats.total_parlays || 0,
+                stats.total_parlays
+                ||
+                0,
+
                 "Экспрессов"
             ],
+
             [
-                stats.parlay_wins || 0,
+                stats.parlay_wins
+                ||
+                0,
+
                 "Выиграно экспрессов"
             ],
+
             [
-                stats.net_profit || 0,
+                stats.net_profit
+                ||
+                0,
+
                 "Профит 🪙"
             ],
+
             [
-                stats.total_won || 0,
+                stats.total_won
+                ||
+                0,
+
                 "Выиграно 🪙"
             ]
         ];
@@ -4199,16 +5055,19 @@
                                     task.reward_type
                                     ===
                                     "xp"
+
                                     ?
+
                                     `+${task.reward} XP`
+
                                     :
+
                                     `+${task.reward} 🪙`
                                 }
 
                             </div>
 
                         </div>
-
 
                         <button
                             class="task-btn"
@@ -4219,9 +5078,13 @@
                                     ||
                                     task.claimed
                                 )
+
                                 ?
+
                                 "disabled"
+
                                 :
+
                                 ""
                             }
 
@@ -4236,13 +5099,21 @@
 
                             ${
                                 task.claimed
+
                                 ?
+
                                 "Получено"
+
                                 :
+
                                 task.completed
+
                                 ?
+
                                 "Забрать"
+
                                 :
+
                                 "В процессе"
                             }
 
@@ -4305,7 +5176,6 @@
 
                         </div>
 
-
                         <button
                             class="task-btn"
 
@@ -4315,9 +5185,13 @@
                                     ||
                                     item.claimed
                                 )
+
                                 ?
+
                                 "disabled"
+
                                 :
+
                                 ""
                             }
 
@@ -4332,13 +5206,21 @@
 
                             ${
                                 item.claimed
+
                                 ?
+
                                 "Получено"
+
                                 :
+
                                 item.completed
+
                                 ?
+
                                 "Забрать"
+
                                 :
+
                                 "Закрыто"
                             }
 
@@ -4372,11 +5254,14 @@
             btn.disabled =
                 false;
 
+
             btn.textContent =
                 "Получить +300 🪙";
 
+
             timer.textContent =
                 "Бонус доступен";
+
 
             return;
         }
@@ -4464,9 +5349,13 @@
             "rankText"
         ).textContent =
             myRank
+
             ?
+
             `Место в рейтинге: #${myRank}`
+
             :
+
             "Место в рейтинге: —";
 
 
@@ -4759,6 +5648,84 @@
     }
 
 
+    /*
+        Обновляем таймеры автоматически.
+
+        Каждые 15 секунд приложение проверяет:
+        не начался ли какой-то матч.
+    */
+
+    function refreshMatchTimers() {
+
+        renderMatches();
+
+
+        removeStartedMatchesFromParlay();
+
+
+        if (
+            selectedMatch
+            &&
+            document
+            .getElementById(
+                "page-match"
+            )
+            .classList
+            .contains(
+                "active"
+            )
+        ) {
+
+            renderMatchDetail(
+                selectedMatch
+            );
+        }
+
+
+        /*
+            Если пользователь держит открытым
+            окно ординара, а матч уже начался,
+            закрываем окно.
+        */
+
+        if (
+            selectedBet
+            &&
+            document
+            .getElementById(
+                "singleOverlay"
+            )
+            .classList
+            .contains(
+                "show"
+            )
+        ) {
+
+            const match =
+                findMatchByFixtureId(
+                    selectedBet.fixture_id
+                );
+
+
+            if (
+                !canBetOnMatch(
+                    match
+                )
+            ) {
+
+                closeModal(
+                    "singleOverlay"
+                );
+
+
+                tg.showAlert(
+                    "Матч начался. Приём ставок закрыт."
+                );
+            }
+        }
+    }
+
+
     async function init() {
 
         await Promise.all([
@@ -4768,6 +5735,12 @@
 
 
         loadLeaderboard();
+
+
+        setInterval(
+            refreshMatchTimers,
+            15000
+        );
     }
 
 

@@ -15,8 +15,8 @@
 <style>
 
 * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 :root {
@@ -97,6 +97,106 @@ button {
     font-size:25px;
     font-weight:900;
     margin:0 0 18px;
+}
+
+.section-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin:22px 0 12px;
+}
+
+.section-head h2 {
+    margin:0;
+    font-size:21px;
+}
+
+.section-link {
+    border:0;
+    background:transparent;
+    color:var(--accent);
+    padding:5px;
+    font-size:13px;
+    font-weight:800;
+}
+
+.home-hero {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(47,128,255,.22),
+            rgba(47,128,255,.05)
+        ),
+        var(--card);
+
+    border:1px solid rgba(47,128,255,.28);
+    border-radius:22px;
+    padding:17px;
+    margin-bottom:15px;
+}
+
+.home-hero-top {
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:center;
+}
+
+.home-user {
+    font-weight:900;
+    font-size:18px;
+}
+
+.home-level {
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.home-coins {
+    font-size:22px;
+    font-weight:900;
+}
+
+.quick-actions {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:14px;
+}
+
+.quick-btn {
+    border:1px solid var(--border);
+    background:var(--card2);
+    color:white;
+    border-radius:13px;
+    min-height:45px;
+    padding:8px;
+    font-weight:800;
+    font-size:12px;
+}
+
+.quick-btn:active {
+    transform:scale(.98);
+}
+
+.popular-card {
+    position:relative;
+    overflow:hidden;
+}
+
+.hot-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:10px;
+    font-weight:900;
+    color:#ffbd6a;
+    background:rgba(255,159,67,.12);
+    border:1px solid rgba(255,159,67,.25);
+    border-radius:999px;
+    padding:5px 8px;
 }
 
 .card {
@@ -582,9 +682,7 @@ button {
 }
 
 
-/* =========================================================
-   MINI PARLAY
-========================================================= */
+/* MINI PARLAY */
 
 .mini-parlay {
     position:fixed;
@@ -680,7 +778,7 @@ button {
     font-weight:900;
 }
 
-@media (max-width:420px) {
+@media(max-width:420px) {
 
     .mini-parlay-bottom {
         grid-template-columns:90px 1fr;
@@ -690,16 +788,23 @@ button {
         grid-column:1 / -1;
         width:100%;
     }
+
+    .quick-actions {
+        grid-template-columns:1fr 1fr 1fr;
+    }
+
 }
 
 </style>
 </head>
 
-
 <body>
+
 
 <div class="app">
 
+
+<!-- HOME -->
 
 <section
     id="page-home"
@@ -719,20 +824,126 @@ button {
 
     </div>
 
-    <div id="homeFavoriteTeams"></div>
 
-    <h2>
-        Ближайшие матчи
-    </h2>
+    <div class="home-hero">
+
+        <div class="home-hero-top">
+
+            <div>
+
+                <div
+                    id="homeUserName"
+                    class="home-user"
+                >
+                    Игрок
+                </div>
+
+                <div
+                    id="homeUserLevel"
+                    class="home-level"
+                >
+                    Уровень 1
+                </div>
+
+            </div>
+
+
+            <div
+                id="homeCoins"
+                class="home-coins"
+            >
+                0 🪙
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+            <button
+                class="quick-btn"
+                onclick="openTodayMatches()"
+            >
+                📅 Сегодня
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openTop5Matches()"
+            >
+                ⭐ Топ-5
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openEuropeMatches()"
+            >
+                🏆 Еврокубки
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="homeFavoriteTeams"
+    ></div>
+
+
+    <div class="section-head">
+
+        <h2>
+            🔥 Популярные
+        </h2>
+
+        <button
+            class="section-link"
+            onclick="openTop5Matches()"
+        >
+            Все матчи
+        </button>
+
+    </div>
+
+
+    <div id="popularMatches">
+
+        <div class="loader">
+            Подбираем матчи...
+        </div>
+
+    </div>
+
+
+    <div class="section-head">
+
+        <h2>
+            ⚽ Ближайшие
+        </h2>
+
+        <button
+            class="section-link"
+            onclick="showPage('matches')"
+        >
+            Смотреть все
+        </button>
+
+    </div>
+
 
     <div id="homeMatches">
+
         <div class="loader">
             Загрузка...
         </div>
+
     </div>
 
 </section>
 
+
+<!-- MATCHES -->
 
 <section
     id="page-matches"
@@ -752,12 +963,14 @@ button {
 
     </div>
 
+
     <input
         id="search"
         class="search-box"
         placeholder="🔎 Найти команду или матч..."
         oninput="changeSearch(this.value)"
     >
+
 
     <div class="filters">
 
@@ -969,6 +1182,8 @@ button {
 </section>
 
 
+<!-- MATCH DETAIL -->
+
 <section
     id="page-match"
     class="page"
@@ -985,6 +1200,8 @@ button {
 
 </section>
 
+
+<!-- BETS -->
 
 <section
     id="page-bets"
@@ -1073,6 +1290,8 @@ button {
 </section>
 
 
+<!-- LEADERBOARD -->
+
 <section
     id="page-leaderboard"
     class="page"
@@ -1086,6 +1305,8 @@ button {
 
 </section>
 
+
+<!-- PROFILE -->
 
 <section
     id="page-profile"
@@ -1132,10 +1353,12 @@ button {
         </div>
 
         <div class="xp-bar">
+
             <div
                 id="xpFill"
                 class="xp-fill"
             ></div>
+
         </div>
 
         <div
@@ -1278,6 +1501,8 @@ button {
 </div>
 
 
+<!-- NAV -->
+
 <nav class="bottom-nav">
 
 <button
@@ -1328,7 +1553,7 @@ button {
 </nav>
 
 
-<!-- BET TYPE -->
+<!-- BET CHOICE -->
 
 <div
     id="betChoiceOverlay"
@@ -1513,6 +1738,8 @@ const initData =
     tg.initData || "";
 
 
+/* DATA */
+
 let balance = 0;
 
 let matches = [];
@@ -1523,7 +1750,6 @@ let bets = [];
 
 let parlays = [];
 
-
 let favoriteMatches =
     JSON.parse(
         localStorage.getItem(
@@ -1532,7 +1758,6 @@ let favoriteMatches =
         ||
         "[]"
     );
-
 
 let favoriteTeams =
     JSON.parse(
@@ -1543,11 +1768,9 @@ let favoriteTeams =
         "[]"
     );
 
-
 let parlaySlip = [];
 
 let parlayStake = 0;
-
 
 let currentLeague = "top5";
 
@@ -1555,16 +1778,13 @@ let dateFilter = "all";
 
 let searchQuery = "";
 
-
 let currentBetFilter = "all";
 
 let currentBetTab = "single";
 
-
 let selectedBet = null;
 
 let currentUser = null;
-
 
 let profileXp = 0;
 
@@ -1586,8 +1806,53 @@ let dailyReward = {};
 
 
 /* =========================================================
-   HELPERS
+   POPULAR TEAMS
 ========================================================= */
+
+const POPULAR_TEAMS = {
+
+    "real madrid":100,
+    "barcelona":98,
+    "manchester city":96,
+    "man city":96,
+    "liverpool":95,
+    "arsenal":94,
+    "manchester united":93,
+    "man united":93,
+    "chelsea":90,
+    "tottenham":87,
+
+    "bayern munich":96,
+    "bayern münchen":96,
+    "bayern":96,
+    "borussia dortmund":88,
+
+    "psg":96,
+    "paris saint germain":96,
+    "paris saint-germain":96,
+    "marseille":82,
+
+    "inter":91,
+    "inter milan":91,
+    "milan":89,
+    "ac milan":89,
+    "juventus":90,
+    "napoli":87,
+    "roma":81,
+
+    "atletico madrid":89,
+    "atlético madrid":89,
+    "athletic club":80,
+    "real betis":78,
+
+    "newcastle":82,
+    "aston villa":80,
+    "brighton":72,
+    "west ham":70
+};
+
+
+/* HELPERS */
 
 function escapeHtml(value) {
 
@@ -1610,6 +1875,18 @@ function jsString(value) {
     .replaceAll("\\","\\\\")
     .replaceAll("'","\\'")
     .replaceAll("\n"," ");
+}
+
+
+function normalizeTeamName(
+    value
+) {
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .toLowerCase();
 }
 
 
@@ -1694,12 +1971,25 @@ function updateBalance() {
             }
         }
     );
+
+
+    const homeCoins =
+        document.getElementById(
+            "homeCoins"
+        );
+
+
+    if (
+        homeCoins
+    ) {
+
+        homeCoins.textContent =
+            `${balance} 🪙`;
+    }
 }
 
 
-/* =========================================================
-   FAVORITE MATCHES
-========================================================= */
+/* FAVORITES */
 
 function setFavoriteMatches(
     serverFavorites
@@ -1737,10 +2027,6 @@ function setFavoriteMatches(
 }
 
 
-/* =========================================================
-   FAVORITE TEAMS
-========================================================= */
-
 function setFavoriteTeams(
     serverTeams
 ) {
@@ -1772,11 +2058,9 @@ function setFavoriteTeams(
 
 function teamKey(name) {
 
-    return String(
-        name || ""
-    )
-    .trim()
-    .toLowerCase();
+    return normalizeTeamName(
+        name
+    );
 }
 
 
@@ -1809,7 +2093,9 @@ async function toggleFavoriteTeam(
         );
 
 
-    if (wasFavorite) {
+    if (
+        wasFavorite
+    ) {
 
         favoriteTeams =
             favoriteTeams.filter(
@@ -1849,9 +2135,7 @@ async function toggleFavoriteTeam(
                 "/api/favorite-teams/toggle",
                 {
                     team_name:name,
-
-                    favorite:
-                        !wasFavorite
+                    favorite:!wasFavorite
                 }
             );
 
@@ -1878,6 +2162,88 @@ async function toggleFavoriteTeam(
     }
 }
 
+
+async function toggleMatchFavorite(
+    fixtureId
+) {
+
+    const id =
+        Number(
+            fixtureId
+        );
+
+
+    const was =
+        favoriteMatches.includes(
+            id
+        );
+
+
+    if (
+        was
+    ) {
+
+        favoriteMatches =
+            favoriteMatches.filter(
+                value =>
+                    value !== id
+            );
+
+    } else {
+
+        favoriteMatches.push(
+            id
+        );
+    }
+
+
+    localStorage.setItem(
+        "betcoin_favorites",
+        JSON.stringify(
+            favoriteMatches
+        )
+    );
+
+
+    renderMatches();
+
+    renderHome();
+
+
+    try {
+
+        const data =
+            await post(
+                "/api/favorites/toggle",
+                {
+                    fixture_id:id,
+                    favorite:!was
+                }
+            );
+
+
+        setFavoriteMatches(
+            data.favorites
+            ||
+            []
+        );
+
+
+        renderMatches();
+
+        renderHome();
+
+
+    } catch(error) {
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+/* OLD FAVORITES SYNC */
 
 async function syncOldFavoriteTeams() {
 
@@ -1926,86 +2292,6 @@ async function syncOldFavoriteTeams() {
 
         console.error(
             error
-        );
-    }
-}
-
-
-async function toggleMatchFavorite(
-    fixtureId
-) {
-
-    const id =
-        Number(
-            fixtureId
-        );
-
-
-    const was =
-        favoriteMatches.includes(
-            id
-        );
-
-
-    if (was) {
-
-        favoriteMatches =
-            favoriteMatches.filter(
-                value =>
-                    value !== id
-            );
-
-    } else {
-
-        favoriteMatches.push(
-            id
-        );
-    }
-
-
-    localStorage.setItem(
-        "betcoin_favorites",
-        JSON.stringify(
-            favoriteMatches
-        )
-    );
-
-
-    renderMatches();
-
-    renderHome();
-
-
-    try {
-
-        const data =
-            await post(
-                "/api/favorites/toggle",
-                {
-                    fixture_id:id,
-
-                    favorite:
-                        !was
-                }
-            );
-
-
-        setFavoriteMatches(
-            data.favorites
-            ||
-            []
-        );
-
-
-        renderMatches();
-
-        renderHome();
-
-
-    } catch(error) {
-
-        tg.showAlert(
-            error.message
         );
     }
 }
@@ -2063,9 +2349,7 @@ async function syncOldFavoriteMatches() {
 }
 
 
-/* =========================================================
-   SESSION
-========================================================= */
+/* SESSION */
 
 async function loadSession() {
 
@@ -2197,9 +2481,7 @@ async function loadSession() {
 }
 
 
-/* =========================================================
-   LEAGUES
-========================================================= */
+/* LEAGUES */
 
 async function loadLeague(
     leagueKey
@@ -2318,13 +2600,9 @@ async function loadLeague(
 
         matches.sort(
             (a,b) =>
-                new Date(
-                    a.date
-                )
+                new Date(a.date)
                 -
-                new Date(
-                    b.date
-                )
+                new Date(b.date)
         );
 
 
@@ -2399,13 +2677,70 @@ function allLoadedMatches() {
 }
 
 
-/* =========================================================
-   FILTERS
-========================================================= */
+/* QUICK HOME BUTTONS */
+
+function openTodayMatches() {
+
+    showPage(
+        "matches"
+    );
+
+
+    changeDateFilter(
+        "today"
+    );
+
+
+    loadLeague(
+        "top5"
+    );
+}
+
+
+function openTop5Matches() {
+
+    showPage(
+        "matches"
+    );
+
+
+    changeDateFilter(
+        "all"
+    );
+
+
+    loadLeague(
+        "top5"
+    );
+}
+
+
+function openEuropeMatches() {
+
+    showPage(
+        "matches"
+    );
+
+
+    changeDateFilter(
+        "all"
+    );
+
+
+    loadLeague(
+        "champions_league"
+    );
+}
+
+
+/* DATE */
 
 function formatDate(value) {
 
-    if (!value) {
+    if (
+        !value
+    ) {
+
         return "";
     }
 
@@ -2511,9 +2846,253 @@ function matchHasFavoriteTeam(
 }
 
 
-function filteredMatches(
-    list
+/* POPULAR SCORE */
+
+function getTeamPopularity(
+    name
 ) {
+
+    const key =
+        normalizeTeamName(
+            name
+        );
+
+
+    if (
+        POPULAR_TEAMS[
+            key
+        ]
+    ) {
+
+        return POPULAR_TEAMS[
+            key
+        ];
+    }
+
+
+    let best =
+        0;
+
+
+    for (
+        const [
+            team,
+            score
+        ]
+        of
+        Object.entries(
+            POPULAR_TEAMS
+        )
+    ) {
+
+        if (
+            key.includes(
+                team
+            )
+            ||
+            team.includes(
+                key
+            )
+        ) {
+
+            best =
+                Math.max(
+                    best,
+                    score
+                );
+        }
+    }
+
+
+    return best;
+}
+
+
+function popularMatchScore(
+    match
+) {
+
+    let score =
+        0;
+
+
+    score +=
+        getTeamPopularity(
+            match.home
+        );
+
+
+    score +=
+        getTeamPopularity(
+            match.away
+        );
+
+
+    const league =
+        String(
+            match.league
+            ||
+            ""
+        ).toLowerCase();
+
+
+    if (
+        league.includes(
+            "champions"
+        )
+    ) {
+
+        score += 80;
+    }
+
+
+    if (
+        league.includes(
+            "premier"
+        )
+    ) {
+
+        score += 35;
+    }
+
+
+    if (
+        league.includes(
+            "la liga"
+        )
+    ) {
+
+        score += 32;
+    }
+
+
+    if (
+        league.includes(
+            "serie"
+        )
+    ) {
+
+        score += 27;
+    }
+
+
+    if (
+        league.includes(
+            "bundesliga"
+        )
+    ) {
+
+        score += 26;
+    }
+
+
+    if (
+        league.includes(
+            "ligue"
+        )
+    ) {
+
+        score += 22;
+    }
+
+
+    if (
+        favoriteMatches.includes(
+            Number(
+                match.fixture_id
+            )
+        )
+    ) {
+
+        score += 80;
+    }
+
+
+    if (
+        isFavoriteTeam(
+            match.home
+        )
+        ||
+        isFavoriteTeam(
+            match.away
+        )
+    ) {
+
+        score += 65;
+    }
+
+
+    const kickoff =
+        new Date(
+            match.date
+        ).getTime();
+
+
+    const now =
+        Date.now();
+
+
+    const hours =
+        (
+            kickoff
+            -
+            now
+        )
+        /
+        3600000;
+
+
+    if (
+        hours >= 0
+        &&
+        hours <= 24
+    ) {
+
+        score += 15;
+    }
+
+
+    return score;
+}
+
+
+function getPopularMatches() {
+
+    const list =
+        [
+            ...(
+                loadedMatches.top5
+                ||
+                []
+            )
+        ];
+
+
+    return list
+        .filter(
+            match =>
+                new Date(
+                    match.date
+                ).getTime()
+                >
+                Date.now()
+        )
+        .sort(
+            (a,b) =>
+                popularMatchScore(b)
+                -
+                popularMatchScore(a)
+        )
+        .slice(
+            0,
+            4
+        );
+}
+
+
+/* FILTERS */
+
+function filteredMatches(list) {
 
     let result =
         [
@@ -2649,9 +3228,7 @@ function changeDateFilter(value) {
 }
 
 
-/* =========================================================
-   MATCH UI
-========================================================= */
+/* TEAM LOGO */
 
 function teamLogo(
     url,
@@ -2687,6 +3264,8 @@ function teamLogo(
 }
 
 
+/* PARLAY SELECTED */
+
 function isParlaySelected(
     fixtureId,
     selection
@@ -2708,6 +3287,8 @@ function isParlaySelected(
     );
 }
 
+
+/* ODDS */
 
 function oddButton(
     match,
@@ -2783,8 +3364,11 @@ function oddButton(
 }
 
 
+/* MATCH CARD */
+
 function renderMatch(
-    match
+    match,
+    popular=false
 ) {
 
     const odds =
@@ -2803,7 +3387,10 @@ function renderMatch(
 
     return `
         <div
-            class="card"
+            class="
+                card
+                ${popular ? "popular-card" : ""}
+            "
 
             onclick="
                 openMatch(
@@ -2815,9 +3402,24 @@ function renderMatch(
             <div class="match-top">
 
                 <div class="match-date">
+
+                    ${
+                        popular
+                        ?
+                        `
+                            <span class="hot-badge">
+                                🔥 Популярный
+                            </span>
+                            <div style="height:6px;"></div>
+                        `
+                        :
+                        ""
+                    }
+
                     ${formatDate(
                         match.date
                     )}
+
                 </div>
 
                 <div class="league-label">
@@ -2989,6 +3591,8 @@ function renderMatch(
 }
 
 
+/* FAVORITE TEAMS BOX */
+
 function renderFavoriteTeamsBox() {
 
     const box =
@@ -3053,6 +3657,8 @@ function renderFavoriteTeamsBox() {
 }
 
 
+/* MATCH LIST */
+
 function renderMatches() {
 
     renderFavoriteTeamsBox();
@@ -3097,7 +3703,11 @@ function renderMatches() {
         ?
         list
         .map(
-            renderMatch
+            match =>
+                renderMatch(
+                    match,
+                    false
+                )
         )
         .join("")
         :
@@ -3109,13 +3719,47 @@ function renderMatches() {
 }
 
 
+/* HOME */
+
 function renderHome() {
+
+    const userName =
+        currentUser?.first_name
+        ||
+        "Игрок";
+
+
+    document.getElementById(
+        "homeUserName"
+    ).textContent =
+        userName;
+
+
+    document.getElementById(
+        "homeUserLevel"
+    ).textContent =
+        `${profileLeague.icon || "🥉"} ${profileLeague.name || "Бронза"} • Уровень ${profileLevel}`;
+
+
+    document.getElementById(
+        "homeCoins"
+    ).textContent =
+        `${balance} 🪙`;
+
 
     const top =
         (
             loadedMatches.top5
             ||
             []
+        )
+        .filter(
+            match =>
+                new Date(
+                    match.date
+                ).getTime()
+                >
+                Date.now()
         )
         .slice(
             0,
@@ -3130,13 +3774,43 @@ function renderHome() {
         ?
         top
         .map(
-            renderMatch
+            match =>
+                renderMatch(
+                    match,
+                    false
+                )
         )
         .join("")
         :
         `
             <div class="empty">
-                Нет матчей
+                Нет ближайших матчей
+            </div>
+        `;
+
+
+    const popular =
+        getPopularMatches();
+
+
+    document.getElementById(
+        "popularMatches"
+    ).innerHTML =
+        popular.length
+        ?
+        popular
+        .map(
+            match =>
+                renderMatch(
+                    match,
+                    true
+                )
+        )
+        .join("")
+        :
+        `
+            <div class="empty">
+                Пока нет популярных матчей
             </div>
         `;
 
@@ -3148,6 +3822,14 @@ function renderHome() {
                 matchHasFavoriteTeam(
                     match
                 )
+        )
+        .filter(
+            match =>
+                new Date(
+                    match.date
+                ).getTime()
+                >
+                Date.now()
         )
         .slice(
             0,
@@ -3161,14 +3843,29 @@ function renderHome() {
         favoriteTeamMatches.length
         ?
         `
-            <h2>
-                ⭐ Мои команды
-            </h2>
+            <div class="section-head">
+
+                <h2>
+                    ⭐ Мои команды
+                </h2>
+
+                <button
+                    class="section-link"
+                    onclick="openMyTeams()"
+                >
+                    Все
+                </button>
+
+            </div>
 
             ${
                 favoriteTeamMatches
                 .map(
-                    renderMatch
+                    match =>
+                        renderMatch(
+                            match,
+                            false
+                        )
                 )
                 .join("")
             }
@@ -3178,9 +3875,20 @@ function renderHome() {
 }
 
 
-/* =========================================================
-   MATCH DETAIL
-========================================================= */
+function openMyTeams() {
+
+    showPage(
+        "matches"
+    );
+
+
+    changeDateFilter(
+        "myteams"
+    );
+}
+
+
+/* MATCH DETAIL */
 
 async function openMatch(
     fixtureId
@@ -3437,9 +4145,7 @@ async function openMatch(
 }
 
 
-/* =========================================================
-   SELECT BET
-========================================================= */
+/* BET CHOICE */
 
 function selectBet(
     fixtureId,
@@ -3669,9 +4375,7 @@ function toggleSelectedParlay() {
 }
 
 
-/* =========================================================
-   SINGLE BET
-========================================================= */
+/* SINGLE */
 
 function updateSingleWin() {
 
@@ -3811,9 +4515,200 @@ async function confirmSingle() {
 }
 
 
-/* =========================================================
-   REPEAT SINGLE
-========================================================= */
+/* GET OLD SELECTION ODD */
+
+function getSelectionOdd(
+    match,
+    selection
+) {
+
+    const odds =
+        match.odds
+        ||
+        {};
+
+
+    if (
+        selection ===
+        "П1"
+    ) {
+
+        return odds.home;
+    }
+
+
+    if (
+        selection ===
+        "X"
+    ) {
+
+        return odds.draw;
+    }
+
+
+    if (
+        selection ===
+        "П2"
+    ) {
+
+        return odds.away;
+    }
+
+
+    if (
+        selection ===
+        "ОЗ Да"
+    ) {
+
+        return match.btts?.yes;
+    }
+
+
+    if (
+        selection ===
+        "ОЗ Нет"
+    ) {
+
+        return match.btts?.no;
+    }
+
+
+    const totalMatch =
+        String(
+            selection
+        )
+        .match(
+            /^Т([БМ])\s*([0-9.]+)$/
+        );
+
+
+    if (
+        totalMatch
+    ) {
+
+        const side =
+            totalMatch[
+                1
+            ];
+
+
+        const line =
+            Number(
+                totalMatch[
+                    2
+                ]
+            );
+
+
+        const key =
+            "total_"
+            +
+            String(
+                line
+            )
+            .replace(
+                ".",
+                "_"
+            );
+
+
+        const total =
+            match[
+                key
+            ];
+
+
+        if (
+            !total
+        ) {
+
+            return null;
+        }
+
+
+        return (
+            side === "Б"
+            ?
+            total.over
+            :
+            total.under
+        );
+    }
+
+
+    const handicapMatch =
+        String(
+            selection
+        )
+        .match(
+            /^Ф([12])\(([-+]?[0-9.]+)\)$/
+        );
+
+
+    if (
+        handicapMatch
+    ) {
+
+        const teamNumber =
+            handicapMatch[
+                1
+            ];
+
+
+        const requestedLine =
+            Number(
+                handicapMatch[
+                    2
+                ]
+            );
+
+
+        const side =
+            teamNumber === "1"
+            ?
+            "home"
+            :
+            "away";
+
+
+        const handicapMap =
+            match.handicaps?.[
+                side
+            ]
+            ||
+            {};
+
+
+        for (
+            const [
+                line,
+                odd
+            ]
+            of
+            Object.entries(
+                handicapMap
+            )
+        ) {
+
+            if (
+                Number(
+                    line
+                )
+                ===
+                requestedLine
+            ) {
+
+                return odd;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+/* REPEAT SINGLE */
 
 async function repeatSingleBet(
     betId
@@ -3975,199 +4870,7 @@ async function repeatSingleBet(
 }
 
 
-/* =========================================================
-   CURRENT ODD
-========================================================= */
-
-function getSelectionOdd(
-    match,
-    selection
-) {
-
-    const odds =
-        match.odds
-        ||
-        {};
-
-
-    if (
-        selection === "П1"
-    ) {
-
-        return odds.home;
-    }
-
-
-    if (
-        selection === "X"
-    ) {
-
-        return odds.draw;
-    }
-
-
-    if (
-        selection === "П2"
-    ) {
-
-        return odds.away;
-    }
-
-
-    if (
-        selection === "ОЗ Да"
-    ) {
-
-        return match.btts?.yes;
-    }
-
-
-    if (
-        selection === "ОЗ Нет"
-    ) {
-
-        return match.btts?.no;
-    }
-
-
-    const totalMatch =
-        String(
-            selection
-        )
-        .match(
-            /^Т([БМ])\s*([0-9.]+)$/
-        );
-
-
-    if (
-        totalMatch
-    ) {
-
-        const side =
-            totalMatch[
-                1
-            ];
-
-
-        const line =
-            Number(
-                totalMatch[
-                    2
-                ]
-            );
-
-
-        const key =
-            "total_"
-            +
-            String(
-                line
-            )
-            .replace(
-                ".",
-                "_"
-            );
-
-
-        const total =
-            match[
-                key
-            ];
-
-
-        if (
-            !total
-        ) {
-
-            return null;
-        }
-
-
-        return (
-            side === "Б"
-            ?
-            total.over
-            :
-            total.under
-        );
-    }
-
-
-    const handicapMatch =
-        String(
-            selection
-        )
-        .match(
-            /^Ф([12])\(([-+]?[0-9.]+)\)$/
-        );
-
-
-    if (
-        handicapMatch
-    ) {
-
-        const teamNumber =
-            handicapMatch[
-                1
-            ];
-
-
-        const requestedLine =
-            Number(
-                handicapMatch[
-                    2
-                ]
-            );
-
-
-        const side =
-            teamNumber === "1"
-            ?
-            "home"
-            :
-            "away";
-
-
-        const handicapMap =
-            match.handicaps?.[
-                side
-            ]
-            ||
-            {};
-
-
-        for (
-            const [
-                line,
-                odd
-            ]
-            of
-            Object.entries(
-                handicapMap
-            )
-        ) {
-
-            if (
-                Number(
-                    line
-                )
-                ===
-                requestedLine
-            ) {
-
-                return odd;
-            }
-        }
-    }
-
-
-    return null;
-}
-
-
-/* =========================================================
-   PARLAY CALCULATIONS
-========================================================= */
+/* PARLAY */
 
 function calculateParlayOdd() {
 
@@ -4288,10 +4991,6 @@ function changeParlayAmountFromModal(
 }
 
 
-/* =========================================================
-   MINI PARLAY
-========================================================= */
-
 function updateMiniParlay() {
 
     const panel =
@@ -4376,10 +5075,6 @@ function updateMiniParlay() {
 }
 
 
-/* =========================================================
-   PARLAY
-========================================================= */
-
 function updateParlay() {
 
     updateMiniParlay();
@@ -4398,6 +5093,8 @@ function updateParlay() {
 
 
     renderMatches();
+
+    renderHome();
 }
 
 
@@ -4536,17 +5233,12 @@ function removeParlayLeg(
     );
 
 
-    tg.HapticFeedback
-        ?.impactOccurred(
-            "light"
-        );
-
-
     updateParlay();
 
 
     if (
-        parlaySlip.length === 0
+        parlaySlip.length ===
+        0
     ) {
 
         closeOverlay(
@@ -4559,7 +5251,8 @@ function removeParlayLeg(
 async function confirmParlay() {
 
     if (
-        parlaySlip.length < 2
+        parlaySlip.length <
+        2
     ) {
 
         tg.showAlert(
@@ -4736,9 +5429,7 @@ function clearParlay() {
 }
 
 
-/* =========================================================
-   REBUILD PARLAY
-========================================================= */
+/* REBUILD PARLAY */
 
 async function rebuildParlay(
     parlayId
@@ -4889,7 +5580,8 @@ async function rebuildParlay(
 
 
     if (
-        newSlip.length < 2
+        newSlip.length <
+        2
     ) {
 
         tg.showAlert(
@@ -4934,7 +5626,8 @@ async function rebuildParlay(
 
 
     if (
-        unavailable > 0
+        unavailable >
+        0
     ) {
 
         setTimeout(
@@ -4951,9 +5644,7 @@ async function rebuildParlay(
 }
 
 
-/* =========================================================
-   BET HISTORY
-========================================================= */
+/* HISTORY */
 
 function closeOverlay(id) {
 
@@ -4968,7 +5659,8 @@ function closeOverlay(id) {
 function statusClass(status) {
 
     if (
-        status === "Выиграла"
+        status ===
+        "Выиграла"
     ) {
 
         return "win";
@@ -4976,7 +5668,8 @@ function statusClass(status) {
 
 
     if (
-        status === "Проиграла"
+        status ===
+        "Проиграла"
     ) {
 
         return "loss";
@@ -4984,7 +5677,8 @@ function statusClass(status) {
 
 
     if (
-        status === "Возврат"
+        status ===
+        "Возврат"
     ) {
 
         return "refund";
@@ -5013,10 +5707,8 @@ function passesBetFilter(
         "active"
     ) {
 
-        return (
-            item.status ===
-            "Активна"
-        );
+        return item.status ===
+            "Активна";
     }
 
 
@@ -5025,10 +5717,8 @@ function passesBetFilter(
         "win"
     ) {
 
-        return (
-            item.status ===
-            "Выиграла"
-        );
+        return item.status ===
+            "Выиграла";
     }
 
 
@@ -5037,10 +5727,8 @@ function passesBetFilter(
         "loss"
     ) {
 
-        return (
-            item.status ===
-            "Проиграла"
-        );
+        return item.status ===
+            "Проиграла";
     }
 
 
@@ -5173,10 +5861,7 @@ function renderBets() {
                         bet.score
                         ?
                         `
-                            <div
-                                class="notice"
-                                style="margin-top:6px;"
-                            >
+                            <div class="notice">
                                 Счёт:
                                 ${escapeHtml(
                                     bet.score
@@ -5188,23 +5873,13 @@ function renderBets() {
                     }
 
                     <div class="bet-info-row">
-                        <span>
-                            Ставка
-                        </span>
-
-                        <b>
-                            ${bet.amount} 🪙
-                        </b>
+                        <span>Ставка</span>
+                        <b>${bet.amount} 🪙</b>
                     </div>
 
                     <div class="bet-info-row">
-                        <span>
-                            Возможный выигрыш
-                        </span>
-
-                        <b>
-                            ${bet.possible} 🪙
-                        </b>
+                        <span>Возможный выигрыш</span>
+                        <b>${bet.possible} 🪙</b>
                     </div>
 
                     <button
@@ -5265,48 +5940,23 @@ function renderBets() {
                     </h3>
 
                     <div class="bet-info-row">
-
-                        <span>
-                            Общий кэф
-                        </span>
-
-                        <b>
-                            ${Number(
-                                parlay.total_odd
-                            ).toFixed(2)}
-                        </b>
-
+                        <span>Общий кэф</span>
+                        <b>${Number(parlay.total_odd).toFixed(2)}</b>
                     </div>
 
                     <div class="bet-info-row">
-
-                        <span>
-                            Ставка
-                        </span>
-
-                        <b>
-                            ${parlay.amount} 🪙
-                        </b>
-
+                        <span>Ставка</span>
+                        <b>${parlay.amount} 🪙</b>
                     </div>
 
                     <div class="bet-info-row">
-
-                        <span>
-                            Возможный выигрыш
-                        </span>
-
-                        <b>
-                            ${parlay.possible} 🪙
-                        </b>
-
+                        <span>Возможный выигрыш</span>
+                        <b>${parlay.possible} 🪙</b>
                     </div>
-
 
                     <h4>
                         События
                     </h4>
-
 
                     ${
                         (
@@ -5328,18 +5978,14 @@ function renderBets() {
                                         )}
                                     </b>
 
-                                    <div style="margin-top:5px;">
-
+                                    <div>
                                         ${escapeHtml(
                                             leg.selection
                                         )}
-
                                         •
-
                                         ${Number(
                                             leg.odd
                                         ).toFixed(2)}
-
                                     </div>
 
                                     ${
@@ -5382,7 +6028,6 @@ function renderBets() {
                         .join("")
                     }
 
-
                     <button
                         class="repeat-btn"
 
@@ -5408,9 +6053,7 @@ function renderBets() {
 }
 
 
-/* =========================================================
-   LEADERBOARD
-========================================================= */
+/* LEADERBOARD */
 
 async function loadLeaderboard() {
 
@@ -5446,18 +6089,14 @@ async function loadLeaderboard() {
                         </b>
 
                         <div class="notice">
-
                             ${player.league?.icon || ""}
-
                             ${escapeHtml(
                                 player.league?.name
                                 ||
                                 ""
                             )}
-
                             • Уровень
                             ${player.level}
-
                         </div>
 
                         <div>
@@ -5484,9 +6123,7 @@ async function loadLeaderboard() {
 }
 
 
-/* =========================================================
-   PROFILE
-========================================================= */
+/* PROFILE */
 
 function renderProfile() {
 
@@ -5618,23 +6255,17 @@ function renderProfile() {
                         </b>
 
                         <div class="notice">
-
                             ${task.progress}/${task.target}
-
                             •
-
                             +${task.reward}
-
                             ${
-                                task.reward_type
-                                ===
+                                task.reward_type ===
                                 "xp"
                                 ?
                                 "XP"
                                 :
                                 "🪙"
                             }
-
                         </div>
 
                     </div>
@@ -5658,7 +6289,6 @@ function renderProfile() {
                             )
                         "
                     >
-
                         ${
                             task.claimed
                             ?
@@ -5670,7 +6300,6 @@ function renderProfile() {
                             :
                             "В процессе"
                         }
-
                     </button>
 
                 </div>
@@ -5696,13 +6325,9 @@ function renderProfile() {
                         </b>
 
                         <div class="notice">
-
                             ${item.progress}/${item.target}
-
                             •
-
                             +${item.reward} 🪙
-
                         </div>
 
                     </div>
@@ -5726,7 +6351,6 @@ function renderProfile() {
                             )
                         "
                     >
-
                         ${
                             item.claimed
                             ?
@@ -5738,7 +6362,6 @@ function renderProfile() {
                             :
                             "Закрыто"
                         }
-
                     </button>
 
                 </div>
@@ -5779,9 +6402,7 @@ function renderProfile() {
 
         const hours =
             Math.floor(
-                seconds
-                /
-                3600
+                seconds / 3600
             );
 
 
@@ -5809,6 +6430,9 @@ function renderProfile() {
         ).textContent =
             "Бонус доступен";
     }
+
+
+    renderHome();
 }
 
 
@@ -5857,8 +6481,7 @@ async function claimTask(
         await post(
             "/api/tasks/claim",
             {
-                task_key:
-                    key
+                task_key:key
             }
         );
 
@@ -5884,8 +6507,7 @@ async function claimAchievement(
         await post(
             "/api/achievements/claim",
             {
-                achievement_key:
-                    key
+                achievement_key:key
             }
         );
 
@@ -5902,9 +6524,7 @@ async function claimAchievement(
 }
 
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
+/* NAVIGATION */
 
 function showPage(
     name,
@@ -5990,6 +6610,15 @@ function showPage(
     }
 
 
+    if (
+        name ===
+        "home"
+    ) {
+
+        renderHome();
+    }
+
+
     window.scrollTo(
         0,
         0
@@ -5997,9 +6626,7 @@ function showPage(
 }
 
 
-/* =========================================================
-   INIT
-========================================================= */
+/* INIT */
 
 async function init() {
 
@@ -6015,7 +6642,6 @@ async function init() {
 
 
     await syncOldFavoriteMatches();
-
 
     await syncOldFavoriteTeams();
 
@@ -6081,6 +6707,8 @@ async function init() {
                 updateBalance();
 
                 renderBets();
+
+                renderHome();
 
 
             } catch(error) {

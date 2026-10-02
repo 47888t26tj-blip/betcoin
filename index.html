@@ -23,6 +23,7 @@
     --bg:#0b0d12;
     --card:#161922;
     --card2:#1c202b;
+    --card3:#222733;
     --border:#2a2f3b;
     --text:#fff;
     --muted:#9298a7;
@@ -46,7 +47,7 @@ body {
 }
 
 body.with-mini-slip {
-    padding-bottom:205px;
+    padding-bottom:210px;
 }
 
 button,
@@ -77,19 +78,11 @@ button {
     justify-content:space-between;
     align-items:center;
     gap:10px;
-    margin-bottom:20px;
+    margin-bottom:18px;
 }
 
 .brand {
     font-size:28px;
-    font-weight:900;
-}
-
-.balance {
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:10px 14px;
     font-weight:900;
 }
 
@@ -99,104 +92,12 @@ button {
     margin:0 0 18px;
 }
 
-.section-head {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    margin:22px 0 12px;
-}
-
-.section-head h2 {
-    margin:0;
-    font-size:21px;
-}
-
-.section-link {
-    border:0;
-    background:transparent;
-    color:var(--accent);
-    padding:5px;
-    font-size:13px;
-    font-weight:800;
-}
-
-.home-hero {
-    background:
-        linear-gradient(
-            135deg,
-            rgba(47,128,255,.22),
-            rgba(47,128,255,.05)
-        ),
-        var(--card);
-
-    border:1px solid rgba(47,128,255,.28);
-    border-radius:22px;
-    padding:17px;
-    margin-bottom:15px;
-}
-
-.home-hero-top {
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    align-items:center;
-}
-
-.home-user {
-    font-weight:900;
-    font-size:18px;
-}
-
-.home-level {
-    color:var(--muted);
-    font-size:12px;
-    margin-top:3px;
-}
-
-.home-coins {
-    font-size:22px;
-    font-weight:900;
-}
-
-.quick-actions {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-top:14px;
-}
-
-.quick-btn {
+.balance {
+    background:var(--card);
     border:1px solid var(--border);
-    background:var(--card2);
-    color:white;
-    border-radius:13px;
-    min-height:45px;
-    padding:8px;
-    font-weight:800;
-    font-size:12px;
-}
-
-.quick-btn:active {
-    transform:scale(.98);
-}
-
-.popular-card {
-    position:relative;
-    overflow:hidden;
-}
-
-.hot-badge {
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    font-size:10px;
+    border-radius:16px;
+    padding:10px 14px;
     font-weight:900;
-    color:#ffbd6a;
-    background:rgba(255,159,67,.12);
-    border:1px solid rgba(255,159,67,.25);
-    border-radius:999px;
-    padding:5px 8px;
 }
 
 .card {
@@ -221,6 +122,227 @@ button {
     padding:26px;
     text-align:center;
 }
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.home-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.home-logo {
+    font-size:27px;
+    font-weight:900;
+}
+
+.home-balance-pill {
+    padding:10px 14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+    font-weight:900;
+}
+
+.dashboard-card {
+    position:relative;
+    overflow:hidden;
+    border-radius:25px;
+    padding:19px;
+    margin-bottom:16px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(47,128,255,.35),
+            transparent 42%
+        ),
+        linear-gradient(
+            135deg,
+            #171c28,
+            #11141b
+        );
+    border:1px solid rgba(47,128,255,.35);
+}
+
+.dashboard-card:after {
+    content:"";
+    position:absolute;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:rgba(47,128,255,.09);
+    right:-35px;
+    bottom:-50px;
+}
+
+.dashboard-user-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    position:relative;
+    z-index:2;
+}
+
+.dashboard-name {
+    font-size:22px;
+    font-weight:900;
+}
+
+.dashboard-league {
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+}
+
+.dashboard-coins {
+    font-size:23px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.dashboard-xp {
+    margin-top:15px;
+    position:relative;
+    z-index:2;
+}
+
+.dashboard-xp-top {
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:11px;
+    margin-bottom:7px;
+}
+
+.home-xp-bar {
+    height:9px;
+    border-radius:999px;
+    overflow:hidden;
+    background:#0d1016;
+}
+
+.home-xp-fill {
+    height:100%;
+    background:var(--accent);
+}
+
+.quick-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.quick-card {
+    border:1px solid var(--border);
+    background:var(--card);
+    color:white;
+    border-radius:17px;
+    padding:12px 5px;
+    min-height:75px;
+    font-weight:800;
+}
+
+.quick-card:active {
+    transform:scale(.98);
+}
+
+.quick-icon {
+    display:block;
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.quick-text {
+    display:block;
+    font-size:11px;
+}
+
+.section-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:22px 0 11px;
+}
+
+.section-head h2 {
+    margin:0;
+    font-size:20px;
+}
+
+.section-link {
+    background:transparent;
+    border:0;
+    color:var(--accent);
+    font-weight:800;
+    font-size:13px;
+}
+
+.popular-card {
+    position:relative;
+    overflow:hidden;
+}
+
+.hot-badge {
+    display:inline-block;
+    background:rgba(255,159,67,.12);
+    color:#ffb75e;
+    border:1px solid rgba(255,159,67,.25);
+    border-radius:999px;
+    padding:4px 7px;
+    font-size:10px;
+    font-weight:900;
+    margin-bottom:6px;
+}
+
+.home-bet-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:13px;
+    margin-bottom:9px;
+}
+
+.home-bet-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+}
+
+.home-bet-match {
+    font-weight:800;
+    margin-top:8px;
+}
+
+.home-bet-bottom {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:7px;
+}
+
+.active-bets-empty {
+    border:1px dashed var(--border);
+    border-radius:17px;
+    padding:20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   COMMON
+========================================================= */
 
 .search-box {
     width:100%;
@@ -290,6 +412,11 @@ button {
 .league-row::-webkit-scrollbar {
     display:none;
 }
+
+
+/* =========================================================
+   MATCH
+========================================================= */
 
 .match-top {
     display:grid;
@@ -445,39 +572,10 @@ button {
     font-size:17px;
 }
 
-.bottom-nav {
-    position:fixed;
-    z-index:50;
-    left:0;
-    right:0;
-    bottom:0;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    min-height:80px;
-    background:#12151d;
-    border-top:1px solid var(--border);
-    padding-bottom:env(safe-area-inset-bottom);
-}
 
-.nav {
-    background:transparent;
-    border:0;
-    color:var(--muted);
-}
-
-.nav.active {
-    color:white;
-}
-
-.nav-icon {
-    display:block;
-    font-size:23px;
-}
-
-.nav-text {
-    display:block;
-    font-size:11px;
-}
+/* =========================================================
+   BETS / PROFILE
+========================================================= */
 
 .tabs {
     display:grid;
@@ -682,7 +780,9 @@ button {
 }
 
 
-/* MINI PARLAY */
+/* =========================================================
+   MINI PARLAY
+========================================================= */
 
 .mini-parlay {
     position:fixed;
@@ -778,7 +878,59 @@ button {
     font-weight:900;
 }
 
-@media(max-width:420px) {
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+.bottom-nav {
+    position:fixed;
+    z-index:50;
+    left:0;
+    right:0;
+    bottom:0;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    min-height:80px;
+    background:#12151d;
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom);
+}
+
+.nav {
+    background:transparent;
+    border:0;
+    color:var(--muted);
+}
+
+.nav.active {
+    color:white;
+}
+
+.nav-icon {
+    display:block;
+    font-size:23px;
+}
+
+.nav-text {
+    display:block;
+    font-size:11px;
+}
+
+
+@media(max-width:430px) {
+
+    .quick-grid {
+        gap:6px;
+    }
+
+    .quick-card {
+        padding:10px 3px;
+    }
+
+    .quick-text {
+        font-size:10px;
+    }
 
     .mini-parlay-bottom {
         grid-template-columns:90px 1fr;
@@ -788,36 +940,33 @@ button {
         grid-column:1 / -1;
         width:100%;
     }
-
-    .quick-actions {
-        grid-template-columns:1fr 1fr 1fr;
-    }
-
 }
 
 </style>
 </head>
 
-<body>
 
+<body>
 
 <div class="app">
 
 
-<!-- HOME -->
+<!-- =====================================================
+     HOME
+===================================================== -->
 
 <section
     id="page-home"
     class="page active"
 >
 
-    <div class="topbar">
+    <div class="home-head">
 
-        <div class="brand">
+        <div class="home-logo">
             ⚽ BetCoin
         </div>
 
-        <div class="balance">
+        <div class="home-balance-pill">
             🪙
             <span id="balanceHome">0</span>
         </div>
@@ -825,24 +974,24 @@ button {
     </div>
 
 
-    <div class="home-hero">
+    <div class="dashboard-card">
 
-        <div class="home-hero-top">
+        <div class="dashboard-user-row">
 
             <div>
 
                 <div
                     id="homeUserName"
-                    class="home-user"
+                    class="dashboard-name"
                 >
                     Игрок
                 </div>
 
                 <div
-                    id="homeUserLevel"
-                    class="home-level"
+                    id="homeUserLeague"
+                    class="dashboard-league"
                 >
-                    Уровень 1
+                    🥉 Бронза • Уровень 1
                 </div>
 
             </div>
@@ -850,7 +999,7 @@ button {
 
             <div
                 id="homeCoins"
-                class="home-coins"
+                class="dashboard-coins"
             >
                 0 🪙
             </div>
@@ -858,37 +1007,93 @@ button {
         </div>
 
 
-        <div class="quick-actions">
+        <div class="dashboard-xp">
 
-            <button
-                class="quick-btn"
-                onclick="openTodayMatches()"
-            >
-                📅 Сегодня
-            </button>
+            <div class="dashboard-xp-top">
 
-            <button
-                class="quick-btn"
-                onclick="openTop5Matches()"
-            >
-                ⭐ Топ-5
-            </button>
+                <span>
+                    Прогресс уровня
+                </span>
 
-            <button
-                class="quick-btn"
-                onclick="openEuropeMatches()"
-            >
-                🏆 Еврокубки
-            </button>
+                <span id="homeXpText">
+                    0 / 100 XP
+                </span>
+
+            </div>
+
+            <div class="home-xp-bar">
+
+                <div
+                    id="homeXpFill"
+                    class="home-xp-fill"
+                    style="width:0%;"
+                ></div>
+
+            </div>
 
         </div>
 
     </div>
 
 
-    <div
-        id="homeFavoriteTeams"
-    ></div>
+    <div class="quick-grid">
+
+        <button
+            class="quick-card"
+            onclick="openTodayMatches()"
+        >
+            <span class="quick-icon">
+                📅
+            </span>
+
+            <span class="quick-text">
+                Сегодня
+            </span>
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="openTop5Matches()"
+        >
+            <span class="quick-icon">
+                ⭐
+            </span>
+
+            <span class="quick-text">
+                Топ-5
+            </span>
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="openEuropeMatches()"
+        >
+            <span class="quick-icon">
+                🏆
+            </span>
+
+            <span class="quick-text">
+                Еврокубки
+            </span>
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="openMyTeams()"
+        >
+            <span class="quick-icon">
+                ❤️
+            </span>
+
+            <span class="quick-text">
+                Мои команды
+            </span>
+        </button>
+
+    </div>
 
 
     <div class="section-head">
@@ -916,10 +1121,54 @@ button {
     </div>
 
 
+    <div
+        id="homeFavoriteSection"
+        style="display:none;"
+    >
+
+        <div class="section-head">
+
+            <h2>
+                ⭐ Мои команды
+            </h2>
+
+            <button
+                class="section-link"
+                onclick="openMyTeams()"
+            >
+                Все
+            </button>
+
+        </div>
+
+        <div id="homeFavoriteTeams"></div>
+
+    </div>
+
+
     <div class="section-head">
 
         <h2>
-            ⚽ Ближайшие
+            ⚡ Активные ставки
+        </h2>
+
+        <button
+            class="section-link"
+            onclick="showPage('bets')"
+        >
+            Открыть
+        </button>
+
+    </div>
+
+
+    <div id="homeActiveBets"></div>
+
+
+    <div class="section-head">
+
+        <h2>
+            ⚽ Ближайшие матчи
         </h2>
 
         <button
@@ -943,7 +1192,9 @@ button {
 </section>
 
 
-<!-- MATCHES -->
+<!-- =====================================================
+     MATCHES
+===================================================== -->
 
 <section
     id="page-matches"
@@ -1054,7 +1305,7 @@ button {
                 data-league="bundesliga"
                 onclick="selectLeague('bundesliga')"
             >
-                🇩🇪 Германия
+                🇩🇪 Бундеслига
             </button>
 
             <button
@@ -1062,7 +1313,7 @@ button {
                 data-league="ligue_1"
                 onclick="selectLeague('ligue_1')"
             >
-                🇫🇷 Франция
+                🇫🇷 Лига 1
             </button>
 
         </div>
@@ -1128,7 +1379,7 @@ button {
                 data-league="eredivisie"
                 onclick="selectLeague('eredivisie')"
             >
-                🇳🇱 Нидерланды
+                🇳🇱 Эредивизи
             </button>
 
             <button
@@ -1160,7 +1411,7 @@ button {
                 data-league="favorites"
                 onclick="selectLeague('favorites')"
             >
-                ⭐ Матчи
+                ⭐ Избранное
             </button>
 
         </div>
@@ -1169,7 +1420,6 @@ button {
 
 
     <div id="favoriteTeamsBox"></div>
-
 
     <div id="matchesList">
 
@@ -1182,7 +1432,9 @@ button {
 </section>
 
 
-<!-- MATCH DETAIL -->
+<!-- =====================================================
+     MATCH DETAIL
+===================================================== -->
 
 <section
     id="page-match"
@@ -1201,7 +1453,9 @@ button {
 </section>
 
 
-<!-- BETS -->
+<!-- =====================================================
+     BETS
+===================================================== -->
 
 <section
     id="page-bets"
@@ -1290,7 +1544,9 @@ button {
 </section>
 
 
-<!-- LEADERBOARD -->
+<!-- =====================================================
+     LEADERBOARD
+===================================================== -->
 
 <section
     id="page-leaderboard"
@@ -1306,7 +1562,9 @@ button {
 </section>
 
 
-<!-- PROFILE -->
+<!-- =====================================================
+     PROFILE
+===================================================== -->
 
 <section
     id="page-profile"
@@ -1425,7 +1683,9 @@ button {
 </div>
 
 
-<!-- MINI PARLAY -->
+<!-- =====================================================
+     MINI PARLAY
+===================================================== -->
 
 <div
     id="miniParlay"
@@ -1501,7 +1761,9 @@ button {
 </div>
 
 
-<!-- NAV -->
+<!-- =====================================================
+     NAV
+===================================================== -->
 
 <nav class="bottom-nav">
 
@@ -1553,7 +1815,9 @@ button {
 </nav>
 
 
-<!-- BET CHOICE -->
+<!-- =====================================================
+     BET CHOICE
+===================================================== -->
 
 <div
     id="betChoiceOverlay"
@@ -1602,7 +1866,9 @@ button {
 </div>
 
 
-<!-- SINGLE -->
+<!-- =====================================================
+     SINGLE MODAL
+===================================================== -->
 
 <div
     id="singleOverlay"
@@ -1655,7 +1921,9 @@ button {
 </div>
 
 
-<!-- PARLAY -->
+<!-- =====================================================
+     PARLAY MODAL
+===================================================== -->
 
 <div
     id="parlayOverlay"
@@ -1738,7 +2006,9 @@ const initData =
     tg.initData || "";
 
 
-/* DATA */
+/* =========================================================
+   STATE
+========================================================= */
 
 let balance = 0;
 
@@ -1772,37 +2042,53 @@ let parlaySlip = [];
 
 let parlayStake = 0;
 
-let currentLeague = "top5";
+let currentLeague =
+    "top5";
 
-let dateFilter = "all";
+let dateFilter =
+    "all";
 
-let searchQuery = "";
+let searchQuery =
+    "";
 
-let currentBetFilter = "all";
+let currentBetFilter =
+    "all";
 
-let currentBetTab = "single";
+let currentBetTab =
+    "single";
 
-let selectedBet = null;
+let selectedBet =
+    null;
 
-let currentUser = null;
+let currentUser =
+    null;
 
-let profileXp = 0;
+let profileXp =
+    0;
 
-let profileLevel = 1;
+let profileLevel =
+    1;
 
-let profileLeague = {};
+let profileLeague =
+    {};
 
-let currentLevelXp = 0;
+let currentLevelXp =
+    0;
 
-let profileStats = {};
+let profileStats =
+    {};
 
-let tasks = [];
+let tasks =
+    [];
 
-let achievements = [];
+let achievements =
+    [];
 
-let myRank = null;
+let myRank =
+    null;
 
-let dailyReward = {};
+let dailyReward =
+    {};
 
 
 /* =========================================================
@@ -1852,7 +2138,9 @@ const POPULAR_TEAMS = {
 };
 
 
-/* HELPERS */
+/* =========================================================
+   HELPERS
+========================================================= */
 
 function escapeHtml(value) {
 
@@ -1878,9 +2166,7 @@ function jsString(value) {
 }
 
 
-function normalizeTeamName(
-    value
-) {
+function normalizeTeamName(value) {
 
     return String(
         value || ""
@@ -1958,15 +2244,15 @@ function updateBalance() {
     .forEach(
         id => {
 
-            const element =
+            const el =
                 document.getElementById(
                     id
                 );
 
 
-            if (element) {
+            if (el) {
 
-                element.textContent =
+                el.textContent =
                     balance;
             }
         }
@@ -1979,9 +2265,7 @@ function updateBalance() {
         );
 
 
-    if (
-        homeCoins
-    ) {
+    if (homeCoins) {
 
         homeCoins.textContent =
             `${balance} 🪙`;
@@ -1989,7 +2273,9 @@ function updateBalance() {
 }
 
 
-/* FAVORITES */
+/* =========================================================
+   FAVORITE MATCHES
+========================================================= */
 
 function setFavoriteMatches(
     serverFavorites
@@ -2000,7 +2286,6 @@ function setFavoriteMatches(
             serverFavorites
         )
     ) {
-
         return;
     }
 
@@ -2027,6 +2312,10 @@ function setFavoriteMatches(
 }
 
 
+/* =========================================================
+   FAVORITE TEAMS
+========================================================= */
+
 function setFavoriteTeams(
     serverTeams
 ) {
@@ -2036,7 +2325,6 @@ function setFavoriteTeams(
             serverTeams
         )
     ) {
-
         return;
     }
 
@@ -2074,9 +2362,7 @@ function isFavoriteTeam(name) {
 
     return favoriteTeams.some(
         team =>
-            teamKey(
-                team
-            )
+            teamKey(team)
             ===
             key
     );
@@ -2122,9 +2408,7 @@ async function toggleFavoriteTeam(
 
 
     renderMatches();
-
     renderHome();
-
     renderFavoriteTeamsBox();
 
 
@@ -2148,9 +2432,7 @@ async function toggleFavoriteTeam(
 
 
         renderMatches();
-
         renderHome();
-
         renderFavoriteTeamsBox();
 
 
@@ -2206,7 +2488,6 @@ async function toggleMatchFavorite(
 
 
     renderMatches();
-
     renderHome();
 
 
@@ -2230,7 +2511,6 @@ async function toggleMatchFavorite(
 
 
         renderMatches();
-
         renderHome();
 
 
@@ -2243,7 +2523,9 @@ async function toggleMatchFavorite(
 }
 
 
-/* OLD FAVORITES SYNC */
+/* =========================================================
+   OLD FAVORITES SYNC
+========================================================= */
 
 async function syncOldFavoriteTeams() {
 
@@ -2258,7 +2540,6 @@ async function syncOldFavoriteTeams() {
         ===
         "1"
     ) {
-
         return;
     }
 
@@ -2310,7 +2591,6 @@ async function syncOldFavoriteMatches() {
         ===
         "1"
     ) {
-
         return;
     }
 
@@ -2349,7 +2629,9 @@ async function syncOldFavoriteMatches() {
 }
 
 
-/* SESSION */
+/* =========================================================
+   SESSION
+========================================================= */
 
 async function loadSession() {
 
@@ -2462,13 +2744,9 @@ async function loadSession() {
 
 
         updateBalance();
-
         renderBets();
-
         renderProfile();
-
         renderHome();
-
         renderFavoriteTeamsBox();
 
 
@@ -2481,7 +2759,9 @@ async function loadSession() {
 }
 
 
-/* LEAGUES */
+/* =========================================================
+   LEAGUES
+========================================================= */
 
 async function loadLeague(
     leagueKey
@@ -2613,7 +2893,6 @@ async function loadLeague(
 
 
         renderMatches();
-
         renderHome();
 
 
@@ -2677,7 +2956,9 @@ function allLoadedMatches() {
 }
 
 
-/* QUICK HOME BUTTONS */
+/* =========================================================
+   QUICK HOME ACTIONS
+========================================================= */
 
 function openTodayMatches() {
 
@@ -2733,14 +3014,31 @@ function openEuropeMatches() {
 }
 
 
-/* DATE */
+function openMyTeams() {
+
+    showPage(
+        "matches"
+    );
+
+
+    changeDateFilter(
+        "myteams"
+    );
+
+
+    loadLeague(
+        "top5"
+    );
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
 
 function formatDate(value) {
 
-    if (
-        !value
-    ) {
-
+    if (!value) {
         return "";
     }
 
@@ -2846,7 +3144,9 @@ function matchHasFavoriteTeam(
 }
 
 
-/* POPULAR SCORE */
+/* =========================================================
+   POPULAR MATCHES
+========================================================= */
 
 function getTeamPopularity(
     name
@@ -2941,7 +3241,6 @@ function popularMatchScore(
             "champions"
         )
     ) {
-
         score += 80;
     }
 
@@ -2951,7 +3250,6 @@ function popularMatchScore(
             "premier"
         )
     ) {
-
         score += 35;
     }
 
@@ -2961,7 +3259,6 @@ function popularMatchScore(
             "la liga"
         )
     ) {
-
         score += 32;
     }
 
@@ -2971,7 +3268,6 @@ function popularMatchScore(
             "serie"
         )
     ) {
-
         score += 27;
     }
 
@@ -2981,7 +3277,6 @@ function popularMatchScore(
             "bundesliga"
         )
     ) {
-
         score += 26;
     }
 
@@ -2991,7 +3286,6 @@ function popularMatchScore(
             "ligue"
         )
     ) {
-
         score += 22;
     }
 
@@ -3009,12 +3303,8 @@ function popularMatchScore(
 
 
     if (
-        isFavoriteTeam(
-            match.home
-        )
-        ||
-        isFavoriteTeam(
-            match.away
+        matchHasFavoriteTeam(
+            match
         )
     ) {
 
@@ -3022,21 +3312,13 @@ function popularMatchScore(
     }
 
 
-    const kickoff =
-        new Date(
-            match.date
-        ).getTime();
-
-
-    const now =
-        Date.now();
-
-
     const hours =
         (
-            kickoff
+            new Date(
+                match.date
+            ).getTime()
             -
-            now
+            Date.now()
         )
         /
         3600000;
@@ -3058,41 +3340,39 @@ function popularMatchScore(
 
 function getPopularMatches() {
 
-    const list =
-        [
-            ...(
-                loadedMatches.top5
-                ||
-                []
-            )
-        ];
-
-
-    return list
-        .filter(
-            match =>
-                new Date(
-                    match.date
-                ).getTime()
-                >
-                Date.now()
-        )
-        .sort(
-            (a,b) =>
-                popularMatchScore(b)
-                -
-                popularMatchScore(a)
-        )
-        .slice(
-            0,
-            4
-        );
+    return (
+        loadedMatches.top5
+        ||
+        []
+    )
+    .filter(
+        match =>
+            new Date(
+                match.date
+            ).getTime()
+            >
+            Date.now()
+    )
+    .sort(
+        (a,b) =>
+            popularMatchScore(b)
+            -
+            popularMatchScore(a)
+    )
+    .slice(
+        0,
+        3
+    );
 }
 
 
-/* FILTERS */
+/* =========================================================
+   FILTERS
+========================================================= */
 
-function filteredMatches(list) {
+function filteredMatches(
+    list
+) {
 
     let result =
         [
@@ -3228,16 +3508,16 @@ function changeDateFilter(value) {
 }
 
 
-/* TEAM LOGO */
+/* =========================================================
+   TEAM LOGO
+========================================================= */
 
 function teamLogo(
     url,
     name
 ) {
 
-    if (
-        !url
-    ) {
+    if (!url) {
 
         return `
             <div class="team-logo">
@@ -3264,7 +3544,9 @@ function teamLogo(
 }
 
 
-/* PARLAY SELECTED */
+/* =========================================================
+   PARLAY SELECTION
+========================================================= */
 
 function isParlaySelected(
     fixtureId,
@@ -3288,7 +3570,9 @@ function isParlaySelected(
 }
 
 
-/* ODDS */
+/* =========================================================
+   ODD BUTTON
+========================================================= */
 
 function oddButton(
     match,
@@ -3364,7 +3648,9 @@ function oddButton(
 }
 
 
-/* MATCH CARD */
+/* =========================================================
+   MATCH CARD
+========================================================= */
 
 function renderMatch(
     match,
@@ -3407,10 +3693,10 @@ function renderMatch(
                         popular
                         ?
                         `
-                            <span class="hot-badge">
+                            <div class="hot-badge">
                                 🔥 Популярный
-                            </span>
-                            <div style="height:6px;"></div>
+                            </div>
+                            <br>
                         `
                         :
                         ""
@@ -3487,7 +3773,6 @@ function renderMatch(
                             );
                         "
                     >
-
                         ${
                             isFavoriteTeam(
                                 match.home
@@ -3497,7 +3782,6 @@ function renderMatch(
                             :
                             "☆ В любимые"
                         }
-
                     </button>
 
                 </div>
@@ -3543,7 +3827,6 @@ function renderMatch(
                             );
                         "
                     >
-
                         ${
                             isFavoriteTeam(
                                 match.away
@@ -3553,7 +3836,6 @@ function renderMatch(
                             :
                             "☆ В любимые"
                         }
-
                     </button>
 
                 </div>
@@ -3591,7 +3873,9 @@ function renderMatch(
 }
 
 
-/* FAVORITE TEAMS BOX */
+/* =========================================================
+   FAVORITE TEAMS BOX
+========================================================= */
 
 function renderFavoriteTeamsBox() {
 
@@ -3649,7 +3933,7 @@ function renderFavoriteTeamsBox() {
                 class="notice"
                 style="margin-top:8px;"
             >
-                🔔 Бот напомнит примерно за 30 минут до матча любимой команды.
+                🔔 Бот напомнит примерно за 30 минут до матча.
             </div>
 
         </div>
@@ -3657,7 +3941,9 @@ function renderFavoriteTeamsBox() {
 }
 
 
-/* MATCH LIST */
+/* =========================================================
+   MATCH LIST
+========================================================= */
 
 function renderMatches() {
 
@@ -3719,7 +4005,196 @@ function renderMatches() {
 }
 
 
-/* HOME */
+/* =========================================================
+   HOME ACTIVE BETS
+========================================================= */
+
+function renderHomeActiveBets() {
+
+    const singles =
+        bets
+        .filter(
+            bet =>
+                bet.status ===
+                "Активна"
+        )
+        .slice(
+            0,
+            2
+        );
+
+
+    const activeParlays =
+        parlays
+        .filter(
+            parlay =>
+                parlay.status ===
+                "Активна"
+        )
+        .slice(
+            0,
+            1
+        );
+
+
+    const items = [];
+
+
+    singles.forEach(
+        bet => {
+
+            items.push(`
+                <div
+                    class="home-bet-card"
+                    onclick="
+                        showPage('bets');
+                        switchBetTab('single');
+                        changeBetFilter('active');
+                    "
+                >
+
+                    <div class="home-bet-top">
+
+                        <b>
+                            🎯 Ординар
+                        </b>
+
+                        <span class="status active">
+                            Активна
+                        </span>
+
+                    </div>
+
+                    <div class="home-bet-match">
+                        ${escapeHtml(
+                            bet.match
+                        )}
+                    </div>
+
+                    <div class="notice">
+                        ${escapeHtml(
+                            bet.selection
+                        )}
+                        •
+                        ${Number(
+                            bet.odd
+                        ).toFixed(2)}
+                    </div>
+
+                    <div class="home-bet-bottom">
+
+                        <span>
+                            Ставка:
+                            ${bet.amount} 🪙
+                        </span>
+
+                        <span>
+                            Выигрыш:
+                            ${bet.possible} 🪙
+                        </span>
+
+                    </div>
+
+                </div>
+            `);
+        }
+    );
+
+
+    activeParlays.forEach(
+        parlay => {
+
+            items.push(`
+                <div
+                    class="home-bet-card"
+                    onclick="
+                        showPage('bets');
+                        switchBetTab('parlay');
+                        changeBetFilter('active');
+                    "
+                >
+
+                    <div class="home-bet-top">
+
+                        <b>
+                            🧾 Экспресс
+                        </b>
+
+                        <span class="status active">
+                            Активен
+                        </span>
+
+                    </div>
+
+                    <div class="home-bet-match">
+                        ${
+                            (
+                                parlay.legs
+                                ||
+                                []
+                            ).length
+                        }
+                        событий
+                    </div>
+
+                    <div class="notice">
+                        Общий кэф:
+                        ${Number(
+                            parlay.total_odd
+                        ).toFixed(2)}
+                    </div>
+
+                    <div class="home-bet-bottom">
+
+                        <span>
+                            Ставка:
+                            ${parlay.amount} 🪙
+                        </span>
+
+                        <span>
+                            Выигрыш:
+                            ${parlay.possible} 🪙
+                        </span>
+
+                    </div>
+
+                </div>
+            `);
+        }
+    );
+
+
+    document.getElementById(
+        "homeActiveBets"
+    ).innerHTML =
+        items.length
+        ?
+        items.join("")
+        :
+        `
+            <div class="active-bets-empty">
+
+                Пока нет активных ставок
+
+                <div style="margin-top:10px;">
+
+                    <button
+                        class="section-link"
+                        onclick="showPage('matches')"
+                    >
+                        Перейти к матчам →
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
 
 function renderHome() {
 
@@ -3736,15 +4211,38 @@ function renderHome() {
 
 
     document.getElementById(
-        "homeUserLevel"
+        "homeUserLeague"
     ).textContent =
-        `${profileLeague.icon || "🥉"} ${profileLeague.name || "Бронза"} • Уровень ${profileLevel}`;
+        `${
+            profileLeague.icon
+            ||
+            "🥉"
+        } ${
+            profileLeague.name
+            ||
+            "Бронза"
+        } • Уровень ${profileLevel}`;
 
 
     document.getElementById(
         "homeCoins"
     ).textContent =
         `${balance} 🪙`;
+
+
+    document.getElementById(
+        "homeXpText"
+    ).textContent =
+        `${currentLevelXp} / 100 XP`;
+
+
+    document.getElementById(
+        "homeXpFill"
+    ).style.width =
+        `${Math.min(
+            currentLevelXp,
+            100
+        )}%`;
 
 
     const top =
@@ -3763,7 +4261,7 @@ function renderHome() {
         )
         .slice(
             0,
-            5
+            4
         );
 
 
@@ -3833,62 +4331,57 @@ function renderHome() {
         )
         .slice(
             0,
-            3
+            2
         );
 
 
-    document.getElementById(
-        "homeFavoriteTeams"
-    ).innerHTML =
+    const favoriteSection =
+        document.getElementById(
+            "homeFavoriteSection"
+        );
+
+
+    if (
         favoriteTeamMatches.length
-        ?
-        `
-            <div class="section-head">
+    ) {
 
-                <h2>
-                    ⭐ Мои команды
-                </h2>
+        favoriteSection.style.display =
+            "block";
 
-                <button
-                    class="section-link"
-                    onclick="openMyTeams()"
-                >
-                    Все
-                </button>
 
-            </div>
+        document.getElementById(
+            "homeFavoriteTeams"
+        ).innerHTML =
+            favoriteTeamMatches
+            .map(
+                match =>
+                    renderMatch(
+                        match,
+                        false
+                    )
+            )
+            .join("");
 
-            ${
-                favoriteTeamMatches
-                .map(
-                    match =>
-                        renderMatch(
-                            match,
-                            false
-                        )
-                )
-                .join("")
-            }
-        `
-        :
-        "";
+    } else {
+
+        favoriteSection.style.display =
+            "none";
+
+
+        document.getElementById(
+            "homeFavoriteTeams"
+        ).innerHTML =
+            "";
+    }
+
+
+    renderHomeActiveBets();
 }
 
 
-function openMyTeams() {
-
-    showPage(
-        "matches"
-    );
-
-
-    changeDateFilter(
-        "myteams"
-    );
-}
-
-
-/* MATCH DETAIL */
+/* =========================================================
+   MATCH DETAIL
+========================================================= */
 
 async function openMatch(
     fixtureId
@@ -4010,10 +4503,7 @@ async function openMatch(
                     ];
 
 
-                if (
-                    !total
-                ) {
-
+                if (!total) {
                     return;
                 }
 
@@ -4145,7 +4635,9 @@ async function openMatch(
 }
 
 
-/* BET CHOICE */
+/* =========================================================
+   BET CHOICE
+========================================================= */
 
 function selectBet(
     fixtureId,
@@ -4222,10 +4714,7 @@ function openSingleFromChoice() {
     );
 
 
-    if (
-        !selectedBet
-    ) {
-
+    if (!selectedBet) {
         return;
     }
 
@@ -4268,10 +4757,7 @@ function openSingleFromChoice() {
 
 function toggleSelectedParlay() {
 
-    if (
-        !selectedBet
-    ) {
-
+    if (!selectedBet) {
         return;
     }
 
@@ -4309,8 +4795,6 @@ function toggleSelectedParlay() {
 
 
         updateParlay();
-
-        renderMatches();
 
         return;
     }
@@ -4370,12 +4854,12 @@ function toggleSelectedParlay() {
 
 
     updateParlay();
-
-    renderMatches();
 }
 
 
-/* SINGLE */
+/* =========================================================
+   SINGLE
+========================================================= */
 
 function updateSingleWin() {
 
@@ -4479,8 +4963,8 @@ async function confirmSingle() {
 
 
         updateBalance();
-
         renderBets();
+        renderHome();
 
 
         closeOverlay(
@@ -4515,7 +4999,9 @@ async function confirmSingle() {
 }
 
 
-/* GET OLD SELECTION ODD */
+/* =========================================================
+   GET CURRENT ODD
+========================================================= */
 
 function getSelectionOdd(
     match,
@@ -4532,7 +5018,6 @@ function getSelectionOdd(
         selection ===
         "П1"
     ) {
-
         return odds.home;
     }
 
@@ -4541,7 +5026,6 @@ function getSelectionOdd(
         selection ===
         "X"
     ) {
-
         return odds.draw;
     }
 
@@ -4550,7 +5034,6 @@ function getSelectionOdd(
         selection ===
         "П2"
     ) {
-
         return odds.away;
     }
 
@@ -4559,7 +5042,6 @@ function getSelectionOdd(
         selection ===
         "ОЗ Да"
     ) {
-
         return match.btts?.yes;
     }
 
@@ -4568,7 +5050,6 @@ function getSelectionOdd(
         selection ===
         "ОЗ Нет"
     ) {
-
         return match.btts?.no;
     }
 
@@ -4618,10 +5099,7 @@ function getSelectionOdd(
             ];
 
 
-        if (
-            !total
-        ) {
-
+        if (!total) {
             return null;
         }
 
@@ -4708,7 +5186,9 @@ function getSelectionOdd(
 }
 
 
-/* REPEAT SINGLE */
+/* =========================================================
+   REPEAT SINGLE
+========================================================= */
 
 async function repeatSingleBet(
     betId
@@ -4727,9 +5207,7 @@ async function repeatSingleBet(
         );
 
 
-    if (
-        !bet
-    ) {
+    if (!bet) {
 
         tg.showAlert(
             "Ставка не найдена"
@@ -4864,13 +5342,15 @@ async function repeatSingleBet(
         tg.showAlert(
             error.message
             ||
-            "Повторить ставку сейчас нельзя"
+            "Повторить эту ставку сейчас нельзя"
         );
     }
 }
 
 
-/* PARLAY */
+/* =========================================================
+   PARLAY
+========================================================= */
 
 function calculateParlayOdd() {
 
@@ -4934,9 +5414,7 @@ function changeParlayAmountFromMini(
         );
 
 
-    if (
-        modalInput
-    ) {
+    if (modalInput) {
 
         modalInput.value =
             parlayStake > 0
@@ -4974,9 +5452,7 @@ function changeParlayAmountFromModal(
         );
 
 
-    if (
-        miniInput
-    ) {
+    if (miniInput) {
 
         miniInput.value =
             parlayStake > 0
@@ -5018,7 +5494,6 @@ function updateMiniParlay() {
     if (
         count <= 0
     ) {
-
         return;
     }
 
@@ -5093,7 +5568,6 @@ function updateParlay() {
 
 
     renderMatches();
-
     renderHome();
 }
 
@@ -5357,8 +5831,8 @@ async function confirmParlay() {
 
 
         renderBets();
-
         updateBalance();
+        renderHome();
 
 
         showPage(
@@ -5429,7 +5903,9 @@ function clearParlay() {
 }
 
 
-/* REBUILD PARLAY */
+/* =========================================================
+   REBUILD PARLAY
+========================================================= */
 
 async function rebuildParlay(
     parlayId
@@ -5495,7 +5971,6 @@ async function rebuildParlay(
                     fixtureId
                 )
             ) {
-
                 continue;
             }
 
@@ -5621,7 +6096,6 @@ async function rebuildParlay(
 
     updateParlay();
 
-
     openParlay();
 
 
@@ -5644,7 +6118,9 @@ async function rebuildParlay(
 }
 
 
-/* HISTORY */
+/* =========================================================
+   BET HISTORY
+========================================================= */
 
 function closeOverlay(id) {
 
@@ -5662,7 +6138,6 @@ function statusClass(status) {
         status ===
         "Выиграла"
     ) {
-
         return "win";
     }
 
@@ -5671,7 +6146,6 @@ function statusClass(status) {
         status ===
         "Проиграла"
     ) {
-
         return "loss";
     }
 
@@ -5680,7 +6154,6 @@ function statusClass(status) {
         status ===
         "Возврат"
     ) {
-
         return "refund";
     }
 
@@ -5697,7 +6170,6 @@ function passesBetFilter(
         currentBetFilter ===
         "all"
     ) {
-
         return true;
     }
 
@@ -5706,9 +6178,10 @@ function passesBetFilter(
         currentBetFilter ===
         "active"
     ) {
-
-        return item.status ===
-            "Активна";
+        return (
+            item.status ===
+            "Активна"
+        );
     }
 
 
@@ -5716,9 +6189,10 @@ function passesBetFilter(
         currentBetFilter ===
         "win"
     ) {
-
-        return item.status ===
-            "Выиграла";
+        return (
+            item.status ===
+            "Выиграла"
+        );
     }
 
 
@@ -5726,9 +6200,10 @@ function passesBetFilter(
         currentBetFilter ===
         "loss"
     ) {
-
-        return item.status ===
-            "Проиграла";
+        return (
+            item.status ===
+            "Проиграла"
+        );
     }
 
 
@@ -5861,7 +6336,10 @@ function renderBets() {
                         bet.score
                         ?
                         `
-                            <div class="notice">
+                            <div
+                                class="notice"
+                                style="margin-top:6px;"
+                            >
                                 Счёт:
                                 ${escapeHtml(
                                     bet.score
@@ -5941,17 +6419,28 @@ function renderBets() {
 
                     <div class="bet-info-row">
                         <span>Общий кэф</span>
-                        <b>${Number(parlay.total_odd).toFixed(2)}</b>
+
+                        <b>
+                            ${Number(
+                                parlay.total_odd
+                            ).toFixed(2)}
+                        </b>
                     </div>
 
                     <div class="bet-info-row">
                         <span>Ставка</span>
-                        <b>${parlay.amount} 🪙</b>
+
+                        <b>
+                            ${parlay.amount} 🪙
+                        </b>
                     </div>
 
                     <div class="bet-info-row">
                         <span>Возможный выигрыш</span>
-                        <b>${parlay.possible} 🪙</b>
+
+                        <b>
+                            ${parlay.possible} 🪙
+                        </b>
                     </div>
 
                     <h4>
@@ -5978,7 +6467,7 @@ function renderBets() {
                                         )}
                                     </b>
 
-                                    <div>
+                                    <div style="margin-top:5px;">
                                         ${escapeHtml(
                                             leg.selection
                                         )}
@@ -6050,10 +6539,15 @@ function renderBets() {
                 Нет экспрессов
             </div>
         `;
+
+
+    renderHomeActiveBets();
 }
 
 
-/* LEADERBOARD */
+/* =========================================================
+   LEADERBOARD
+========================================================= */
 
 async function loadLeaderboard() {
 
@@ -6123,7 +6617,9 @@ async function loadLeaderboard() {
 }
 
 
-/* PROFILE */
+/* =========================================================
+   PROFILE
+========================================================= */
 
 function renderProfile() {
 
@@ -6259,7 +6755,8 @@ function renderProfile() {
                             •
                             +${task.reward}
                             ${
-                                task.reward_type ===
+                                task.reward_type
+                                ===
                                 "xp"
                                 ?
                                 "XP"
@@ -6454,7 +6951,6 @@ async function claimDaily() {
 
         updateBalance();
 
-
         await loadSession();
 
 
@@ -6472,9 +6968,7 @@ async function claimDaily() {
 }
 
 
-async function claimTask(
-    key
-) {
+async function claimTask(key) {
 
     try {
 
@@ -6524,7 +7018,9 @@ async function claimAchievement(
 }
 
 
-/* NAVIGATION */
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
 function showPage(
     name,
@@ -6626,7 +7122,9 @@ function showPage(
 }
 
 
-/* INIT */
+/* =========================================================
+   INIT
+========================================================= */
 
 async function init() {
 
@@ -6647,15 +7145,10 @@ async function init() {
 
 
     renderMatches();
-
     renderHome();
-
     renderBets();
-
     renderProfile();
-
     renderFavoriteTeamsBox();
-
     updateParlay();
 
 
@@ -6705,9 +7198,7 @@ async function init() {
 
 
                 updateBalance();
-
                 renderBets();
-
                 renderHome();
 
 

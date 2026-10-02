@@ -1,5880 +1,4114 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>BetCoin</title>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding-bottom: 100px;
-      background: #0b0d12;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 18px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    .balance-small {
-      background: #191d27;
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-weight: bold;
-    }
-
-    h2 {
-      font-size: 21px;
-    }
-
-    .balance-card {
-      padding: 22px;
-      border-radius: 22px;
-      background: linear-gradient(
-        135deg,
-        #1f6feb,
-        #6148d8
-      );
-      margin-bottom: 14px;
-    }
-
-    .balance-card p {
-      margin: 0;
-      opacity: 0.8;
-    }
-
-    .balance-card h1 {
-      margin: 8px 0 0;
-      font-size: 34px;
-    }
-
-    .daily-card {
-      background: linear-gradient(
-        135deg,
-        #d98b17,
-        #b65d15
-      );
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 20px;
-    }
-
-    .daily-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .daily-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .daily-reward {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .daily-description {
-      font-size: 13px;
-      opacity: 0.8;
-      margin-top: 5px;
-    }
-
-    .daily-button {
-      width: 100%;
-      margin-top: 15px;
-      border: none;
-      border-radius: 13px;
-      padding: 13px;
-      background: white;
-      color: #111;
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .daily-button:disabled {
-      opacity: 0.55;
-    }
-
-    .daily-timer {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.85;
-    }
-
-    .tasks-section {
-      margin-bottom: 25px;
-    }
-
-    .tasks-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .tasks-header h2 {
-      margin: 0;
-    }
-
-    .tasks-reset {
-      color: #818899;
-      font-size: 12px;
-    }
-
-    .task-card {
-      background: #161922;
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid transparent;
-    }
-
-    .task-card.completed {
-      border-color: #3b8f5b;
-    }
-
-    .task-card.claimed {
-      opacity: 0.75;
-    }
-
-    .task-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .task-title {
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .task-description {
-      color: #8e95a5;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .task-reward {
-      color: #ffd96a;
-      white-space: nowrap;
-      font-weight: bold;
-    }
-
-    .task-progress-row,
-    .achievement-progress-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 12px 0 7px;
-      color: #969dac;
-      font-size: 12px;
-    }
-
-    .progress {
-      height: 8px;
-      background: #292e3b;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .task-progress-fill {
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        #2775ff,
-        #8c57ff
-      );
-    }
-
-    .task-button {
-      width: 100%;
-      margin-top: 12px;
-      border: none;
-      border-radius: 12px;
-      padding: 11px;
-      background: #2775ff;
-      color: white;
-      font-weight: bold;
-    }
-
-    .task-button:disabled {
-      background: #292e3b;
-      color: #858c9c;
-    }
-
-    .task-button.claimed {
-      background: #1f4930;
-      color: #6fe298;
-    }
-
-    .match-card {
-      background: #161922;
-      padding: 16px;
-      border-radius: 18px;
-      margin-bottom: 14px;
-    }
-
-    .league-name {
-      color: #8d94a5;
-      font-size: 13px;
-      margin-bottom: 14px;
-    }
-
-    .teams {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .team {
-      flex: 1;
-      text-align: center;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .team img {
-      display: block;
-      width: 46px;
-      height: 46px;
-      object-fit: contain;
-      margin: 0 auto 7px;
-    }
-
-    .event-header .team img {
-      width: 58px;
-      height: 58px;
-    }
-
-    .vs {
-      color: #777f90;
-      font-size: 12px;
-    }
-
-    .time {
-      text-align: center;
-      color: #9097a8;
-      margin: 12px 0;
-      font-size: 13px;
-    }
-
-    .odds-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .odds-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .odd-button {
-      border: none;
-      border-radius: 12px;
-      padding: 11px 5px;
-      background: #232836;
-      color: white;
-      font-weight: bold;
-    }
-
-    .odd-button:disabled {
-      opacity: 0.4;
-    }
-
-    .open-match-button {
-      width: 100%;
-      margin-top: 12px;
-      border: none;
-      border-radius: 13px;
-      padding: 13px;
-      background: #2775ff;
-      color: white;
-      font-weight: bold;
-    }
-
-    .back-button {
-      background: #191d27;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    .event-header {
-      background: #161922;
-      padding: 20px 16px;
-      border-radius: 20px;
-      margin-bottom: 14px;
-    }
-
-    .market-box {
-      background: #161922;
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 12px;
-    }
-
-    .market-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .team-total-title {
-      color: #aeb5c4;
-      font-size: 13px;
-      font-weight: bold;
-      margin: 12px 0 8px;
-    }
-
-    .no-odds {
-      background: #20242f;
-      color: #8e95a5;
-      padding: 12px;
-      border-radius: 12px;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .odds-warning {
-      background: #352b16;
-      color: #ffd66b;
-      border: 1px solid #765c1e;
-      padding: 12px;
-      border-radius: 13px;
-      margin-bottom: 13px;
-      font-size: 12px;
-    }
-
-    .bet-card,
-    .parlay-card {
-      background: #161922;
-      padding: 15px;
-      border-radius: 16px;
-      margin-bottom: 12px;
-    }
-
-    .bet-win,
-    .parlay-win {
-      border: 1px solid #35c76f;
-    }
-
-    .bet-loss,
-    .parlay-loss {
-      border: 1px solid #d84b4b;
-    }
-
-    .bet-refund,
-    .parlay-refund {
-      border: 1px solid #d6b24d;
-    }
-
-    .status-win {
-      color: #62df91;
-      font-weight: bold;
-    }
-
-    .status-loss {
-      color: #ff7272;
-      font-weight: bold;
-    }
-
-    .status-refund {
-      color: #ffd66b;
-      font-weight: bold;
-    }
-
-    .status-active {
-      color: #aab1c0;
-      font-weight: bold;
-    }
-
-    .bets-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-
-    .bets-tab {
-      border: none;
-      background: #20242f;
-      color: #9ba2b2;
-      padding: 12px;
-      border-radius: 13px;
-      font-weight: bold;
-    }
-
-    .bets-tab.active {
-      background: #2775ff;
-      color: white;
-    }
-
-    .parlay-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .parlay-title {
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    .parlay-total-odd {
-      background: #2b3040;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-weight: bold;
-    }
-
-    .parlay-leg {
-      padding: 11px 0;
-      border-top: 1px solid #2a2e38;
-    }
-
-    .parlay-leg:first-child {
-      border-top: none;
-    }
-
-    .parlay-leg-match {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .parlay-leg-bottom {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 5px;
-      color: #a4abba;
-      font-size: 12px;
-    }
-
-    .profile {
-      background: #161922;
-      padding: 22px;
-      border-radius: 20px;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .avatar {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #286cf4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      margin: 0 auto 12px;
-    }
-
-    .rank-box {
-      margin-top: 12px;
-      background: #242938;
-      border-radius: 13px;
-      padding: 12px;
-      font-weight: bold;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat-card {
-      background: #161922;
-      border-radius: 17px;
-      padding: 15px;
-      min-height: 96px;
-    }
-
-    .stat-icon {
-      font-size: 22px;
-      margin-bottom: 7px;
-    }
-
-    .stat-label {
-      color: #8f96a7;
-      font-size: 12px;
-      margin-bottom: 5px;
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .stat-card.green .stat-value {
-      color: #6fe298;
-    }
-
-    .stat-card.red .stat-value {
-      color: #ff7272;
-    }
-
-    .stat-card.gold .stat-value {
-      color: #ffd66b;
-    }
-
-    .stat-card.blue .stat-value {
-      color: #7bb0ff;
-    }
-
-    .profit-card {
-      background: linear-gradient(
-        135deg,
-        #17273a,
-        #171b28
-      );
-      border-radius: 19px;
-      padding: 17px;
-      margin-bottom: 18px;
-    }
-
-    .profit-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .profit-label {
-      color: #969dac;
-      font-size: 13px;
-    }
-
-    .profit-value {
-      font-size: 26px;
-      font-weight: bold;
-    }
-
-    .profit-positive {
-      color: #6fe298;
-    }
-
-    .profit-negative {
-      color: #ff7272;
-    }
-
-    .profit-zero {
-      color: #d0d4dd;
-    }
-
-    .profit-sub {
-      margin-top: 10px;
-      color: #8991a2;
-      font-size: 12px;
-    }
-
-    .level-card {
-      background: #161922;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-
-    .level-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .level-number {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .level-xp-total {
-      color: #9299a8;
-      font-size: 13px;
-    }
-
-    .xp-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      color: #b8bfcd;
-      font-size: 13px;
-    }
-
-    .xp-bar {
-      height: 12px;
-      background: #292e3b;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .xp-fill {
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        #2775ff,
-        #8c57ff
-      );
-    }
-
-    .xp-info {
-      margin-top: 10px;
-      color: #858c9c;
-      font-size: 12px;
-    }
-
-    .player-league-card {
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 18px;
-      background: linear-gradient(
-        135deg,
-        #4b2f1d,
-        #231b18
-      );
-    }
-
-    .player-league-card.silver {
-      background: linear-gradient(
-        135deg,
-        #6f7684,
-        #292d36
-      );
-    }
-
-    .player-league-card.gold {
-      background: linear-gradient(
-        135deg,
-        #d39419,
-        #5e3b08
-      );
-    }
-
-    .player-league-card.diamond {
-      background: linear-gradient(
-        135deg,
-        #169ec4,
-        #27337b
-      );
-    }
-
-    .player-league-card.master {
-      background: linear-gradient(
-        135deg,
-        #7738b8,
-        #32145b
-      );
-    }
-
-    .league-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .league-big-icon {
-      width: 62px;
-      height: 62px;
-      background: rgba(0,0,0,0.18);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 35px;
-    }
-
-    .league-label {
-      color: rgba(255,255,255,0.72);
-      font-size: 12px;
-    }
-
-    .league-title {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .league-levels {
-      color: rgba(255,255,255,0.75);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .league-progress-info {
-      display: flex;
-      justify-content: space-between;
-      margin: 17px 0 8px;
-      font-size: 12px;
-    }
-
-    .league-progress {
-      height: 10px;
-      background: rgba(0,0,0,0.25);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .league-progress-fill {
-      height: 100%;
-      background: white;
-    }
-
-    .league-next {
-      margin-top: 9px;
-      font-size: 12px;
-    }
-
-    .achievement-card {
-      background: #161922;
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #282d39;
-    }
-
-    .achievement-card.completed {
-      border-color: #d79e2b;
-    }
-
-    .achievement-card.claimed {
-      border-color: #3b8f5b;
-      opacity: 0.82;
-    }
-
-    .achievement-top {
-      display: flex;
-      gap: 12px;
-    }
-
-    .achievement-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: #232836;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 23px;
-    }
-
-    .achievement-main {
-      flex: 1;
-    }
-
-    .achievement-title {
-      font-weight: bold;
-    }
-
-    .achievement-description {
-      color: #8e95a5;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .achievement-reward {
-      color: #ffd66b;
-      font-size: 13px;
-      font-weight: bold;
-      margin-top: 7px;
-    }
-
-    .achievement-progress-fill {
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        #e1a52c,
-        #ffdf6b
-      );
-    }
-
-    .achievement-button {
-      width: 100%;
-      margin-top: 12px;
-      border: none;
-      border-radius: 12px;
-      padding: 11px;
-      background: #d99a20;
-      color: #151515;
-      font-weight: bold;
-    }
-
-    .achievement-button:disabled {
-      background: #292e3b;
-      color: #858c9c;
-    }
-
-    .achievement-button.claimed {
-      background: #1f4930;
-      color: #6fe298;
-    }
-
-    .leaderboard-info {
-      background: linear-gradient(
-        135deg,
-        #3b245c,
-        #263b78
-      );
-      padding: 18px;
-      border-radius: 20px;
-      margin-bottom: 14px;
-    }
-
-    .leaderboard-info-title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .leaderboard-info-text {
-      margin-top: 7px;
-      color: #d1d4df;
-      font-size: 13px;
-    }
-
-    .my-rank-card {
-      background: #182338;
-      border: 1px solid #3563a8;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .my-rank-title {
-      color: #9cbcff;
-      font-size: 12px;
-    }
-
-    .my-rank-number {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    .leader-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #161922;
-      border-radius: 16px;
-      padding: 13px;
-      margin-bottom: 9px;
-    }
-
-    .leader-row.me {
-      background: #172039;
-      border: 1px solid #3478ff;
-    }
-
-    .leader-position {
-      width: 40px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .leader-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #293044;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .leader-main {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .leader-name {
-      font-weight: bold;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .leader-sub {
-      color: #8991a2;
-      font-size: 11px;
-      margin-top: 4px;
-    }
-
-    .leader-league {
-      margin-top: 5px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .leader-stats {
-      text-align: right;
-    }
-
-    .leader-xp {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .leader-balance {
-      color: #c5cad5;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-around;
-      padding: 9px 2px 17px;
-      background: #13161e;
-      border-top: 1px solid #272b36;
-      z-index: 5;
-    }
-
-    .nav button {
-      width: 20%;
-      padding: 0;
-      background: none;
-      border: none;
-      color: #858c9c;
-      font-size: 10px;
-    }
-
-    .nav button.active {
-      color: white;
-    }
-
-    .nav-icon {
-      display: block;
-      margin-bottom: 3px;
-      font-size: 21px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: #9299a8;
-    }
-
-    .empty {
-      background: #161922;
-      border-radius: 18px;
-      padding: 30px 20px;
-      text-align: center;
-      color: #9299a8;
-    }
-
-    .server-error {
-      display: none;
-      background: #3a1717;
-      border: 1px solid #8a3434;
-      color: #ffb3b3;
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 15px;
-    }
-
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 9;
-    }
-
-    .overlay.active {
-      display: block;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #1b1f2a;
-      padding: 22px;
-      border-radius: 25px 25px 0 0;
-      z-index: 10;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-
-    .modal.active {
-      display: block;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 15px;
-      margin: 12px 0;
-      border: none;
-      border-radius: 12px;
-      background: #292e3b;
-      color: white;
-      font-size: 18px;
-    }
-
-    .confirm {
-      width: 100%;
-      border: none;
-      border-radius: 13px;
-      padding: 15px;
-      background: #2775ff;
-      color: white;
-      font-weight: bold;
-    }
-
-    .secondary-confirm {
-      width: 100%;
-      border: none;
-      border-radius: 13px;
-      padding: 14px;
-      margin-top: 8px;
-      background: #6f43d6;
-      color: white;
-      font-weight: bold;
-    }
-
-    .cancel {
-      width: 100%;
-      border: none;
-      background: none;
-      color: #999;
-      padding: 10px;
-      margin-top: 8px;
-    }
-
-    .potential {
-      color: #71df91;
-      margin-bottom: 14px;
-    }
-
-    .parlay-floating {
-      display: none;
-      position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: 88px;
-      z-index: 7;
-      border: none;
-      border-radius: 17px;
-      padding: 15px;
-      background: linear-gradient(
-        135deg,
-        #6b3be0,
-        #3655d8
-      );
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.35);
-    }
-
-    .parlay-floating.active {
-      display: block;
-    }
-
-    .coupon-leg {
-      background: #252a37;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 9px;
-    }
-
-    .coupon-leg-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .coupon-match {
-      font-weight: bold;
-      font-size: 13px;
-    }
-
-    .coupon-remove {
-      border: none;
-      background: #432326;
-      color: #ff8989;
-      border-radius: 8px;
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-    }
-
-    .coupon-selection {
-      color: #aab1c0;
-      font-size: 12px;
-      margin-top: 7px;
-    }
-
-    .coupon-odd {
-      color: #d8c8ff;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    .coupon-total {
-      background: #242938;
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 12px;
-    }
-
-    .coupon-total-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 7px;
-    }
-
-    .coupon-total-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .levelup-modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: calc(100% - 40px);
-      max-width: 420px;
-      transform: translate(-50%, -50%);
-      background: #171a23;
-      padding: 28px 22px;
-      border-radius: 24px;
-      z-index: 20;
-      text-align: center;
-    }
-
-    .levelup-modal.active {
-      display: block;
-    }
-
-    .levelup-icon {
-      font-size: 62px;
-    }
-
-    .levelup-title {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-
-    .levelup-level {
-      font-size: 20px;
-      margin-top: 8px;
-    }
-
-    .levelup-reward {
-      background: #222735;
-      border-radius: 15px;
-      padding: 15px;
-      margin: 15px 0;
-      font-weight: bold;
-    }
-
-    .levelup-button {
-      width: 100%;
-      border: none;
-      padding: 14px;
-      border-radius: 13px;
-      background: #2775ff;
-      color: white;
-      font-weight: bold;
-    }
-
-    #levelOverlay {
-      z-index: 19;
-    }
-  </style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>BetCoin</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #0b0d12;
+            --card: #161922;
+            --card2: #1c202b;
+            --border: #2a2f3b;
+            --text: #ffffff;
+            --muted: #9298a7;
+            --accent: #2f80ff;
+            --green: #25c06d;
+            --red: #ff5252;
+            --orange: #ff9f43;
+            --gold: #ffd166;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+            min-height: 100vh;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 110px;
+        }
+
+        .page {
+            display: none;
+            padding: 18px 16px 30px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .balance {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .title {
+            font-size: 25px;
+            font-weight: 800;
+            margin: 0 0 18px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .match-card {
+            cursor: pointer;
+        }
+
+        .match-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .match-date {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .league {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .teams {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .team {
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .team img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+        .vs {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .odds-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .odd-btn {
+            background: var(--card2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            min-height: 52px;
+            padding: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .odd-btn:active {
+            transform: scale(.97);
+        }
+
+        .odd-name {
+            font-size: 12px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .odd-value {
+            font-size: 17px;
+        }
+
+        .odd-btn.disabled {
+            opacity: .35;
+            pointer-events: none;
+        }
+
+        .market {
+            margin-bottom: 22px;
+        }
+
+        .market-title {
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .market-grid.three {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .back-btn {
+            background: transparent;
+            color: var(--accent);
+            padding: 0;
+            font-size: 17px;
+            cursor: pointer;
+            margin-bottom: 18px;
+        }
+
+        .loader,
+        .empty {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 16px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+            background: #12151d;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            min-height: 82px;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--muted);
+            padding: 9px 2px;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            color: #fff;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .72);
+            z-index: 100;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #151820;
+            border: 1px solid var(--border);
+            border-radius: 26px 26px 0 0;
+            padding: 20px;
+            padding-bottom: calc(
+                20px + env(safe-area-inset-bottom)
+            );
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .selected-info {
+            background: var(--card2);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .input {
+            width: 100%;
+            background: #0e1117;
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 14px;
+            padding: 14px;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .big-btn {
+            width: 100%;
+            min-height: 50px;
+            border-radius: 15px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            background: var(--card2);
+            color: #fff;
+        }
+
+        .danger-btn {
+            background: rgba(255, 82, 82, .12);
+            color: var(--red);
+        }
+
+        .choice-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .parlay-float {
+            position: fixed;
+            z-index: 45;
+            right: 14px;
+            bottom: 96px;
+            border-radius: 18px;
+            background: var(--accent);
+            color: #fff;
+            padding: 13px 16px;
+            font-weight: 800;
+            box-shadow: 0 8px 30px rgba(47, 128, 255, .35);
+            display: none;
+            cursor: pointer;
+        }
+
+        .parlay-float.show {
+            display: block;
+        }
+
+        .slip-leg {
+            background: var(--card2);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 9px;
+        }
+
+        .slip-leg-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .remove-leg {
+            background: transparent;
+            color: var(--red);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--card);
+            padding: 4px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            background: transparent;
+            color: var(--muted);
+            padding: 11px;
+            border-radius: 13px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tab.active {
+            background: var(--card2);
+            color: #fff;
+        }
+
+        .status {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status.active {
+            color: var(--orange);
+            background: rgba(255, 159, 67, .12);
+        }
+
+        .status.win {
+            color: var(--green);
+            background: rgba(37, 192, 109, .12);
+        }
+
+        .status.loss {
+            color: var(--red);
+            background: rgba(255, 82, 82, .12);
+        }
+
+        .status.refund {
+            color: var(--muted);
+            background: rgba(146, 152, 167, .12);
+        }
+
+        .bet-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .bet-main {
+            font-weight: 800;
+            margin: 8px 0;
+        }
+
+        .xp-bar {
+            height: 10px;
+            border-radius: 999px;
+            background: #0f1117;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .task-btn {
+            border-radius: 12px;
+            padding: 9px 12px;
+            background: var(--accent);
+            color: #fff;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .task-btn:disabled {
+            opacity: .4;
+        }
+
+        .leader-row {
+            display: grid;
+            grid-template-columns: 46px 1fr auto;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .leader-rank {
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .leader-name {
+            font-weight: 700;
+        }
+
+        .leader-xp {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .me-card {
+            border-color: var(--accent);
+        }
+
+        .daily-card {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(47,128,255,.18),
+                    rgba(22,25,34,1)
+                );
+        }
+
+        .notice {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 8px 0;
+        }
+
+        .market-line {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        @media (min-width: 700px) {
+            .page {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-  <div class="header">
+    <!-- HOME -->
+    <section id="page-home" class="page active">
 
-    <div class="logo">
-      ⚽ BetCoin
-    </div>
+        <div class="topbar">
+            <div class="brand">⚽ BetCoin</div>
 
-    <div class="balance-small">
-      🪙 <span id="topBalance">...</span>
-    </div>
-
-  </div>
-
-  <div
-    id="serverError"
-    class="server-error"
-  ></div>
-
-
-  <div
-    id="home"
-    class="page active"
-  >
-
-    <div class="balance-card">
-
-      <p>
-        Твой баланс
-      </p>
-
-      <h1>
-        🪙 <span id="balance">...</span>
-      </h1>
-
-    </div>
-
-
-    <div class="daily-card">
-
-      <div class="daily-top">
-
-        <div>
-
-          <div class="daily-title">
-            🎁 Ежедневный бонус
-          </div>
-
-          <div class="daily-reward">
-            +300 🪙
-          </div>
-
-          <div class="daily-description">
-            +15 XP • раз в 24 часа
-          </div>
-
+            <div class="balance">
+                🪙 <span id="balanceTop">0</span>
+            </div>
         </div>
 
-        <div style="font-size:45px;">
-          🎁
-        </div>
-
-      </div>
-
-      <button
-        id="dailyButton"
-        class="daily-button"
-        onclick="claimDailyReward()"
-        disabled
-      >
-        Загрузка...
-      </button>
-
-      <div
-        id="dailyTimer"
-        class="daily-timer"
-      ></div>
-
-    </div>
-
-
-    <div class="tasks-section">
-
-      <div class="tasks-header">
-
-        <h2>
-          🎯 Ежедневные задания
+        <h2 class="title">
+            ⚽ Ближайшие матчи
         </h2>
 
-        <div class="tasks-reset">
-          каждый день
+        <div id="homeMatches">
+            <div class="loader">
+                Загружаем матчи...
+            </div>
         </div>
 
-      </div>
+    </section>
 
-      <div id="tasksList">
 
-        <div class="loading">
-          Загружаем задания...
+    <!-- MATCHES -->
+    <section id="page-matches" class="page">
+
+        <div class="topbar">
+            <h2 class="title" style="margin:0;">
+                Все матчи
+            </h2>
+
+            <div class="balance">
+                🪙 <span id="balanceMatches">0</span>
+            </div>
         </div>
 
-      </div>
-
-    </div>
-
-
-    <h2>
-      🔥 Матчи
-    </h2>
-
-    <div id="homeMatches">
-
-      <div class="loading">
-        Загружаем матчи...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="matches"
-    class="page"
-  >
-
-    <h2>
-      ⚽ Все матчи
-    </h2>
-
-    <div id="allMatches">
-
-      <div class="loading">
-        Загружаем матчи...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="matchDetail"
-    class="page"
-  >
-
-    <button
-      class="back-button"
-      onclick="closeMatch()"
-    >
-      ← Назад
-    </button>
-
-    <div id="matchDetailContent"></div>
-
-  </div>
-
-
-  <div
-    id="bets"
-    class="page"
-  >
-
-    <h2>
-      🎫 Мои ставки
-    </h2>
-
-    <div class="bets-tabs">
-
-      <button
-        id="singleBetsTab"
-        class="bets-tab active"
-        onclick="setBetsTab('single')"
-      >
-        Ординары
-      </button>
-
-      <button
-        id="parlayBetsTab"
-        class="bets-tab"
-        onclick="setBetsTab('parlay')"
-      >
-        Экспрессы
-      </button>
-
-    </div>
-
-    <div id="betsList"></div>
-
-    <div
-      id="parlaysList"
-      style="display:none;"
-    ></div>
-
-  </div>
-
-
-  <div
-    id="leaders"
-    class="page"
-  >
-
-    <h2>
-      🏆 Лидеры
-    </h2>
-
-    <div class="leaderboard-info">
-
-      <div class="leaderboard-info-title">
-        Рейтинг BetCoin
-      </div>
-
-      <div class="leaderboard-info-text">
-        Чем больше XP — тем выше место.
-        При одинаковом XP учитывается баланс.
-      </div>
-
-    </div>
-
-    <div class="my-rank-card">
-
-      <div class="my-rank-title">
-        Твоё место
-      </div>
-
-      <div
-        id="myRankNumber"
-        class="my-rank-number"
-      >
-        #—
-      </div>
-
-    </div>
-
-    <div id="leaderboardList"></div>
-
-  </div>
-
-
-  <div
-    id="profile"
-    class="page"
-  >
-
-    <h2>
-      👤 Профиль
-    </h2>
-
-    <div class="profile">
-
-      <div class="avatar">
-        👤
-      </div>
-
-      <h2 id="playerName">
-        Игрок
-      </h2>
-
-      <p>
-        Баланс:
-        🪙 <span id="profileBalance">...</span>
-      </p>
-
-      <div class="rank-box">
-        🏆 Место:
-        <span id="profileRank">#—</span>
-      </div>
-
-    </div>
-
-
-    <h2>
-      📊 Статистика
-    </h2>
-
-    <div class="stats-grid">
-
-      <div class="stat-card">
-        <div class="stat-icon">🎫</div>
-        <div class="stat-label">Всего ставок</div>
-        <div id="statTotalBets" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card green">
-        <div class="stat-icon">✅</div>
-        <div class="stat-label">Побед</div>
-        <div id="statWins" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card red">
-        <div class="stat-icon">❌</div>
-        <div class="stat-label">Поражений</div>
-        <div id="statLosses" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">↩️</div>
-        <div class="stat-label">Возвратов</div>
-        <div id="statRefunds" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card blue">
-        <div class="stat-icon">📊</div>
-        <div class="stat-label">Win Rate</div>
-        <div id="statWinRate" class="stat-value">0%</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-label">Активных</div>
-        <div id="statActiveBets" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card gold">
-        <div class="stat-icon">🔥</div>
-        <div class="stat-label">Текущая серия</div>
-        <div id="statCurrentStreak" class="stat-value">0</div>
-      </div>
-
-      <div class="stat-card gold">
-        <div class="stat-icon">🏆</div>
-        <div class="stat-label">Лучшая серия</div>
-        <div id="statBestStreak" class="stat-value">0</div>
-      </div>
-
-    </div>
-
-
-    <div class="profit-card">
-
-      <div class="profit-top">
-
-        <div>
-
-          <div class="profit-label">
-            📈 Чистая прибыль
-          </div>
-
-          <div
-            id="statNetProfit"
-            class="profit-value profit-zero"
-          >
-            0 🪙
-          </div>
-
+        <div id="matchesList">
+            <div class="loader">
+                Загружаем матчи...
+            </div>
         </div>
 
-        <div style="font-size:38px;">
-          💰
-        </div>
-
-      </div>
-
-      <div
-        id="statProfitSub"
-        class="profit-sub"
-      >
-        Всего выиграно: 0 🪙
-      </div>
-
-    </div>
+    </section>
 
 
-    <div
-      id="playerLeagueCard"
-      class="player-league-card"
-    >
+    <!-- MATCH DETAIL -->
+    <section id="page-match" class="page">
 
-      <div class="league-top">
-
-        <div
-          id="playerLeagueIcon"
-          class="league-big-icon"
+        <button
+            class="back-btn"
+            onclick="backFromMatch()"
         >
-          🥉
+            ← Назад
+        </button>
+
+        <div id="matchDetail">
+            <div class="loader">
+                Загружаем коэффициенты...
+            </div>
         </div>
 
-        <div>
+    </section>
 
-          <div class="league-label">
-            Твоя лига
-          </div>
 
-          <div
-            id="playerLeagueName"
-            class="league-title"
-          >
-            Бронза
-          </div>
+    <!-- BETS -->
+    <section id="page-bets" class="page">
 
-          <div
-            id="playerLeagueLevels"
-            class="league-levels"
-          >
-            Уровни 1–4
-          </div>
+        <div class="topbar">
+            <h2 class="title" style="margin:0;">
+                🎟 Ставки
+            </h2>
 
+            <div class="balance">
+                🪙 <span id="balanceBets">0</span>
+            </div>
         </div>
 
-      </div>
+        <div class="tabs">
+            <button
+                id="singleTab"
+                class="tab active"
+                onclick="switchBetTab('single')"
+            >
+                Ординары
+            </button>
 
-      <div class="league-progress-info">
+            <button
+                id="parlayTab"
+                class="tab"
+                onclick="switchBetTab('parlay')"
+            >
+                Экспрессы
+            </button>
+        </div>
 
-        <span>
-          Прогресс
-        </span>
-
-        <span id="leagueProgressText">
-          Уровень 1 / 5
-        </span>
-
-      </div>
-
-      <div class="league-progress">
+        <div id="singleBets"></div>
 
         <div
-          id="leagueProgressFill"
-          class="league-progress-fill"
-          style="width:0%"
+            id="parlayBets"
+            style="display:none;"
         ></div>
 
-      </div>
-
-      <div
-        id="leagueNext"
-        class="league-next"
-      >
-        До Серебра: 4 ур.
-      </div>
-
-    </div>
+    </section>
 
 
-    <div class="level-card">
+    <!-- LEADERBOARD -->
+    <section id="page-leaderboard" class="page">
 
-      <div class="level-top">
+        <h2 class="title">
+            🏆 Лидеры
+        </h2>
 
-        <div
-          id="levelNumber"
-          class="level-number"
-        >
-          ⭐ Уровень 1
+        <div id="leaderboardList">
+            <div class="loader">
+                Загружаем рейтинг...
+            </div>
         </div>
 
-        <div
-          id="totalXp"
-          class="level-xp-total"
-        >
-          0 XP
+    </section>
+
+
+    <!-- PROFILE -->
+    <section id="page-profile" class="page">
+
+        <div class="topbar">
+            <h2 class="title" style="margin:0;">
+                👤 Профиль
+            </h2>
+
+            <div class="balance">
+                🪙 <span id="balanceProfile">0</span>
+            </div>
         </div>
 
-      </div>
+        <div class="card">
+            <div
+                id="profileName"
+                style="
+                    font-size:22px;
+                    font-weight:800;
+                "
+            >
+                Игрок
+            </div>
 
-      <div class="xp-row">
+            <div
+                id="leagueName"
+                class="subtitle"
+                style="margin-top:6px;"
+            >
+                🥉 Бронза
+            </div>
 
-        <span>
-          Прогресс
-        </span>
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-top:14px;
+                "
+            >
+                <span id="levelText">
+                    Уровень 1
+                </span>
 
-        <span id="xpProgressText">
-          0 / 100 XP
-        </span>
+                <span id="xpText">
+                    0 XP
+                </span>
+            </div>
 
-      </div>
+            <div class="xp-bar">
+                <div
+                    id="xpFill"
+                    class="xp-fill"
+                ></div>
+            </div>
 
-      <div class="xp-bar">
+            <div
+                id="rankText"
+                class="subtitle"
+                style="margin-top:10px;"
+            >
+                Место: —
+            </div>
+        </div>
+
+
+        <div class="card daily-card">
+
+            <div
+                style="
+                    font-size:19px;
+                    font-weight:800;
+                "
+            >
+                🎁 Ежедневный бонус
+            </div>
+
+            <div
+                class="subtitle"
+                style="margin-top:5px;"
+            >
+                +300 🪙 каждые 24 часа
+            </div>
+
+            <button
+                id="dailyBtn"
+                class="big-btn"
+                onclick="claimDailyReward()"
+            >
+                Получить +300 🪙
+            </button>
+
+            <div
+                id="dailyTimer"
+                class="notice"
+            ></div>
+
+        </div>
+
+
+        <h3>📊 Статистика</h3>
 
         <div
-          id="xpFill"
-          class="xp-fill"
-          style="width:0%"
+            id="statsGrid"
+            class="stat-grid"
         ></div>
 
-      </div>
 
-      <div
-        id="xpInfo"
-        class="xp-info"
-      >
-        До следующего уровня: 100 XP
-      </div>
+        <h3 style="margin-top:26px;">
+            ✅ Задания
+        </h3>
 
-    </div>
+        <div id="tasksList"></div>
 
 
-    <h2>
-      🏆 Достижения
-    </h2>
+        <h3 style="margin-top:26px;">
+            🏅 Достижения
+        </h3>
 
-    <div id="achievementsList"></div>
+        <div id="achievementsList"></div>
 
-  </div>
+    </section>
 
 </div>
 
 
+<!-- FLOATING PARLAY -->
 <button
-  id="parlayFloatingButton"
-  class="parlay-floating"
-  onclick="openParlayCoupon()"
+    id="parlayFloat"
+    class="parlay-float"
+    onclick="openParlayModal()"
 >
-  🧾 Экспресс
+    🧾 Экспресс • 0
 </button>
 
 
-<div class="nav">
+<!-- NAVIGATION -->
+<nav class="bottom-nav">
 
-  <button
-    class="active"
-    onclick="openPage('home', this)"
-  >
-    <span class="nav-icon">🏠</span>
-    Главная
-  </button>
+    <button
+        id="nav-home"
+        class="nav-btn active"
+        onclick="showPage('home')"
+    >
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Главная</span>
+    </button>
 
-  <button
-    onclick="openPage('matches', this)"
-  >
-    <span class="nav-icon">⚽</span>
-    Матчи
-  </button>
+    <button
+        id="nav-matches"
+        class="nav-btn"
+        onclick="showPage('matches')"
+    >
+        <span class="nav-icon">⚽</span>
+        <span class="nav-label">Матчи</span>
+    </button>
 
-  <button
-    onclick="openPage('bets', this)"
-  >
-    <span class="nav-icon">🎫</span>
-    Ставки
-  </button>
+    <button
+        id="nav-bets"
+        class="nav-btn"
+        onclick="showPage('bets')"
+    >
+        <span class="nav-icon">🎟</span>
+        <span class="nav-label">Ставки</span>
+    </button>
 
-  <button
-    onclick="openPage('leaders', this)"
-  >
-    <span class="nav-icon">🏆</span>
-    Лидеры
-  </button>
+    <button
+        id="nav-leaderboard"
+        class="nav-btn"
+        onclick="showPage('leaderboard')"
+    >
+        <span class="nav-icon">🏆</span>
+        <span class="nav-label">Лидеры</span>
+    </button>
 
-  <button
-    onclick="openPage('profile', this)"
-  >
-    <span class="nav-icon">👤</span>
-    Профиль
-  </button>
+    <button
+        id="nav-profile"
+        class="nav-btn"
+        onclick="showPage('profile')"
+    >
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Профиль</span>
+    </button>
 
-</div>
+</nav>
 
 
+<!-- BET CHOICE MODAL -->
 <div
-  id="overlay"
-  class="overlay"
-  onclick="closeBet()"
-></div>
-
-
-<div
-  id="betModal"
-  class="modal"
+    id="betChoiceOverlay"
+    class="modal-overlay"
+    onclick="overlayClose(event, 'betChoiceOverlay')"
 >
+    <div class="modal">
 
-  <h2 id="modalMatch">
-    Матч
-  </h2>
+        <div class="modal-title">
+            Выберите тип ставки
+        </div>
 
-  <p>
-    Выбор:
-    <b id="modalSelection"></b>
-  </p>
+        <div
+            id="choiceInfo"
+            class="selected-info"
+        ></div>
 
-  <p>
-    Коэффициент:
-    <b id="modalOdd"></b>
-  </p>
+        <div class="choice-row">
 
-  <input
-    id="betAmount"
-    type="number"
-    min="1"
-    placeholder="Сумма ставки"
-    oninput="calculateWin()"
-  >
+            <button
+                class="big-btn"
+                onclick="openSingleModalFromChoice()"
+            >
+                Ординар
+            </button>
 
-  <div class="potential">
-    Возможный выигрыш:
-    🪙 <span id="possibleWin">0</span>
-  </div>
+            <button
+                class="big-btn secondary-btn"
+                onclick="addSelectedToParlay()"
+            >
+                + Экспресс
+            </button>
 
-  <button
-    class="confirm"
-    onclick="confirmBet()"
-  >
-    🎫 Поставить ординар
-  </button>
+        </div>
 
-  <button
-    class="secondary-confirm"
-    onclick="addCurrentBetToParlay()"
-  >
-    🧾 Добавить в экспресс
-  </button>
-
-  <button
-    class="cancel"
-    onclick="closeBet()"
-  >
-    Отмена
-  </button>
-
-</div>
-
-
-<div
-  id="parlayOverlay"
-  class="overlay"
-  onclick="closeParlayCoupon()"
-></div>
-
-
-<div
-  id="parlayModal"
-  class="modal"
->
-
-  <h2>
-    🧾 Экспресс
-  </h2>
-
-  <div id="parlayCouponList"></div>
-
-  <div class="coupon-total">
-
-    <div class="coupon-total-row">
-
-      <span>
-        Событий:
-      </span>
-
-      <b id="parlayLegCount">
-        0
-      </b>
+        <button
+            class="big-btn danger-btn"
+            onclick="closeModal('betChoiceOverlay')"
+        >
+            Отмена
+        </button>
 
     </div>
-
-    <div class="coupon-total-row">
-
-      <span>
-        Общий коэффициент:
-      </span>
-
-      <b id="parlayTotalOdd">
-        1.00
-      </b>
-
-    </div>
-
-  </div>
-
-  <input
-    id="parlayAmount"
-    type="number"
-    min="1"
-    placeholder="Сумма экспресса"
-    oninput="calculateParlayWin()"
-  >
-
-  <div class="potential">
-    Возможный выигрыш:
-    🪙 <span id="parlayPossibleWin">0</span>
-  </div>
-
-  <button
-    class="confirm"
-    onclick="confirmParlay()"
-  >
-    Сделать экспресс
-  </button>
-
-  <button
-    class="cancel"
-    onclick="clearParlayCoupon()"
-  >
-    Очистить купон
-  </button>
-
-  <button
-    class="cancel"
-    onclick="closeParlayCoupon()"
-  >
-    Закрыть
-  </button>
-
 </div>
 
 
+<!-- SINGLE BET MODAL -->
 <div
-  id="levelOverlay"
-  class="overlay"
-></div>
-
-
-<div
-  id="levelUpModal"
-  class="levelup-modal"
+    id="singleOverlay"
+    class="modal-overlay"
+    onclick="overlayClose(event, 'singleOverlay')"
 >
+    <div class="modal">
 
-  <div
-    id="levelUpIcon"
-    class="levelup-icon"
-  >
-    🎉
-  </div>
+        <div class="modal-title">
+            Ординар
+        </div>
 
-  <div class="levelup-title">
-    Новый уровень!
-  </div>
+        <div
+            id="singleInfo"
+            class="selected-info"
+        ></div>
 
-  <div
-    id="levelUpLevel"
-    class="levelup-level"
-  >
-    Уровень 2
-  </div>
+        <input
+            id="singleAmount"
+            class="input"
+            type="number"
+            min="1"
+            placeholder="Сумма ставки"
+            oninput="updateSinglePossible()"
+        >
 
-  <div
-    id="levelUpReward"
-    class="levelup-reward"
-  >
-    Награда: +100 🪙
-  </div>
+        <div
+            id="singlePossible"
+            class="notice"
+        ></div>
 
-  <button
-    class="levelup-button"
-    onclick="closeLevelUp()"
-  >
-    Забрать
-  </button>
+        <button
+            id="confirmSingleBtn"
+            class="big-btn"
+            onclick="confirmSingleBet()"
+        >
+            Сделать ставку
+        </button>
 
+        <button
+            class="big-btn danger-btn"
+            onclick="closeModal('singleOverlay')"
+        >
+            Отмена
+        </button>
+
+    </div>
+</div>
+
+
+<!-- PARLAY MODAL -->
+<div
+    id="parlayOverlay"
+    class="modal-overlay"
+    onclick="overlayClose(event, 'parlayOverlay')"
+>
+    <div class="modal">
+
+        <div class="modal-title">
+            🧾 Экспресс
+        </div>
+
+        <div id="parlaySlipList"></div>
+
+        <div class="selected-info">
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:7px;
+                "
+            >
+                <span>Событий</span>
+                <b id="parlayCount">0</b>
+            </div>
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                "
+            >
+                <span>Общий коэффициент</span>
+                <b id="parlayTotalOdd">1.00</b>
+            </div>
+
+        </div>
+
+        <input
+            id="parlayAmount"
+            class="input"
+            type="number"
+            min="1"
+            placeholder="Сумма экспресса"
+            oninput="updateParlayPossible()"
+        >
+
+        <div
+            id="parlayPossible"
+            class="notice"
+        ></div>
+
+        <button
+            id="confirmParlayBtn"
+            class="big-btn"
+            onclick="confirmParlay()"
+        >
+            Поставить экспресс
+        </button>
+
+        <button
+            class="big-btn danger-btn"
+            onclick="clearParlay()"
+        >
+            Очистить экспресс
+        </button>
+
+    </div>
 </div>
 
 
 <script>
+    const SERVER_URL =
+        "https://betcoin-gu5c.onrender.com";
 
-const SERVER_URL =
-  "https://betcoin-gu5c.onrender.com";
+    const tg =
+        window.Telegram.WebApp;
 
+    tg.ready();
+    tg.expand();
 
-const tg =
-  window.Telegram.WebApp;
 
+    const telegramInitData =
+        tg.initData || "";
 
-tg.ready();
-tg.expand();
 
+    let balance = 0;
 
-const telegramInitData =
-  tg.initData || "";
+    let matches = [];
 
+    let bets = [];
 
-let balance = 0;
+    let parlays = [];
 
-let bets = [];
+    let tasks = [];
 
-let parlays = [];
+    let achievements = [];
 
-let matches = [];
+    let leaderboardPlayers = [];
 
-let tasks = [];
+    let stats = {};
 
-let achievements = [];
+    let currentUser = null;
 
-let leaderboardPlayers = [];
+    let myRank = null;
 
-let myRank = null;
+    let xp = 0;
 
-let parlayCoupon = [];
+    let level = 1;
 
-let selectedBet = null;
-
-let selectedMatch = null;
-
-let previousPage = "home";
-
-let sessionLoaded = false;
-
-let xp = 0;
-
-let level = 1;
-
-let currentLevelXp = 0;
-
-let xpToNextLevel = 100;
-
-let dailySecondsLeft = 0;
-
-let dailyTimerInterval = null;
-
-
-let stats = {
-  total_bets: 0,
-  active_bets: 0,
-  wins: 0,
-  losses: 0,
-  refunds: 0,
-  win_rate: 0,
-  current_win_streak: 0,
-  best_win_streak: 0,
-  total_won: 0,
-  net_profit: 0
-};
-
-
-let league = {
-  key: "bronze",
-  name: "Бронза",
-  icon: "🥉",
-  min_level: 1,
-  next_level: 5
-};
-
-
-let dailyReward = {
-  amount: 300,
-  available: false,
-  seconds_left: 0
-};
-
-
-const HANDICAP_POINTS = [
-  -2.5,
-  -2,
-  -1.5,
-  -1,
-  0,
-  1,
-  1.5,
-  2,
-  2.5
-];
-
-
-const TEAM_TOTAL_POINTS = [
-  0.5,
-  1.5,
-  2.5,
-  3.5
-];
-
-
-function escapeHtml(value) {
-
-  return String(
-    value ?? ""
-  )
-  .replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;")
-  .replaceAll("'", "&#039;");
-
-}
-
-
-function safeMatchName(value) {
-
-  return String(value)
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'");
-
-}
-
-
-function formatDate(dateString) {
-
-  if (!dateString) {
-    return "";
-  }
-
-  return new Date(
-    dateString
-  ).toLocaleString(
-    "ru-RU",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  );
-
-}
-
-
-function handicapLabel(point) {
-
-  return (
-    Number(point) > 0
-      ? `+${point}`
-      : `${point}`
-  );
-
-}
-
-
-function authHeaders() {
-
-  return {
-    "Content-Type":
-      "application/json",
-
-    "X-Telegram-Init-Data":
-      telegramInitData
-  };
-
-}
-
-
-function showError(message) {
-
-  const box =
-    document.getElementById(
-      "serverError"
-    );
-
-  box.innerText =
-    message;
-
-  box.style.display =
-    "block";
-
-}
-
-
-function hideError() {
-
-  document
-    .getElementById(
-      "serverError"
-    )
-    .style.display =
-      "none";
-
-}
-
-
-function showLevelUp(
-  newLevel,
-  reward
-) {
-
-  document
-    .getElementById(
-      "levelUpIcon"
-    )
-    .innerText =
-      newLevel % 5 === 0
-        ? "🏆"
-        : "🎉";
-
-
-  document
-    .getElementById(
-      "levelUpLevel"
-    )
-    .innerText =
-      `Уровень ${newLevel}`;
-
-
-  document
-    .getElementById(
-      "levelUpReward"
-    )
-    .innerText =
-      `Награда: +${reward} 🪙`;
-
-
-  document
-    .getElementById(
-      "levelOverlay"
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "levelUpModal"
-    )
-    .classList.add(
-      "active"
-    );
-
-}
-
-
-function closeLevelUp() {
-
-  document
-    .getElementById(
-      "levelOverlay"
-    )
-    .classList.remove(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "levelUpModal"
-    )
-    .classList.remove(
-      "active"
-    );
-
-}
-
-
-function calculateClientLevelReward(
-  oldLevel,
-  newLevel
-) {
-
-  let reward = 0;
-
-
-  for (
-    let current = oldLevel + 1;
-    current <= newLevel;
-    current++
-  ) {
-
-    reward += 100;
-
-    if (
-      current % 5 === 0
-    ) {
-
-      reward += 500;
-
-    }
-
-  }
-
-
-  return reward;
-
-}
-
-
-function updateLeagueInterface() {
-
-  const card =
-    document.getElementById(
-      "playerLeagueCard"
-    );
-
-
-  card.className =
-    `player-league-card ${league.key || "bronze"}`;
-
-
-  document
-    .getElementById(
-      "playerLeagueIcon"
-    )
-    .innerText =
-      league.icon || "🥉";
-
-
-  document
-    .getElementById(
-      "playerLeagueName"
-    )
-    .innerText =
-      league.name || "Бронза";
-
-
-  if (
-    league.next_level == null
-  ) {
-
-    document
-      .getElementById(
-        "playerLeagueLevels"
-      )
-      .innerText =
-        `Уровень ${league.min_level}+`;
-
-
-    document
-      .getElementById(
-        "leagueProgressText"
-      )
-      .innerText =
-        "MAX";
-
-
-    document
-      .getElementById(
-        "leagueProgressFill"
-      )
-      .style.width =
-        "100%";
-
-
-    document
-      .getElementById(
-        "leagueNext"
-      )
-      .innerText =
-        "👑 Высшая лига BetCoin";
-
-
-    return;
-
-  }
-
-
-  document
-    .getElementById(
-      "playerLeagueLevels"
-    )
-    .innerText =
-      `Уровни ${league.min_level}–${league.next_level - 1}`;
-
-
-  const percent =
-    Math.min(
-      100,
-      Math.max(
-        0,
-        (
-          (
-            level
-            -
-            league.min_level
-          )
-          /
-          (
-            league.next_level
-            -
-            league.min_level
-          )
-        )
-        * 100
-      )
-    );
-
-
-  document
-    .getElementById(
-      "leagueProgressText"
-    )
-    .innerText =
-      `Уровень ${level} / ${league.next_level}`;
-
-
-  document
-    .getElementById(
-      "leagueProgressFill"
-    )
-    .style.width =
-      `${percent}%`;
-
-
-  const names = {
-    bronze:
-      "Серебра",
-
-    silver:
-      "Золота",
-
-    gold:
-      "Алмаза",
-
-    diamond:
-      "Мастера"
-  };
-
-
-  document
-    .getElementById(
-      "leagueNext"
-    )
-    .innerText =
-      `До ${names[league.key] || "следующей лиги"}: ${Math.max(0, league.next_level - level)} ур.`;
-
-}
-
-
-function updateStatsInterface() {
-
-  document.getElementById(
-    "statTotalBets"
-  ).innerText =
-    stats.total_bets || 0;
-
-
-  document.getElementById(
-    "statWins"
-  ).innerText =
-    stats.wins || 0;
-
-
-  document.getElementById(
-    "statLosses"
-  ).innerText =
-    stats.losses || 0;
-
-
-  document.getElementById(
-    "statRefunds"
-  ).innerText =
-    stats.refunds || 0;
-
-
-  document.getElementById(
-    "statActiveBets"
-  ).innerText =
-    stats.active_bets || 0;
-
-
-  document.getElementById(
-    "statWinRate"
-  ).innerText =
-    `${Number(stats.win_rate || 0).toFixed(1)}%`;
-
-
-  document.getElementById(
-    "statCurrentStreak"
-  ).innerText =
-    stats.current_win_streak || 0;
-
-
-  document.getElementById(
-    "statBestStreak"
-  ).innerText =
-    stats.best_win_streak || 0;
-
-
-  const profit =
-    Number(
-      stats.net_profit || 0
-    );
-
-
-  const profitElement =
-    document.getElementById(
-      "statNetProfit"
-    );
-
-
-  profitElement.className =
-    "profit-value";
-
-
-  if (profit > 0) {
-
-    profitElement.classList.add(
-      "profit-positive"
-    );
-
-    profitElement.innerText =
-      `+${profit} 🪙`;
-
-  }
-
-  else if (profit < 0) {
-
-    profitElement.classList.add(
-      "profit-negative"
-    );
-
-    profitElement.innerText =
-      `${profit} 🪙`;
-
-  }
-
-  else {
-
-    profitElement.classList.add(
-      "profit-zero"
-    );
-
-    profitElement.innerText =
-      "0 🪙";
-
-  }
-
-
-  document.getElementById(
-    "statProfitSub"
-  ).innerText =
-    `Всего выиграно: ${stats.total_won || 0} 🪙 • Экспрессов: ${stats.total_parlays || 0}`;
-
-}
-
-
-async function loadSession() {
-
-  if (!telegramInitData) {
-
-    showError(
-      "Открой BetCoin через Telegram."
-    );
-
-    return false;
-
-  }
-
-
-  const oldLevel =
-    level;
-
-
-  const alreadyLoaded =
-    sessionLoaded;
-
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/session`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "Ошибка загрузки"
-      );
-
-    }
-
-
-    balance =
-      Number(
-        data.balance || 0
-      );
-
-
-    bets =
-      data.bets || [];
-
-
-    parlays =
-      data.parlays || [];
-
-
-    tasks =
-      data.tasks || [];
-
-
-    achievements =
-      data.achievements || [];
-
-
-    stats =
-      data.stats || stats;
-
-
-    xp =
-      Number(
-        data.xp || 0
-      );
-
-
-    level =
-      Number(
-        data.level || 1
-      );
-
-
-    league =
-      data.league || league;
-
-
-    currentLevelXp =
-      Number(
-        data.current_level_xp || 0
-      );
-
-
-    xpToNextLevel =
-      Number(
-        data.xp_to_next_level || 100
-      );
-
-
-    myRank =
-      data.leaderboard
-        ?.my_rank
-        ?? myRank;
-
-
-    if (data.daily_reward) {
-
-      dailyReward =
-        data.daily_reward;
-
-
-      dailySecondsLeft =
-        Number(
-          data.daily_reward
-            .seconds_left
-          || 0
-        );
-
-    }
-
-
-    if (
-      data.user
-      ?.first_name
-    ) {
-
-      document
-        .getElementById(
-          "playerName"
-        )
-        .innerText =
-          data.user.first_name;
-
-    }
-
-
-    sessionLoaded =
-      true;
-
-
-    hideError();
-
-    updateInterface();
-
-    updateDailyReward();
-
-
-    if (
-      alreadyLoaded
-      &&
-      level > oldLevel
-    ) {
-
-      showLevelUp(
-        level,
-        calculateClientLevelReward(
-          oldLevel,
-          level
-        )
-      );
-
-    }
-
-
-    return true;
-
-  }
-
-  catch (error) {
-
-    showError(
-      "Не удалось загрузить профиль: "
-      +
-      error.message
-    );
-
-
-    return false;
-
-  }
-
-}
-
-
-async function loadLeaderboard() {
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/leaderboard`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error();
-
-    }
-
-
-    leaderboardPlayers =
-      data.players || [];
-
-
-    myRank =
-      data.my_rank || null;
-
-
-    renderLeaderboard();
-
-    updateProfileRank();
-
-  }
-
-  catch {
-
-    document
-      .getElementById(
-        "leaderboardList"
-      )
-      .innerHTML = `
-        <div class="empty">
-          Не удалось загрузить рейтинг
-        </div>
-      `;
-
-  }
-
-}
-
-
-function rankText(rank) {
-
-  if (rank === 1) {
-    return "🥇";
-  }
-
-  if (rank === 2) {
-    return "🥈";
-  }
-
-  if (rank === 3) {
-    return "🥉";
-  }
-
-  return `#${rank}`;
-
-}
-
-
-function renderLeaderboard() {
-
-  const list =
-    document.getElementById(
-      "leaderboardList"
-    );
-
-
-  document
-    .getElementById(
-      "myRankNumber"
-    )
-    .innerText =
-      myRank
-        ? `#${myRank}`
-        : "#—";
-
-
-  if (
-    leaderboardPlayers.length === 0
-  ) {
-
-    list.innerHTML = `
-      <div class="empty">
-        В рейтинге пока никого нет
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const currentTelegramId =
-    tg.initDataUnsafe
-      ?.user
-      ?.id;
-
-
-  list.innerHTML =
-    leaderboardPlayers
-    .map(
-      player => {
-
-        const isMe =
-          String(
-            player.telegram_id
-          )
-          ===
-          String(
-            currentTelegramId
-          );
-
-
-        const playerLeague =
-          player.league
-          || {
-            icon:
-              "🥉",
-
-            name:
-              "Бронза"
-          };
-
-
-        const name =
-          escapeHtml(
-            player.first_name
-            ||
-            "Игрок"
-          );
-
-
-        return `
-          <div
-            class="leader-row ${isMe ? "me" : ""}"
-          >
-
-            <div class="leader-position">
-              ${rankText(player.rank)}
-            </div>
-
-            <div class="leader-avatar">
-              ${name.charAt(0).toUpperCase()}
-            </div>
-
-            <div class="leader-main">
-
-              <div class="leader-name">
-                ${name}
-                ${isMe ? " • Ты" : ""}
-              </div>
-
-              <div class="leader-sub">
-                ⭐ Уровень ${player.level}
-              </div>
-
-              <div class="leader-league">
-                ${playerLeague.icon}
-                ${escapeHtml(playerLeague.name)}
-              </div>
-
-            </div>
-
-            <div class="leader-stats">
-
-              <div class="leader-xp">
-                ${player.xp} XP
-              </div>
-
-              <div class="leader-balance">
-                🪙 ${player.balance}
-              </div>
-
-            </div>
-
-          </div>
-        `;
-
-      }
-    )
-    .join("");
-
-}
-
-
-function updateProfileRank() {
-
-  document
-    .getElementById(
-      "profileRank"
-    )
-    .innerText =
-      myRank
-        ? `#${myRank}`
-        : "#—";
-
-}
-
-
-function renderTasks() {
-
-  const container =
-    document.getElementById(
-      "tasksList"
-    );
-
-
-  container.innerHTML =
-    tasks
-    .map(
-      task => {
-
-        const progress =
-          Number(
-            task.progress || 0
-          );
-
-
-        const target =
-          Number(
-            task.target || 1
-          );
-
-
-        const percent =
-          Math.min(
-            100,
-            progress
-            /
-            target
-            *
-            100
-          );
-
-
-        let text =
-          "Выполнить";
-
-
-        let disabled =
-          true;
-
-
-        let buttonClass =
-          "task-button";
-
-
-        if (task.claimed) {
-
-          text =
-            "✓ Получено";
-
-          buttonClass +=
-            " claimed";
-
-        }
-
-        else if (task.completed) {
-
-          text =
-            "Забрать";
-
-          disabled =
-            false;
-
-        }
-
-
-        return `
-          <div
-            class="task-card
-            ${task.completed ? "completed" : ""}
-            ${task.claimed ? "claimed" : ""}"
-          >
-
-            <div class="task-top">
-
-              <div>
-
-                <div class="task-title">
-                  ${escapeHtml(task.title)}
-                </div>
-
-                <div class="task-description">
-                  ${escapeHtml(task.description)}
-                </div>
-
-              </div>
-
-              <div class="task-reward">
-                ${
-                  task.reward_type === "xp"
-                    ? `+${task.reward} XP`
-                    : `+${task.reward} 🪙`
-                }
-              </div>
-
-            </div>
-
-            <div class="task-progress-row">
-
-              <span>
-                Прогресс
-              </span>
-
-              <span>
-                ${progress} / ${target}
-              </span>
-
-            </div>
-
-            <div class="progress">
-
-              <div
-                class="task-progress-fill"
-                style="width:${percent}%"
-              ></div>
-
-            </div>
-
-            <button
-              class="${buttonClass}"
-              ${disabled ? "disabled" : ""}
-              onclick="claimTask('${task.key}')"
-            >
-              ${text}
-            </button>
-
-          </div>
-        `;
-
-      }
-    )
-    .join("");
-
-}
-
-
-async function claimTask(taskKey) {
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/tasks/claim`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              task_key:
-                taskKey
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error || "Ошибка"
-      );
-
-    }
-
-
-    await loadSession();
-
-    await loadLeaderboard();
-
-
-    alert(
-      data.reward_type === "xp"
-        ? `🎯 +${data.reward} XP`
-        : `🎯 +${data.reward} монет`
-    );
-
-  }
-
-  catch (error) {
-
-    alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-function achievementIcon(key) {
-
-  if (key === "bets_10") {
-    return "🎫";
-  }
-
-  if (key === "wins_5") {
-    return "🔥";
-  }
-
-  if (key === "level_5") {
-    return "⭐";
-  }
-
-  if (key === "xp_500") {
-    return "⚡";
-  }
-
-  if (key === "high_odd_win") {
-    return "🎯";
-  }
-
-  return "🏆";
-
-}
-
-
-function renderAchievements() {
-
-  const container =
-    document.getElementById(
-      "achievementsList"
-    );
-
-
-  container.innerHTML =
-    achievements
-    .map(
-      item => {
-
-        const progress =
-          Number(
-            item.progress || 0
-          );
-
-
-        const target =
-          Number(
-            item.target || 1
-          );
-
-
-        const percent =
-          Math.min(
-            100,
-            progress
-            /
-            target
-            *
-            100
-          );
-
-
-        let text =
-          "Не выполнено";
-
-
-        let disabled =
-          true;
-
-
-        let buttonClass =
-          "achievement-button";
-
-
-        if (item.completed) {
-
-          text =
-            "Забрать";
-
-          disabled =
-            false;
-
-        }
-
-
-        if (item.claimed) {
-
-          text =
-            "✓ Получено";
-
-          disabled =
-            true;
-
-          buttonClass +=
-            " claimed";
-
-        }
-
-
-        return `
-          <div
-            class="achievement-card
-            ${item.completed ? "completed" : ""}
-            ${item.claimed ? "claimed" : ""}"
-          >
-
-            <div class="achievement-top">
-
-              <div class="achievement-icon">
-                ${achievementIcon(item.key)}
-              </div>
-
-              <div class="achievement-main">
-
-                <div class="achievement-title">
-                  ${escapeHtml(item.title)}
-                </div>
-
-                <div class="achievement-description">
-                  ${escapeHtml(item.description)}
-                </div>
-
-                <div class="achievement-reward">
-                  +${item.reward} 🪙
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="achievement-progress-row">
-
-              <span>Прогресс</span>
-
-              <span>
-                ${progress} / ${target}
-              </span>
-
-            </div>
-
-            <div class="progress">
-
-              <div
-                class="achievement-progress-fill"
-                style="width:${percent}%"
-              ></div>
-
-            </div>
-
-            <button
-              class="${buttonClass}"
-              ${disabled ? "disabled" : ""}
-              onclick="claimAchievement('${item.key}')"
-            >
-              ${text}
-            </button>
-
-          </div>
-        `;
-
-      }
-    )
-    .join("");
-
-}
-
-
-async function claimAchievement(key) {
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/achievements/claim`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              achievement_key:
-                key
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error || "Ошибка"
-      );
-
-    }
-
-
-    await loadSession();
-
-    await loadLeaderboard();
-
-
-    alert(
-      `🏆 +${data.reward} монет`
-    );
-
-  }
-
-  catch (error) {
-
-    alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-function formatDailyTime(seconds) {
-
-  seconds =
-    Math.max(
-      0,
-      Number(seconds)
-    );
-
-
-  const hours =
-    Math.floor(
-      seconds / 3600
-    );
-
-
-  const minutes =
-    Math.floor(
-      (
-        seconds % 3600
-      )
-      /
-      60
-    );
-
-
-  const secs =
-    Math.floor(
-      seconds % 60
-    );
-
-
-  return (
-    String(hours).padStart(2, "0")
-    + ":"
-    + String(minutes).padStart(2, "0")
-    + ":"
-    + String(secs).padStart(2, "0")
-  );
-
-}
-
-
-function updateDailyReward() {
-
-  const button =
-    document.getElementById(
-      "dailyButton"
-    );
-
-
-  const timer =
-    document.getElementById(
-      "dailyTimer"
-    );
-
-
-  if (dailyTimerInterval) {
-
-    clearInterval(
-      dailyTimerInterval
-    );
-
-  }
-
-
-  if (dailyReward.available) {
-
-    button.disabled =
-      false;
-
-    button.innerText =
-      "Получить +300 🪙";
-
-    timer.innerText =
-      "Бонус доступен!";
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  button.innerText =
-    "Бонус уже получен";
-
-
-  timer.innerText =
-    "Следующий бонус через "
-    +
-    formatDailyTime(
-      dailySecondsLeft
-    );
-
-
-  dailyTimerInterval =
-    setInterval(
-      () => {
-
-        dailySecondsLeft--;
-
-
-        if (dailySecondsLeft <= 0) {
-
-          clearInterval(
-            dailyTimerInterval
-          );
-
-
-          dailyReward.available =
-            true;
-
-
-          updateDailyReward();
-
-          return;
-
-        }
-
-
-        timer.innerText =
-          "Следующий бонус через "
-          +
-          formatDailyTime(
-            dailySecondsLeft
-          );
-
-      },
-      1000
-    );
-
-}
-
-
-async function claimDailyReward() {
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/daily-reward`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error || "Ошибка"
-      );
-
-    }
-
-
-    await loadSession();
-
-    await loadLeaderboard();
-
-
-    alert(
-      `🎁 +${data.reward} монет и +${data.xp_gained} XP`
-    );
-
-  }
-
-  catch (error) {
-
-    alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-function createOddButton(
-  label,
-  match,
-  selection,
-  odd
-) {
-
-  if (
-    odd == null
-    ||
-    Number(odd) <= 1
-  ) {
-
-    return `
-      <button
-        class="odd-button"
-        disabled
-      >
-        ${escapeHtml(label)}
-        <br>
-        —
-      </button>
-    `;
-
-  }
-
-
-  const matchName =
-    safeMatchName(
-      `${match.home} — ${match.away}`
-    );
-
-
-  const safeSelection =
-    safeMatchName(
-      selection
-    );
-
-
-  return `
-    <button
-      class="odd-button"
-      onclick="openBet(
-        '${matchName}',
-        ${Number(match.fixture_id)},
-        '${safeSelection}',
-        ${Number(odd)}
-      )"
-    >
-      ${escapeHtml(label)}
-      <br>
-      ${Number(odd).toFixed(2)}
-    </button>
-  `;
-
-}
-
-
-function createCompactMatch(
-  match,
-  index
-) {
-
-  let oddsBlock = `
-    <div class="no-odds">
-      Коэффициенты пока недоступны
-    </div>
-  `;
-
-
-  if (match.odds) {
-
-    oddsBlock = `
-      <div class="odds-3">
-
-        ${createOddButton(
-          "П1",
-          match,
-          "П1",
-          match.odds.home
-        )}
-
-        ${createOddButton(
-          "X",
-          match,
-          "X",
-          match.odds.draw
-        )}
-
-        ${createOddButton(
-          "П2",
-          match,
-          "П2",
-          match.odds.away
-        )}
-
-      </div>
-    `;
-
-  }
-
-
-  return `
-    <div class="match-card">
-
-      <div class="league-name">
-        ${escapeHtml(match.country || "")}
-        •
-        ${escapeHtml(match.league || "")}
-      </div>
-
-      <div class="teams">
-
-        <div class="team">
-          <img src="${escapeHtml(match.home_logo || "")}">
-          ${escapeHtml(match.home)}
-        </div>
-
-        <div class="vs">
-          VS
-        </div>
-
-        <div class="team">
-          <img src="${escapeHtml(match.away_logo || "")}">
-          ${escapeHtml(match.away)}
-        </div>
-
-      </div>
-
-      <div class="time">
-        ${formatDate(match.date)}
-      </div>
-
-      ${oddsBlock}
-
-      <button
-        class="open-match-button"
-        onclick="openMatch(${index})"
-      >
-        Открыть матч →
-      </button>
-
-    </div>
-  `;
-
-}
-
-
-async function loadMatches() {
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/matches`
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "Ошибка матчей"
-      );
-
-    }
-
-
-    matches =
-      data.matches || [];
-
-
-    renderMatches();
-
-  }
-
-  catch (error) {
-
-    const message = `
-      <div class="empty">
-        Не удалось загрузить матчи
-      </div>
-    `;
-
-
-    document
-      .getElementById(
-        "homeMatches"
-      )
-      .innerHTML =
-        message;
-
-
-    document
-      .getElementById(
-        "allMatches"
-      )
-      .innerHTML =
-        message;
-
-  }
-
-}
-
-
-function renderMatches() {
-
-  if (
-    matches.length === 0
-  ) {
-
-    const message = `
-      <div class="empty">
-        Матчей пока нет
-      </div>
-    `;
-
-
-    document
-      .getElementById(
-        "homeMatches"
-      )
-      .innerHTML =
-        message;
-
-
-    document
-      .getElementById(
-        "allMatches"
-      )
-      .innerHTML =
-        message;
-
-
-    return;
-
-  }
-
-
-  document
-    .getElementById(
-      "homeMatches"
-    )
-    .innerHTML =
-      matches
-      .slice(
-        0,
-        4
-      )
-      .map(
-        match => {
-
-          const index =
-            matches.indexOf(
-              match
-            );
-
-
-          return createCompactMatch(
-            match,
-            index
-          );
-
-        }
-      )
-      .join("");
-
-
-  document
-    .getElementById(
-      "allMatches"
-    )
-    .innerHTML =
-      matches
-      .map(
-        (
-          match,
-          index
-        ) =>
-          createCompactMatch(
-            match,
-            index
-          )
-      )
-      .join("");
-
-}
-
-
-/* =========================================================
-   НОВАЯ ОПТИМИЗАЦИЯ:
-   ПОЛНЫЕ РЫНКИ ГРУЗЯТСЯ ТОЛЬКО ПРИ ОТКРЫТИИ МАТЧА
-   ========================================================= */
-
-async function openMatch(index) {
-
-  const basicMatch =
-    matches[index];
-
-
-  if (!basicMatch) {
-    return;
-  }
-
-
-  previousPage =
-    document
-      .getElementById(
-        "matches"
-      )
-      .classList
-      .contains(
-        "active"
-      )
-      ? "matches"
-      : "home";
-
-
-  document
-    .querySelectorAll(
-      ".page"
-    )
-    .forEach(
-      page =>
-        page.classList.remove(
-          "active"
-        )
-    );
-
-
-  document
-    .getElementById(
-      "matchDetail"
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  window.scrollTo(
-    0,
-    0
-  );
-
-
-  document
-    .getElementById(
-      "matchDetailContent"
-    )
-    .innerHTML = `
-
-      <div class="event-header">
-
-        <div class="league-name">
-          ${escapeHtml(basicMatch.league || "Premier League")}
-        </div>
-
-        <div class="teams">
-
-          <div class="team">
-            <img src="${escapeHtml(basicMatch.home_logo || "")}">
-            ${escapeHtml(basicMatch.home)}
-          </div>
-
-          <div class="vs">
-            VS
-          </div>
-
-          <div class="team">
-            <img src="${escapeHtml(basicMatch.away_logo || "")}">
-            ${escapeHtml(basicMatch.away)}
-          </div>
-
-        </div>
-
-        <div class="time">
-          ${formatDate(basicMatch.date)}
-        </div>
-
-      </div>
-
-      <div class="loading">
-        Загружаем все коэффициенты...
-      </div>
-    `;
-
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/match/${basicMatch.fixture_id}`
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "Не удалось загрузить коэффициенты"
-      );
-
-    }
-
-
-    selectedMatch = {
-      ...basicMatch,
-      ...data
+    let league = {
+        icon: "🥉",
+        name: "Бронза"
     };
 
+    let currentLevelXp = 0;
 
-    if (
-      !selectedMatch.odds
-      &&
-      basicMatch.odds
+    let xpToNextLevel = 100;
+
+    let dailyReward = {
+        amount: 300,
+        available: true,
+        seconds_left: 0
+    };
+
+    let selectedMatch = null;
+
+    let selectedBet = null;
+
+    let previousPage = "matches";
+
+    let parlaySlip = [];
+
+    let currentBetTab = "single";
+
+
+    function escapeHtml(value) {
+
+        return String(
+            value ?? ""
+        )
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+
+    function formatOdd(value) {
+
+        const number =
+            Number(value);
+
+        if (
+            !Number.isFinite(number)
+            ||
+            number <= 1
+        ) {
+            return "—";
+        }
+
+        return number.toFixed(2);
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "";
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "";
+        }
+
+        return date.toLocaleString(
+            "ru-RU",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+    }
+
+
+    function safeTeamLogo(
+        url,
+        team
     ) {
 
-      selectedMatch.odds =
-        basicMatch.odds;
+        if (!url) {
+            return `
+                <div
+                    style="
+                        font-size:34px;
+                        margin-bottom:8px;
+                    "
+                >
+                    ⚽
+                </div>
+            `;
+        }
 
+        return `
+            <img
+                src="${escapeHtml(url)}"
+                alt="${escapeHtml(team)}"
+                onerror="
+                    this.style.display='none'
+                "
+            >
+        `;
     }
 
 
-    renderMatchDetail(
-      selectedMatch
-    );
-
-  }
-
-  catch (error) {
-
-    selectedMatch =
-      basicMatch;
-
-
-    renderMatchDetail(
-      selectedMatch,
-      "Не удалось получить дополнительные коэффициенты. Основные коэффициенты могут продолжить работать."
-    );
-
-  }
-
-}
-
-
-function closeMatch() {
-
-  document
-    .querySelectorAll(
-      ".page"
-    )
-    .forEach(
-      page =>
-        page.classList.remove(
-          "active"
-        )
-    );
-
-
-  document
-    .getElementById(
-      previousPage
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  updateNavForPage(
-    previousPage
-  );
-
-}
-
-
-function renderMatchDetail(
-  match,
-  customWarning = null
-) {
-
-  let html = `
-    <div class="event-header">
-
-      <div class="league-name">
-        ${escapeHtml(match.country || "England")}
-        •
-        ${escapeHtml(match.league || "Premier League")}
-      </div>
-
-      <div class="teams">
-
-        <div class="team">
-
-          <img src="${escapeHtml(match.home_logo || "")}">
-
-          ${escapeHtml(match.home)}
-
-        </div>
-
-        <div class="vs">
-          VS
-        </div>
-
-        <div class="team">
-
-          <img src="${escapeHtml(match.away_logo || "")}">
-
-          ${escapeHtml(match.away)}
-
-        </div>
-
-      </div>
-
-      <div class="time">
-        ${formatDate(match.date)}
-      </div>
-
-    </div>
-  `;
-
-
-  const warning =
-    customWarning
-    ||
-    match.odds_warning;
-
-
-  if (warning) {
-
-    html += `
-      <div class="odds-warning">
-        ⚠️ Часть коэффициентов сейчас может быть недоступна.
-      </div>
-    `;
-
-  }
-
-
-  html += `
-    <div class="market-box">
-
-      <div class="market-title">
-        Исход матча
-      </div>
-
-      <div class="odds-3">
-
-        ${createOddButton(
-          "П1",
-          match,
-          "П1",
-          match.odds?.home
-        )}
-
-        ${createOddButton(
-          "X",
-          match,
-          "X",
-          match.odds?.draw
-        )}
-
-        ${createOddButton(
-          "П2",
-          match,
-          "П2",
-          match.odds?.away
-        )}
-
-      </div>
-
-    </div>
-  `;
-
-
-  if (match.double_chance) {
-
-    html += `
-      <div class="market-box">
-
-        <div class="market-title">
-          Двойной шанс
-        </div>
-
-        <div class="odds-3">
-
-          ${createOddButton(
-            "1X",
-            match,
-            "1X",
-            match.double_chance["1x"]
-          )}
-
-          ${createOddButton(
-            "12",
-            match,
-            "12",
-            match.double_chance["12"]
-          )}
-
-          ${createOddButton(
-            "X2",
-            match,
-            "X2",
-            match.double_chance["x2"]
-          )}
-
-        </div>
-
-      </div>
-    `;
-
-  }
-
-
-  [
-    ["total_1_5", 1.5],
-    ["total_2_5", 2.5],
-    ["total_3_5", 3.5],
-    ["total_4_5", 4.5]
-  ]
-  .forEach(
-    item => {
-
-      const market =
-        match[
-          item[0]
-        ];
-
-
-      if (!market) {
-        return;
-      }
-
-
-      html += `
-        <div class="market-box">
-
-          <div class="market-title">
-            Тотал ${item[1]}
-          </div>
-
-          <div class="odds-2">
-
-            ${createOddButton(
-              `ТБ ${item[1]}`,
-              match,
-              `ТБ ${item[1]}`,
-              market.over
-            )}
-
-            ${createOddButton(
-              `ТМ ${item[1]}`,
-              match,
-              `ТМ ${item[1]}`,
-              market.under
-            )}
-
-          </div>
-
-        </div>
-      `;
-
+    async function apiPost(
+        path,
+        payload={}
+    ) {
+
+        const response =
+            await fetch(
+                SERVER_URL + path,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-Telegram-Init-Data":
+                            telegramInitData
+                    },
+
+                    body: JSON.stringify({
+                        ...payload,
+                        initData:
+                            telegramInitData
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error
+                ||
+                "Ошибка сервера"
+            );
+        }
+
+        return data;
     }
-  );
 
 
-  if (match.btts) {
+    function updateBalances() {
 
-    html += `
-      <div class="market-box">
+        [
+            "balanceTop",
+            "balanceMatches",
+            "balanceBets",
+            "balanceProfile"
+        ]
+        .forEach(
+            id => {
 
-        <div class="market-title">
-          Обе забьют
-        </div>
+                const el =
+                    document.getElementById(
+                        id
+                    );
 
-        <div class="odds-2">
+                if (el) {
 
-          ${createOddButton(
-            "ОЗ Да",
-            match,
-            "ОЗ Да",
-            match.btts.yes
-          )}
-
-          ${createOddButton(
-            "ОЗ Нет",
-            match,
-            "ОЗ Нет",
-            match.btts.no
-          )}
-
-        </div>
-
-      </div>
-    `;
-
-  }
+                    el.textContent =
+                        balance;
+                }
+            }
+        );
+    }
 
 
-  if (match.handicaps) {
+    function applyCommonData(
+        data
+    ) {
 
-    html += `
-      <div class="market-box">
+        if (
+            data.balance
+            !==
+            undefined
+        ) {
+            balance =
+                Number(
+                    data.balance
+                );
+        }
 
-        <div class="market-title">
-          Форы
-        </div>
-    `;
+        if (
+            data.bets
+            !==
+            undefined
+        ) {
+            bets =
+                data.bets || [];
+        }
+
+        if (
+            data.parlays
+            !==
+            undefined
+        ) {
+            parlays =
+                data.parlays || [];
+        }
+
+        if (
+            data.tasks
+            !==
+            undefined
+        ) {
+            tasks =
+                data.tasks || [];
+        }
+
+        if (
+            data.achievements
+            !==
+            undefined
+        ) {
+            achievements =
+                data.achievements || [];
+        }
+
+        if (
+            data.stats
+            !==
+            undefined
+        ) {
+            stats =
+                data.stats || {};
+        }
+
+        if (
+            data.xp
+            !==
+            undefined
+        ) {
+            xp =
+                Number(
+                    data.xp
+                );
+        }
+
+        if (
+            data.level
+            !==
+            undefined
+        ) {
+            level =
+                Number(
+                    data.level
+                );
+        }
+
+        if (
+            data.league
+        ) {
+            league =
+                data.league;
+        }
+
+        if (
+            data.current_level_xp
+            !==
+            undefined
+        ) {
+            currentLevelXp =
+                Number(
+                    data.current_level_xp
+                );
+        }
+
+        if (
+            data.xp_to_next_level
+            !==
+            undefined
+        ) {
+            xpToNextLevel =
+                Number(
+                    data.xp_to_next_level
+                );
+        }
+
+        if (
+            data.my_rank
+            !==
+            undefined
+        ) {
+            myRank =
+                data.my_rank;
+        }
+
+        updateInterface();
+    }
 
 
-    HANDICAP_POINTS.forEach(
-      point => {
+    async function loadSession() {
 
-        const awayPoint =
-          point === 0
-            ? 0
-            : -point;
+        try {
 
+            const data =
+                await apiPost(
+                    "/api/session"
+                );
+
+            currentUser =
+                data.user || null;
+
+            dailyReward =
+                data.daily_reward
+                ||
+                dailyReward;
+
+            if (
+                data.leaderboard
+                &&
+                data.leaderboard.my_rank
+                !==
+                undefined
+            ) {
+
+                myRank =
+                    data.leaderboard.my_rank;
+            }
+
+            applyCommonData(
+                data
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Session:",
+                error
+            );
+        }
+    }
+
+
+    async function loadMatches() {
+
+        const home =
+            document.getElementById(
+                "homeMatches"
+            );
+
+        const all =
+            document.getElementById(
+                "matchesList"
+            );
+
+        home.innerHTML =
+            `<div class="loader">
+                Загружаем матчи...
+            </div>`;
+
+        all.innerHTML =
+            `<div class="loader">
+                Загружаем матчи...
+            </div>`;
+
+        try {
+
+            const response =
+                await fetch(
+                    SERVER_URL
+                    +
+                    "/api/matches"
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok
+                ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error
+                    ||
+                    "Не удалось загрузить матчи"
+                );
+            }
+
+            matches =
+                data.matches || [];
+
+            renderMatches();
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            const html = `
+                <div class="empty">
+                    Не удалось загрузить матчи
+                </div>
+            `;
+
+            home.innerHTML =
+                html;
+
+            all.innerHTML =
+                html;
+        }
+    }
+
+
+    function renderMatchCard(
+        match
+    ) {
+
+        const odds =
+            match.odds || {};
 
         const homeOdd =
-          match.handicaps
-          ?.home
-          ?.[String(point)];
+            odds.home;
 
+        const drawOdd =
+            odds.draw;
 
         const awayOdd =
-          match.handicaps
-          ?.away
-          ?.[String(awayPoint)];
+            odds.away;
+
+        return `
+            <div
+                class="card match-card"
+                onclick="
+                    openMatch(
+                        ${Number(match.fixture_id)}
+                    )
+                "
+            >
+                <div class="match-top">
+
+                    <div class="match-date">
+                        ${escapeHtml(
+                            formatDate(
+                                match.date
+                            )
+                        )}
+                    </div>
+
+                    <div class="league">
+                        ${escapeHtml(
+                            match.league
+                            ||
+                            "Premier League"
+                        )}
+                    </div>
+
+                </div>
+
+                <div class="teams">
+
+                    <div class="team">
+
+                        ${safeTeamLogo(
+                            match.home_logo,
+                            match.home
+                        )}
+
+                        ${escapeHtml(
+                            match.home
+                        )}
+
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="team">
+
+                        ${safeTeamLogo(
+                            match.away_logo,
+                            match.away
+                        )}
+
+                        ${escapeHtml(
+                            match.away
+                        )}
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="odds-row"
+                    onclick="
+                        event.stopPropagation()
+                    "
+                >
+
+                    ${oddButtonHtml(
+                        match,
+                        "П1",
+                        homeOdd,
+                        "П1"
+                    )}
+
+                    ${oddButtonHtml(
+                        match,
+                        "X",
+                        drawOdd,
+                        "X"
+                    )}
+
+                    ${oddButtonHtml(
+                        match,
+                        "П2",
+                        awayOdd,
+                        "П2"
+                    )}
+
+                </div>
+            </div>
+        `;
+    }
+
+
+    function oddButtonHtml(
+        match,
+        selection,
+        odd,
+        label
+    ) {
+
+        const disabled =
+            !Number.isFinite(
+                Number(odd)
+            )
+            ||
+            Number(odd) <= 1;
+
+        if (disabled) {
+
+            return `
+                <button
+                    class="odd-btn disabled"
+                >
+                    <span class="odd-name">
+                        ${escapeHtml(label)}
+                    </span>
+
+                    <span class="odd-value">
+                        —
+                    </span>
+                </button>
+            `;
+        }
+
+        return `
+            <button
+                class="odd-btn"
+                onclick="
+                    selectOdd(
+                        ${Number(match.fixture_id)},
+                        '${jsString(match.home)}',
+                        '${jsString(match.away)}',
+                        '${jsString(selection)}',
+                        ${Number(odd)}
+                    )
+                "
+            >
+                <span class="odd-name">
+                    ${escapeHtml(label)}
+                </span>
+
+                <span class="odd-value">
+                    ${formatOdd(odd)}
+                </span>
+            </button>
+        `;
+    }
+
+
+    function jsString(value) {
+
+        return String(
+            value ?? ""
+        )
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll("\n", " ");
+    }
+
+
+    function renderMatches() {
+
+        if (!matches.length) {
+
+            const html = `
+                <div class="empty">
+                    Сейчас нет ближайших матчей
+                </div>
+            `;
+
+            document.getElementById(
+                "homeMatches"
+            ).innerHTML = html;
+
+            document.getElementById(
+                "matchesList"
+            ).innerHTML = html;
+
+            return;
+        }
+
+        document.getElementById(
+            "homeMatches"
+        ).innerHTML =
+            matches
+            .slice(
+                0,
+                5
+            )
+            .map(
+                renderMatchCard
+            )
+            .join("");
+
+        document.getElementById(
+            "matchesList"
+        ).innerHTML =
+            matches
+            .map(
+                renderMatchCard
+            )
+            .join("");
+    }
+
+
+    async function openMatch(
+        fixtureId
+    ) {
+
+        previousPage =
+            document
+            .querySelector(
+                ".page.active"
+            )
+            ?.id
+            ?.replace(
+                "page-",
+                ""
+            )
+            ||
+            "matches";
+
+        showPage(
+            "match",
+            false
+        );
+
+        const container =
+            document.getElementById(
+                "matchDetail"
+            );
+
+        container.innerHTML = `
+            <div class="loader">
+                Загружаем коэффициенты...
+            </div>
+        `;
+
+        try {
+
+            const response =
+                await fetch(
+                    SERVER_URL
+                    +
+                    "/api/match/"
+                    +
+                    fixtureId
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok
+                ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error
+                    ||
+                    "Не удалось загрузить матч"
+                );
+            }
+
+            selectedMatch =
+                data;
+
+            renderMatchDetail(
+                data
+            );
+
+        } catch (error) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    ${escapeHtml(
+                        error.message
+                    )}
+                </div>
+            `;
+        }
+    }
+
+
+    function backFromMatch() {
+
+        showPage(
+            previousPage
+            ===
+            "match"
+            ?
+            "matches"
+            :
+            previousPage
+        );
+    }
+
+
+    function renderMatchDetail(
+        match
+    ) {
+
+        const container =
+            document.getElementById(
+                "matchDetail"
+            );
+
+        const odds =
+            match.odds || {};
+
+        let html = `
+            <div class="card">
+
+                <div class="match-top">
+
+                    <div class="match-date">
+                        ${escapeHtml(
+                            formatDate(
+                                match.date
+                            )
+                        )}
+                    </div>
+
+                    <div class="league">
+                        ${escapeHtml(
+                            match.league
+                            ||
+                            "Premier League"
+                        )}
+                    </div>
+
+                </div>
+
+                <div class="teams">
+
+                    <div class="team">
+
+                        ${safeTeamLogo(
+                            match.home_logo,
+                            match.home
+                        )}
+
+                        ${escapeHtml(
+                            match.home
+                        )}
+
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="team">
+
+                        ${safeTeamLogo(
+                            match.away_logo,
+                            match.away
+                        )}
+
+                        ${escapeHtml(
+                            match.away
+                        )}
+
+                    </div>
+
+                </div>
+            </div>
+        `;
+
+
+        html += `
+            <div class="market">
+
+                <div class="market-title">
+                    Исход матча
+                </div>
+
+                <div class="market-grid three">
+
+                    ${detailOddButton(
+                        match,
+                        "П1",
+                        odds.home,
+                        "П1"
+                    )}
+
+                    ${detailOddButton(
+                        match,
+                        "X",
+                        odds.draw,
+                        "X"
+                    )}
+
+                    ${detailOddButton(
+                        match,
+                        "П2",
+                        odds.away,
+                        "П2"
+                    )}
+
+                </div>
+            </div>
+        `;
+
+
+        const totals = [
+            [
+                1.5,
+                match.total_1_5
+            ],
+            [
+                2.5,
+                match.total_2_5
+            ],
+            [
+                3.5,
+                match.total_3_5
+            ],
+            [
+                4.5,
+                match.total_4_5
+            ]
+        ];
+
+        const availableTotals =
+            totals.filter(
+                item =>
+                    item[1]
+                    &&
+                    (
+                        item[1].over
+                        !==
+                        null
+                        ||
+                        item[1].under
+                        !==
+                        null
+                    )
+            );
+
+        if (
+            availableTotals.length
+        ) {
+
+            html += `
+                <div class="market">
+
+                    <div class="market-title">
+                        Тоталы
+                    </div>
+            `;
+
+            availableTotals
+            .forEach(
+                ([line, data]) => {
+
+                    html += `
+                        <div class="market-line">
+
+                            ${detailOddButton(
+                                match,
+                                `ТБ ${line}`,
+                                data.over,
+                                `ТБ ${line}`
+                            )}
+
+                            ${detailOddButton(
+                                match,
+                                `ТМ ${line}`,
+                                data.under,
+                                `ТМ ${line}`
+                            )}
+
+                        </div>
+                    `;
+                }
+            );
+
+            html += `
+                </div>
+            `;
+        }
 
 
         if (
-          homeOdd == null
-          &&
-          awayOdd == null
+            match.btts
+            &&
+            (
+                match.btts.yes
+                !==
+                null
+                ||
+                match.btts.no
+                !==
+                null
+            )
         ) {
-          return;
+
+            html += `
+                <div class="market">
+
+                    <div class="market-title">
+                        Обе забьют
+                    </div>
+
+                    <div class="market-grid">
+
+                        ${detailOddButton(
+                            match,
+                            "ОЗ Да",
+                            match.btts.yes,
+                            "Да"
+                        )}
+
+                        ${detailOddButton(
+                            match,
+                            "ОЗ Нет",
+                            match.btts.no,
+                            "Нет"
+                        )}
+
+                    </div>
+                </div>
+            `;
         }
 
 
-        html += `
-          <div class="odds-2">
+        html +=
+            renderHandicaps(
+                match
+            );
 
-            ${createOddButton(
-              `Ф1(${handicapLabel(point)})`,
-              match,
-              `Ф1(${handicapLabel(point)})`,
-              homeOdd
-            )}
 
-            ${createOddButton(
-              `Ф2(${handicapLabel(awayPoint)})`,
-              match,
-              `Ф2(${handicapLabel(awayPoint)})`,
-              awayOdd
-            )}
+        if (
+            match.double_chance
+        ) {
 
-          </div>
+            const dc =
+                match.double_chance;
+
+            html += `
+                <div class="market">
+
+                    <div class="market-title">
+                        Двойной шанс
+                    </div>
+
+                    <div class="market-grid three">
+
+                        ${detailOddButton(
+                            match,
+                            "1X",
+                            dc["1x"],
+                            "1X"
+                        )}
+
+                        ${detailOddButton(
+                            match,
+                            "12",
+                            dc["12"],
+                            "12"
+                        )}
+
+                        ${detailOddButton(
+                            match,
+                            "X2",
+                            dc["x2"],
+                            "X2"
+                        )}
+
+                    </div>
+                </div>
+            `;
+        }
+
+
+        if (
+            !match.team_totals
+        ) {
+
+            html += `
+                <div class="notice">
+                    Индивидуальные тоталы сейчас
+                    не предоставляет источник коэффициентов.
+                </div>
+            `;
+        }
+
+
+        container.innerHTML =
+            html;
+    }
+
+
+    function renderHandicaps(
+        match
+    ) {
+
+        const handicaps =
+            match.handicaps;
+
+        if (!handicaps) {
+            return "";
+        }
+
+        const homeLines =
+            handicaps.home || {};
+
+        const awayLines =
+            handicaps.away || {};
+
+        const rows = [];
+
+
+        Object.entries(
+            homeLines
+        )
+        .forEach(
+            ([line, odd]) => {
+
+                if (
+                    line.startsWith(
+                        "main_"
+                    )
+                ) {
+                    return;
+                }
+
+                if (
+                    Number.isFinite(
+                        Number(odd)
+                    )
+                    &&
+                    Number(odd) > 1
+                ) {
+
+                    rows.push({
+                        side: 1,
+                        line:
+                            Number(line),
+                        odd:
+                            Number(odd)
+                    });
+                }
+            }
+        );
+
+
+        Object.entries(
+            awayLines
+        )
+        .forEach(
+            ([line, odd]) => {
+
+                if (
+                    line.startsWith(
+                        "main_"
+                    )
+                ) {
+                    return;
+                }
+
+                if (
+                    Number.isFinite(
+                        Number(odd)
+                    )
+                    &&
+                    Number(odd) > 1
+                ) {
+
+                    rows.push({
+                        side: 2,
+                        line:
+                            Number(line),
+                        odd:
+                            Number(odd)
+                    });
+                }
+            }
+        );
+
+
+        if (!rows.length) {
+            return "";
+        }
+
+
+        rows.sort(
+            (a, b) => {
+
+                if (
+                    a.line === b.line
+                ) {
+
+                    return (
+                        a.side
+                        -
+                        b.side
+                    );
+                }
+
+                return (
+                    a.line
+                    -
+                    b.line
+                );
+            }
+        );
+
+
+        const homeRows =
+            rows.filter(
+                row =>
+                    row.side === 1
+            );
+
+        const awayRows =
+            rows.filter(
+                row =>
+                    row.side === 2
+            );
+
+
+        let html = `
+            <div class="market">
+
+                <div class="market-title">
+                    Форы
+                </div>
         `;
 
-      }
-    );
+
+        const maxRows =
+            Math.max(
+                homeRows.length,
+                awayRows.length
+            );
 
 
-    html += `
-      </div>
-    `;
+        for (
+            let i = 0;
+            i < maxRows;
+            i++
+        ) {
 
-  }
+            const home =
+                homeRows[i];
 
+            const away =
+                awayRows[i];
 
-  if (match.team_totals) {
-
-    html += `
-      <div class="market-box">
-
-        <div class="market-title">
-          Индивидуальные тоталы
-        </div>
-    `;
-
-
-    [
-      {
-        side: "home",
-        number: 1,
-        name: match.home
-      },
-      {
-        side: "away",
-        number: 2,
-        name: match.away
-      }
-    ]
-    .forEach(
-      team => {
-
-        html += `
-          <div class="team-total-title">
-            ${escapeHtml(team.name)}
-          </div>
-        `;
+            html += `
+                <div class="market-line">
+            `;
 
 
-        TEAM_TOTAL_POINTS.forEach(
-          point => {
+            if (home) {
 
-            const line =
-              match.team_totals
-              ?.[team.side]
-              ?.[String(point)];
+                const signed =
+                    handicapText(
+                        home.line
+                    );
+
+                html +=
+                    detailOddButton(
+                        match,
+                        `Ф1(${signed})`,
+                        home.odd,
+                        `Ф1 (${signed})`
+                    );
+
+            } else {
+
+                html += `
+                    <div></div>
+                `;
+            }
 
 
-            if (
-              !line
-              ||
-              (
-                line.over == null
-                &&
-                line.under == null
-              )
-            ) {
-              return;
+            if (away) {
+
+                const signed =
+                    handicapText(
+                        away.line
+                    );
+
+                html +=
+                    detailOddButton(
+                        match,
+                        `Ф2(${signed})`,
+                        away.odd,
+                        `Ф2 (${signed})`
+                    );
+
+            } else {
+
+                html += `
+                    <div></div>
+                `;
             }
 
 
             html += `
-              <div class="odds-2">
-
-                ${createOddButton(
-                  `ИТБ${team.number}(${point})`,
-                  match,
-                  `ИТБ${team.number}(${point})`,
-                  line.over
-                )}
-
-                ${createOddButton(
-                  `ИТМ${team.number}(${point})`,
-                  match,
-                  `ИТМ${team.number}(${point})`,
-                  line.under
-                )}
-
-              </div>
+                </div>
             `;
-
-          }
-        );
-
-      }
-    );
-
-
-    html += `
-      </div>
-    `;
-
-  }
-
-
-  const hasExtra =
-    match.double_chance
-    ||
-    match.total_1_5
-    ||
-    match.total_2_5
-    ||
-    match.total_3_5
-    ||
-    match.total_4_5
-    ||
-    match.btts
-    ||
-    match.handicaps
-    ||
-    match.team_totals;
-
-
-  if (!hasExtra) {
-
-    html += `
-      <div class="no-odds">
-        Дополнительные рынки сейчас недоступны
-      </div>
-    `;
-
-  }
-
-
-  document
-    .getElementById(
-      "matchDetailContent"
-    )
-    .innerHTML =
-      html;
-
-}
-
-
-function openBet(
-  match,
-  fixtureId,
-  selection,
-  odd
-) {
-
-  if (!sessionLoaded) {
-
-    alert(
-      "Профиль ещё загружается"
-    );
-
-    return;
-
-  }
-
-
-  selectedBet = {
-    match:
-      match,
-
-    fixtureId:
-      fixtureId,
-
-    selection:
-      selection,
-
-    odd:
-      Number(odd)
-  };
-
-
-  document
-    .getElementById(
-      "modalMatch"
-    )
-    .innerText =
-      match;
-
-
-  document
-    .getElementById(
-      "modalSelection"
-    )
-    .innerText =
-      selection;
-
-
-  document
-    .getElementById(
-      "modalOdd"
-    )
-    .innerText =
-      Number(
-        odd
-      ).toFixed(
-        2
-      );
-
-
-  document
-    .getElementById(
-      "betAmount"
-    )
-    .value =
-      "";
-
-
-  document
-    .getElementById(
-      "possibleWin"
-    )
-    .innerText =
-      "0";
-
-
-  document
-    .getElementById(
-      "overlay"
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "betModal"
-    )
-    .classList.add(
-      "active"
-    );
-
-}
-
-
-function closeBet() {
-
-  document
-    .getElementById(
-      "overlay"
-    )
-    .classList.remove(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "betModal"
-    )
-    .classList.remove(
-      "active"
-    );
-
-}
-
-
-function calculateWin() {
-
-  if (!selectedBet) {
-    return;
-  }
-
-
-  const amount =
-    Number(
-      document
-        .getElementById(
-          "betAmount"
-        )
-        .value
-    );
-
-
-  document
-    .getElementById(
-      "possibleWin"
-    )
-    .innerText =
-      amount > 0
-        ? Math.round(
-            amount
-            *
-            selectedBet.odd
-          )
-        : 0;
-
-}
-
-
-async function confirmBet() {
-
-  if (!selectedBet) {
-    return;
-  }
-
-
-  const amount =
-    Number(
-      document
-        .getElementById(
-          "betAmount"
-        )
-        .value
-    );
-
-
-  if (
-    !Number.isInteger(
-      amount
-    )
-    ||
-    amount <= 0
-  ) {
-
-    alert(
-      "Введите сумму ставки"
-    );
-
-    return;
-
-  }
-
-
-  if (amount > balance) {
-
-    alert(
-      "Недостаточно монет"
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/bets`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              fixture_id:
-                selectedBet.fixtureId,
-
-              match:
-                selectedBet.match,
-
-              selection:
-                selectedBet.selection,
-
-              odd:
-                selectedBet.odd,
-
-              amount:
-                amount
-            })
         }
-      );
 
 
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "Не удалось сделать ставку"
-      );
-
-    }
-
-
-    closeBet();
-
-
-    await loadSession();
-
-    await loadLeaderboard();
-
-
-    if (tg.HapticFeedback) {
-
-      tg.HapticFeedback
-        .notificationOccurred(
-          "success"
-        );
-
-    }
-
-  }
-
-  catch (error) {
-
-    alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-function addCurrentBetToParlay() {
-
-  if (!selectedBet) {
-    return;
-  }
-
-
-  const sameFixture =
-    parlayCoupon.find(
-      item =>
-        Number(
-          item.fixture_id
-        )
-        ===
-        Number(
-          selectedBet.fixtureId
-        )
-    );
-
-
-  if (sameFixture) {
-
-    alert(
-      "В экспрессе уже есть исход этого матча"
-    );
-
-    return;
-
-  }
-
-
-  parlayCoupon.push({
-    fixture_id:
-      selectedBet.fixtureId,
-
-    match:
-      selectedBet.match,
-
-    selection:
-      selectedBet.selection,
-
-    odd:
-      selectedBet.odd
-  });
-
-
-  closeBet();
-
-  updateParlayFloating();
-
-
-  alert(
-    "✅ Добавлено в экспресс"
-  );
-
-}
-
-
-function getParlayTotalOdd() {
-
-  let total = 1;
-
-
-  parlayCoupon.forEach(
-    item => {
-
-      total *= Number(
-        item.odd
-      );
-
-    }
-  );
-
-
-  return total;
-
-}
-
-
-function updateParlayFloating() {
-
-  const button =
-    document.getElementById(
-      "parlayFloatingButton"
-    );
-
-
-  if (
-    parlayCoupon.length > 0
-  ) {
-
-    button.classList.add(
-      "active"
-    );
-
-
-    button.innerText =
-      `🧾 Экспресс • ${parlayCoupon.length} • Кэф ${getParlayTotalOdd().toFixed(2)}`;
-
-  }
-
-  else {
-
-    button.classList.remove(
-      "active"
-    );
-
-  }
-
-}
-
-
-function openParlayCoupon() {
-
-  renderParlayCoupon();
-
-
-  document
-    .getElementById(
-      "parlayOverlay"
-    )
-    .classList.add(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "parlayModal"
-    )
-    .classList.add(
-      "active"
-    );
-
-}
-
-
-function closeParlayCoupon() {
-
-  document
-    .getElementById(
-      "parlayOverlay"
-    )
-    .classList.remove(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "parlayModal"
-    )
-    .classList.remove(
-      "active"
-    );
-
-}
-
-
-function renderParlayCoupon() {
-
-  const container =
-    document.getElementById(
-      "parlayCouponList"
-    );
-
-
-  if (
-    parlayCoupon.length === 0
-  ) {
-
-    container.innerHTML = `
-      <div class="empty">
-        Купон пуст
-      </div>
-    `;
-
-  }
-
-  else {
-
-    container.innerHTML =
-      parlayCoupon
-      .map(
-        (
-          item,
-          index
-        ) => `
-          <div class="coupon-leg">
-
-            <div class="coupon-leg-top">
-
-              <div class="coupon-match">
-                ${escapeHtml(item.match)}
-              </div>
-
-              <button
-                class="coupon-remove"
-                onclick="removeParlayLeg(${index})"
-              >
-                ×
-              </button>
-
+        html += `
             </div>
-
-            <div class="coupon-selection">
-              ${escapeHtml(item.selection)}
-            </div>
-
-            <div class="coupon-odd">
-              ${Number(item.odd).toFixed(2)}
-            </div>
-
-          </div>
-        `
-      )
-      .join("");
-
-  }
-
-
-  document
-    .getElementById(
-      "parlayLegCount"
-    )
-    .innerText =
-      parlayCoupon.length;
-
-
-  document
-    .getElementById(
-      "parlayTotalOdd"
-    )
-    .innerText =
-      getParlayTotalOdd()
-      .toFixed(
-        2
-      );
-
-
-  calculateParlayWin();
-
-}
-
-
-function removeParlayLeg(index) {
-
-  parlayCoupon.splice(
-    index,
-    1
-  );
-
-
-  renderParlayCoupon();
-
-  updateParlayFloating();
-
-}
-
-
-function clearParlayCoupon() {
-
-  parlayCoupon = [];
-
-
-  document
-    .getElementById(
-      "parlayAmount"
-    )
-    .value =
-      "";
-
-
-  renderParlayCoupon();
-
-  updateParlayFloating();
-
-  closeParlayCoupon();
-
-}
-
-
-function calculateParlayWin() {
-
-  const amount =
-    Number(
-      document
-        .getElementById(
-          "parlayAmount"
-        )
-        .value
-    );
-
-
-  document
-    .getElementById(
-      "parlayPossibleWin"
-    )
-    .innerText =
-      amount > 0
-        ? Math.round(
-            amount
-            *
-            getParlayTotalOdd()
-          )
-        : 0;
-
-}
-
-
-async function confirmParlay() {
-
-  if (
-    parlayCoupon.length < 2
-  ) {
-
-    alert(
-      "Добавь минимум 2 события"
-    );
-
-    return;
-
-  }
-
-
-  const amount =
-    Number(
-      document
-        .getElementById(
-          "parlayAmount"
-        )
-        .value
-    );
-
-
-  if (
-    !Number.isInteger(
-      amount
-    )
-    ||
-    amount <= 0
-  ) {
-
-    alert(
-      "Введите сумму экспресса"
-    );
-
-    return;
-
-  }
-
-
-  if (amount > balance) {
-
-    alert(
-      "Недостаточно монет"
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    const response =
-      await fetch(
-        `${SERVER_URL}/api/parlays`,
-        {
-          method:
-            "POST",
-
-          headers:
-            authHeaders(),
-
-          body:
-            JSON.stringify({
-              initData:
-                telegramInitData,
-
-              amount:
-                amount,
-
-              legs:
-                parlayCoupon
-            })
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok
-      ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error
-        ||
-        "Не удалось сделать экспресс"
-      );
-
-    }
-
-
-    parlayCoupon = [];
-
-
-    document
-      .getElementById(
-        "parlayAmount"
-      )
-      .value =
-        "";
-
-
-    closeParlayCoupon();
-
-    updateParlayFloating();
-
-
-    await loadSession();
-
-    await loadLeaderboard();
-
-
-    alert(
-      `✅ Экспресс принят!\nОбщий коэффициент: ${Number(data.total_odd).toFixed(2)}\nВозможный выигрыш: ${data.possible} 🪙`
-    );
-
-  }
-
-  catch (error) {
-
-    alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-function setBetsTab(type) {
-
-  const singleTab =
-    document.getElementById(
-      "singleBetsTab"
-    );
-
-
-  const parlayTab =
-    document.getElementById(
-      "parlayBetsTab"
-    );
-
-
-  const singleList =
-    document.getElementById(
-      "betsList"
-    );
-
-
-  const parlayList =
-    document.getElementById(
-      "parlaysList"
-    );
-
-
-  if (type === "single") {
-
-    singleTab.classList.add(
-      "active"
-    );
-
-
-    parlayTab.classList.remove(
-      "active"
-    );
-
-
-    singleList.style.display =
-      "block";
-
-
-    parlayList.style.display =
-      "none";
-
-  }
-
-  else {
-
-    parlayTab.classList.add(
-      "active"
-    );
-
-
-    singleTab.classList.remove(
-      "active"
-    );
-
-
-    singleList.style.display =
-      "none";
-
-
-    parlayList.style.display =
-      "block";
-
-  }
-
-}
-
-
-function renderBets() {
-
-  const list =
-    document.getElementById(
-      "betsList"
-    );
-
-
-  if (
-    bets.length === 0
-  ) {
-
-    list.innerHTML = `
-      <div class="empty">
-        Ординаров пока нет
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    bets
-    .map(
-      bet => {
-
-        let className = "";
-        let statusClass = "status-active";
-        let icon = "⏳";
-
-
-        if (
-          bet.status === "Выиграла"
-        ) {
-
-          className =
-            "bet-win";
-
-          statusClass =
-            "status-win";
-
-          icon =
-            "✅";
-
-        }
-
-        else if (
-          bet.status === "Проиграла"
-        ) {
-
-          className =
-            "bet-loss";
-
-          statusClass =
-            "status-loss";
-
-          icon =
-            "❌";
-
-        }
-
-        else if (
-          bet.status === "Возврат"
-        ) {
-
-          className =
-            "bet-refund";
-
-          statusClass =
-            "status-refund";
-
-          icon =
-            "↩️";
-
-        }
-
-
-        return `
-          <div class="bet-card ${className}">
-
-            <b>
-              ${escapeHtml(bet.match)}
-            </b>
-
-            <p>
-              ${escapeHtml(bet.selection)}
-              •
-              ${Number(bet.odd).toFixed(2)}
-            </p>
-
-            <p>
-              Ставка: 🪙 ${bet.amount}
-            </p>
-
-            <p>
-              Возможный выигрыш:
-              🪙 ${bet.possible}
-            </p>
-
-            ${
-              bet.score
-                ? `<p>Счёт: <b>${escapeHtml(bet.score)}</b></p>`
-                : ""
-            }
-
-            <p class="${statusClass}">
-              ${icon}
-              ${escapeHtml(bet.status)}
-            </p>
-
-          </div>
         `;
 
-      }
-    )
-    .join("");
-
-}
+        return html;
+    }
 
 
-function renderParlays() {
+    function handicapText(
+        line
+    ) {
 
-  const list =
-    document.getElementById(
-      "parlaysList"
-    );
+        const n =
+            Number(line);
 
+        if (n > 0) {
+            return `+${n}`;
+        }
 
-  if (
-    parlays.length === 0
-  ) {
-
-    list.innerHTML = `
-      <div class="empty">
-        Экспрессов пока нет
-      </div>
-    `;
-
-    return;
-
-  }
+        return String(n);
+    }
 
 
-  list.innerHTML =
-    parlays
-    .map(
-      parlay => {
+    function detailOddButton(
+        match,
+        selection,
+        odd,
+        label
+    ) {
 
-        let className = "";
-        let statusClass = "status-active";
-        let icon = "⏳";
-
+        const numericOdd =
+            Number(odd);
 
         if (
-          parlay.status === "Выиграла"
-        ) {
-
-          className =
-            "parlay-win";
-
-          statusClass =
-            "status-win";
-
-          icon =
-            "✅";
-
-        }
-
-        else if (
-          parlay.status === "Проиграла"
-        ) {
-
-          className =
-            "parlay-loss";
-
-          statusClass =
-            "status-loss";
-
-          icon =
-            "❌";
-
-        }
-
-        else if (
-          parlay.status === "Возврат"
-        ) {
-
-          className =
-            "parlay-refund";
-
-          statusClass =
-            "status-refund";
-
-          icon =
-            "↩️";
-
-        }
-
-
-        const legs =
-          (
-            parlay.legs
+            !Number.isFinite(
+                numericOdd
+            )
             ||
-            []
-          )
-          .map(
-            leg => {
+            numericOdd <= 1
+        ) {
 
-              let legIcon =
-                "⏳";
-
-
-              if (
-                leg.status === "Выиграла"
-              ) {
-                legIcon = "✅";
-              }
-
-              if (
-                leg.status === "Проиграла"
-              ) {
-                legIcon = "❌";
-              }
-
-              if (
-                leg.status === "Возврат"
-              ) {
-                legIcon = "↩️";
-              }
-
-
-              return `
-                <div class="parlay-leg">
-
-                  <div class="parlay-leg-match">
-                    ${legIcon}
-                    ${escapeHtml(leg.match)}
-                  </div>
-
-                  <div class="parlay-leg-bottom">
-
-                    <span>
-                      ${escapeHtml(leg.selection)}
+            return `
+                <button
+                    class="odd-btn disabled"
+                >
+                    <span class="odd-name">
+                        ${escapeHtml(label)}
                     </span>
 
-                    <b>
-                      ${Number(leg.odd).toFixed(2)}
-                    </b>
-
-                  </div>
-
-                  ${
-                    leg.score
-                      ? `
-                        <div class="leader-sub">
-                          Счёт: ${escapeHtml(leg.score)}
-                        </div>
-                      `
-                      : ""
-                  }
-
-                </div>
-              `;
-
-            }
-          )
-          .join("");
-
+                    <span class="odd-value">
+                        —
+                    </span>
+                </button>
+            `;
+        }
 
         return `
-          <div class="parlay-card ${className}">
+            <button
+                class="odd-btn"
+                onclick="
+                    selectOdd(
+                        ${Number(match.fixture_id)},
+                        '${jsString(match.home)}',
+                        '${jsString(match.away)}',
+                        '${jsString(selection)}',
+                        ${numericOdd}
+                    )
+                "
+            >
+                <span class="odd-name">
+                    ${escapeHtml(label)}
+                </span>
 
-            <div class="parlay-header">
+                <span class="odd-value">
+                    ${formatOdd(numericOdd)}
+                </span>
+            </button>
+        `;
+    }
 
-              <div class="parlay-title">
-                🧾 Экспресс #${parlay.id}
-              </div>
 
-              <div class="parlay-total-odd">
-                ${Number(parlay.total_odd).toFixed(2)}
-              </div>
+    function selectOdd(
+        fixtureId,
+        home,
+        away,
+        selection,
+        odd
+    ) {
 
+        selectedBet = {
+            fixture_id:
+                Number(
+                    fixtureId
+                ),
+
+            match:
+                `${home} — ${away}`,
+
+            selection:
+                selection,
+
+            odd:
+                Number(
+                    odd
+                )
+        };
+
+        document.getElementById(
+            "choiceInfo"
+        ).innerHTML = `
+            <b>
+                ${escapeHtml(
+                    selectedBet.match
+                )}
+            </b>
+
+            <div
+                style="
+                    margin-top:8px;
+                    color:var(--muted);
+                "
+            >
+                ${escapeHtml(
+                    selectedBet.selection
+                )}
+                •
+                ${formatOdd(
+                    selectedBet.odd
+                )}
             </div>
-
-            ${legs}
-
-            <p>
-              Ставка:
-              🪙 ${parlay.amount}
-            </p>
-
-            <p>
-              Возможный выигрыш:
-              🪙 ${parlay.possible}
-            </p>
-
-            <p class="${statusClass}">
-              ${icon}
-              ${escapeHtml(parlay.status)}
-            </p>
-
-          </div>
         `;
 
-      }
-    )
-    .join("");
-
-}
-
-
-function updateXpInterface() {
-
-  document
-    .getElementById(
-      "levelNumber"
-    )
-    .innerText =
-      `⭐ Уровень ${level}`;
+        openModal(
+            "betChoiceOverlay"
+        );
+    }
 
 
-  document
-    .getElementById(
-      "totalXp"
-    )
-    .innerText =
-      `${xp} XP`;
+    function openSingleModalFromChoice() {
+
+        closeModal(
+            "betChoiceOverlay"
+        );
+
+        if (!selectedBet) {
+            return;
+        }
+
+        document.getElementById(
+            "singleInfo"
+        ).innerHTML = `
+            <b>
+                ${escapeHtml(
+                    selectedBet.match
+                )}
+            </b>
+
+            <div
+                style="
+                    margin-top:8px;
+                    color:var(--muted);
+                "
+            >
+                ${escapeHtml(
+                    selectedBet.selection
+                )}
+                •
+                ${formatOdd(
+                    selectedBet.odd
+                )}
+            </div>
+        `;
+
+        document.getElementById(
+            "singleAmount"
+        ).value = "";
+
+        document.getElementById(
+            "singlePossible"
+        ).textContent = "";
+
+        openModal(
+            "singleOverlay"
+        );
+    }
 
 
-  document
-    .getElementById(
-      "xpProgressText"
-    )
-    .innerText =
-      `${currentLevelXp} / 100 XP`;
+    function updateSinglePossible() {
+
+        if (!selectedBet) {
+            return;
+        }
+
+        const amount =
+            Number(
+                document.getElementById(
+                    "singleAmount"
+                ).value
+            );
+
+        const el =
+            document.getElementById(
+                "singlePossible"
+            );
+
+        if (
+            !Number.isFinite(amount)
+            ||
+            amount <= 0
+        ) {
+
+            el.textContent = "";
+            return;
+        }
+
+        el.textContent =
+            `Возможный выигрыш: ${
+                Math.round(
+                    amount
+                    *
+                    selectedBet.odd
+                )
+            } 🪙`;
+    }
 
 
-  document
-    .getElementById(
-      "xpInfo"
-    )
-    .innerText =
-      `До следующего уровня: ${xpToNextLevel} XP`;
+    async function confirmSingleBet() {
+
+        if (!selectedBet) {
+            return;
+        }
+
+        const amount =
+            Number(
+                document.getElementById(
+                    "singleAmount"
+                ).value
+            );
+
+        if (
+            !Number.isInteger(amount)
+            ||
+            amount <= 0
+        ) {
+
+            tg.showAlert(
+                "Введите сумму ставки"
+            );
+
+            return;
+        }
+
+        const btn =
+            document.getElementById(
+                "confirmSingleBtn"
+            );
+
+        btn.disabled = true;
+
+        btn.textContent =
+            "Проверяем коэффициент...";
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/bets",
+                    {
+                        fixture_id:
+                            selectedBet.fixture_id,
+
+                        selection:
+                            selectedBet.selection,
+
+                        odd:
+                            selectedBet.odd,
+
+                        match:
+                            selectedBet.match,
+
+                        amount:
+                            amount
+                    }
+                );
+
+            applyCommonData(
+                data
+            );
+
+            closeModal(
+                "singleOverlay"
+            );
+
+            tg.HapticFeedback
+            ?.notificationOccurred(
+                "success"
+            );
+
+            tg.showAlert(
+                "Ставка принята ✅"
+            );
+
+            await loadSession();
+
+        } catch (error) {
+
+            tg.showAlert(
+                error.message
+            );
+
+        } finally {
+
+            btn.disabled = false;
+
+            btn.textContent =
+                "Сделать ставку";
+        }
+    }
 
 
-  document
-    .getElementById(
-      "xpFill"
-    )
-    .style.width =
-      `${Math.min(100, currentLevelXp)}%`;
+    function addSelectedToParlay() {
 
-}
+        if (!selectedBet) {
+            return;
+        }
 
+        const sameFixture =
+            parlaySlip.find(
+                leg =>
+                    leg.fixture_id
+                    ===
+                    selectedBet.fixture_id
+            );
 
-function updateInterface() {
+        if (sameFixture) {
 
-  const text =
-    sessionLoaded
-      ? balance
-      : "...";
+            tg.showAlert(
+                "В экспрессе можно выбрать только один исход одного матча."
+            );
 
+            return;
+        }
 
-  document
-    .getElementById(
-      "balance"
-    )
-    .innerText =
-      text;
+        if (
+            parlaySlip.length
+            >=
+            15
+        ) {
 
+            tg.showAlert(
+                "Максимум 15 событий в экспрессе."
+            );
 
-  document
-    .getElementById(
-      "topBalance"
-    )
-    .innerText =
-      text;
+            return;
+        }
 
+        parlaySlip.push({
+            ...selectedBet
+        });
 
-  document
-    .getElementById(
-      "profileBalance"
-    )
-    .innerText =
-      text;
+        closeModal(
+            "betChoiceOverlay"
+        );
 
+        updateParlayFloat();
 
-  renderTasks();
-
-  renderAchievements();
-
-  renderBets();
-
-  renderParlays();
-
-  updateXpInterface();
-
-  updateLeagueInterface();
-
-  updateProfileRank();
-
-  updateStatsInterface();
-
-  updateParlayFloating();
-
-}
+        tg.HapticFeedback
+        ?.impactOccurred(
+            "light"
+        );
+    }
 
 
-async function openPage(
-  page,
-  button
-) {
+    function updateParlayFloat() {
 
-  document
-    .querySelectorAll(
-      ".page"
-    )
-    .forEach(
-      item =>
-        item.classList.remove(
-          "active"
+        const btn =
+            document.getElementById(
+                "parlayFloat"
+            );
+
+        btn.textContent =
+            `🧾 Экспресс • ${
+                parlaySlip.length
+            }`;
+
+        btn.classList.toggle(
+            "show",
+            parlaySlip.length > 0
+        );
+    }
+
+
+    function calculateParlayOdd() {
+
+        if (!parlaySlip.length) {
+            return 1;
+        }
+
+        return parlaySlip.reduce(
+            (
+                total,
+                leg
+            ) =>
+                total
+                *
+                Number(
+                    leg.odd
+                ),
+            1
+        );
+    }
+
+
+    function openParlayModal() {
+
+        renderParlaySlip();
+
+        openModal(
+            "parlayOverlay"
+        );
+    }
+
+
+    function renderParlaySlip() {
+
+        const container =
+            document.getElementById(
+                "parlaySlipList"
+            );
+
+        if (!parlaySlip.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    В экспрессе пока нет событий
+                </div>
+            `;
+
+        } else {
+
+            container.innerHTML =
+                parlaySlip
+                .map(
+                    (
+                        leg,
+                        index
+                    ) => `
+                        <div class="slip-leg">
+
+                            <div class="slip-leg-top">
+
+                                <div>
+                                    <b>
+                                        ${escapeHtml(
+                                            leg.match
+                                        )}
+                                    </b>
+
+                                    <div
+                                        class="notice"
+                                        style="
+                                            margin-bottom:0;
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            leg.selection
+                                        )}
+                                        •
+                                        ${formatOdd(
+                                            leg.odd
+                                        )}
+                                    </div>
+                                </div>
+
+                                <button
+                                    class="remove-leg"
+                                    onclick="
+                                        removeParlayLeg(
+                                            ${index}
+                                        )
+                                    "
+                                >
+                                    ×
+                                </button>
+
+                            </div>
+                        </div>
+                    `
+                )
+                .join("");
+        }
+
+        const totalOdd =
+            calculateParlayOdd();
+
+        document.getElementById(
+            "parlayCount"
+        ).textContent =
+            parlaySlip.length;
+
+        document.getElementById(
+            "parlayTotalOdd"
+        ).textContent =
+            totalOdd.toFixed(
+                2
+            );
+
+        updateParlayPossible();
+    }
+
+
+    function removeParlayLeg(
+        index
+    ) {
+
+        parlaySlip.splice(
+            index,
+            1
+        );
+
+        renderParlaySlip();
+
+        updateParlayFloat();
+    }
+
+
+    function clearParlay() {
+
+        parlaySlip = [];
+
+        document.getElementById(
+            "parlayAmount"
+        ).value = "";
+
+        renderParlaySlip();
+
+        updateParlayFloat();
+
+        closeModal(
+            "parlayOverlay"
+        );
+    }
+
+
+    function updateParlayPossible() {
+
+        const amount =
+            Number(
+                document.getElementById(
+                    "parlayAmount"
+                ).value
+            );
+
+        const el =
+            document.getElementById(
+                "parlayPossible"
+            );
+
+        if (
+            !Number.isFinite(amount)
+            ||
+            amount <= 0
+        ) {
+
+            el.textContent = "";
+            return;
+        }
+
+        el.textContent =
+            `Возможный выигрыш: ${
+                Math.round(
+                    amount
+                    *
+                    calculateParlayOdd()
+                )
+            } 🪙`;
+    }
+
+
+    async function confirmParlay() {
+
+        if (
+            parlaySlip.length
+            <
+            2
+        ) {
+
+            tg.showAlert(
+                "Для экспресса нужно минимум 2 события."
+            );
+
+            return;
+        }
+
+        const amount =
+            Number(
+                document.getElementById(
+                    "parlayAmount"
+                ).value
+            );
+
+        if (
+            !Number.isInteger(amount)
+            ||
+            amount <= 0
+        ) {
+
+            tg.showAlert(
+                "Введите сумму экспресса."
+            );
+
+            return;
+        }
+
+        const btn =
+            document.getElementById(
+                "confirmParlayBtn"
+            );
+
+        btn.disabled = true;
+
+        btn.textContent =
+            "Проверяем коэффициенты...";
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/parlays",
+                    {
+                        amount:
+                            amount,
+
+                        legs:
+                            parlaySlip.map(
+                                leg => ({
+                                    fixture_id:
+                                        leg.fixture_id,
+
+                                    match:
+                                        leg.match,
+
+                                    selection:
+                                        leg.selection,
+
+                                    odd:
+                                        leg.odd
+                                })
+                            )
+                    }
+                );
+
+            applyCommonData(
+                data
+            );
+
+            parlaySlip = [];
+
+            updateParlayFloat();
+
+            closeModal(
+                "parlayOverlay"
+            );
+
+            tg.HapticFeedback
+            ?.notificationOccurred(
+                "success"
+            );
+
+            tg.showAlert(
+                "Экспресс принят ✅"
+            );
+
+            await loadSession();
+
+        } catch (error) {
+
+            tg.showAlert(
+                error.message
+            );
+
+        } finally {
+
+            btn.disabled = false;
+
+            btn.textContent =
+                "Поставить экспресс";
+        }
+    }
+
+
+    function statusClass(
+        status
+    ) {
+
+        if (
+            status ===
+            "Выиграла"
+        ) {
+            return "win";
+        }
+
+        if (
+            status ===
+            "Проиграла"
+        ) {
+            return "loss";
+        }
+
+        if (
+            status ===
+            "Возврат"
+        ) {
+            return "refund";
+        }
+
+        return "active";
+    }
+
+
+    function renderBets() {
+
+        const singles =
+            document.getElementById(
+                "singleBets"
+            );
+
+        if (!bets.length) {
+
+            singles.innerHTML = `
+                <div class="empty">
+                    Ординаров пока нет
+                </div>
+            `;
+
+        } else {
+
+            singles.innerHTML =
+                bets
+                .map(
+                    bet => `
+                        <div class="card">
+
+                            <span
+                                class="
+                                    status
+                                    ${statusClass(
+                                        bet.status
+                                    )}
+                                "
+                            >
+                                ${escapeHtml(
+                                    bet.status
+                                )}
+                            </span>
+
+                            <div class="bet-main">
+                                ${escapeHtml(
+                                    bet.match
+                                )}
+                            </div>
+
+                            <div>
+                                ${escapeHtml(
+                                    bet.selection
+                                )}
+                                •
+                                ${formatOdd(
+                                    bet.odd
+                                )}
+                            </div>
+
+                            ${
+                                bet.score
+                                ?
+                                `
+                                <div
+                                    class="notice"
+                                >
+                                    Счёт:
+                                    ${escapeHtml(
+                                        bet.score
+                                    )}
+                                </div>
+                                `
+                                :
+                                ""
+                            }
+
+                            <div class="bet-row">
+                                <span>
+                                    Ставка
+                                </span>
+
+                                <b>
+                                    ${bet.amount} 🪙
+                                </b>
+                            </div>
+
+                            <div class="bet-row">
+                                <span>
+                                    Возможный выигрыш
+                                </span>
+
+                                <b>
+                                    ${bet.possible} 🪙
+                                </b>
+                            </div>
+
+                        </div>
+                    `
+                )
+                .join("");
+        }
+
+
+        const parlaysEl =
+            document.getElementById(
+                "parlayBets"
+            );
+
+        if (!parlays.length) {
+
+            parlaysEl.innerHTML = `
+                <div class="empty">
+                    Экспрессов пока нет
+                </div>
+            `;
+
+        } else {
+
+            parlaysEl.innerHTML =
+                parlays
+                .map(
+                    parlay => `
+                        <div class="card">
+
+                            <span
+                                class="
+                                    status
+                                    ${statusClass(
+                                        parlay.status
+                                    )}
+                                "
+                            >
+                                ${escapeHtml(
+                                    parlay.status
+                                )}
+                            </span>
+
+                            <div
+                                class="bet-main"
+                            >
+                                Экспресс #${parlay.id}
+                            </div>
+
+                            <div
+                                class="notice"
+                            >
+                                ${
+                                    parlay.legs
+                                    ?.length
+                                    ||
+                                    0
+                                }
+                                событий
+                                •
+                                общий кэф
+                                ${formatOdd(
+                                    parlay.total_odd
+                                )}
+                            </div>
+
+                            ${
+                                (
+                                    parlay.legs
+                                    ||
+                                    []
+                                )
+                                .map(
+                                    leg => `
+                                        <div
+                                            class="slip-leg"
+                                        >
+                                            <b>
+                                                ${escapeHtml(
+                                                    leg.match
+                                                )}
+                                            </b>
+
+                                            <div
+                                                class="notice"
+                                                style="
+                                                    margin-bottom:0;
+                                                "
+                                            >
+                                                ${escapeHtml(
+                                                    leg.selection
+                                                )}
+                                                •
+                                                ${formatOdd(
+                                                    leg.odd
+                                                )}
+
+                                                ${
+                                                    leg.score
+                                                    ?
+                                                    ` • ${escapeHtml(
+                                                        leg.score
+                                                    )}`
+                                                    :
+                                                    ""
+                                                }
+                                            </div>
+                                        </div>
+                                    `
+                                )
+                                .join("")
+                            }
+
+                            <div class="bet-row">
+                                <span>
+                                    Ставка
+                                </span>
+
+                                <b>
+                                    ${parlay.amount} 🪙
+                                </b>
+                            </div>
+
+                            <div class="bet-row">
+                                <span>
+                                    Возможный выигрыш
+                                </span>
+
+                                <b>
+                                    ${parlay.possible} 🪙
+                                </b>
+                            </div>
+
+                        </div>
+                    `
+                )
+                .join("");
+        }
+    }
+
+
+    function switchBetTab(
+        type
+    ) {
+
+        currentBetTab =
+            type;
+
+        const singleTab =
+            document.getElementById(
+                "singleTab"
+            );
+
+        const parlayTab =
+            document.getElementById(
+                "parlayTab"
+            );
+
+        const single =
+            document.getElementById(
+                "singleBets"
+            );
+
+        const parlay =
+            document.getElementById(
+                "parlayBets"
+            );
+
+        singleTab.classList.toggle(
+            "active",
+            type === "single"
+        );
+
+        parlayTab.classList.toggle(
+            "active",
+            type === "parlay"
+        );
+
+        single.style.display =
+            type === "single"
+            ?
+            "block"
+            :
+            "none";
+
+        parlay.style.display =
+            type === "parlay"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    async function loadLeaderboard() {
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/leaderboard"
+                );
+
+            leaderboardPlayers =
+                data.players || [];
+
+            myRank =
+                data.my_rank;
+
+            renderLeaderboard();
+
+            renderProfile();
+
+        } catch (error) {
+
+            document.getElementById(
+                "leaderboardList"
+            ).innerHTML = `
+                <div class="empty">
+                    Не удалось загрузить рейтинг
+                </div>
+            `;
+        }
+    }
+
+
+    function renderLeaderboard() {
+
+        const container =
+            document.getElementById(
+                "leaderboardList"
+            );
+
+        if (
+            !leaderboardPlayers.length
+        ) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    Пока нет игроков
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML =
+            leaderboardPlayers
+            .map(
+                player => {
+
+                    const isMe =
+                        currentUser
+                        &&
+                        Number(
+                            currentUser.telegram_id
+                        )
+                        ===
+                        Number(
+                            player.telegram_id
+                        );
+
+                    return `
+                        <div
+                            class="
+                                card
+                                ${isMe
+                                    ?
+                                    "me-card"
+                                    :
+                                    ""
+                                }
+                            "
+                        >
+                            <div class="leader-row">
+
+                                <div class="leader-rank">
+                                    #${player.rank}
+                                </div>
+
+                                <div>
+
+                                    <div class="leader-name">
+                                        ${
+                                            escapeHtml(
+                                                player.first_name
+                                                ||
+                                                "Игрок"
+                                            )
+                                        }
+                                    </div>
+
+                                    <div class="leader-xp">
+                                        ${
+                                            player.league?.icon
+                                            ||
+                                            ""
+                                        }
+                                        ${
+                                            escapeHtml(
+                                                player.league?.name
+                                                ||
+                                                ""
+                                            )
+                                        }
+                                        •
+                                        уровень
+                                        ${player.level}
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    style="
+                                        text-align:right;
+                                    "
+                                >
+                                    <b>
+                                        ${player.xp} XP
+                                    </b>
+
+                                    <div class="leader-xp">
+                                        ${player.balance} 🪙
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+    }
+
+
+    function renderProfile() {
+
+        const name =
+            currentUser?.first_name
+            ||
+            currentUser?.username
+            ||
+            "Игрок";
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            name;
+
+        document.getElementById(
+            "leagueName"
+        ).textContent =
+            `${
+                league?.icon || ""
+            } ${
+                league?.name || ""
+            }`;
+
+        document.getElementById(
+            "levelText"
+        ).textContent =
+            `Уровень ${level}`;
+
+        document.getElementById(
+            "xpText"
+        ).textContent =
+            `${xp} XP`;
+
+        document.getElementById(
+            "rankText"
+        ).textContent =
+            myRank
+            ?
+            `Место в рейтинге: #${myRank}`
+            :
+            "Место в рейтинге: —";
+
+        const percent =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    Number(
+                        currentLevelXp
+                    )
+                )
+            );
+
+        document.getElementById(
+            "xpFill"
+        ).style.width =
+            `${percent}%`;
+
+        renderStats();
+
+        renderTasks();
+
+        renderAchievements();
+
+        updateDailyReward();
+    }
+
+
+    function renderStats() {
+
+        const values = [
+            [
+                stats.total_bets || 0,
+                "Ординаров"
+            ],
+            [
+                stats.wins || 0,
+                "Побед"
+            ],
+            [
+                `${
+                    stats.win_rate || 0
+                }%`,
+                "Процент побед"
+            ],
+            [
+                stats.current_win_streak || 0,
+                "Серия побед"
+            ],
+            [
+                stats.total_parlays || 0,
+                "Экспрессов"
+            ],
+            [
+                stats.parlay_wins || 0,
+                "Выиграно экспрессов"
+            ],
+            [
+                stats.net_profit || 0,
+                "Профит 🪙"
+            ],
+            [
+                stats.total_won || 0,
+                "Выиграно 🪙"
+            ]
+        ];
+
+        document.getElementById(
+            "statsGrid"
+        ).innerHTML =
+            values
+            .map(
+                item => `
+                    <div class="stat">
+
+                        <div class="stat-value">
+                            ${escapeHtml(
+                                item[0]
+                            )}
+                        </div>
+
+                        <div class="stat-label">
+                            ${escapeHtml(
+                                item[1]
+                            )}
+                        </div>
+
+                    </div>
+                `
+            )
+            .join("");
+    }
+
+
+    function renderTasks() {
+
+        const container =
+            document.getElementById(
+                "tasksList"
+            );
+
+        if (!tasks.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    Заданий пока нет
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML =
+            tasks
+            .map(
+                task => `
+                    <div class="card task">
+
+                        <div>
+
+                            <b>
+                                ${escapeHtml(
+                                    task.title
+                                )}
+                            </b>
+
+                            <div class="notice">
+                                ${
+                                    task.progress
+                                }
+                                /
+                                ${
+                                    task.target
+                                }
+                                •
+                                ${
+                                    task.reward_type
+                                    ===
+                                    "xp"
+                                    ?
+                                    `+${task.reward} XP`
+                                    :
+                                    `+${task.reward} 🪙`
+                                }
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="task-btn"
+                            ${(
+                                !task.completed
+                                ||
+                                task.claimed
+                            )
+                                ?
+                                "disabled"
+                                :
+                                ""
+                            }
+                            onclick="
+                                claimTask(
+                                    '${jsString(
+                                        task.key
+                                    )}'
+                                )
+                            "
+                        >
+                            ${
+                                task.claimed
+                                ?
+                                "Получено"
+                                :
+                                task.completed
+                                ?
+                                "Забрать"
+                                :
+                                "В процессе"
+                            }
+                        </button>
+
+                    </div>
+                `
+            )
+            .join("");
+    }
+
+
+    async function claimTask(
+        key
+    ) {
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/tasks/claim",
+                    {
+                        task_key:
+                            key
+                    }
+                );
+
+            applyCommonData(
+                data
+            );
+
+            tg.showAlert(
+                "Награда получена ✅"
+            );
+
+            await loadSession();
+
+        } catch (error) {
+
+            tg.showAlert(
+                error.message
+            );
+        }
+    }
+
+
+    function renderAchievements() {
+
+        const container =
+            document.getElementById(
+                "achievementsList"
+            );
+
+        if (
+            !achievements.length
+        ) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    Достижений пока нет
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML =
+            achievements
+            .map(
+                item => `
+                    <div class="card task">
+
+                        <div>
+
+                            <b>
+                                ${escapeHtml(
+                                    item.title
+                                )}
+                            </b>
+
+                            <div class="notice">
+                                ${
+                                    item.progress
+                                }
+                                /
+                                ${
+                                    item.target
+                                }
+                                •
+                                +${item.reward} 🪙
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="task-btn"
+                            ${(
+                                !item.completed
+                                ||
+                                item.claimed
+                            )
+                                ?
+                                "disabled"
+                                :
+                                ""
+                            }
+                            onclick="
+                                claimAchievement(
+                                    '${jsString(
+                                        item.key
+                                    )}'
+                                )
+                            "
+                        >
+                            ${
+                                item.claimed
+                                ?
+                                "Получено"
+                                :
+                                item.completed
+                                ?
+                                "Забрать"
+                                :
+                                "Закрыто"
+                            }
+                        </button>
+
+                    </div>
+                `
+            )
+            .join("");
+    }
+
+
+    async function claimAchievement(
+        key
+    ) {
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/achievements/claim",
+                    {
+                        achievement_key:
+                            key
+                    }
+                );
+
+            applyCommonData(
+                data
+            );
+
+            tg.showAlert(
+                "Награда получена 🏅"
+            );
+
+            await loadSession();
+
+        } catch (error) {
+
+            tg.showAlert(
+                error.message
+            );
+        }
+    }
+
+
+    function updateDailyReward() {
+
+        const btn =
+            document.getElementById(
+                "dailyBtn"
+            );
+
+        const timer =
+            document.getElementById(
+                "dailyTimer"
+            );
+
+        if (
+            dailyReward.available
+        ) {
+
+            btn.disabled = false;
+
+            btn.textContent =
+                "Получить +300 🪙";
+
+            timer.textContent =
+                "Бонус доступен";
+
+            return;
+        }
+
+        btn.disabled = true;
+
+        let seconds =
+            Number(
+                dailyReward.seconds_left
+                ||
+                0
+            );
+
+        const hours =
+            Math.floor(
+                seconds / 3600
+            );
+
+        const minutes =
+            Math.floor(
+                (
+                    seconds % 3600
+                )
+                /
+                60
+            );
+
+        timer.textContent =
+            `Следующий бонус через ${hours} ч ${minutes} мин`;
+
+        btn.textContent =
+            "Бонус уже получен";
+    }
+
+
+    async function claimDailyReward() {
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/daily-reward"
+                );
+
+            applyCommonData(
+                data
+            );
+
+            dailyReward.available =
+                false;
+
+            dailyReward.seconds_left =
+                data.seconds_left
+                ||
+                86400;
+
+            tg.showAlert(
+                "+300 🪙 получено!"
+            );
+
+            await loadSession();
+
+        } catch (error) {
+
+            tg.showAlert(
+                error.message
+            );
+
+            await loadSession();
+        }
+    }
+
+
+    function updateInterface() {
+
+        updateBalances();
+
+        renderBets();
+
+        renderProfile();
+
+        updateParlayFloat();
+    }
+
+
+    function showPage(
+        name,
+        updateNav=true
+    ) {
+
+        document
+        .querySelectorAll(
+            ".page"
         )
-    );
+        .forEach(
+            page =>
+                page.classList.remove(
+                    "active"
+                )
+        );
+
+        const page =
+            document.getElementById(
+                "page-" + name
+            );
+
+        if (page) {
+
+            page.classList.add(
+                "active"
+            );
+        }
+
+        if (updateNav) {
+
+            document
+            .querySelectorAll(
+                ".nav-btn"
+            )
+            .forEach(
+                nav =>
+                    nav.classList.remove(
+                        "active"
+                    )
+            );
+
+            const nav =
+                document.getElementById(
+                    "nav-" + name
+                );
+
+            if (nav) {
+
+                nav.classList.add(
+                    "active"
+                );
+            }
+        }
+
+        if (name === "leaderboard") {
+
+            loadLeaderboard();
+        }
+
+        if (name === "profile") {
+
+            loadSession();
+
+            loadLeaderboard();
+        }
+
+        if (name === "bets") {
+
+            loadSession();
+        }
+
+        window.scrollTo(
+            0,
+            0
+        );
+    }
 
 
-  document
-    .getElementById(
-      page
-    )
-    .classList.add(
-      "active"
-    );
+    function openModal(
+        id
+    ) {
+
+        document.getElementById(
+            id
+        ).classList.add(
+            "show"
+        );
+    }
 
 
-  document
-    .querySelectorAll(
-      ".nav button"
-    )
-    .forEach(
-      item =>
-        item.classList.remove(
-          "active"
-        )
-    );
+    function closeModal(
+        id
+    ) {
+
+        document.getElementById(
+            id
+        ).classList.remove(
+            "show"
+        );
+    }
 
 
-  button.classList.add(
-    "active"
-  );
+    function overlayClose(
+        event,
+        id
+    ) {
+
+        if (
+            event.target.id
+            ===
+            id
+        ) {
+
+            closeModal(
+                id
+            );
+        }
+    }
 
 
-  window.scrollTo(
-    0,
-    0
-  );
+    async function init() {
+
+        await Promise.all([
+            loadSession(),
+            loadMatches()
+        ]);
+
+        loadLeaderboard();
+    }
 
 
-  if (
-    page === "leaders"
-  ) {
-
-    await loadLeaderboard();
-
-  }
-
-
-  if (
-    page === "bets"
-    ||
-    page === "profile"
-  ) {
-
-    await loadSession();
-
-  }
-
-}
-
-
-function updateNavForPage(page) {
-
-  const buttons =
-    document.querySelectorAll(
-      ".nav button"
-    );
-
-
-  buttons.forEach(
-    button =>
-      button.classList.remove(
-        "active"
-      )
-  );
-
-
-  if (page === "home") {
-    buttons[0].classList.add("active");
-  }
-
-  if (page === "matches") {
-    buttons[1].classList.add("active");
-  }
-
-  if (page === "bets") {
-    buttons[2].classList.add("active");
-  }
-
-  if (page === "leaders") {
-    buttons[3].classList.add("active");
-  }
-
-  if (page === "profile") {
-    buttons[4].classList.add("active");
-  }
-
-}
-
-
-const telegramUser =
-  tg.initDataUnsafe
-  ?.user;
-
-
-if (telegramUser) {
-
-  document
-    .getElementById(
-      "playerName"
-    )
-    .innerText =
-      telegramUser.first_name
-      ||
-      "Игрок";
-
-}
-
-
-async function startApp() {
-
-  await Promise.all([
-    loadSession(),
-    loadMatches(),
-    loadLeaderboard()
-  ]);
-
-}
-
-
-startApp();
-
+    init();
 </script>
 
 </body>

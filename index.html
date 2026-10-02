@@ -45,6 +45,10 @@ body {
     padding-bottom:100px;
 }
 
+body.with-mini-slip {
+    padding-bottom:205px;
+}
+
 button,
 input {
     font:inherit;
@@ -352,6 +356,7 @@ button {
     min-height:80px;
     background:#12151d;
     border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom);
 }
 
 .nav {
@@ -478,10 +483,6 @@ button {
     margin-top:12px;
 }
 
-.repeat-btn:active {
-    transform:scale(.985);
-}
-
 .input {
     width:100%;
     padding:14px;
@@ -521,24 +522,6 @@ button {
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:8px;
-}
-
-.parlay-float {
-    display:none;
-    position:fixed;
-    z-index:45;
-    right:15px;
-    bottom:95px;
-    padding:13px 15px;
-    border:0;
-    border-radius:16px;
-    background:var(--accent);
-    color:white;
-    font-weight:900;
-}
-
-.parlay-float.show {
-    display:block;
 }
 
 .parlay-leg {
@@ -598,12 +581,125 @@ button {
     margin-top:8px;
 }
 
+
+/* =========================================================
+   MINI PARLAY
+========================================================= */
+
+.mini-parlay {
+    position:fixed;
+    z-index:70;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:88px;
+    width:calc(100% - 22px);
+    max-width:678px;
+    background:#181c26;
+    border:1px solid rgba(47,128,255,.55);
+    border-radius:19px;
+    padding:12px;
+    box-shadow:0 8px 35px rgba(0,0,0,.45);
+    display:none;
+}
+
+.mini-parlay.show {
+    display:block;
+}
+
+.mini-parlay-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+}
+
+.mini-parlay-title {
+    font-size:16px;
+    font-weight:900;
+}
+
+.mini-parlay-meta {
+    color:var(--muted);
+    font-size:12px;
+    margin-top:2px;
+}
+
+.mini-parlay-odd {
+    font-size:22px;
+    font-weight:900;
+    color:#8eb8ff;
+    white-space:nowrap;
+}
+
+.mini-parlay-bottom {
+    display:grid;
+    grid-template-columns:minmax(80px,110px) 1fr auto;
+    gap:8px;
+    align-items:center;
+    margin-top:10px;
+}
+
+.mini-stake {
+    min-width:0;
+    width:100%;
+    height:42px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0e1117;
+    color:white;
+    padding:8px 10px;
+    outline:none;
+}
+
+.mini-win {
+    min-width:0;
+}
+
+.mini-win span {
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.mini-win b {
+    display:block;
+    margin-top:2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.mini-open {
+    height:42px;
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:white;
+    padding:0 12px;
+    font-weight:900;
+}
+
+@media (max-width:420px) {
+
+    .mini-parlay-bottom {
+        grid-template-columns:90px 1fr;
+    }
+
+    .mini-open {
+        grid-column:1 / -1;
+        width:100%;
+    }
+}
+
 </style>
 </head>
+
 
 <body>
 
 <div class="app">
+
 
 <section
     id="page-home"
@@ -698,6 +794,7 @@ button {
         </button>
 
     </div>
+
 
     <div class="league-group">
 
@@ -857,12 +954,16 @@ button {
 
     </div>
 
+
     <div id="favoriteTeamsBox"></div>
 
+
     <div id="matchesList">
+
         <div class="loader">
             Загружаем матчи...
         </div>
+
     </div>
 
 </section>
@@ -903,6 +1004,7 @@ button {
 
     </div>
 
+
     <div class="tabs">
 
         <button
@@ -922,6 +1024,7 @@ button {
         </button>
 
     </div>
+
 
     <div class="filters">
 
@@ -958,6 +1061,7 @@ button {
         </button>
 
     </div>
+
 
     <div id="singleBets"></div>
 
@@ -1001,6 +1105,7 @@ button {
 
     </div>
 
+
     <div class="card">
 
         <div
@@ -1041,6 +1146,7 @@ button {
 
     </div>
 
+
     <div class="card">
 
         <b>
@@ -1067,6 +1173,7 @@ button {
 
     </div>
 
+
     <h3>
         📊 Статистика
     </h3>
@@ -1076,11 +1183,13 @@ button {
         class="stat-grid"
     ></div>
 
+
     <h3>
         ✅ Задания
     </h3>
 
     <div id="tasks"></div>
+
 
     <h3>
         🏅 Достижения
@@ -1093,13 +1202,80 @@ button {
 </div>
 
 
-<button
-    id="parlayFloat"
-    class="parlay-float"
-    onclick="openParlay()"
+<!-- MINI PARLAY -->
+
+<div
+    id="miniParlay"
+    class="mini-parlay"
 >
-    🧾 Экспресс • 0
-</button>
+
+    <div
+        class="mini-parlay-top"
+        onclick="openParlay()"
+    >
+
+        <div>
+
+            <div class="mini-parlay-title">
+                🧾 Экспресс
+            </div>
+
+            <div
+                id="miniParlayMeta"
+                class="mini-parlay-meta"
+            >
+                0 событий
+            </div>
+
+        </div>
+
+
+        <div
+            id="miniParlayOdd"
+            class="mini-parlay-odd"
+        >
+            x1.00
+        </div>
+
+    </div>
+
+
+    <div class="mini-parlay-bottom">
+
+        <input
+            id="miniParlayAmount"
+            class="mini-stake"
+            type="number"
+            min="1"
+            inputmode="numeric"
+            placeholder="Ставка"
+            oninput="changeParlayAmountFromMini(this.value)"
+        >
+
+
+        <div class="mini-win">
+
+            <span>
+                Возможный выигрыш
+            </span>
+
+            <b id="miniParlayWin">
+                — 🪙
+            </b>
+
+        </div>
+
+
+        <button
+            class="mini-open"
+            onclick="openParlay()"
+        >
+            Открыть
+        </button>
+
+    </div>
+
+</div>
 
 
 <nav class="bottom-nav">
@@ -1152,10 +1328,13 @@ button {
 </nav>
 
 
+<!-- BET TYPE -->
+
 <div
     id="betChoiceOverlay"
     class="overlay"
 >
+
 <div class="modal">
 
 <h2>
@@ -1194,13 +1373,17 @@ button {
 </button>
 
 </div>
+
 </div>
 
+
+<!-- SINGLE -->
 
 <div
     id="singleOverlay"
     class="overlay"
 >
+
 <div class="modal">
 
 <h2>
@@ -1216,6 +1399,7 @@ button {
     id="singleAmount"
     class="input"
     type="number"
+    min="1"
     placeholder="Сумма"
     oninput="updateSingleWin()"
 >
@@ -1242,13 +1426,17 @@ button {
 </button>
 
 </div>
+
 </div>
 
+
+<!-- PARLAY -->
 
 <div
     id="parlayOverlay"
     class="overlay"
 >
+
 <div class="modal">
 
 <h2>
@@ -1264,7 +1452,7 @@ button {
     <b id="parlayCount">0</b>
 </div>
 
-<div>
+<div style="margin-top:6px;">
     Общий кэф:
     <b id="parlayOdd">1.00</b>
 </div>
@@ -1275,8 +1463,10 @@ button {
     id="parlayAmount"
     class="input"
     type="number"
+    min="1"
+    inputmode="numeric"
     placeholder="Сумма"
-    oninput="updateParlayWin()"
+    oninput="changeParlayAmountFromModal(this.value)"
 >
 
 <div
@@ -1301,6 +1491,7 @@ button {
 </button>
 
 </div>
+
 </div>
 
 
@@ -1309,11 +1500,14 @@ button {
 const SERVER_URL =
     "https://betcoin-gu5c.onrender.com";
 
+
 const tg =
     window.Telegram.WebApp;
 
+
 tg.ready();
 tg.expand();
+
 
 const initData =
     tg.initData || "";
@@ -1322,10 +1516,13 @@ const initData =
 let balance = 0;
 
 let matches = [];
+
 let loadedMatches = {};
 
 let bets = [];
+
 let parlays = [];
+
 
 let favoriteMatches =
     JSON.parse(
@@ -1336,6 +1533,7 @@ let favoriteMatches =
         "[]"
     );
 
+
 let favoriteTeams =
     JSON.parse(
         localStorage.getItem(
@@ -1345,26 +1543,45 @@ let favoriteTeams =
         "[]"
     );
 
+
 let parlaySlip = [];
 
+let parlayStake = 0;
+
+
 let currentLeague = "top5";
+
 let dateFilter = "all";
+
 let searchQuery = "";
 
+
 let currentBetFilter = "all";
+
 let currentBetTab = "single";
 
+
 let selectedBet = null;
+
 let currentUser = null;
 
+
 let profileXp = 0;
+
 let profileLevel = 1;
+
 let profileLeague = {};
+
 let currentLevelXp = 0;
+
 let profileStats = {};
+
 let tasks = [];
+
 let achievements = [];
+
 let myRank = null;
+
 let dailyReward = {};
 
 
@@ -1460,18 +1677,19 @@ function updateBalance() {
         "balanceMatches",
         "balanceBets",
         "balanceProfile"
-    ].forEach(
+    ]
+    .forEach(
         id => {
 
-            const el =
+            const element =
                 document.getElementById(
                     id
                 );
 
 
-            if (el) {
+            if (element) {
 
-                el.textContent =
+                element.textContent =
                     balance;
             }
         }
@@ -1565,12 +1783,16 @@ function teamKey(name) {
 function isFavoriteTeam(name) {
 
     const key =
-        teamKey(name);
+        teamKey(
+            name
+        );
 
 
     return favoriteTeams.some(
         team =>
-            teamKey(team)
+            teamKey(
+                team
+            )
             ===
             key
     );
@@ -1614,7 +1836,9 @@ async function toggleFavoriteTeam(
 
 
     renderMatches();
+
     renderHome();
+
     renderFavoriteTeamsBox();
 
 
@@ -1625,6 +1849,7 @@ async function toggleFavoriteTeam(
                 "/api/favorite-teams/toggle",
                 {
                     team_name:name,
+
                     favorite:
                         !wasFavorite
                 }
@@ -1639,7 +1864,9 @@ async function toggleFavoriteTeam(
 
 
         renderMatches();
+
         renderHome();
+
         renderFavoriteTeamsBox();
 
 
@@ -1697,7 +1924,9 @@ async function syncOldFavoriteTeams() {
 
     } catch(error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
     }
 }
 
@@ -1743,6 +1972,7 @@ async function toggleMatchFavorite(
 
 
     renderMatches();
+
     renderHome();
 
 
@@ -1753,6 +1983,7 @@ async function toggleMatchFavorite(
                 "/api/favorites/toggle",
                 {
                     fixture_id:id,
+
                     favorite:
                         !was
                 }
@@ -1767,6 +1998,7 @@ async function toggleMatchFavorite(
 
 
         renderMatches();
+
         renderHome();
 
 
@@ -1824,7 +2056,9 @@ async function syncOldFavoriteMatches() {
 
     } catch(error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
     }
 }
 
@@ -1946,8 +2180,11 @@ async function loadSession() {
         updateBalance();
 
         renderBets();
+
         renderProfile();
+
         renderHome();
+
         renderFavoriteTeamsBox();
 
 
@@ -2036,8 +2273,7 @@ async function loadLeague(
 
 
         if (
-            leagueKey
-            !==
+            leagueKey !==
             "top5"
         ) {
 
@@ -2082,9 +2318,13 @@ async function loadLeague(
 
         matches.sort(
             (a,b) =>
-                new Date(a.date)
+                new Date(
+                    a.date
+                )
                 -
-                new Date(b.date)
+                new Date(
+                    b.date
+                )
         );
 
 
@@ -2095,6 +2335,7 @@ async function loadLeague(
 
 
         renderMatches();
+
         renderHome();
 
 
@@ -2115,7 +2356,9 @@ async function loadLeague(
 
 function selectLeague(key) {
 
-    loadLeague(key);
+    loadLeague(
+        key
+    );
 }
 
 
@@ -2126,10 +2369,15 @@ function allLoadedMatches() {
 
     Object.values(
         loadedMatches
-    ).forEach(
+    )
+    .forEach(
         list => {
 
-            (list || [])
+            (
+                list
+                ||
+                []
+            )
             .forEach(
                 match => {
 
@@ -2151,26 +2399,8 @@ function allLoadedMatches() {
 }
 
 
-function findLoadedMatch(
-    fixtureId
-) {
-
-    return allLoadedMatches()
-        .find(
-            match =>
-                Number(
-                    match.fixture_id
-                )
-                ===
-                Number(
-                    fixtureId
-                )
-        );
-}
-
-
 /* =========================================================
-   MATCH FILTERS
+   FILTERS
 ========================================================= */
 
 function formatDate(value) {
@@ -2197,7 +2427,9 @@ function formatDate(value) {
 function isToday(value) {
 
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
 
 
     const now =
@@ -2238,7 +2470,9 @@ function isTomorrow(value) {
 
 
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
 
 
     return (
@@ -2277,10 +2511,14 @@ function matchHasFavoriteTeam(
 }
 
 
-function filteredMatches(list) {
+function filteredMatches(
+    list
+) {
 
     let result =
-        [...list];
+        [
+            ...list
+        ];
 
 
     if (
@@ -2328,7 +2566,9 @@ function filteredMatches(list) {
     }
 
 
-    if (searchQuery) {
+    if (
+        searchQuery
+    ) {
 
         result =
             result.filter(
@@ -2418,7 +2658,9 @@ function teamLogo(
     name
 ) {
 
-    if (!url) {
+    if (
+        !url
+    ) {
 
         return `
             <div class="team-logo">
@@ -2475,24 +2717,28 @@ function oddButton(
 ) {
 
     const number =
-        Number(odd);
+        Number(
+            odd
+        );
 
 
     if (
-        !Number.isFinite(number)
+        !Number.isFinite(
+            number
+        )
         ||
         number <= 1
     ) {
 
         return `
-            <button
-                class="odd disabled"
-            >
+            <button class="odd disabled">
+
                 <small>
                     ${escapeHtml(label)}
                 </small>
 
                 —
+
             </button>
         `;
     }
@@ -2558,6 +2804,7 @@ function renderMatch(
     return `
         <div
             class="card"
+
             onclick="
                 openMatch(
                     ${Number(match.fixture_id)}
@@ -2600,6 +2847,7 @@ function renderMatch(
 
             </div>
 
+
             <div class="teams">
 
                 <div class="team">
@@ -2637,6 +2885,7 @@ function renderMatch(
                             );
                         "
                     >
+
                         ${
                             isFavoriteTeam(
                                 match.home
@@ -2646,13 +2895,16 @@ function renderMatch(
                             :
                             "☆ В любимые"
                         }
+
                     </button>
 
                 </div>
 
+
                 <div class="vs">
                     VS
                 </div>
+
 
                 <div class="team">
 
@@ -2689,6 +2941,7 @@ function renderMatch(
                             );
                         "
                     >
+
                         ${
                             isFavoriteTeam(
                                 match.away
@@ -2698,11 +2951,13 @@ function renderMatch(
                             :
                             "☆ В любимые"
                         }
+
                     </button>
 
                 </div>
 
             </div>
+
 
             <div class="odds">
 
@@ -2746,7 +3001,8 @@ function renderFavoriteTeamsBox() {
         !favoriteTeams.length
     ) {
 
-        box.innerHTML = "";
+        box.innerHTML =
+            "";
 
         return;
     }
@@ -2839,9 +3095,11 @@ function renderMatches() {
     ).innerHTML =
         list.length
         ?
-        list.map(
+        list
+        .map(
             renderMatch
-        ).join("")
+        )
+        .join("")
         :
         `
             <div class="empty">
@@ -2870,9 +3128,11 @@ function renderHome() {
     ).innerHTML =
         top.length
         ?
-        top.map(
+        top
+        .map(
             renderMatch
-        ).join("")
+        )
+        .join("")
         :
         `
             <div class="empty">
@@ -2961,12 +3221,16 @@ async function openMatch(
             await response.json();
 
 
-        if (!response.ok) {
+        if (
+            !response.ok
+            ||
+            !match.success
+        ) {
 
             throw new Error(
                 match.error
                 ||
-                "Ошибка"
+                "Ошибка загрузки матча"
             );
         }
 
@@ -3016,7 +3280,8 @@ async function openMatch(
             2.5,
             3.5,
             4.5
-        ].forEach(
+        ]
+        .forEach(
             line => {
 
                 const key =
@@ -3032,10 +3297,15 @@ async function openMatch(
 
 
                 const total =
-                    match[key];
+                    match[
+                        key
+                    ];
 
 
-                if (!total) {
+                if (
+                    !total
+                ) {
+
                     return;
                 }
 
@@ -3067,7 +3337,9 @@ async function openMatch(
         );
 
 
-        if (match.btts) {
+        if (
+            match.btts
+        ) {
 
             html += `
                 <div class="market-title">
@@ -3095,7 +3367,9 @@ async function openMatch(
         }
 
 
-        if (match.handicaps) {
+        if (
+            match.handicaps
+        ) {
 
             const home =
                 Object.entries(
@@ -3176,6 +3450,7 @@ function selectBet(
 ) {
 
     selectedBet = {
+
         fixture_id:
             Number(
                 fixtureId
@@ -3184,10 +3459,13 @@ function selectBet(
         match:
             `${home} — ${away}`,
 
-        selection,
+        selection:
+            selection,
 
         odd:
-            Number(odd)
+            Number(
+                odd
+            )
     };
 
 
@@ -3205,9 +3483,7 @@ function selectBet(
                 selectedBet.selection
             )}
             •
-            ${Number(
-                selectedBet.odd
-            ).toFixed(2)}
+            ${selectedBet.odd.toFixed(2)}
         </div>
     `;
 
@@ -3240,7 +3516,10 @@ function openSingleFromChoice() {
     );
 
 
-    if (!selectedBet) {
+    if (
+        !selectedBet
+    ) {
+
         return;
     }
 
@@ -3259,9 +3538,7 @@ function openSingleFromChoice() {
                 selectedBet.selection
             )}
             •
-            ${Number(
-                selectedBet.odd
-            ).toFixed(2)}
+            ${selectedBet.odd.toFixed(2)}
         </div>
     `;
 
@@ -3285,7 +3562,10 @@ function openSingleFromChoice() {
 
 function toggleSelectedParlay() {
 
-    if (!selectedBet) {
+    if (
+        !selectedBet
+    ) {
+
         return;
     }
 
@@ -3323,6 +3603,7 @@ function toggleSelectedParlay() {
 
 
         updateParlay();
+
         renderMatches();
 
         return;
@@ -3376,13 +3657,20 @@ function toggleSelectedParlay() {
     );
 
 
+    tg.HapticFeedback
+        ?.impactOccurred(
+            "light"
+        );
+
+
     updateParlay();
+
     renderMatches();
 }
 
 
 /* =========================================================
-   SINGLE
+   SINGLE BET
 ========================================================= */
 
 function updateSingleWin() {
@@ -3427,7 +3715,9 @@ async function confirmSingle() {
     if (
         !selectedBet
         ||
-        !Number.isInteger(amount)
+        !Number.isInteger(
+            amount
+        )
         ||
         amount <= 0
     ) {
@@ -3466,7 +3756,8 @@ async function confirmSingle() {
                     selection:
                         selectedBet.selection,
 
-                    amount
+                    amount:
+                        amount
                 }
             );
 
@@ -3484,6 +3775,7 @@ async function confirmSingle() {
 
 
         updateBalance();
+
         renderBets();
 
 
@@ -3520,7 +3812,7 @@ async function confirmSingle() {
 
 
 /* =========================================================
-   🔁 REPEAT SINGLE BET
+   REPEAT SINGLE
 ========================================================= */
 
 async function repeatSingleBet(
@@ -3540,7 +3832,9 @@ async function repeatSingleBet(
         );
 
 
-    if (!bet) {
+    if (
+        !bet
+    ) {
 
         tg.showAlert(
             "Ставка не найдена"
@@ -3592,7 +3886,11 @@ async function repeatSingleBet(
         if (
             !odd
             ||
-            Number(odd) <= 1
+            Number(
+                odd
+            )
+            <=
+            1
         ) {
 
             tg.showAlert(
@@ -3604,6 +3902,7 @@ async function repeatSingleBet(
 
 
         selectedBet = {
+
             fixture_id:
                 Number(
                     bet.fixture_id
@@ -3640,9 +3939,7 @@ async function repeatSingleBet(
                     bet.selection
                 )}
                 • новый кэф
-                ${Number(
-                    odd
-                ).toFixed(2)}
+                ${Number(odd).toFixed(2)}
             </div>
         `;
 
@@ -3672,14 +3969,14 @@ async function repeatSingleBet(
         tg.showAlert(
             error.message
             ||
-            "Повторить эту ставку сейчас нельзя"
+            "Повторить ставку сейчас нельзя"
         );
     }
 }
 
 
 /* =========================================================
-   GET CURRENT ODD FOR OLD SELECTION
+   CURRENT ODD
 ========================================================= */
 
 function getSelectionOdd(
@@ -3694,8 +3991,7 @@ function getSelectionOdd(
 
 
     if (
-        selection ===
-        "П1"
+        selection === "П1"
     ) {
 
         return odds.home;
@@ -3703,8 +3999,7 @@ function getSelectionOdd(
 
 
     if (
-        selection ===
-        "X"
+        selection === "X"
     ) {
 
         return odds.draw;
@@ -3712,8 +4007,7 @@ function getSelectionOdd(
 
 
     if (
-        selection ===
-        "П2"
+        selection === "П2"
     ) {
 
         return odds.away;
@@ -3721,8 +4015,7 @@ function getSelectionOdd(
 
 
     if (
-        selection ===
-        "ОЗ Да"
+        selection === "ОЗ Да"
     ) {
 
         return match.btts?.yes;
@@ -3730,8 +4023,7 @@ function getSelectionOdd(
 
 
     if (
-        selection ===
-        "ОЗ Нет"
+        selection === "ОЗ Нет"
     ) {
 
         return match.btts?.no;
@@ -3739,7 +4031,9 @@ function getSelectionOdd(
 
 
     const totalMatch =
-        String(selection)
+        String(
+            selection
+        )
         .match(
             /^Т([БМ])\s*([0-9.]+)$/
         );
@@ -3750,19 +4044,25 @@ function getSelectionOdd(
     ) {
 
         const side =
-            totalMatch[1];
+            totalMatch[
+                1
+            ];
 
 
         const line =
             Number(
-                totalMatch[2]
+                totalMatch[
+                    2
+                ]
             );
 
 
         const key =
             "total_"
             +
-            String(line)
+            String(
+                line
+            )
             .replace(
                 ".",
                 "_"
@@ -3770,10 +4070,15 @@ function getSelectionOdd(
 
 
         const total =
-            match[key];
+            match[
+                key
+            ];
 
 
-        if (!total) {
+        if (
+            !total
+        ) {
+
             return null;
         }
 
@@ -3789,7 +4094,9 @@ function getSelectionOdd(
 
 
     const handicapMatch =
-        String(selection)
+        String(
+            selection
+        )
         .match(
             /^Ф([12])\(([-+]?[0-9.]+)\)$/
         );
@@ -3800,12 +4107,16 @@ function getSelectionOdd(
     ) {
 
         const teamNumber =
-            handicapMatch[1];
+            handicapMatch[
+                1
+            ];
 
 
         const requestedLine =
             Number(
-                handicapMatch[2]
+                handicapMatch[
+                    2
+                ]
             );
 
 
@@ -3826,7 +4137,10 @@ function getSelectionOdd(
 
 
         for (
-            const [line, odd]
+            const [
+                line,
+                odd
+            ]
             of
             Object.entries(
                 handicapMap
@@ -3834,7 +4148,9 @@ function getSelectionOdd(
         ) {
 
             if (
-                Number(line)
+                Number(
+                    line
+                )
                 ===
                 requestedLine
             ) {
@@ -3850,32 +4166,242 @@ function getSelectionOdd(
 
 
 /* =========================================================
+   PARLAY CALCULATIONS
+========================================================= */
+
+function calculateParlayOdd() {
+
+    return parlaySlip.reduce(
+        (
+            total,
+            leg
+        ) =>
+            total
+            *
+            Number(
+                leg.odd
+            ),
+        1
+    );
+}
+
+
+function calculateParlayWin() {
+
+    if (
+        !Number.isFinite(
+            parlayStake
+        )
+        ||
+        parlayStake <= 0
+    ) {
+
+        return 0;
+    }
+
+
+    return Math.round(
+        parlayStake
+        *
+        calculateParlayOdd()
+    );
+}
+
+
+function changeParlayAmountFromMini(
+    value
+) {
+
+    parlayStake =
+        Math.max(
+            0,
+            Math.floor(
+                Number(
+                    value
+                )
+                ||
+                0
+            )
+        );
+
+
+    const modalInput =
+        document.getElementById(
+            "parlayAmount"
+        );
+
+
+    if (
+        modalInput
+    ) {
+
+        modalInput.value =
+            parlayStake > 0
+            ?
+            parlayStake
+            :
+            "";
+    }
+
+
+    updateParlay();
+}
+
+
+function changeParlayAmountFromModal(
+    value
+) {
+
+    parlayStake =
+        Math.max(
+            0,
+            Math.floor(
+                Number(
+                    value
+                )
+                ||
+                0
+            )
+        );
+
+
+    const miniInput =
+        document.getElementById(
+            "miniParlayAmount"
+        );
+
+
+    if (
+        miniInput
+    ) {
+
+        miniInput.value =
+            parlayStake > 0
+            ?
+            parlayStake
+            :
+            "";
+    }
+
+
+    updateParlay();
+}
+
+
+/* =========================================================
+   MINI PARLAY
+========================================================= */
+
+function updateMiniParlay() {
+
+    const panel =
+        document.getElementById(
+            "miniParlay"
+        );
+
+
+    const count =
+        parlaySlip.length;
+
+
+    panel.classList.toggle(
+        "show",
+        count > 0
+    );
+
+
+    document.body.classList.toggle(
+        "with-mini-slip",
+        count > 0
+    );
+
+
+    if (
+        count <= 0
+    ) {
+
+        return;
+    }
+
+
+    const totalOdd =
+        calculateParlayOdd();
+
+
+    const possible =
+        calculateParlayWin();
+
+
+    document.getElementById(
+        "miniParlayMeta"
+    ).textContent =
+        `${count} событий`;
+
+
+    document.getElementById(
+        "miniParlayOdd"
+    ).textContent =
+        `x${totalOdd.toFixed(2)}`;
+
+
+    document.getElementById(
+        "miniParlayWin"
+    ).textContent =
+        possible > 0
+        ?
+        `${possible} 🪙`
+        :
+        "— 🪙";
+
+
+    const amountInput =
+        document.getElementById(
+            "miniParlayAmount"
+        );
+
+
+    if (
+        document.activeElement
+        !==
+        amountInput
+    ) {
+
+        amountInput.value =
+            parlayStake > 0
+            ?
+            parlayStake
+            :
+            "";
+    }
+}
+
+
+/* =========================================================
    PARLAY
 ========================================================= */
 
 function updateParlay() {
 
-    const float =
+    updateMiniParlay();
+
+
+    if (
         document.getElementById(
-            "parlayFloat"
-        );
+            "parlayOverlay"
+        ).classList.contains(
+            "show"
+        )
+    ) {
 
-
-    float.textContent =
-        `🧾 Экспресс • ${parlaySlip.length}`;
-
-
-    float.classList.toggle(
-        "show",
-        parlaySlip.length > 0
-    );
+        renderParlayOverlay();
+    }
 
 
     renderMatches();
 }
 
 
-function openParlay() {
+function renderParlayOverlay() {
 
     const container =
         document.getElementById(
@@ -3945,23 +4471,51 @@ function openParlay() {
     document.getElementById(
         "parlayOdd"
     ).textContent =
-        parlaySlip
-        .reduce(
-            (
-                total,
-                leg
-            ) =>
-                total
-                *
-                Number(
-                    leg.odd
-                ),
-            1
-        )
-        .toFixed(2);
+        calculateParlayOdd()
+        .toFixed(
+            2
+        );
 
 
-    updateParlayWin();
+    const amountInput =
+        document.getElementById(
+            "parlayAmount"
+        );
+
+
+    if (
+        document.activeElement
+        !==
+        amountInput
+    ) {
+
+        amountInput.value =
+            parlayStake > 0
+            ?
+            parlayStake
+            :
+            "";
+    }
+
+
+    const possible =
+        calculateParlayWin();
+
+
+    document.getElementById(
+        "parlayWin"
+    ).textContent =
+        possible > 0
+        ?
+        `Возможный выигрыш: ${possible} 🪙`
+        :
+        "";
+}
+
+
+function openParlay() {
+
+    renderParlayOverlay();
 
 
     document.getElementById(
@@ -3982,51 +4536,23 @@ function removeParlayLeg(
     );
 
 
+    tg.HapticFeedback
+        ?.impactOccurred(
+            "light"
+        );
+
+
     updateParlay();
 
-    openParlay();
-}
 
+    if (
+        parlaySlip.length === 0
+    ) {
 
-function updateParlayWin() {
-
-    const amount =
-        Number(
-            document.getElementById(
-                "parlayAmount"
-            ).value
+        closeOverlay(
+            "parlayOverlay"
         );
-
-
-    const odd =
-        parlaySlip.reduce(
-            (
-                total,
-                leg
-            ) =>
-                total
-                *
-                Number(
-                    leg.odd
-                ),
-            1
-        );
-
-
-    document.getElementById(
-        "parlayWin"
-    ).textContent =
-        amount > 0
-        ?
-        `Возможный выигрыш: ${
-            Math.round(
-                amount
-                *
-                odd
-            )
-        } 🪙`
-        :
-        "";
+    }
 }
 
 
@@ -4044,18 +4570,12 @@ async function confirmParlay() {
     }
 
 
-    const amount =
-        Number(
-            document.getElementById(
-                "parlayAmount"
-            ).value
-        );
-
-
     if (
-        !Number.isInteger(amount)
+        !Number.isInteger(
+            parlayStake
+        )
         ||
-        amount <= 0
+        parlayStake <= 0
     ) {
 
         tg.showAlert(
@@ -4086,7 +4606,8 @@ async function confirmParlay() {
             await post(
                 "/api/parlays",
                 {
-                    amount,
+                    amount:
+                        parlayStake,
 
                     legs:
                         parlaySlip.map(
@@ -4118,7 +4639,24 @@ async function confirmParlay() {
             [];
 
 
+        parlayStake =
+            0;
+
+
+        document.getElementById(
+            "miniParlayAmount"
+        ).value =
+            "";
+
+
+        document.getElementById(
+            "parlayAmount"
+        ).value =
+            "";
+
+
         updateParlay();
+
 
         closeOverlay(
             "parlayOverlay"
@@ -4126,6 +4664,7 @@ async function confirmParlay() {
 
 
         renderBets();
+
         updateBalance();
 
 
@@ -4172,6 +4711,16 @@ function clearParlay() {
         [];
 
 
+    parlayStake =
+        0;
+
+
+    document.getElementById(
+        "miniParlayAmount"
+    ).value =
+        "";
+
+
     document.getElementById(
         "parlayAmount"
     ).value =
@@ -4188,7 +4737,7 @@ function clearParlay() {
 
 
 /* =========================================================
-   🔁 REBUILD OLD PARLAY
+   REBUILD PARLAY
 ========================================================= */
 
 async function rebuildParlay(
@@ -4315,6 +4864,7 @@ async function rebuildParlay(
 
 
             newSlip.push({
+
                 fixture_id:
                     fixtureId,
 
@@ -4357,9 +4907,7 @@ async function rebuildParlay(
         );
 
 
-    document.getElementById(
-        "parlayAmount"
-    ).value =
+    parlayStake =
         Number(
             oldParlay.amount
             ||
@@ -4367,7 +4915,20 @@ async function rebuildParlay(
         );
 
 
+    document.getElementById(
+        "miniParlayAmount"
+    ).value =
+        parlayStake;
+
+
+    document.getElementById(
+        "parlayAmount"
+    ).value =
+        parlayStake;
+
+
     updateParlay();
+
 
     openParlay();
 
@@ -4409,6 +4970,7 @@ function statusClass(status) {
     if (
         status === "Выиграла"
     ) {
+
         return "win";
     }
 
@@ -4416,6 +4978,7 @@ function statusClass(status) {
     if (
         status === "Проиграла"
     ) {
+
         return "loss";
     }
 
@@ -4423,6 +4986,7 @@ function statusClass(status) {
     if (
         status === "Возврат"
     ) {
+
         return "refund";
     }
 
@@ -4431,12 +4995,15 @@ function statusClass(status) {
 }
 
 
-function passesBetFilter(item) {
+function passesBetFilter(
+    item
+) {
 
     if (
         currentBetFilter ===
         "all"
     ) {
+
         return true;
     }
 
@@ -4445,7 +5012,11 @@ function passesBetFilter(item) {
         currentBetFilter ===
         "active"
     ) {
-        return item.status === "Активна";
+
+        return (
+            item.status ===
+            "Активна"
+        );
     }
 
 
@@ -4453,7 +5024,11 @@ function passesBetFilter(item) {
         currentBetFilter ===
         "win"
     ) {
-        return item.status === "Выиграла";
+
+        return (
+            item.status ===
+            "Выиграла"
+        );
     }
 
 
@@ -4461,7 +5036,11 @@ function passesBetFilter(item) {
         currentBetFilter ===
         "loss"
     ) {
-        return item.status === "Проиграла";
+
+        return (
+            item.status ===
+            "Проиграла"
+        );
     }
 
 
@@ -4469,7 +5048,9 @@ function passesBetFilter(item) {
 }
 
 
-function changeBetFilter(value) {
+function changeBetFilter(
+    value
+) {
 
     currentBetFilter =
         value;
@@ -4496,7 +5077,9 @@ function changeBetFilter(value) {
 }
 
 
-function switchBetTab(type) {
+function switchBetTab(
+    type
+) {
 
     currentBetTab =
         type;
@@ -4552,7 +5135,8 @@ function renderBets() {
     ).innerHTML =
         singles.length
         ?
-        singles.map(
+        singles
+        .map(
             bet => `
                 <div class="card">
 
@@ -4604,13 +5188,23 @@ function renderBets() {
                     }
 
                     <div class="bet-info-row">
-                        <span>Ставка</span>
-                        <b>${bet.amount} 🪙</b>
+                        <span>
+                            Ставка
+                        </span>
+
+                        <b>
+                            ${bet.amount} 🪙
+                        </b>
                     </div>
 
                     <div class="bet-info-row">
-                        <span>Возможный выигрыш</span>
-                        <b>${bet.possible} 🪙</b>
+                        <span>
+                            Возможный выигрыш
+                        </span>
+
+                        <b>
+                            ${bet.possible} 🪙
+                        </b>
                     </div>
 
                     <button
@@ -4627,7 +5221,8 @@ function renderBets() {
 
                 </div>
             `
-        ).join("")
+        )
+        .join("")
         :
         `
             <div class="empty">
@@ -4647,7 +5242,8 @@ function renderBets() {
     ).innerHTML =
         express.length
         ?
-        express.map(
+        express
+        .map(
             parlay => `
                 <div class="card">
 
@@ -4669,34 +5265,48 @@ function renderBets() {
                     </h3>
 
                     <div class="bet-info-row">
-                        <span>Общий кэф</span>
+
+                        <span>
+                            Общий кэф
+                        </span>
 
                         <b>
                             ${Number(
                                 parlay.total_odd
                             ).toFixed(2)}
                         </b>
+
                     </div>
 
                     <div class="bet-info-row">
-                        <span>Ставка</span>
+
+                        <span>
+                            Ставка
+                        </span>
 
                         <b>
                             ${parlay.amount} 🪙
                         </b>
+
                     </div>
 
                     <div class="bet-info-row">
-                        <span>Возможный выигрыш</span>
+
+                        <span>
+                            Возможный выигрыш
+                        </span>
 
                         <b>
                             ${parlay.possible} 🪙
                         </b>
+
                     </div>
+
 
                     <h4>
                         События
                     </h4>
+
 
                     ${
                         (
@@ -4719,13 +5329,17 @@ function renderBets() {
                                     </b>
 
                                     <div style="margin-top:5px;">
+
                                         ${escapeHtml(
                                             leg.selection
                                         )}
+
                                         •
+
                                         ${Number(
                                             leg.odd
                                         ).toFixed(2)}
+
                                     </div>
 
                                     ${
@@ -4768,6 +5382,7 @@ function renderBets() {
                         .join("")
                     }
 
+
                     <button
                         class="repeat-btn"
 
@@ -4782,7 +5397,8 @@ function renderBets() {
 
                 </div>
             `
-        ).join("")
+        )
+        .join("")
         :
         `
             <div class="empty">
@@ -4830,14 +5446,18 @@ async function loadLeaderboard() {
                         </b>
 
                         <div class="notice">
+
                             ${player.league?.icon || ""}
+
                             ${escapeHtml(
                                 player.league?.name
                                 ||
                                 ""
                             )}
+
                             • Уровень
                             ${player.level}
+
                         </div>
 
                         <div>
@@ -4857,7 +5477,9 @@ async function loadLeaderboard() {
 
     } catch(error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
     }
 }
 
@@ -4914,13 +5536,18 @@ function renderProfile() {
 
 
     const statItems = [
+
         [
-            profileStats.total_bets || 0,
+            profileStats.total_bets
+            ||
+            0,
             "Ординаров"
         ],
 
         [
-            profileStats.wins || 0,
+            profileStats.wins
+            ||
+            0,
             "Побед"
         ],
 
@@ -4930,17 +5557,23 @@ function renderProfile() {
         ],
 
         [
-            profileStats.total_parlays || 0,
+            profileStats.total_parlays
+            ||
+            0,
             "Экспрессов"
         ],
 
         [
-            profileStats.net_profit || 0,
+            profileStats.net_profit
+            ||
+            0,
             "Профит 🪙"
         ],
 
         [
-            profileStats.best_win_streak || 0,
+            profileStats.best_win_streak
+            ||
+            0,
             "Лучшая серия"
         ]
     ];
@@ -4949,7 +5582,8 @@ function renderProfile() {
     document.getElementById(
         "stats"
     ).innerHTML =
-        statItems.map(
+        statItems
+        .map(
             item => `
                 <div class="stat">
 
@@ -4963,13 +5597,15 @@ function renderProfile() {
 
                 </div>
             `
-        ).join("");
+        )
+        .join("");
 
 
     document.getElementById(
         "tasks"
     ).innerHTML =
-        tasks.map(
+        tasks
+        .map(
             task => `
                 <div class="card task-row">
 
@@ -4982,9 +5618,13 @@ function renderProfile() {
                         </b>
 
                         <div class="notice">
+
                             ${task.progress}/${task.target}
+
                             •
+
                             +${task.reward}
+
                             ${
                                 task.reward_type
                                 ===
@@ -4994,6 +5634,7 @@ function renderProfile() {
                                 :
                                 "🪙"
                             }
+
                         </div>
 
                     </div>
@@ -5017,6 +5658,7 @@ function renderProfile() {
                             )
                         "
                     >
+
                         ${
                             task.claimed
                             ?
@@ -5028,17 +5670,20 @@ function renderProfile() {
                             :
                             "В процессе"
                         }
+
                     </button>
 
                 </div>
             `
-        ).join("");
+        )
+        .join("");
 
 
     document.getElementById(
         "achievements"
     ).innerHTML =
-        achievements.map(
+        achievements
+        .map(
             item => `
                 <div class="card task-row">
 
@@ -5051,9 +5696,13 @@ function renderProfile() {
                         </b>
 
                         <div class="notice">
+
                             ${item.progress}/${item.target}
+
                             •
+
                             +${item.reward} 🪙
+
                         </div>
 
                     </div>
@@ -5077,6 +5726,7 @@ function renderProfile() {
                             )
                         "
                     >
+
                         ${
                             item.claimed
                             ?
@@ -5088,11 +5738,13 @@ function renderProfile() {
                             :
                             "Закрыто"
                         }
+
                     </button>
 
                 </div>
             `
-        ).join("");
+        )
+        .join("");
 
 
     const dailyBtn =
@@ -5127,14 +5779,18 @@ function renderProfile() {
 
         const hours =
             Math.floor(
-                seconds / 3600
+                seconds
+                /
+                3600
             );
 
 
         const minutes =
             Math.floor(
                 (
-                    seconds % 3600
+                    seconds
+                    %
+                    3600
                 )
                 /
                 60
@@ -5192,14 +5848,17 @@ async function claimDaily() {
 }
 
 
-async function claimTask(key) {
+async function claimTask(
+    key
+) {
 
     try {
 
         await post(
             "/api/tasks/claim",
             {
-                task_key:key
+                task_key:
+                    key
             }
         );
 
@@ -5225,7 +5884,8 @@ async function claimAchievement(
         await post(
             "/api/achievements/claim",
             {
-                achievement_key:key
+                achievement_key:
+                    key
             }
         );
 
@@ -5264,14 +5924,18 @@ function showPage(
 
 
     document.getElementById(
-        "page-" + name
+        "page-"
+        +
+        name
     )
     ?.classList.add(
         "active"
     );
 
 
-    if (nav) {
+    if (
+        nav
+    ) {
 
         document
         .querySelectorAll(
@@ -5286,7 +5950,9 @@ function showPage(
 
 
         document.getElementById(
-            "nav-" + name
+            "nav-"
+            +
+            name
         )
         ?.classList.add(
             "active"
@@ -5337,22 +6003,34 @@ function showPage(
 
 async function init() {
 
+    updateMiniParlay();
+
+
     await Promise.all([
         loadSession(),
-        loadLeague("top5")
+        loadLeague(
+            "top5"
+        )
     ]);
 
 
     await syncOldFavoriteMatches();
 
+
     await syncOldFavoriteTeams();
 
 
     renderMatches();
+
     renderHome();
+
     renderBets();
+
     renderProfile();
+
     renderFavoriteTeamsBox();
+
+    updateParlay();
 
 
     loadLeaderboard();
@@ -5401,12 +6079,15 @@ async function init() {
 
 
                 updateBalance();
+
                 renderBets();
 
 
             } catch(error) {
 
-                console.error(error);
+                console.error(
+                    error
+                );
             }
 
         },

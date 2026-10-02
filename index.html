@@ -167,6 +167,17 @@
             color: var(--red);
         }
 
+        .notification-note {
+            background: rgba(47,128,255,.10);
+            border: 1px solid rgba(47,128,255,.25);
+            color: #9fc0ff;
+            padding: 11px 13px;
+            border-radius: 14px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
         .teams {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -714,7 +725,6 @@
     <section id="page-home" class="page active">
 
         <div class="topbar">
-
             <div class="brand">
                 ⚽ BetCoin
             </div>
@@ -722,7 +732,6 @@
             <div class="balance">
                 🪙 <span id="balanceTop">0</span>
             </div>
-
         </div>
 
         <h2 class="title">
@@ -742,10 +751,7 @@
 
         <div class="topbar">
 
-            <h2
-                class="title"
-                style="margin:0;"
-            >
+            <h2 class="title" style="margin:0;">
                 Все матчи
             </h2>
 
@@ -753,6 +759,11 @@
                 🪙 <span id="balanceMatches">0</span>
             </div>
 
+        </div>
+
+
+        <div class="notification-note">
+            🔔 Матчи в избранном напомнят о себе примерно за 30 минут до начала
         </div>
 
 
@@ -812,10 +823,7 @@
 
         <div class="topbar">
 
-            <h2
-                class="title"
-                style="margin:0;"
-            >
+            <h2 class="title" style="margin:0;">
                 🎟 Ставки
             </h2>
 
@@ -915,10 +923,7 @@
 
         <div class="topbar">
 
-            <h2
-                class="title"
-                style="margin:0;"
-            >
+            <h2 class="title" style="margin:0;">
                 👤 Профиль
             </h2>
 
@@ -1291,6 +1296,7 @@
     const tg =
         window.Telegram.WebApp;
 
+
     tg.ready();
     tg.expand();
 
@@ -1300,40 +1306,26 @@
 
 
     let balance = 0;
-
     let matches = [];
-
     let bets = [];
-
     let parlays = [];
-
     let tasks = [];
-
     let achievements = [];
-
     let leaderboardPlayers = [];
-
     let stats = {};
 
-
     let currentUser = null;
-
     let myRank = null;
 
-
     let xp = 0;
-
     let level = 1;
-
 
     let league = {
         icon: "🥉",
         name: "Бронза"
     };
 
-
     let currentLevelXp = 0;
-
 
     let dailyReward = {
         amount: 300,
@@ -1341,40 +1333,38 @@
         seconds_left: 0
     };
 
-
     let selectedMatch = null;
-
     let selectedBet = null;
-
 
     let previousPage =
         "matches";
 
-
     let parlaySlip = [];
-
 
     let currentBetTab =
         "single";
 
-
     let currentBetFilter =
         "all";
-
 
     let currentMatchFilter =
         "all";
 
 
     /*
-        ИЗБРАННЫЕ МАТЧИ
+        Теперь это список избранного,
+        который синхронизируется с сервером.
     */
 
     let favoriteMatches =
-        loadFavorites();
+        loadLocalFavorites();
 
 
-    function loadFavorites() {
+    let favoritesSynced =
+        false;
+
+
+    function loadLocalFavorites() {
 
         try {
 
@@ -1390,7 +1380,9 @@
 
 
             const parsed =
-                JSON.parse(raw);
+                JSON.parse(
+                    raw
+                );
 
 
             if (
@@ -1402,10 +1394,19 @@
             }
 
 
-            return parsed.map(
-                id =>
-                    Number(id)
-            );
+            return parsed
+                .map(
+                    value =>
+                        Number(
+                            value
+                        )
+                )
+                .filter(
+                    value =>
+                        Number.isFinite(
+                            value
+                        )
+                );
 
 
         } catch (error) {
@@ -1415,7 +1416,7 @@
     }
 
 
-    function saveFavorites() {
+    function saveLocalFavorites() {
 
         try {
 
@@ -1429,8 +1430,62 @@
         } catch (error) {
 
             console.error(
-                "Favorites save error:",
                 error
+            );
+        }
+    }
+
+
+    function setFavoritesFromServer(
+        serverFavorites
+    ) {
+
+        if (
+            !Array.isArray(
+                serverFavorites
+            )
+        ) {
+            return;
+        }
+
+
+        favoriteMatches =
+            serverFavorites
+            .map(
+                item =>
+                    Number(
+                        item.fixture_id
+                    )
+            )
+            .filter(
+                id =>
+                    Number.isFinite(
+                        id
+                    )
+            );
+
+
+        saveLocalFavorites();
+
+
+        renderMatches();
+
+
+        if (
+            selectedMatch
+            &&
+            document
+            .getElementById(
+                "page-match"
+            )
+            .classList
+            .contains(
+                "active"
+            )
+        ) {
+
+            renderMatchDetail(
+                selectedMatch
             );
         }
     }
@@ -1448,7 +1503,56 @@
     }
 
 
-    function toggleFavoriteMatch(
+    async function syncOldFavorites() {
+
+        if (
+            favoritesSynced
+        ) {
+            return;
+        }
+
+
+        favoritesSynced =
+            true;
+
+
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/favorites/sync",
+                    {
+                        fixture_ids:
+                            favoriteMatches
+                    }
+                );
+
+
+            if (
+                data.success
+                &&
+                Array.isArray(
+                    data.favorites
+                )
+            ) {
+
+                setFavoritesFromServer(
+                    data.favorites
+                );
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Favorites sync error:",
+                error
+            );
+        }
+    }
+
+
+    async function toggleFavoriteMatch(
         fixtureId
     ) {
 
@@ -1458,26 +1562,47 @@
             );
 
 
+        const wasFavorite =
+            isFavorite(
+                id
+            );
+
+
+        const newFavorite =
+            !wasFavorite;
+
+
+        /*
+            Сначала меняем интерфейс сразу,
+            чтобы звёздочка реагировала мгновенно.
+        */
+
         if (
-            isFavorite(id)
+            newFavorite
         ) {
+
+            if (
+                !favoriteMatches.includes(
+                    id
+                )
+            ) {
+
+                favoriteMatches.push(
+                    id
+                );
+            }
+
+        } else {
 
             favoriteMatches =
                 favoriteMatches.filter(
                     item =>
                         item !== id
                 );
-
-        } else {
-
-            favoriteMatches.push(
-                id
-            );
         }
 
 
-        saveFavorites();
-
+        saveLocalFavorites();
 
         renderMatches();
 
@@ -1498,10 +1623,109 @@
         }
 
 
-        tg.HapticFeedback
-            ?.impactOccurred(
-                "light"
+        try {
+
+            const data =
+                await apiPost(
+                    "/api/favorites/toggle",
+                    {
+                        fixture_id:
+                            id,
+
+                        favorite:
+                            newFavorite
+                    }
+                );
+
+
+            if (
+                data.success
+                &&
+                Array.isArray(
+                    data.favorites
+                )
+            ) {
+
+                setFavoritesFromServer(
+                    data.favorites
+                );
+            }
+
+
+            if (
+                newFavorite
+            ) {
+
+                tg.HapticFeedback
+                    ?.impactOccurred(
+                        "light"
+                    );
+
+                tg.showAlert(
+                    "⭐ Матч добавлен в избранное.\n\n🔔 Бот напомнит примерно за 30 минут до начала."
+                );
+            }
+
+
+        } catch (error) {
+
+            /*
+                Если сервер не сохранил изменение,
+                возвращаем звёздочку обратно.
+            */
+
+            if (
+                wasFavorite
+            ) {
+
+                if (
+                    !favoriteMatches.includes(
+                        id
+                    )
+                ) {
+
+                    favoriteMatches.push(
+                        id
+                    );
+                }
+
+            } else {
+
+                favoriteMatches =
+                    favoriteMatches.filter(
+                        item =>
+                            item !== id
+                    );
+            }
+
+
+            saveLocalFavorites();
+
+            renderMatches();
+
+
+            if (
+                selectedMatch
+                &&
+                Number(
+                    selectedMatch.fixture_id
+                )
+                ===
+                id
+            ) {
+
+                renderMatchDetail(
+                    selectedMatch
+                );
+            }
+
+
+            tg.showAlert(
+                error.message
+                ||
+                "Не удалось сохранить избранное"
             );
+        }
     }
 
 
@@ -1881,13 +2105,8 @@
             <div class="team-logo-wrap">
 
                 <img
-                    src="${escapeHtml(
-                        logo
-                    )}"
-
-                    alt="${escapeHtml(
-                        team
-                    )}"
+                    src="${escapeHtml(logo)}"
+                    alt="${escapeHtml(team)}"
 
                     onerror="
                         this.style.display='none';
@@ -2220,8 +2439,20 @@
             );
 
 
-        const data =
-            await response.json();
+        let data;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch (error) {
+
+            throw new Error(
+                "Сервер вернул некорректный ответ"
+            );
+        }
 
 
         if (
@@ -2405,6 +2636,18 @@
 
             myRank =
                 data.my_rank;
+        }
+
+
+        if (
+            Array.isArray(
+                data.favorites
+            )
+        ) {
+
+            setFavoritesFromServer(
+                data.favorites
+            );
         }
 
 
@@ -2638,18 +2881,10 @@
 
                 onclick="
                     selectOdd(
-                        ${Number(
-                            match.fixture_id
-                        )},
-                        '${jsString(
-                            match.home
-                        )}',
-                        '${jsString(
-                            match.away
-                        )}',
-                        '${jsString(
-                            selection
-                        )}',
+                        ${Number(match.fixture_id)},
+                        '${jsString(match.home)}',
+                        '${jsString(match.away)}',
+                        '${jsString(selection)}',
                         ${numeric}
                     )
                 "
@@ -2657,15 +2892,11 @@
 
                 <span class="odd-name">
                     ${selected ? "✓ " : ""}
-                    ${escapeHtml(
-                        label
-                    )}
+                    ${escapeHtml(label)}
                 </span>
 
                 <span class="odd-value">
-                    ${formatOdd(
-                        numeric
-                    )}
+                    ${formatOdd(numeric)}
                 </span>
 
             </button>
@@ -2701,9 +2932,7 @@
 
                 onclick="
                     openMatch(
-                        ${Number(
-                            match.fixture_id
-                        )}
+                        ${Number(match.fixture_id)}
                     )
                 "
             >
@@ -2711,24 +2940,20 @@
                 <div class="match-top">
 
                     <div class="match-date">
-
                         ${escapeHtml(
                             formatDate(
                                 match.date
                             )
                         )}
-
                     </div>
 
 
                     <div class="league">
-
                         ${escapeHtml(
                             match.league
                             ||
                             "Premier League"
                         )}
-
                     </div>
 
 
@@ -2742,9 +2967,7 @@
                             event.stopPropagation();
 
                             toggleFavoriteMatch(
-                                ${Number(
-                                    match.fixture_id
-                                )}
+                                ${Number(match.fixture_id)}
                             );
                         "
                     >
@@ -2758,6 +2981,23 @@
                     </button>
 
                 </div>
+
+
+                ${
+                    favorite
+
+                    ?
+
+                    `
+                        <div class="notification-note">
+                            🔔 Уведомление за 30 минут включено
+                        </div>
+                    `
+
+                    :
+
+                    ""
+                }
 
 
                 ${
@@ -2885,11 +3125,6 @@
             return;
         }
 
-
-        /*
-            На главной показываем обычные
-            ближайшие матчи.
-        */
 
         document.getElementById(
             "homeMatches"
@@ -3160,10 +3395,7 @@
                             ""
                         }
 
-                        ${escapeHtml(
-                            label
-                        )}
-
+                        ${escapeHtml(label)}
                     </span>
 
                     <span class="odd-value">
@@ -3209,18 +3441,10 @@
 
                 onclick="
                     selectOdd(
-                        ${Number(
-                            match.fixture_id
-                        )},
-                        '${jsString(
-                            match.home
-                        )}',
-                        '${jsString(
-                            match.away
-                        )}',
-                        '${jsString(
-                            selection
-                        )}',
+                        ${Number(match.fixture_id)},
+                        '${jsString(match.home)}',
+                        '${jsString(match.away)}',
+                        '${jsString(selection)}',
                         ${numericOdd}
                     )
                 "
@@ -3228,15 +3452,11 @@
 
                 <span class="odd-name">
                     ${selected ? "✓ " : ""}
-                    ${escapeHtml(
-                        label
-                    )}
+                    ${escapeHtml(label)}
                 </span>
 
                 <span class="odd-value">
-                    ${formatOdd(
-                        numericOdd
-                    )}
+                    ${formatOdd(numericOdd)}
                 </span>
 
             </button>
@@ -3515,9 +3735,7 @@
 
                         onclick="
                             toggleFavoriteMatch(
-                                ${Number(
-                                    match.fixture_id
-                                )}
+                                ${Number(match.fixture_id)}
                             );
                         "
                     >
@@ -3531,6 +3749,23 @@
                     </button>
 
                 </div>
+
+
+                ${
+                    favorite
+
+                    ?
+
+                    `
+                        <div class="notification-note">
+                            🔔 Бот напомнит примерно за 30 минут до начала
+                        </div>
+                    `
+
+                    :
+
+                    ""
+                }
 
 
                 ${
@@ -6173,10 +6408,24 @@
 
     async function init() {
 
+        /*
+            Сначала получаем профиль.
+            Если на сервере уже есть избранное,
+            оно сразу загрузится.
+        */
+
         await Promise.all([
             loadSession(),
             loadMatches()
         ]);
+
+
+        /*
+            Переносим старые ⭐ из localStorage
+            в PostgreSQL.
+        */
+
+        await syncOldFavorites();
 
 
         loadLeaderboard();

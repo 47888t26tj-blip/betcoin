@@ -8220,7 +8220,14 @@ function renderPredictorLeagues(){
                         ${
                             league.is_owner
                             ?
-                            ""
+                            `
+                                <button
+                                    class="btn danger"
+                                    onclick="deletePredictorLeague(${Number(league.id)}, '${js(league.name)}')"
+                                >
+                                    Удалить
+                                </button>
+                            `
                             :
                             `
                                 <button
@@ -8632,6 +8639,59 @@ function closePredictorLeague(){
 
     renderPredictorLeagues();
 }
+
+
+
+async function deletePredictorLeague(
+    leagueId,
+    leagueName
+){
+
+    const confirmed =
+        confirm(
+            `Удалить лигу «${leagueName}»?\n\nВсе участники будут удалены из лиги, но их прогнозы и статистика останутся.`
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/delete",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        predictorLeaguePlayers =
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            "Лига удалена ✅"
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
 
 
 async function leavePredictorLeague(

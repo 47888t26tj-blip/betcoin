@@ -9972,10 +9972,10 @@ def api_bets():
             )
         ).strip()
 
-        if amount <= 0:
+        if amount < 100:
 
             raise ValueError(
-                "Неправильная сумма"
+                "Минимальная ставка — 100 монет"
             )
 
         canonical = resolve_canonical_bet(
@@ -10184,9 +10184,13 @@ def api_parlays():
             []
         )
 
+        if amount < 100:
+
+            raise ValueError(
+                "Минимальная ставка — 100 монет"
+            )
+
         if (
-            amount <= 0
-            or
             not isinstance(
                 legs,
                 list

@@ -6366,6 +6366,235 @@ def get_score_game_stats(telegram_id):
     }
 
 
+def get_score_game_leaderboard(
+    telegram_id,
+    limit=50
+):
+
+    try:
+        limit = int(limit)
+    except Exception:
+        limit = 50
+
+    limit = max(
+        1,
+        min(
+            limit,
+            100
+        )
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        WITH distinct_dates AS (
+            SELECT DISTINCT
+                telegram_id,
+                game_date
+            FROM score_game_picks
+        ),
+
+        numbered_dates AS (
+            SELECT
+                telegram_id,
+                game_date,
+                game_date
+                -
+                (
+                    ROW_NUMBER() OVER (
+                        PARTITION BY telegram_id
+                        ORDER BY game_date
+                    )
+                )::INTEGER
+                AS streak_group
+            FROM distinct_dates
+        ),
+
+        streaks AS (
+            SELECT
+                telegram_id,
+                COUNT(*)::INTEGER AS streak_length
+            FROM numbered_dates
+            GROUP BY
+                telegram_id,
+                streak_group
+        ),
+
+        best_streaks AS (
+            SELECT
+                telegram_id,
+                MAX(streak_length)::INTEGER AS best_streak
+            FROM streaks
+            GROUP BY telegram_id
+        ),
+
+        aggregated AS (
+            SELECT
+                u.telegram_id,
+                COALESCE(
+                    NULLIF(u.first_name, ''),
+                    NULLIF(u.username, ''),
+                    'Игрок'
+                ) AS display_name,
+                COALESCE(u.xp, 0)::INTEGER AS xp,
+
+                COUNT(p.*)::INTEGER AS total,
+
+                COUNT(*) FILTER (
+                    WHERE p.settled = TRUE
+                )::INTEGER AS settled,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win = TRUE
+                )::INTEGER AS exact_wins,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win IS NOT TRUE
+                        AND
+                        p.outcome_win = TRUE
+                )::INTEGER AS outcome_wins
+
+            FROM users u
+
+            JOIN score_game_picks p
+                ON p.telegram_id = u.telegram_id
+
+            GROUP BY
+                u.telegram_id,
+                u.first_name,
+                u.username,
+                u.xp
+        ),
+
+        metrics AS (
+            SELECT
+                a.*,
+
+                (
+                    a.exact_wins
+                    +
+                    a.outcome_wins
+                )::INTEGER AS successful,
+
+                CASE
+                    WHEN a.settled > 0
+                    THEN ROUND(
+                        (
+                            a.exact_wins
+                            +
+                            a.outcome_wins
+                        )
+                        *
+                        100.0
+                        /
+                        a.settled,
+                        1
+                    )
+                    ELSE 0
+                END AS success_rate,
+
+                COALESCE(
+                    bs.best_streak,
+                    0
+                )::INTEGER AS best_streak
+
+            FROM aggregated a
+
+            LEFT JOIN best_streaks bs
+                ON bs.telegram_id = a.telegram_id
+        ),
+
+        ranked AS (
+            SELECT
+                *,
+
+                ROW_NUMBER() OVER (
+                    ORDER BY
+                        exact_wins DESC,
+                        successful DESC,
+                        success_rate DESC,
+                        best_streak DESC,
+                        settled DESC,
+                        total DESC,
+                        xp DESC,
+                        telegram_id ASC
+                )::INTEGER AS leaderboard_rank
+
+            FROM metrics
+        )
+
+        SELECT
+            leaderboard_rank,
+            telegram_id,
+            display_name,
+            total,
+            settled,
+            exact_wins,
+            outcome_wins,
+            successful,
+            success_rate,
+            best_streak
+
+        FROM ranked
+
+        WHERE
+            leaderboard_rank <= %s
+            OR
+            telegram_id = %s
+
+        ORDER BY leaderboard_rank ASC
+    """, (
+        limit,
+        telegram_id
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    players = []
+    my_entry = None
+
+    for row in rows:
+
+        item = {
+            "rank": int(row[0]),
+            "telegram_id": int(row[1]),
+            "first_name": row[2] or "Игрок",
+            "total": int(row[3] or 0),
+            "settled": int(row[4] or 0),
+            "exact_wins": int(row[5] or 0),
+            "outcome_wins": int(row[6] or 0),
+            "successful": int(row[7] or 0),
+            "success_rate": float(row[8] or 0),
+            "best_streak": int(row[9] or 0)
+        }
+
+        if item["rank"] <= limit:
+            players.append(item)
+
+        if int(item["telegram_id"]) == int(telegram_id):
+            my_entry = item
+
+    return {
+        "players": players,
+        "my_rank": (
+            my_entry["rank"]
+            if my_entry
+            else None
+        ),
+        "me": my_entry
+    }
+
+
 def make_score_game_pick(
     telegram_id,
     predicted_home,
@@ -9492,6 +9721,55 @@ def api_score_game_history():
                 get_score_game_stats(
                     user["telegram_id"]
                 )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leaderboard",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game_leaderboard():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        leaderboard = get_score_game_leaderboard(
+            user["telegram_id"],
+            body.get(
+                "limit",
+                50
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **leaderboard
         })
 
     except Exception as error:

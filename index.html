@@ -1091,6 +1091,51 @@ button{
     font-size:10px;
 }
 
+.score-streak-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin:8px 0 10px;
+}
+
+.score-streak-card{
+    padding:13px;
+    border-radius:15px;
+    background:var(--card);
+    border:1px solid var(--border);
+    text-align:center;
+}
+
+.score-streak-card.current{
+    border-color:rgba(255,159,67,.35);
+    background:rgba(255,159,67,.08);
+}
+
+.score-streak-card.best{
+    border-color:rgba(255,209,102,.35);
+    background:rgba(255,209,102,.07);
+}
+
+.score-streak-card span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:800;
+}
+
+.score-streak-card b{
+    display:block;
+    margin-top:4px;
+    font-size:23px;
+}
+
+.score-streak-card small{
+    display:block;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:9px;
+}
+
 .score-history-filters{
     display:flex;
     gap:6px;
@@ -7470,6 +7515,20 @@ function renderScoreGameHistory(){
             0
         );
 
+    const currentStreak =
+        Number(
+            scoreGameStats.current_streak
+            ||
+            0
+        );
+
+    const bestStreak =
+        Number(
+            scoreGameStats.best_streak
+            ||
+            0
+        );
+
 
     const statsHtml =
         `
@@ -7493,6 +7552,22 @@ function renderScoreGameHistory(){
                 <div class="score-history-stat lost">
                     <span>Промахи</span>
                     <b>${losses}</b>
+                </div>
+
+            </div>
+
+            <div class="score-streak-grid">
+
+                <div class="score-streak-card current">
+                    <span>🔥 Текущая серия</span>
+                    <b>${currentStreak}</b>
+                    <small>${currentStreak === 1 ? "день подряд" : "дней подряд"}</small>
+                </div>
+
+                <div class="score-streak-card best">
+                    <span>🏆 Рекорд серии</span>
+                    <b>${bestStreak}</b>
+                    <small>${bestStreak === 1 ? "день" : "дней"}</small>
                 </div>
 
             </div>

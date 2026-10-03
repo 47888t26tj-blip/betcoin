@@ -4949,8 +4949,35 @@ def get_prediction_game(
 
     row = cur.fetchone()
 
+    cur.execute("""
+        SELECT
+            COUNT(*)::INTEGER
+        FROM score_game_picks
+        WHERE game_date = %s
+    """, (
+        game[
+            "game_date"
+        ],
+    ))
+
+    predictions_count_row = (
+        cur.fetchone()
+    )
+
+    predictions_count = int(
+        predictions_count_row[0]
+        or
+        0
+    )
+
     cur.close()
     conn.close()
+
+    score_stats = (
+        get_score_game_stats(
+            telegram_id
+        )
+    )
 
     kickoff = game[
         "kickoff_at"
@@ -5921,7 +5948,30 @@ def get_score_game(
             SCORE_GAME_EXACT_XP,
 
         "outcome_reward_coins":
-            SCORE_GAME_OUTCOME_COINS
+            SCORE_GAME_OUTCOME_COINS,
+
+        "predictions_count":
+            predictions_count,
+
+        "current_streak":
+            int(
+                score_stats.get(
+                    "current_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "best_streak":
+            int(
+                score_stats.get(
+                    "best_streak",
+                    0
+                )
+                or
+                0
+            )
     }
 
     if row:

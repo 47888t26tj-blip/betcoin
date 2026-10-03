@@ -5939,6 +5939,237 @@ def get_score_game(
     return result
 
 
+
+def get_score_game_history(
+    telegram_id,
+    limit=50
+):
+
+    settle_score_game_picks(
+        30
+    )
+
+    try:
+
+        limit = int(
+            limit
+        )
+
+    except Exception:
+
+        limit = 50
+
+    limit = max(
+        1,
+        min(
+            limit,
+            100
+        )
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.game_date,
+            p.fixture_id,
+
+            r.match_name,
+            r.home_team,
+            r.away_team,
+            r.league_name,
+            r.kickoff_at,
+
+            p.predicted_home,
+            p.predicted_away,
+
+            p.settled,
+            p.exact_win,
+            p.outcome_win,
+
+            p.final_home,
+            p.final_away,
+
+            p.reward_coins,
+            p.reward_xp,
+
+            p.created_at,
+            p.settled_at
+
+        FROM score_game_picks p
+
+        LEFT JOIN score_game_rounds r
+            ON
+                r.game_date =
+                    p.game_date
+                AND
+                r.fixture_id =
+                    p.fixture_id
+
+        WHERE
+            p.telegram_id = %s
+
+        ORDER BY
+            p.game_date DESC,
+            p.created_at DESC
+
+        LIMIT %s
+    """, (
+        telegram_id,
+        limit
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    history = []
+
+    for row in rows:
+
+        settled = bool(
+            row[9]
+        )
+
+        exact_win = row[10]
+        outcome_win = row[11]
+
+        if not settled:
+
+            status = "pending"
+            status_text = "Ожидает"
+
+        elif exact_win is True:
+
+            status = "exact"
+            status_text = "Точный счёт"
+
+        elif outcome_win is True:
+
+            status = "outcome"
+            status_text = "Исход угадан"
+
+        else:
+
+            status = "lost"
+            status_text = "Не угадано"
+
+        history.append({
+
+            "game_date":
+                (
+                    row[0].isoformat()
+                    if row[0]
+                    else
+                    None
+                ),
+
+            "fixture_id":
+                int(
+                    row[1]
+                ),
+
+            "match_name":
+                row[2],
+
+            "home_team":
+                row[3],
+
+            "away_team":
+                row[4],
+
+            "league":
+                row[5],
+
+            "kickoff_at":
+                (
+                    row[6].isoformat()
+                    if row[6]
+                    else
+                    None
+                ),
+
+            "predicted_home":
+                int(
+                    row[7]
+                ),
+
+            "predicted_away":
+                int(
+                    row[8]
+                ),
+
+            "settled":
+                settled,
+
+            "exact_win":
+                exact_win,
+
+            "outcome_win":
+                outcome_win,
+
+            "final_home":
+                (
+                    int(
+                        row[12]
+                    )
+                    if row[12] is not None
+                    else
+                    None
+                ),
+
+            "final_away":
+                (
+                    int(
+                        row[13]
+                    )
+                    if row[13] is not None
+                    else
+                    None
+                ),
+
+            "reward_coins":
+                int(
+                    row[14]
+                    or
+                    0
+                ),
+
+            "reward_xp":
+                int(
+                    row[15]
+                    or
+                    0
+                ),
+
+            "picked_at":
+                (
+                    row[16].isoformat()
+                    if row[16]
+                    else
+                    None
+                ),
+
+            "settled_at":
+                (
+                    row[17].isoformat()
+                    if row[17]
+                    else
+                    None
+                ),
+
+            "status":
+                status,
+
+            "status_text":
+                status_text
+        })
+
+    return history
+
+
 def make_score_game_pick(
     telegram_id,
     predicted_home,
@@ -9007,6 +9238,60 @@ def api_score_game_pick():
             "success": False,
             "error": str(error)
         }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+
+@app.route(
+    "/api/games/score/history",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game_history():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        history = get_score_game_history(
+            user["telegram_id"],
+            body.get(
+                "limit",
+                50
+            )
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "history":
+                history
+        })
 
     except Exception as error:
 

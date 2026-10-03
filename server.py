@@ -6293,6 +6293,63 @@ def get_score_game_stats(telegram_id):
 
                     break
 
+    achievements = [
+        {
+            "key": "first_exact",
+            "icon": "🎯",
+            "title": "В яблочко",
+            "description": "Угадать первый точный счёт",
+            "progress": min(exact_wins, 1),
+            "target": 1,
+            "unlocked": exact_wins >= 1
+        },
+        {
+            "key": "exact_3",
+            "icon": "🏹",
+            "title": "Снайпер",
+            "description": "Угадать 3 точных счёта",
+            "progress": min(exact_wins, 3),
+            "target": 3,
+            "unlocked": exact_wins >= 3
+        },
+        {
+            "key": "predictions_10",
+            "icon": "📋",
+            "title": "Прогнозист",
+            "description": "Сделать 10 прогнозов",
+            "progress": min(total, 10),
+            "target": 10,
+            "unlocked": total >= 10
+        },
+        {
+            "key": "predictions_50",
+            "icon": "🧠",
+            "title": "Эксперт",
+            "description": "Сделать 50 прогнозов",
+            "progress": min(total, 50),
+            "target": 50,
+            "unlocked": total >= 50
+        },
+        {
+            "key": "streak_5",
+            "icon": "🔥",
+            "title": "На серии",
+            "description": "Делать прогнозы 5 дней подряд",
+            "progress": min(best_streak, 5),
+            "target": 5,
+            "unlocked": best_streak >= 5
+        },
+        {
+            "key": "successful_5",
+            "icon": "✅",
+            "title": "Чую результат",
+            "description": "Угадать исход или точный счёт 5 раз",
+            "progress": min(successful, 5),
+            "target": 5,
+            "unlocked": successful >= 5
+        }
+    ]
+
     return {
         "total": total,
         "pending": pending,
@@ -6304,7 +6361,8 @@ def get_score_game_stats(telegram_id):
         "success_rate": success_rate,
         "exact_rate": exact_rate,
         "current_streak": current_streak,
-        "best_streak": best_streak
+        "best_streak": best_streak,
+        "achievements": achievements
     }
 
 

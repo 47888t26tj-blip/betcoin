@@ -1136,6 +1136,111 @@ button{
     font-size:9px;
 }
 
+.score-achievements{
+    margin:12px 0 10px;
+}
+
+.score-achievements-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+    font-size:15px;
+    font-weight:900;
+}
+
+.score-achievements-title small{
+    color:var(--muted);
+    font-size:10px;
+    font-weight:800;
+}
+
+.score-achievements-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.score-achievement{
+    min-height:118px;
+    padding:12px;
+    border-radius:15px;
+    border:1px solid var(--border);
+    background:var(--card);
+    opacity:.62;
+}
+
+.score-achievement.unlocked{
+    opacity:1;
+    border-color:rgba(255,209,102,.38);
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255,209,102,.12),
+            transparent 48%
+        ),
+        var(--card);
+}
+
+.score-achievement-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.score-achievement-icon{
+    font-size:24px;
+}
+
+.score-achievement-state{
+    color:var(--muted);
+    font-size:9px;
+    font-weight:900;
+}
+
+.score-achievement.unlocked .score-achievement-state{
+    color:var(--gold);
+}
+
+.score-achievement b{
+    display:block;
+    margin-top:7px;
+    font-size:13px;
+}
+
+.score-achievement p{
+    margin:4px 0 8px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.3;
+}
+
+.score-achievement-progress{
+    height:6px;
+    border-radius:999px;
+    overflow:hidden;
+    background:#0c0f15;
+}
+
+.score-achievement-progress > div{
+    height:100%;
+    border-radius:999px;
+    background:var(--accent);
+}
+
+.score-achievement.unlocked .score-achievement-progress > div{
+    background:var(--gold);
+}
+
+.score-achievement-numbers{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:9px;
+    text-align:right;
+}
+
 .score-history-filters{
     display:flex;
     gap:6px;
@@ -7529,6 +7634,106 @@ function renderScoreGameHistory(){
             0
         );
 
+    const predictorAchievements =
+        Array.isArray(
+            scoreGameStats.achievements
+        )
+        ?
+        scoreGameStats.achievements
+        :
+        [];
+
+
+    const achievementsHtml =
+        predictorAchievements.length
+        ?
+        `
+            <div class="score-achievements">
+
+                <div class="score-achievements-title">
+                    <span>🏅 Достижения прогнозиста</span>
+                    <small>
+                        ${predictorAchievements.filter(item => item.unlocked).length}
+                        /
+                        ${predictorAchievements.length}
+                    </small>
+                </div>
+
+                <div class="score-achievements-grid">
+
+                    ${predictorAchievements.map(
+                        item => {
+
+                            const progress =
+                                Math.max(
+                                    0,
+                                    Number(
+                                        item.progress
+                                        ||
+                                        0
+                                    )
+                                );
+
+                            const target =
+                                Math.max(
+                                    1,
+                                    Number(
+                                        item.target
+                                        ||
+                                        1
+                                    )
+                                );
+
+                            const percent =
+                                Math.max(
+                                    0,
+                                    Math.min(
+                                        100,
+                                        progress
+                                        *
+                                        100
+                                        /
+                                        target
+                                    )
+                                );
+
+                            return `
+                                <div class="score-achievement ${item.unlocked ? "unlocked" : ""}">
+
+                                    <div class="score-achievement-top">
+                                        <span class="score-achievement-icon">
+                                            ${esc(item.icon || "🏅")}
+                                        </span>
+
+                                        <span class="score-achievement-state">
+                                            ${item.unlocked ? "ОТКРЫТО" : "В ПРОЦЕССЕ"}
+                                        </span>
+                                    </div>
+
+                                    <b>${esc(item.title || "Достижение")}</b>
+
+                                    <p>${esc(item.description || "")}</p>
+
+                                    <div class="score-achievement-progress">
+                                        <div style="width:${percent}%"></div>
+                                    </div>
+
+                                    <div class="score-achievement-numbers">
+                                        ${progress}/${target}
+                                    </div>
+
+                                </div>
+                            `;
+                        }
+                    ).join("")}
+
+                </div>
+
+            </div>
+        `
+        :
+        "";
+
 
     const statsHtml =
         `
@@ -7595,6 +7800,8 @@ function renderScoreGameHistory(){
                 }
 
             </div>
+
+            ${achievementsHtml}
         `;
 
 

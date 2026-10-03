@@ -25,7 +25,7 @@
     --card:#161922;
     --card2:#1d222d;
     --border:#2a303d;
-    --text:#fff;
+    --text:#ffffff;
     --muted:#9298a7;
     --accent:#2f80ff;
     --green:#25c06d;
@@ -39,7 +39,6 @@ body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -50,6 +49,15 @@ body{
 
 body{
     padding-bottom:90px;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
 }
 
 .app{
@@ -97,7 +105,6 @@ body{
     margin-bottom:10px;
 }
 
-.notice,
 .muted{
     color:var(--muted);
     font-size:12px;
@@ -176,9 +183,9 @@ body{
 }
 
 
-/* ==============================
+/* ===================================
    🎁 НАГРАДЫ НА ГЛАВНОЙ
-============================== */
+=================================== */
 
 .home-rewards{
     display:none;
@@ -190,13 +197,8 @@ body{
 }
 
 .reward-alert{
-    position:relative;
-    overflow:hidden;
-
     padding:14px;
-
     margin-bottom:8px;
-
     border-radius:17px;
 
     border:
@@ -242,7 +244,6 @@ body{
 .reward-alert-icon{
     width:46px;
     height:46px;
-
     flex:0 0 46px;
 
     display:flex;
@@ -250,10 +251,7 @@ body{
     justify-content:center;
 
     border-radius:14px;
-
-    background:
-        rgba(255,255,255,.06);
-
+    background:rgba(255,255,255,.06);
     font-size:25px;
 }
 
@@ -274,19 +272,12 @@ body{
 }
 
 .reward-alert-btn{
-    width:auto;
     min-width:75px;
-
     border:0;
-
     padding:9px 11px;
-
     border-radius:11px;
-
     background:var(--orange);
-
     color:#fff;
-
     font-weight:900;
 }
 
@@ -294,6 +285,10 @@ body{
     background:var(--accent);
 }
 
+
+/* ===================================
+   QUICK
+=================================== */
 
 .quick-grid{
     display:grid;
@@ -378,6 +373,11 @@ body{
     color:#fff;
 }
 
+
+/* ===================================
+   LIVE / MATCH
+=================================== */
+
 .live-title{
     display:flex;
     align-items:center;
@@ -392,10 +392,7 @@ body{
     height:8px;
     border-radius:50%;
     background:var(--red);
-
-    box-shadow:
-        0 0 0 4px
-        rgba(255,82,82,.12);
+    box-shadow:0 0 0 4px rgba(255,82,82,.12);
 }
 
 .badge{
@@ -565,6 +562,11 @@ body{
     grid-template-columns:repeat(3,1fr);
 }
 
+
+/* ===================================
+   BUTTONS / BETS
+=================================== */
+
 .tabs{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -666,15 +668,10 @@ body{
     font-size:20px;
 }
 
-.promo-result{
-    margin-top:8px;
-    font-size:12px;
-}
 
-
-/* ==============================
-   🔥 СЕРИЯ ВХОДОВ
-============================== */
+/* ===================================
+   🔥 STREAK
+=================================== */
 
 .streak-card{
     background:
@@ -689,14 +686,9 @@ body{
             #151820
         );
 
-    border:
-        1px solid
-        rgba(255,159,67,.3);
-
+    border:1px solid rgba(255,159,67,.3);
     border-radius:20px;
-
     padding:15px;
-
     margin-bottom:12px;
 }
 
@@ -713,27 +705,13 @@ body{
 }
 
 .streak-count{
-    background:
-        rgba(255,159,67,.14);
-
-    border:
-        1px solid
-        rgba(255,159,67,.25);
-
-    color:
-        var(--orange);
-
-    padding:
-        6px 10px;
-
-    border-radius:
-        999px;
-
-    font-size:
-        12px;
-
-    font-weight:
-        900;
+    background:rgba(255,159,67,.14);
+    border:1px solid rgba(255,159,67,.25);
+    color:var(--orange);
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:900;
 }
 
 .streak-days{
@@ -744,26 +722,16 @@ body{
 }
 
 .streak-day{
-    min-width:0;
     min-height:76px;
-
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-
     gap:3px;
-
     border-radius:12px;
-
     background:#10131a;
-
-    border:
-        1px solid
-        var(--border);
-
-    color:
-        var(--muted);
+    border:1px solid var(--border);
+    color:var(--muted);
 }
 
 .streak-day b{
@@ -781,30 +749,19 @@ body{
 }
 
 .streak-day.completed{
-    border-color:
-        rgba(37,192,109,.4);
-
-    background:
-        rgba(37,192,109,.1);
-
-    color:
-        var(--green);
+    border-color:rgba(37,192,109,.4);
+    background:rgba(37,192,109,.1);
+    color:var(--green);
 }
 
 .streak-day.current{
-    border-color:
-        rgba(255,159,67,.65);
-
-    background:
-        rgba(255,159,67,.12);
+    border-color:rgba(255,159,67,.65);
+    background:rgba(255,159,67,.12);
 }
 
 .streak-day.final{
-    background:
-        rgba(255,209,102,.08);
-
-    border-color:
-        rgba(255,209,102,.3);
+    background:rgba(255,209,102,.08);
+    border-color:rgba(255,209,102,.3);
 }
 
 .streak-message{
@@ -823,9 +780,9 @@ body{
 }
 
 
-/* ==============================
-   🎮 ИГРЫ
-============================== */
+/* ===================================
+   🎮 GAMES
+=================================== */
 
 .game-card{
     background:
@@ -938,9 +895,89 @@ body{
 }
 
 
-/* ==============================
-   🎡 КОЛЕСО
-============================== */
+/* ===================================
+   ⚽ SCORE GAME
+=================================== */
+
+.score-game{
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37,192,109,.15),
+            transparent 45%
+        ),
+        var(--card);
+}
+
+.score-team{
+    text-align:center;
+    font-weight:900;
+    font-size:15px;
+    flex:1;
+}
+
+.score-picker{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-top:16px;
+}
+
+.score-input{
+    width:72px;
+    height:62px;
+    text-align:center;
+    font-size:28px;
+    font-weight:900;
+
+    color:#fff;
+    background:#0d1118;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    outline:none;
+}
+
+.score-colon{
+    font-size:28px;
+    font-weight:900;
+}
+
+.score-teams-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    margin-top:10px;
+}
+
+.score-help{
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:10px;
+}
+
+.score-saved{
+    margin-top:13px;
+    padding:13px;
+    text-align:center;
+    border-radius:14px;
+    background:rgba(47,128,255,.1);
+    border:1px solid rgba(47,128,255,.25);
+}
+
+.score-big{
+    font-size:27px;
+    font-weight:900;
+    margin:6px 0;
+}
+
+
+/* ===================================
+   🎡 WHEEL
+=================================== */
 
 .wheel-card{
     text-align:center;
@@ -951,6 +988,7 @@ body{
     width:190px;
     height:190px;
     margin:14px auto 10px;
+
     border-radius:50%;
     border:7px solid #252b37;
 
@@ -981,15 +1019,25 @@ body{
     position:absolute;
     left:50%;
     top:50%;
-    transform:translate(-50%,-50%);
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
     width:66px;
     height:66px;
+
     border-radius:50%;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     background:#11151d;
     border:5px solid #fff;
+
     font-size:27px;
     z-index:5;
 }
@@ -1000,11 +1048,9 @@ body{
     color:#fff;
     font-size:13px;
     font-weight:900;
-    text-shadow:
-        0 2px 3px rgba(0,0,0,.9);
+    text-shadow:0 2px 3px rgba(0,0,0,.9);
     line-height:1;
     white-space:nowrap;
-    pointer-events:none;
 }
 
 .wheel-label-1{
@@ -1048,9 +1094,11 @@ body{
     width:0;
     height:0;
     margin:0 auto -16px;
+
     border-left:13px solid transparent;
     border-right:13px solid transparent;
     border-top:24px solid #fff;
+
     position:relative;
     z-index:6;
 }
@@ -1067,9 +1115,9 @@ body{
 }
 
 
-/* ==============================
-   MODAL
-============================== */
+/* ===================================
+   MODALS
+=================================== */
 
 .overlay{
     display:none;
@@ -1089,10 +1137,14 @@ body{
     max-width:700px;
     max-height:90vh;
     overflow:auto;
+
     margin:auto;
+
     background:#151820;
+
     border:1px solid var(--border);
     border-radius:23px 23px 0 0;
+
     padding:18px;
 }
 
@@ -1100,15 +1152,21 @@ body{
     display:none;
     position:fixed;
     z-index:70;
+
     left:50%;
     transform:translateX(-50%);
     bottom:80px;
+
     width:calc(100% - 20px);
     max-width:680px;
+
     background:#181c26;
+
     border:1px solid rgba(47,128,255,.55);
     border-radius:16px;
+
     padding:10px;
+
     box-shadow:0 8px 35px rgba(0,0,0,.45);
 }
 
@@ -1130,29 +1188,25 @@ body{
 }
 
 
-/* ==============================
-   НИЖНЕЕ МЕНЮ
-============================== */
+/* ===================================
+   NAV
+=================================== */
 
 .nav{
     position:fixed;
     z-index:50;
+
     left:0;
     right:0;
     bottom:0;
 
     display:grid;
-
-    grid-template-columns:
-        repeat(6,1fr);
+    grid-template-columns:repeat(6,1fr);
 
     min-height:72px;
 
     background:#12151d;
-
-    border-top:
-        1px solid
-        var(--border);
+    border-top:1px solid var(--border);
 }
 
 .nav button{
@@ -1193,9 +1247,9 @@ body{
 <div class="app">
 
 
-<!-- ==============================
-     🏠 ГЛАВНАЯ
-============================== -->
+<!-- ===================================
+     🏠 HOME
+=================================== -->
 
 <section
     id="page-home"
@@ -1262,7 +1316,6 @@ body{
 
 </div>
 
-
 <div class="xp-bar">
 
 <div
@@ -1276,8 +1329,6 @@ body{
 </div>
 
 
-<!-- 🎁 ДОСТУПНЫЕ НАГРАДЫ -->
-
 <div
     id="homeRewards"
     class="home-rewards"
@@ -1290,47 +1341,32 @@ body{
     class="quick"
     onclick="quick('today')"
 >
-
 <b>📅</b>
-
 Сегодня
-
 </button>
-
 
 <button
     class="quick"
     onclick="quick('top5')"
 >
-
 <b>⭐</b>
-
 Топ-5
-
 </button>
-
 
 <button
     class="quick"
     onclick="quick('champions_league')"
 >
-
 <b>🏆</b>
-
 Еврокубки
-
 </button>
-
 
 <button
     class="quick"
     onclick="showPage('games')"
 >
-
 <b>🎮</b>
-
 Игры
-
 </button>
 
 </div>
@@ -1410,9 +1446,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     ⚽ МАТЧИ
-============================== -->
+<!-- ===================================
+     ⚽ MATCHES
+=================================== -->
 
 <section
     id="page-matches"
@@ -1642,9 +1678,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     ДЕТАЛИ МАТЧА
-============================== -->
+<!-- ===================================
+     MATCH DETAIL
+=================================== -->
 
 <section
     id="page-match"
@@ -1663,9 +1699,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     🎟 СТАВКИ
-============================== -->
+<!-- ===================================
+     🎟 BETS
+=================================== -->
 
 <section
     id="page-bets"
@@ -1745,7 +1781,6 @@ LIVE
 
 </div>
 
-
 <div id="singleBets"></div>
 
 <div
@@ -1756,9 +1791,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     🎮 ИГРЫ
-============================== -->
+<!-- ===================================
+     🎮 GAMES
+=================================== -->
 
 <section
     id="page-games"
@@ -1781,6 +1816,8 @@ LIVE
 </div>
 
 
+<!-- 🎯 УГАДАЙ ИСХОД -->
+
 <div class="game-card">
 
 <div class="game-title">
@@ -1792,8 +1829,7 @@ LIVE
 </div>
 
 <div class="game-reward">
-Награда за правильный прогноз:
-+200 🪙 +25 XP
+Правильный прогноз: +200 🪙 +25 XP
 </div>
 
 <div
@@ -1810,6 +1846,42 @@ LIVE
 </div>
 
 
+<!-- ⚽ УГАДАЙ СЧЁТ -->
+
+<div class="game-card score-game">
+
+<div class="game-title">
+⚽ Угадай счёт
+</div>
+
+<div class="muted">
+Укажи точный счёт до начала матча
+</div>
+
+<div class="game-reward">
+🎯 Точный счёт: +1000 🪙 +150 XP
+</div>
+
+<div class="muted">
+Угадан только исход: +150 🪙
+</div>
+
+<div
+    id="scoreGame"
+    style="margin-top:12px"
+>
+
+<div class="loader">
+Загружаем игру...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- 🎡 WHEEL -->
+
 <div class="game-card wheel-card">
 
 <div class="game-title">
@@ -1822,7 +1894,6 @@ LIVE
 >
 1 бесплатное вращение раз в 24 часа
 </div>
-
 
 <div class="wheel-pointer"></div>
 
@@ -1867,13 +1938,11 @@ LIVE
 Крутить бесплатно
 </button>
 
-
 <div
     id="wheelInfo"
     class="muted"
     style="margin-top:8px"
 ></div>
-
 
 <div
     id="wheelResult"
@@ -1885,9 +1954,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     🏆 ЛИДЕРЫ
-============================== -->
+<!-- ===================================
+     🏆 LEADERBOARD
+=================================== -->
 
 <section
     id="page-leaderboard"
@@ -1906,9 +1975,9 @@ LIVE
 </section>
 
 
-<!-- ==============================
-     👤 ПРОФИЛЬ
-============================== -->
+<!-- ===================================
+     👤 PROFILE
+=================================== -->
 
 <section
     id="page-profile"
@@ -2090,7 +2159,8 @@ LIVE
 
 <div
     id="promoResult"
-    class="promo-result muted"
+    class="muted"
+    style="margin-top:8px"
 ></div>
 
 </div>
@@ -2124,9 +2194,9 @@ LIVE
 </div>
 
 
-<!-- ==============================
-     МИНИ ЭКСПРЕСС
-============================== -->
+<!-- ===================================
+     MINI PARLAY
+=================================== -->
 
 <div
     id="miniParlay"
@@ -2174,9 +2244,7 @@ x1.00
             Math.max(
                 0,
                 Math.floor(
-                    Number(
-                        this.value
-                    )
+                    Number(this.value)
                     ||
                     0
                 )
@@ -2216,9 +2284,9 @@ x1.00
 </div>
 
 
-<!-- ==============================
-     НИЖНЕЕ МЕНЮ
-============================== -->
+<!-- ===================================
+     NAV
+=================================== -->
 
 <nav class="nav">
 
@@ -2227,91 +2295,56 @@ x1.00
     class="active"
     onclick="showPage('home')"
 >
-
 <span>🏠</span>
-
-<small>
-Главная
-</small>
-
+<small>Главная</small>
 </button>
-
 
 <button
     id="nav-matches"
     onclick="showPage('matches')"
 >
-
 <span>⚽</span>
-
-<small>
-Матчи
-</small>
-
+<small>Матчи</small>
 </button>
-
 
 <button
     id="nav-bets"
     onclick="showPage('bets')"
 >
-
 <span>🎟</span>
-
-<small>
-Ставки
-</small>
-
+<small>Ставки</small>
 </button>
-
 
 <button
     id="nav-games"
     onclick="showPage('games')"
 >
-
 <span>🎮</span>
-
-<small>
-Игры
-</small>
-
+<small>Игры</small>
 </button>
-
 
 <button
     id="nav-leaderboard"
     onclick="showPage('leaderboard')"
 >
-
 <span>🏆</span>
-
-<small>
-Лидеры
-</small>
-
+<small>Лидеры</small>
 </button>
-
 
 <button
     id="nav-profile"
     onclick="showPage('profile')"
 >
-
 <span>👤</span>
-
-<small>
-Профиль
-</small>
-
+<small>Профиль</small>
 </button>
 
 </nav>
 
 
-<!-- ==============================
-     ВЫБОР ТИПА СТАВКИ
-============================== -->
+<!-- ===================================
+     BET CHOICE
+=================================== -->
 
 <div
     id="choiceOverlay"
@@ -2356,9 +2389,9 @@ x1.00
 </div>
 
 
-<!-- ==============================
-     ОРДИНАР
-============================== -->
+<!-- ===================================
+     SINGLE
+=================================== -->
 
 <div
     id="singleOverlay"
@@ -2411,9 +2444,9 @@ x1.00
 </div>
 
 
-<!-- ==============================
-     ЭКСПРЕСС
-============================== -->
+<!-- ===================================
+     PARLAY
+=================================== -->
 
 <div
     id="parlayOverlay"
@@ -2459,9 +2492,7 @@ x1.00
             Math.max(
                 0,
                 Math.floor(
-                    Number(
-                        this.value
-                    )
+                    Number(this.value)
                     ||
                     0
                 )
@@ -2596,6 +2627,8 @@ let daily = {};
 let wheel = {};
 
 let predictionGame = {};
+
+let scoreGame = {};
 
 let loginStreak = {};
 
@@ -2746,7 +2779,7 @@ function closeOverlay(
     .getElementById(
         id
     )
-    .classList.remove(
+    ?.classList.remove(
         "show"
     );
 }
@@ -2866,7 +2899,6 @@ function quick(
             "top5"
         );
 
-
     }else if(
         value
         ===
@@ -2880,7 +2912,6 @@ function quick(
         loadLeague(
             "top5"
         );
-
 
     }else{
 
@@ -2949,7 +2980,9 @@ function parseDate(
 
     null;
 }
-function isToday(value){
+function isToday(
+    value
+){
 
     const date =
         parseDate(
@@ -2970,7 +3003,9 @@ function isToday(value){
 }
 
 
-function isTomorrow(value){
+function isTomorrow(
+    value
+){
 
     const date =
         parseDate(
@@ -2998,7 +3033,9 @@ function isTomorrow(value){
 }
 
 
-function isFavTeam(name){
+function isFavTeam(
+    name
+){
 
     return favoriteTeams.some(
         team =>
@@ -3013,7 +3050,9 @@ function isFavTeam(name){
 }
 
 
-function hasFavTeam(match){
+function hasFavTeam(
+    match
+){
 
     return (
         isFavTeam(
@@ -3027,7 +3066,9 @@ function hasFavTeam(match){
 }
 
 
-function findMatch(id){
+function findMatch(
+    id
+){
 
     id =
         Number(
@@ -3069,7 +3110,9 @@ function findMatch(id){
 }
 
 
-function kickoff(match){
+function kickoff(
+    match
+){
 
     const live =
         liveMap[
@@ -3107,14 +3150,12 @@ function kickoff(match){
 
             return{
                 started:true,
-
                 text:
                     score
                     ?
                     `FT • ${score}`
                     :
                     "FT",
-
                 c:"started"
             };
         }
@@ -3126,14 +3167,12 @@ function kickoff(match){
 
             return{
                 started:true,
-
                 text:
                     score
                     ?
                     `● LIVE • ${score}`
                     :
                     "● LIVE",
-
                 c:"live"
             };
         }
@@ -3156,7 +3195,7 @@ function kickoff(match){
     }
 
 
-    let ms =
+    const ms =
         date
         -
         Date.now();
@@ -3174,7 +3213,7 @@ function kickoff(match){
     }
 
 
-    let minutes =
+    const minutes =
         Math.floor(
             ms
             /
@@ -3188,19 +3227,17 @@ function kickoff(match){
 
         return{
             started:false,
-
             text:
                 `Через ${Math.max(
                     1,
                     minutes
                 )} мин`,
-
             c:"soon"
         };
     }
 
 
-    let hours =
+    const hours =
         Math.floor(
             minutes
             /
@@ -3214,10 +3251,8 @@ function kickoff(match){
 
         return{
             started:false,
-
             text:
                 `Через ${hours} ч ${minutes % 60} мин`,
-
             c:""
         };
     }
@@ -3225,7 +3260,6 @@ function kickoff(match){
 
     return{
         started:false,
-
         text:
             date.toLocaleString(
                 "ru-RU",
@@ -3236,15 +3270,14 @@ function kickoff(match){
                     minute:"2-digit"
                 }
             ),
-
         c:""
     };
 }
 
 
-/* ==============================
-   🎁 НАГРАДЫ НА ГЛАВНОЙ
-============================== */
+/* ===================================
+   🎁 HOME REWARDS
+=================================== */
 
 function renderHomeRewards(){
 
@@ -3260,8 +3293,7 @@ function renderHomeRewards(){
     }
 
 
-    const cards =
-        [];
+    const cards = [];
 
 
     if(
@@ -3316,24 +3348,16 @@ function renderHomeRewards(){
                             </div>
 
                             <div class="reward-alert-text">
-
-                                День
-                                ${loginStreak.next_day || 1}
-
+                                День ${loginStreak.next_day || 1}
                                 •
-
                                 ${rewardText}
-
                             </div>
 
                         </div>
 
                         <button
                             class="reward-alert-btn"
-
-                            onclick="
-                                showPage('profile')
-                            "
+                            onclick="showPage('profile')"
                         >
                             Забрать
                         </button>
@@ -3378,10 +3402,7 @@ function renderHomeRewards(){
 
                         <button
                             class="reward-alert-btn"
-
-                            onclick="
-                                showPage('games')
-                            "
+                            onclick="showPage('games')"
                         >
                             Крутить
                         </button>
@@ -3395,7 +3416,9 @@ function renderHomeRewards(){
 
 
     box.innerHTML =
-        cards.join("");
+        cards.join(
+            ""
+        );
 
 
     box.classList.toggle(
@@ -3406,6 +3429,10 @@ function renderHomeRewards(){
     );
 }
 
+
+/* ===================================
+   MATCH CARDS
+=================================== */
 
 function selectedInParlay(
     id,
@@ -3515,7 +3542,15 @@ function oddBtn(
 }
 
 
-function renderMatch(match){
+function renderMatch(
+    match
+){
+
+    if(!match){
+
+        return "";
+    }
+
 
     const matchKickoff =
         kickoff(
@@ -3734,6 +3769,10 @@ function renderMatch(match){
 }
 
 
+/* ===================================
+   LIVE
+=================================== */
+
 async function loadLive(){
 
     try{
@@ -3819,7 +3858,6 @@ function renderLive(){
                 "homeLiveWrap",
                 "homeLive"
             ],
-
             [
                 "liveWrap",
                 "liveList"
@@ -3831,6 +3869,12 @@ function renderLive(){
             document.getElementById(
                 wrap
             );
+
+
+        if(!wrapper){
+
+            continue;
+        }
 
 
         if(
@@ -3850,14 +3894,17 @@ function renderLive(){
                 .map(
                     item =>
                         renderMatch({
-                            ...findMatch(
-                                item.fixture_id
+                            ...(
+                                findMatch(
+                                    item.fixture_id
+                                )
+                                ||
+                                {}
                             ),
                             ...item
                         })
                 )
                 .join("");
-
 
         }else{
 
@@ -3867,6 +3914,10 @@ function renderLive(){
     }
 }
 
+
+/* ===================================
+   MATCH LOADING
+=================================== */
 
 async function loadLeague(
     key
@@ -4125,8 +4176,7 @@ function filtered(
 
 function allMatches(){
 
-    const map =
-        {};
+    const map = {};
 
 
     for(
@@ -4216,6 +4266,10 @@ function renderMatches(){
     renderLive();
 }
 
+
+/* ===================================
+   FAVORITES
+=================================== */
 
 async function toggleFavoriteMatch(
     id
@@ -4400,6 +4454,10 @@ async function toggleFavoriteTeam(
     }
 }
 
+
+/* ===================================
+   MATCH DETAIL
+=================================== */
 
 async function openMatch(
     id
@@ -4654,6 +4712,10 @@ async function openMatch(
 }
 
 
+/* ===================================
+   SINGLE BET
+=================================== */
+
 function selectBet(
     id,
     home,
@@ -4710,13 +4772,9 @@ function selectBet(
             </b>
 
             <div class="muted">
-
                 ${esc(selection)}
-
                 •
-
                 ${Number(odd).toFixed(2)}
-
             </div>
         `;
 
@@ -4768,13 +4826,9 @@ function openSingle(){
             </b>
 
             <div class="muted">
-
                 ${esc(selectedBet.selection)}
-
                 •
-
                 ${selectedBet.odd.toFixed(2)}
-
             </div>
         `;
 
@@ -4940,6 +4994,10 @@ async function confirmSingle(){
 }
 
 
+/* ===================================
+   PARLAY
+=================================== */
+
 function toggleParlayChoice(){
 
     const index =
@@ -4965,7 +5023,6 @@ function toggleParlayChoice(){
             index,
             1
         );
-
 
     }else{
 
@@ -5158,13 +5215,9 @@ function renderParlayList(){
                         </b>
 
                         <div class="muted">
-
                             ${esc(item.selection)}
-
                             •
-
                             ${Number(item.odd).toFixed(2)}
-
                         </div>
 
                         <button
@@ -5360,7 +5413,13 @@ async function confirmParlay(){
 }
 
 
-function stClass(status){
+/* ===================================
+   BET HISTORY
+=================================== */
+
+function stClass(
+    status
+){
 
     return status
     ===
@@ -5396,7 +5455,9 @@ function stClass(status){
 }
 
 
-function passFilter(item){
+function passFilter(
+    item
+){
 
     return (
         betFilter
@@ -5442,7 +5503,9 @@ function passFilter(item){
 }
 
 
-function setBetFilter(value){
+function setBetFilter(
+    value
+){
 
     betFilter =
         value;
@@ -5467,7 +5530,9 @@ function setBetFilter(value){
 }
 
 
-function switchBets(value){
+function switchBets(
+    value
+){
 
     betTab =
         value;
@@ -5574,13 +5639,9 @@ function renderBets(){
                         </h3>
 
                         <div>
-
                             ${esc(item.selection)}
-
                             •
-
                             ${Number(item.odd).toFixed(2)}
-
                         </div>
 
                         ${
@@ -5597,27 +5658,13 @@ function renderBets(){
                         }
 
                         <div class="bet-row">
-
-                            <span>
-                                Ставка
-                            </span>
-
-                            <b>
-                                ${item.amount} 🪙
-                            </b>
-
+                            <span>Ставка</span>
+                            <b>${item.amount} 🪙</b>
                         </div>
 
                         <div class="bet-row">
-
-                            <span>
-                                Выигрыш
-                            </span>
-
-                            <b>
-                                ${item.possible} 🪙
-                            </b>
-
+                            <span>Выигрыш</span>
+                            <b>${item.possible} 🪙</b>
                         </div>
 
                     </div>
@@ -5660,39 +5707,18 @@ function renderBets(){
                         </h3>
 
                         <div class="bet-row">
-
-                            <span>
-                                Кэф
-                            </span>
-
-                            <b>
-                                ${Number(item.total_odd).toFixed(2)}
-                            </b>
-
+                            <span>Кэф</span>
+                            <b>${Number(item.total_odd).toFixed(2)}</b>
                         </div>
 
                         <div class="bet-row">
-
-                            <span>
-                                Ставка
-                            </span>
-
-                            <b>
-                                ${item.amount} 🪙
-                            </b>
-
+                            <span>Ставка</span>
+                            <b>${item.amount} 🪙</b>
                         </div>
 
                         <div class="bet-row">
-
-                            <span>
-                                Выигрыш
-                            </span>
-
-                            <b>
-                                ${item.possible} 🪙
-                            </b>
-
+                            <span>Выигрыш</span>
+                            <b>${item.possible} 🪙</b>
                         </div>
 
                         ${
@@ -5715,13 +5741,9 @@ function renderBets(){
                                             </b>
 
                                             <div class="muted">
-
                                                 ${esc(leg.selection)}
-
                                                 •
-
                                                 ${Number(leg.odd).toFixed(2)}
-
                                             </div>
 
                                             <span
@@ -5758,9 +5780,9 @@ function renderBets(){
 }
 
 
-/* ==============================
-   🔥 СЕРИЯ ВХОДОВ
-============================== */
+/* ===================================
+   🔥 LOGIN STREAK
+=================================== */
 
 function renderLoginStreak(){
 
@@ -5988,7 +6010,6 @@ function renderLoginStreak(){
         messageBox.textContent =
             "Возвращайся завтра, чтобы продолжить серию 🔥";
 
-
     }else if(
         loginStreak.streak_broken
     ){
@@ -5996,14 +6017,12 @@ function renderLoginStreak(){
         messageBox.textContent =
             "Серия была прервана. Начинаем снова с 1-го дня.";
 
-
     }else if(
         currentDay > 0
     ){
 
         messageBox.textContent =
             `Продолжай серию — следующий день ${nextDay}.`;
-
 
     }else{
 
@@ -6105,8 +6124,7 @@ async function claimLoginStreak(){
         renderHomeRewards();
 
 
-        const rewards =
-            [];
+        const rewards = [];
 
 
         if(
@@ -6158,11 +6176,13 @@ async function claimLoginStreak(){
 }
 
 
-/* ==============================
+/* ===================================
    🎯 УГАДАЙ ИСХОД
-============================== */
+=================================== */
 
-function predictionDateText(value){
+function predictionDateText(
+    value
+){
 
     const date =
         parseDate(
@@ -6213,13 +6233,11 @@ function renderPredictionGame(){
         box.innerHTML =
             `
                 <div class="empty">
-
                     ${esc(
                         predictionGame?.message
                         ||
                         "Пока нет подходящего матча"
                     )}
-
                 </div>
             `;
 
@@ -6256,14 +6274,10 @@ function renderPredictionGame(){
         statusHtml =
             `
                 <div class="prediction-result wait">
-
                     ✅ Твой прогноз:
                     <b>${esc(pick)}</b>
-
                     <br>
-
                     Ждём окончания матча
-
                 </div>
             `;
     }
@@ -6347,13 +6361,11 @@ function renderPredictionGame(){
             <div class="prediction-match">
 
                 <div class="prediction-league">
-
                     ${esc(
                         predictionGame.league
                         ||
                         "Футбол"
                     )}
-
                 </div>
 
 
@@ -6403,9 +6415,7 @@ function renderPredictionGame(){
 
                         ${!canPick ? "disabled" : ""}
 
-                        onclick="
-                            pickPrediction('П1')
-                        "
+                        onclick="pickPrediction('П1')"
                     >
 
                         П1
@@ -6427,9 +6437,7 @@ function renderPredictionGame(){
 
                         ${!canPick ? "disabled" : ""}
 
-                        onclick="
-                            pickPrediction('X')
-                        "
+                        onclick="pickPrediction('X')"
                     >
 
                         X
@@ -6449,9 +6457,7 @@ function renderPredictionGame(){
 
                         ${!canPick ? "disabled" : ""}
 
-                        onclick="
-                            pickPrediction('П2')
-                        "
+                        onclick="pickPrediction('П2')"
                     >
 
                         П2
@@ -6541,39 +6547,471 @@ async function pickPrediction(
 }
 
 
-async function refreshPredictionGame(){
+/* ===================================
+   ⚽ УГАДАЙ СЧЁТ
+=================================== */
+
+function renderScoreGame(){
+
+    const box =
+        document.getElementById(
+            "scoreGame"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    if(
+        !scoreGame
+        ||
+        scoreGame.available
+        ===
+        false
+    ){
+
+        box.innerHTML =
+            `
+                <div class="empty">
+                    ${esc(
+                        scoreGame?.message
+                        ||
+                        "Пока нет подходящего матча"
+                    )}
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const canPick =
+        scoreGame.can_pick
+        ===
+        true;
+
+
+    const hasPick =
+        scoreGame.predicted_home
+        !=
+        null
+        &&
+        scoreGame.predicted_away
+        !=
+        null;
+
+
+    let gameStatus =
+        "";
+
+
+    if(
+        hasPick
+        &&
+        !scoreGame.settled
+    ){
+
+        gameStatus =
+            `
+                <div class="score-saved">
+
+                    ✅ Твой прогноз
+
+                    <div class="score-big">
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </div>
+
+                    Ждём окончания матча
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        ===
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result win">
+
+                    🎯 ТОЧНЫЙ СЧЁТ!
+
+                    <div class="score-big">
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </div>
+
+                    +${scoreGame.reward_coins} 🪙
+                    +
+                    ${scoreGame.reward_xp} XP
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        !==
+        true
+        &&
+        scoreGame.outcome_win
+        ===
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result win">
+
+                    ✅ Исход угадан
+
+                    <br><br>
+
+                    Твой прогноз:
+                    <b>
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </b>
+
+                    <br>
+
+                    Итог:
+                    <b>
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </b>
+
+                    <br><br>
+
+                    +${scoreGame.reward_coins} 🪙
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        !==
+        true
+        &&
+        scoreGame.outcome_win
+        !==
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result loss">
+
+                    ❌ Не угадал
+
+                    <br><br>
+
+                    Твой прогноз:
+                    <b>
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </b>
+
+                    <br>
+
+                    Итоговый счёт:
+                    <b>
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </b>
+
+                </div>
+            `;
+    }
+
+
+    box.innerHTML =
+        `
+            <div class="prediction-match">
+
+                <div class="prediction-league">
+                    ${esc(
+                        scoreGame.league
+                        ||
+                        "Футбол"
+                    )}
+                </div>
+
+
+                <div class="prediction-teams">
+
+                    ${esc(
+                        scoreGame.home_team
+                    )}
+
+                    <br>
+
+                    <span
+                        style="
+                            color:var(--muted);
+                            font-size:13px
+                        "
+                    >
+                        против
+                    </span>
+
+                    <br>
+
+                    ${esc(
+                        scoreGame.away_team
+                    )}
+
+                </div>
+
+
+                <div class="prediction-time">
+
+                    🕒
+                    ${predictionDateText(
+                        scoreGame.kickoff_at
+                    )}
+
+                </div>
+
+
+                ${
+                    canPick
+
+                    ?
+
+                    `
+                        <div class="score-teams-row">
+
+                            <div class="score-team">
+                                ${esc(scoreGame.home_team)}
+                            </div>
+
+                            <div class="score-team">
+                                ${esc(scoreGame.away_team)}
+                            </div>
+
+                        </div>
+
+
+                        <div class="score-picker">
+
+                            <input
+                                id="scoreHomeInput"
+                                class="score-input"
+                                type="number"
+                                inputmode="numeric"
+                                min="0"
+                                max="10"
+                                value="0"
+                            >
+
+                            <div class="score-colon">
+                                :
+                            </div>
+
+                            <input
+                                id="scoreAwayInput"
+                                class="score-input"
+                                type="number"
+                                inputmode="numeric"
+                                min="0"
+                                max="10"
+                                value="0"
+                            >
+
+                        </div>
+
+
+                        <div class="score-help">
+                            От 0 до 10 голов каждой команде
+                        </div>
+
+
+                        <button
+                            id="scoreGameBtn"
+                            class="btn"
+                            onclick="pickExactScore()"
+                        >
+                            Подтвердить счёт
+                        </button>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                ${gameStatus}
+
+            </div>
+        `;
+}
+
+
+async function pickExactScore(){
+
+    if(
+        !scoreGame
+        ||
+        scoreGame.can_pick
+        !==
+        true
+    ){
+
+        return;
+    }
+
+
+    const homeInput =
+        document.getElementById(
+            "scoreHomeInput"
+        );
+
+
+    const awayInput =
+        document.getElementById(
+            "scoreAwayInput"
+        );
+
+
+    const home =
+        Number(
+            homeInput.value
+        );
+
+
+    const away =
+        Number(
+            awayInput.value
+        );
+
+
+    if(
+        !Number.isInteger(
+            home
+        )
+        ||
+        !Number.isInteger(
+            away
+        )
+        ||
+        home < 0
+        ||
+        away < 0
+        ||
+        home > 10
+        ||
+        away > 10
+    ){
+
+        tg.showAlert(
+            "Укажи счёт от 0 до 10"
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Подтвердить счёт ${home}:${away}?\n\nИзменить прогноз потом нельзя.`
+        );
+
+
+    if(!confirmed){
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "scoreGameBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Сохраняем...";
+
 
     try{
 
         const data =
             await post(
-                "/api/games/prediction"
+                "/api/games/score/pick",
+                {
+                    home_score:
+                        home,
+
+                    away_score:
+                        away
+                }
             );
 
 
-        predictionGame =
+        scoreGame =
             data.game
             ||
-            predictionGame;
+            {};
 
 
-        renderPredictionGame();
+        renderScoreGame();
+
+
+        tg.showAlert(
+            `⚽ Прогноз ${home}:${away} сохранён`
+        );
 
 
     }catch(error){
 
-        console.error(
-            error
+        tg.showAlert(
+            error.message
         );
+
+
+    }finally{
+
+        renderScoreGame();
     }
 }
 
 
-/* ==============================
-   🎡 КОЛЕСО
-============================== */
+/* ===================================
+   🎡 WHEEL
+=================================== */
 
-function wheelWaitText(seconds){
+function wheelWaitText(
+    seconds
+){
 
     seconds =
         Math.max(
@@ -6827,19 +7265,8 @@ async function spinLuckyWheel(){
 
         renderHome();
 
-        renderHomeRewards();
-
 
     }catch(error){
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    700
-                )
-        );
-
 
         result.textContent =
             `❌ ${error.message}`;
@@ -6850,26 +7277,6 @@ async function spinLuckyWheel(){
         );
 
 
-        try{
-
-            const data =
-                await post(
-                    "/api/wheel/status"
-                );
-
-
-            wheel =
-                data.wheel
-                ||
-                wheel;
-
-
-        }catch(_){}
-
-
-        renderWheel();
-
-
     }finally{
 
         disc.classList.remove(
@@ -6878,8 +7285,6 @@ async function spinLuckyWheel(){
 
 
         renderWheel();
-
-        renderHomeRewards();
     }
 }
 
@@ -6888,13 +7293,15 @@ function renderGames(){
 
     renderPredictionGame();
 
+    renderScoreGame();
+
     renderWheel();
 }
 
 
-/* ==============================
-   СЕССИЯ
-============================== */
+/* ===================================
+   SESSION
+=================================== */
 
 async function loadSession(){
 
@@ -7004,6 +7411,12 @@ async function loadSession(){
             {};
 
 
+        scoreGame =
+            data.score_game
+            ||
+            {};
+
+
         myRank =
             data.leaderboard?.my_rank
             ??
@@ -7080,15 +7493,16 @@ async function loadSession(){
     }catch(error){
 
         console.error(
+            "Session:",
             error
         );
     }
 }
 
 
-/* ==============================
-   ГЛАВНАЯ
-============================== */
+/* ===================================
+   HOME
+=================================== */
 
 function renderHome(){
 
@@ -7195,32 +7609,32 @@ function renderHome(){
         `;
 
 
-    const active =
-        [
-            ...bets
-            .filter(
-                item =>
-                    item.status
-                    ===
-                    "Активна"
-            )
-            .slice(
-                0,
-                2
-            ),
+    const active = [
 
-            ...parlays
-            .filter(
-                item =>
-                    item.status
-                    ===
-                    "Активна"
-            )
-            .slice(
-                0,
-                1
-            )
-        ];
+        ...bets
+        .filter(
+            item =>
+                item.status
+                ===
+                "Активна"
+        )
+        .slice(
+            0,
+            2
+        ),
+
+        ...parlays
+        .filter(
+            item =>
+                item.status
+                ===
+                "Активна"
+        )
+        .slice(
+            0,
+            1
+        )
+    ];
 
 
     document
@@ -7248,13 +7662,11 @@ function renderHome(){
                                 margin-top:6px
                             "
                         >
-
                             ${esc(
                                 item.match
                                 ||
                                 `Экспресс #${item.id}`
                             )}
-
                         </div>
 
                         <div class="muted">
@@ -7301,9 +7713,9 @@ function renderHome(){
 }
 
 
-/* ==============================
-   ПРОФИЛЬ
-============================== */
+/* ===================================
+   PROFILE
+=================================== */
 
 function renderProfile(){
 
@@ -7411,7 +7823,7 @@ function renderProfile(){
                 ||
                 0,
 
-                "Прогнозов"
+                "Угадай исход"
             ],
 
             [
@@ -7419,7 +7831,23 @@ function renderProfile(){
                 ||
                 0,
 
-                "Угадано"
+                "Исходов угадано"
+            ],
+
+            [
+                stats.score_games
+                ||
+                0,
+
+                "Прогнозов счёта"
+            ],
+
+            [
+                stats.score_exact_wins
+                ||
+                0,
+
+                "Точных счетов"
             ]
         ]
         .map(
@@ -7446,6 +7874,10 @@ function renderProfile(){
         "tasks"
     )
     .innerHTML =
+        tasks.length
+
+        ?
+
         tasks
         .map(
             item =>
@@ -7534,7 +7966,15 @@ function renderProfile(){
                     </div>
                 `
         )
-        .join("");
+        .join("")
+
+        :
+
+        `
+            <div class="empty">
+                Пока нет заданий
+            </div>
+        `;
 
 
     document
@@ -7542,6 +7982,10 @@ function renderProfile(){
         "achievements"
     )
     .innerHTML =
+        achievements.length
+
+        ?
+
         achievements
         .map(
             item =>
@@ -7616,23 +8060,33 @@ function renderProfile(){
                     </div>
                 `
         )
-        .join("");
+        .join("")
+
+        :
+
+        `
+            <div class="empty">
+                Пока нет достижений
+            </div>
+        `;
 
 
-    document
-    .getElementById(
-        "dailyBtn"
-    )
-    .disabled =
-        !daily.available;
+    const dailyButton =
+        document.getElementById(
+            "dailyBtn"
+        );
 
 
-    document
-    .getElementById(
-        "dailyBtn"
-    )
-    .textContent =
+    dailyButton.disabled =
         daily.available
+        !==
+        true;
+
+
+    dailyButton.textContent =
+        daily.available
+        ===
+        true
 
         ?
 
@@ -7649,6 +8103,8 @@ function renderProfile(){
     )
     .textContent =
         daily.available
+        ===
+        true
 
         ?
 
@@ -7656,22 +8112,20 @@ function renderProfile(){
 
         :
 
-        `Следующий бонус через ${Math.floor(
-            Number(
-                daily.seconds_left
-                ||
-                0
-            )
-            /
-            3600
-        )} ч`;
+        `Следующий бонус через ${wheelWaitText(
+            daily.seconds_left
+            ||
+            0
+        )}`;
 
 
     renderLoginStreak();
-
-    renderHomeRewards();
 }
 
+
+/* ===================================
+   PROFILE ACTIONS
+=================================== */
 
 async function claimDaily(){
 
@@ -7813,19 +8267,7 @@ async function redeemPromo(){
             );
 
 
-        balance =
-            Number(
-                data.balance
-                ??
-                balance
-            );
-
-
-        setBalances();
-
-
-        const rewards =
-            [];
+        const rewards = [];
 
 
         if(
@@ -7892,9 +8334,9 @@ async function redeemPromo(){
 }
 
 
-/* ==============================
-   ЛИДЕРБОРД
-============================== */
+/* ===================================
+   LEADERBOARD
+=================================== */
 
 async function loadLeaderboard(){
 
@@ -7947,13 +8389,9 @@ async function loadLeaderboard(){
                             </div>
 
                             <div>
-
                                 ${item.xp} XP
-
                                 •
-
                                 ${item.balance} 🪙
-
                             </div>
 
                         </div>
@@ -7974,9 +8412,9 @@ async function loadLeaderboard(){
 }
 
 
-/* ==============================
-   ОБЩИЙ RENDER
-============================== */
+/* ===================================
+   RENDER ALL
+=================================== */
 
 function renderAll(){
 
@@ -8002,9 +8440,9 @@ function renderAll(){
 }
 
 
-/* ==============================
-   ЗАПУСК
-============================== */
+/* ===================================
+   INIT
+=================================== */
 
 async function init(){
 
@@ -8163,6 +8601,12 @@ async function init(){
                     predictionGame;
 
 
+                scoreGame =
+                    data.score_game
+                    ||
+                    scoreGame;
+
+
                 loginStreak =
                     data.login_streak
                     ||
@@ -8180,12 +8624,6 @@ async function init(){
             }
 
         },
-        300000
-    );
-
-
-    setInterval(
-        refreshPredictionGame,
         300000
     );
 }

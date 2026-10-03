@@ -6989,6 +6989,76 @@ def leave_predictor_league(
         conn.close()
 
 
+
+def delete_predictor_league(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                owner_telegram_id
+            FROM predictor_leagues
+            WHERE id = %s
+        """, (
+            league_id,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига не найдена"
+            )
+
+        if (
+            int(row[0])
+            !=
+            int(telegram_id)
+        ):
+            raise ValueError(
+                "Удалить лигу может только её создатель"
+            )
+
+        cur.execute("""
+            DELETE FROM predictor_leagues
+            WHERE
+                id = %s
+                AND
+                owner_telegram_id = %s
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        if cur.rowcount != 1:
+            raise ValueError(
+                "Не удалось удалить лигу"
+            )
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+
 def get_predictor_league_leaderboard(
     telegram_id,
     league_id
@@ -10622,6 +10692,63 @@ def api_predictor_league_leave():
             "success": False,
             "error": str(error)
         }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/delete",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_delete():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        delete_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except (ValueError, TypeError) as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
 
 
 @app.route(

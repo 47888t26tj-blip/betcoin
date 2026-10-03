@@ -978,7 +978,7 @@ button{
 
 .score-game-tabs{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:6px;
     margin-top:13px;
     padding:4px;
@@ -1498,6 +1498,124 @@ button{
     color:var(--muted);
     font-size:9px;
     font-weight:700;
+}
+
+
+/* ===================================
+   👥 PRIVATE PREDICTOR LEAGUES
+=================================== */
+
+.predictor-league-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+}
+
+.predictor-league-box{
+    margin-top:10px;
+    padding:12px;
+    border-radius:15px;
+    border:1px solid var(--border);
+    background:#10141c;
+}
+
+.predictor-league-box h3{
+    margin:0;
+    font-size:14px;
+}
+
+.predictor-league-input-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:7px;
+    margin-top:8px;
+}
+
+.predictor-league-input{
+    width:100%;
+    min-width:0;
+    border:1px solid var(--border);
+    background:#0d1118;
+    color:#fff;
+    border-radius:11px;
+    padding:10px 11px;
+    outline:none;
+}
+
+.predictor-league-code{
+    margin-top:5px;
+    color:var(--gold);
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.predictor-league-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:12px;
+}
+
+.predictor-league-card{
+    padding:12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:#10141c;
+}
+
+.predictor-league-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:9px;
+}
+
+.predictor-league-name{
+    font-weight:900;
+    font-size:14px;
+}
+
+.predictor-league-meta{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.predictor-league-card-actions{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+}
+
+.predictor-league-card-actions button{
+    flex:1;
+    margin-top:0;
+}
+
+.predictor-league-board{
+    margin-top:12px;
+}
+
+.predictor-league-board-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.predictor-league-board-title{
+    font-size:15px;
+    font-weight:900;
+}
+
+.predictor-league-back{
+    border:0;
+    background:transparent;
+    color:var(--accent);
+    font-weight:900;
 }
 
 
@@ -2418,6 +2536,14 @@ LIVE
 🏆 Рейтинг
 </button>
 
+<button
+    id="scoreGameLeaguesTab"
+    class="score-game-tab"
+    onclick="setScoreGameView('leagues')"
+>
+👥 Лиги
+</button>
+
 </div>
 
 
@@ -2470,6 +2596,25 @@ LIVE
 
 <div class="loader">
 Загружаем рейтинг...
+</div>
+
+</div>
+
+</div>
+
+
+<div
+    id="scoreGameLeaguesView"
+    style="display:none"
+>
+
+<div
+    id="scoreGameLeagues"
+    style="margin-top:12px"
+>
+
+<div class="loader">
+Загружаем лиги...
 </div>
 
 </div>
@@ -3238,6 +3383,12 @@ let scoreGameLeaderboard = [];
 let scoreGameLeaderboardMe = null;
 
 let scoreGameLeaderboardRank = null;
+
+let predictorLeagues = [];
+
+let predictorLeagueCurrent = null;
+
+let predictorLeaguePlayers = [];
 
 let scoreGameView = "play";
 
@@ -7504,7 +7655,8 @@ function setScoreGameView(
         [
             "play",
             "history",
-            "leaderboard"
+            "leaderboard",
+            "leagues"
         ].includes(
             view
         )
@@ -7529,6 +7681,11 @@ function setScoreGameView(
             "scoreGameLeaderboardView"
         );
 
+    const leaguesView =
+        document.getElementById(
+            "scoreGameLeaguesView"
+        );
+
     const playTab =
         document.getElementById(
             "scoreGamePlayTab"
@@ -7542,6 +7699,11 @@ function setScoreGameView(
     const leaderboardTab =
         document.getElementById(
             "scoreGameLeaderboardTab"
+        );
+
+    const leaguesTab =
+        document.getElementById(
+            "scoreGameLeaguesTab"
         );
 
 
@@ -7578,6 +7740,17 @@ function setScoreGameView(
     }
 
 
+    if(leaguesView){
+
+        leaguesView.style.display =
+            scoreGameView === "leagues"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
     playTab?.classList.toggle(
         "active",
         scoreGameView === "play"
@@ -7591,6 +7764,12 @@ function setScoreGameView(
     leaderboardTab?.classList.toggle(
         "active",
         scoreGameView === "leaderboard"
+    );
+
+
+    leaguesTab?.classList.toggle(
+        "active",
+        scoreGameView === "leagues"
     );
 
 
@@ -7609,6 +7788,15 @@ function setScoreGameView(
     ){
 
         loadScoreGameLeaderboard();
+    }
+
+
+    if(
+        scoreGameView ===
+        "leagues"
+    ){
+
+        loadPredictorLeagues();
     }
 }
 
@@ -7915,6 +8103,583 @@ function renderScoreGameLeaderboard(){
             </div>
         `;
 }
+
+
+
+async function loadPredictorLeagues(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues"
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        predictorLeaguePlayers =
+            [];
+
+        renderPredictorLeagues();
+
+    }catch(error){
+
+        console.error(
+            "Predictor leagues:",
+            error
+        );
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить лиги
+                    </div>
+                `;
+        }
+    }
+}
+
+
+function renderPredictorLeagues(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    if(!box){
+        return;
+    }
+
+
+    if(
+        predictorLeagueCurrent
+    ){
+
+        renderPredictorLeagueBoard();
+        return;
+    }
+
+
+    const leaguesHtml =
+        predictorLeagues.length
+        ?
+        predictorLeagues
+        .map(
+            league => `
+                <div class="predictor-league-card">
+
+                    <div class="predictor-league-head">
+
+                        <div>
+                            <div class="predictor-league-name">
+                                ${esc(league.name)}
+                            </div>
+
+                            <div class="predictor-league-meta">
+                                👥 ${league.members_count} участников
+                                ${league.is_owner ? " • 👑 твоя лига" : ""}
+                            </div>
+                        </div>
+
+                        <div class="predictor-league-code">
+                            ${esc(league.invite_code)}
+                        </div>
+
+                    </div>
+
+                    <div class="predictor-league-card-actions">
+
+                        <button
+                            class="btn secondary"
+                            onclick="copyPredictorLeagueCode('${js(league.invite_code)}')"
+                        >
+                            📋 Код
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="openPredictorLeague(${Number(league.id)})"
+                        >
+                            🏆 Открыть
+                        </button>
+
+                        ${
+                            league.is_owner
+                            ?
+                            ""
+                            :
+                            `
+                                <button
+                                    class="btn danger"
+                                    onclick="leavePredictorLeague(${Number(league.id)})"
+                                >
+                                    Выйти
+                                </button>
+                            `
+                        }
+
+                    </div>
+
+                </div>
+            `
+        )
+        .join("")
+        :
+        `
+            <div class="empty">
+                Ты пока не состоишь ни в одной приватной лиге
+            </div>
+        `;
+
+
+    box.innerHTML =
+        `
+            <div class="score-predictor-title">
+                <span>👥 Приватные лиги</span>
+                <small>Соревнуйся с друзьями</small>
+            </div>
+
+            <div class="predictor-league-box">
+
+                <h3>Создать свою лигу</h3>
+
+                <div class="predictor-league-input-row">
+
+                    <input
+                        id="predictorLeagueName"
+                        class="predictor-league-input"
+                        maxlength="32"
+                        placeholder="Например: Друзья"
+                    >
+
+                    <button
+                        class="small-btn"
+                        onclick="createPredictorLeague()"
+                    >
+                        Создать
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="predictor-league-box">
+
+                <h3>Вступить по коду</h3>
+
+                <div class="predictor-league-input-row">
+
+                    <input
+                        id="predictorLeagueCode"
+                        class="predictor-league-input"
+                        maxlength="8"
+                        placeholder="ABC123"
+                        style="text-transform:uppercase"
+                    >
+
+                    <button
+                        class="small-btn"
+                        onclick="joinPredictorLeague()"
+                    >
+                        Вступить
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="predictor-league-list">
+                ${leaguesHtml}
+            </div>
+        `;
+}
+
+
+async function createPredictorLeague(){
+
+    const input =
+        document.getElementById(
+            "predictorLeagueName"
+        );
+
+    const name =
+        String(
+            input?.value
+            ||
+            ""
+        ).trim();
+
+    if(name.length < 2){
+
+        tg.showAlert(
+            "Введи название лиги"
+        );
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/create",
+                {
+                    name
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            `Лига создана ✅\nКод: ${data.invite_code}`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function joinPredictorLeague(){
+
+    const input =
+        document.getElementById(
+            "predictorLeagueCode"
+        );
+
+    const code =
+        String(
+            input?.value
+            ||
+            ""
+        )
+        .trim()
+        .toUpperCase();
+
+    if(!code){
+
+        tg.showAlert(
+            "Введи код приглашения"
+        );
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/join",
+                {
+                    code
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            data.joined
+            ?
+            `Ты вступил в лигу «${data.name}» ✅`
+            :
+            `Ты уже состоишь в лиге «${data.name}»`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function copyPredictorLeagueCode(
+    code
+){
+
+    try{
+
+        await navigator.clipboard.writeText(
+            code
+        );
+
+        tg.showAlert(
+            `Код ${code} скопирован`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            `Код лиги: ${code}`
+        );
+    }
+}
+
+
+async function openPredictorLeague(
+    leagueId
+){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    if(box){
+
+        box.innerHTML =
+            `
+                <div class="loader">
+                    Загружаем лигу...
+                </div>
+            `;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/leaderboard",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagueCurrent =
+            data.league
+            ||
+            null;
+
+        predictorLeaguePlayers =
+            data.players
+            ||
+            [];
+
+        renderPredictorLeagueBoard();
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+        predictorLeagueCurrent =
+            null;
+
+        renderPredictorLeagues();
+    }
+}
+
+
+function renderPredictorLeagueBoard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    const league =
+        predictorLeagueCurrent;
+
+    if(
+        !box
+        ||
+        !league
+    ){
+        return;
+    }
+
+    const rows =
+        predictorLeaguePlayers
+        .map(
+            player => {
+
+                const isMe =
+                    currentUser
+                    &&
+                    Number(
+                        player.telegram_id
+                    )
+                    ===
+                    Number(
+                        currentUser.telegram_id
+                    );
+
+                return `
+                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(player.rank) === 1 ? "top1" : ""}">
+
+                        <div class="score-predictor-rank">
+                            ${scoreLeaderboardMedal(player.rank)}
+                        </div>
+
+                        <div class="score-predictor-main">
+
+                            <div class="score-predictor-name">
+                                ${esc(player.first_name || "Игрок")}
+                                ${isMe ? " • ты" : ""}
+                            </div>
+
+                            <div class="score-predictor-sub">
+                                ✅ ${player.successful}
+                                •
+                                ${Number(player.success_rate || 0).toFixed(1)}%
+                                •
+                                🔥 ${player.best_streak}
+                            </div>
+
+                        </div>
+
+                        <div class="score-predictor-right">
+                            <b>🎯 ${player.exact_wins}</b>
+                            <small>${player.total} прогнозов</small>
+                        </div>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    box.innerHTML =
+        `
+            <div class="predictor-league-board">
+
+                <div class="predictor-league-board-head">
+
+                    <button
+                        class="predictor-league-back"
+                        onclick="closePredictorLeague()"
+                    >
+                        ← Мои лиги
+                    </button>
+
+                    <div class="predictor-league-code">
+                        ${esc(league.invite_code)}
+                    </div>
+
+                </div>
+
+                <div class="score-predictor-title">
+
+                    <span>
+                        🏆 ${esc(league.name)}
+                    </span>
+
+                    <small>
+                        ${predictorLeaguePlayers.length} участников
+                    </small>
+
+                </div>
+
+                ${
+                    rows
+                    ?
+                    `
+                        <div class="score-predictor-list">
+                            ${rows}
+                        </div>
+                    `
+                    :
+                    `
+                        <div class="empty" style="margin-top:9px">
+                            В лиге пока нет участников
+                        </div>
+                    `
+                }
+
+            </div>
+        `;
+}
+
+
+function closePredictorLeague(){
+
+    predictorLeagueCurrent =
+        null;
+
+    predictorLeaguePlayers =
+        [];
+
+    renderPredictorLeagues();
+}
+
+
+async function leavePredictorLeague(
+    leagueId
+){
+
+    const confirmed =
+        confirm(
+            "Выйти из этой лиги?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/leave",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            "Ты вышел из лиги"
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
 
 
 function scoreHistoryDateText(

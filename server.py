@@ -6170,6 +6170,70 @@ def get_score_game_history(
     return history
 
 
+def get_score_game_stats(telegram_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE settled = FALSE) AS pending,
+            COUNT(*) FILTER (WHERE settled = TRUE) AS settled,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win = TRUE) AS exact_wins,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win IS NOT TRUE AND outcome_win = TRUE) AS outcome_wins,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win IS NOT TRUE AND outcome_win IS NOT TRUE) AS losses
+        FROM score_game_picks
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    total = int(row[0] or 0)
+    pending = int(row[1] or 0)
+    settled = int(row[2] or 0)
+    exact_wins = int(row[3] or 0)
+    outcome_wins = int(row[4] or 0)
+    losses = int(row[5] or 0)
+
+    successful = exact_wins + outcome_wins
+
+    success_rate = (
+        round(
+            successful * 100 / settled,
+            1
+        )
+        if settled > 0
+        else 0
+    )
+
+    exact_rate = (
+        round(
+            exact_wins * 100 / settled,
+            1
+        )
+        if settled > 0
+        else 0
+    )
+
+    return {
+        "total": total,
+        "pending": pending,
+        "settled": settled,
+        "exact_wins": exact_wins,
+        "outcome_wins": outcome_wins,
+        "losses": losses,
+        "successful": successful,
+        "success_rate": success_rate,
+        "exact_rate": exact_rate
+    }
+
+
 def make_score_game_pick(
     telegram_id,
     predicted_home,
@@ -9290,7 +9354,12 @@ def api_score_game_history():
                 True,
 
             "history":
-                history
+                history,
+
+            "stats":
+                get_score_game_stats(
+                    user["telegram_id"]
+                )
         })
 
     except Exception as error:

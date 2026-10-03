@@ -19,17 +19,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
-# =========================================================
-# APP
-# =========================================================
-
 app = Flask(__name__)
 CORS(app)
 
-
-# =========================================================
-# ENV
-# =========================================================
 
 FIVE_DOLLAR_FOOTBALL_API_KEY = os.environ.get(
     "FIVE_DOLLAR_FOOTBALL_API_KEY",
@@ -56,10 +48,6 @@ FIVE_API_URL = "https://api.5dollarfootballapi.com"
 
 FOOTBALL_DATA_URL = "https://api.football-data.org/v4"
 
-
-# =========================================================
-# LEAGUES
-# =========================================================
 
 LEAGUES = {
 
@@ -211,10 +199,6 @@ for league_key, league_data in LEAGUES.items():
         ] = league_key
 
 
-# =========================================================
-# SETTINGS
-# =========================================================
-
 FIXTURES_CACHE_SECONDS = 1800
 
 ODDS_CACHE_SECONDS = 21600
@@ -242,10 +226,6 @@ TOTAL_POINTS = [
 ]
 
 
-# =========================================================
-# CACHE
-# =========================================================
-
 league_fixture_cache = {}
 
 fixture_detail_cache = {}
@@ -261,89 +241,58 @@ global_logo_cache = {}
 
 database_ready = False
 
-
 workers_started = False
 
 workers_lock = threading.Lock()
 
 
-# =========================================================
-# TEAM ALIASES
-# =========================================================
-
 TEAM_NAME_ALIASES = {
 
-    "cologne":
-        "1 fc koln",
+    "cologne": "1 fc koln",
 
-    "koln":
-        "1 fc koln",
+    "koln": "1 fc koln",
 
-    "fc koln":
-        "1 fc koln",
+    "fc koln": "1 fc koln",
 
-    "rennes":
-        "stade rennais",
+    "rennes": "stade rennais",
 
-    "benfica":
-        "sl benfica",
+    "benfica": "sl benfica",
 
-    "sporting lisbon":
-        "sporting cp",
+    "sporting lisbon": "sporting cp",
 
-    "porto":
-        "fc porto",
+    "porto": "fc porto",
 
-    "braga":
-        "sc braga",
+    "braga": "sc braga",
 
-    "salzburg":
-        "red bull salzburg",
+    "salzburg": "red bull salzburg",
 
-    "rb salzburg":
-        "red bull salzburg",
+    "rb salzburg": "red bull salzburg",
 
-    "sparta prague":
-        "sparta praha",
+    "sparta prague": "sparta praha",
 
-    "lech":
-        "lech poznan",
+    "lech": "lech poznan",
 
-    "omonia":
-        "omonia nicosia",
+    "omonia": "omonia nicosia",
 
-    "celje":
-        "nk celje",
+    "celje": "nk celje",
 
-    "hapoel":
-        "hapoel beer sheva",
+    "hapoel": "hapoel beer sheva",
 
-    "aek":
-        "aek athens",
+    "aek": "aek athens",
 
-    "inter milan":
-        "inter",
+    "inter milan": "inter",
 
-    "internazionale":
-        "inter",
+    "internazionale": "inter",
 
-    "ac milan":
-        "milan",
+    "ac milan": "milan",
 
-    "fc barcelona":
-        "barcelona",
+    "fc barcelona": "barcelona",
 
-    "real madrid cf":
-        "real madrid",
+    "real madrid cf": "real madrid",
 
-    "atletico de madrid":
-        "atletico madrid",
+    "atletico de madrid": "atletico madrid",
 }
 
-
-# =========================================================
-# ACHIEVEMENTS
-# =========================================================
 
 ACHIEVEMENTS = [
 
@@ -382,17 +331,12 @@ ACHIEVEMENTS = [
     {
         "key": "high_odd_win",
         "title": "Риск оправдан",
-        "description":
-            "Выиграть ставку с коэффициентом 3.00+",
+        "description": "Выиграть ставку с коэффициентом 3.00+",
         "target": 1,
         "reward": 350,
     },
 ]
 
-
-# =========================================================
-# DATABASE
-# =========================================================
 
 def get_db():
 
@@ -932,13 +876,8 @@ def init_database():
 
     conn.close()
 
-
     database_ready = True
 
-
-# =========================================================
-# TEAM HELPERS
-# =========================================================
 
 def normalize_club_name(name):
 
@@ -946,12 +885,10 @@ def normalize_club_name(name):
         name or ""
     ).strip().lower()
 
-
     value = unicodedata.normalize(
         "NFKD",
         value
     )
-
 
     value = "".join(
         char
@@ -962,19 +899,16 @@ def normalize_club_name(name):
         )
     )
 
-
     value = value.replace(
         "ß",
         "ss"
     )
-
 
     value = re.sub(
         r"[^a-z0-9\s]",
         " ",
         value
     )
-
 
     return re.sub(
         r"\s+",
@@ -1004,7 +938,6 @@ def simplified_club_name(name):
         "the",
     }
 
-
     return " ".join(
         word
         for word
@@ -1021,11 +954,9 @@ def alias_club_name(name):
         name
     )
 
-
     simplified = simplified_club_name(
         name
     )
-
 
     return (
         TEAM_NAME_ALIASES.get(
@@ -1055,16 +986,11 @@ def favorite_team_key(name):
     )
 
 
-# =========================================================
-# FAST LOGOS
-# =========================================================
-
 def rebuild_global_logo_cache():
 
     global global_logo_cache
 
     result = {}
-
 
     try:
 
@@ -1072,34 +998,25 @@ def rebuild_global_logo_cache():
 
         cur = conn.cursor()
 
-
         cur.execute("""
             SELECT
                 normalized_name,
                 team_name,
                 logo_url
-
             FROM team_logos
         """)
-
 
         for row in cur.fetchall():
 
             result[
                 row[0]
             ] = {
-                "name":
-                    row[1],
-
-                "logo":
-                    row[2],
+                "name": row[1],
+                "logo": row[2],
             }
 
-
         cur.close()
-
         conn.close()
-
 
     except Exception as error:
 
@@ -1108,40 +1025,30 @@ def rebuild_global_logo_cache():
             error
         )
 
-
     global_logo_cache = result
 
 
-def find_logo_fast(
-    team_name
-):
+def find_logo_fast(team_name):
 
     if not global_logo_cache:
-
         return ""
 
-
     attempts = [
-
         normalize_club_name(
             team_name
         ),
-
         simplified_club_name(
             team_name
         ),
-
         alias_club_name(
             team_name
         ),
-
         simplified_club_name(
             alias_club_name(
                 team_name
             )
         ),
     ]
-
 
     for attempt in attempts:
 
@@ -1151,20 +1058,16 @@ def find_logo_fast(
             attempt in global_logo_cache
         ):
 
-            return (
-                global_logo_cache[
-                    attempt
-                ].get(
-                    "logo",
-                    ""
-                )
+            return global_logo_cache[
+                attempt
+            ].get(
+                "logo",
+                ""
             )
-
 
     best_score = 0
 
     best_logo = ""
-
 
     for key, value in global_logo_cache.items():
 
@@ -1172,29 +1075,21 @@ def find_logo_fast(
             key
         )
 
-
         if len(
             key_simple
         ) < 5:
-
             continue
-
 
         for attempt in attempts:
 
-            attempt_simple = (
-                simplified_club_name(
-                    attempt
-                )
+            attempt_simple = simplified_club_name(
+                attempt
             )
-
 
             if len(
                 attempt_simple
             ) < 5:
-
                 continue
-
 
             score = SequenceMatcher(
                 None,
@@ -1202,30 +1097,20 @@ def find_logo_fast(
                 key_simple
             ).ratio()
 
-
             if score > best_score:
 
                 best_score = score
 
-                best_logo = (
-                    value.get(
-                        "logo",
-                        ""
-                    )
+                best_logo = value.get(
+                    "logo",
+                    ""
                 )
 
-
     if best_score >= 0.86:
-
         return best_logo
-
 
     return ""
 
-
-# =========================================================
-# OPTIONAL LOGO REFRESH
-# =========================================================
 
 def refresh_football_data_logos(
     league_key
@@ -1235,24 +1120,19 @@ def refresh_football_data_logos(
         league_key
     )
 
-
     if not config:
         return 0
-
 
     code = config.get(
         "football_data_code"
     )
-
 
     if (
         not code
         or
         not FOOTBALL_TOKEN
     ):
-
         return 0
-
 
     response = requests.get(
         FOOTBALL_DATA_URL
@@ -1267,11 +1147,8 @@ def refresh_football_data_logos(
         timeout=20
     )
 
-
     if response.status_code != 200:
-
         return 0
-
 
     teams = (
         response.json().get(
@@ -1281,14 +1158,10 @@ def refresh_football_data_logos(
         []
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
 
-
     count = 0
-
 
     for team in teams:
 
@@ -1300,10 +1173,8 @@ def refresh_football_data_logos(
             ""
         )
 
-
         if not logo:
             continue
-
 
         for name in [
             team.get("name"),
@@ -1314,17 +1185,12 @@ def refresh_football_data_logos(
             if not name:
                 continue
 
-
-            normalized = (
-                normalize_club_name(
-                    name
-                )
+            normalized = normalize_club_name(
+                name
             )
-
 
             if not normalized:
                 continue
-
 
             cur.execute("""
                 INSERT INTO team_logos (
@@ -1335,7 +1201,6 @@ def refresh_football_data_logos(
                     source,
                     updated_at
                 )
-
                 VALUES (
                     %s,
                     %s,
@@ -1344,19 +1209,15 @@ def refresh_football_data_logos(
                     'football-data',
                     NOW()
                 )
-
                 ON CONFLICT (
                     league_key,
                     normalized_name
                 )
-
                 DO UPDATE SET
                     team_name =
                         EXCLUDED.team_name,
-
                     logo_url =
                         EXCLUDED.logo_url,
-
                     updated_at =
                         NOW()
             """, (
@@ -1366,26 +1227,17 @@ def refresh_football_data_logos(
                 logo,
             ))
 
-
             count += 1
-
 
     conn.commit()
 
     cur.close()
-
     conn.close()
-
 
     rebuild_global_logo_cache()
 
-
     return count
 
-
-# =========================================================
-# TELEGRAM AUTH
-# =========================================================
 
 def verify_telegram_init_data(
     init_data
@@ -1396,9 +1248,7 @@ def verify_telegram_init_data(
         or
         not init_data
     ):
-
         return None
-
 
     try:
 
@@ -1409,16 +1259,13 @@ def verify_telegram_init_data(
             )
         )
 
-
         received_hash = data.pop(
             "hash",
             None
         )
 
-
         if not received_hash:
             return None
-
 
         check_string = "\n".join(
             f"{key}={value}"
@@ -1428,13 +1275,11 @@ def verify_telegram_init_data(
             )
         )
 
-
         secret = hmac.new(
             b"WebAppData",
             TELEGRAM_BOT_TOKEN.encode(),
             hashlib.sha256
         ).digest()
-
 
         calculated = hmac.new(
             secret,
@@ -1442,14 +1287,11 @@ def verify_telegram_init_data(
             hashlib.sha256
         ).hexdigest()
 
-
         if not hmac.compare_digest(
             calculated,
             received_hash
         ):
-
             return None
-
 
         auth_date = int(
             data.get(
@@ -1457,7 +1299,6 @@ def verify_telegram_init_data(
                 "0"
             )
         )
-
 
         if (
             auth_date <= 0
@@ -1470,9 +1311,7 @@ def verify_telegram_init_data(
             >
             86400
         ):
-
             return None
-
 
         user = json.loads(
             data.get(
@@ -1481,19 +1320,14 @@ def verify_telegram_init_data(
             )
         )
 
-
         if not user.get(
             "id"
         ):
-
             return None
-
 
         return user
 
-
     except Exception:
-
         return None
 
 
@@ -1504,45 +1338,34 @@ def require_telegram_user():
         ""
     )
 
-
     if not init_data:
 
         body = request.get_json(
             silent=True
         ) or {}
 
-
         init_data = body.get(
             "initData",
             ""
         )
 
-
     user = verify_telegram_init_data(
         init_data
     )
-
 
     if not user:
 
         return None, (
             jsonify({
-                "success":
-                    False,
-
+                "success": False,
                 "error":
                     "Telegram authentication failed",
             }),
             401,
         )
 
-
     return user, None
 
-
-# =========================================================
-# USERS
-# =========================================================
 
 def get_or_create_user(
     tg_user
@@ -1550,16 +1373,14 @@ def get_or_create_user(
 
     init_database()
 
-
     telegram_id = int(
-        tg_user["id"]
+        tg_user[
+            "id"
+        ]
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         INSERT INTO users (
@@ -1567,43 +1388,34 @@ def get_or_create_user(
             first_name,
             username
         )
-
         VALUES (
             %s,
             %s,
             %s
         )
-
         ON CONFLICT (
             telegram_id
         )
-
         DO UPDATE SET
             first_name =
                 EXCLUDED.first_name,
-
             username =
                 EXCLUDED.username,
-
             updated_at =
                 NOW()
     """, (
         telegram_id,
-
         tg_user.get(
             "first_name",
             ""
         ),
-
         tg_user.get(
             "username",
             ""
         ),
     ))
 
-
     conn.commit()
-
 
     cur.execute("""
         SELECT
@@ -1613,41 +1425,24 @@ def get_or_create_user(
             balance,
             last_daily_claim,
             xp
-
         FROM users
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
 
-
     row = cur.fetchone()
 
-
     cur.close()
-
     conn.close()
 
-
     return {
-        "telegram_id":
-            row[0],
-
-        "first_name":
-            row[1],
-
-        "username":
-            row[2],
-
-        "balance":
-            row[3],
-
-        "last_daily_claim":
-            row[4],
-
-        "xp":
-            row[5],
+        "telegram_id": row[0],
+        "first_name": row[1],
+        "username": row[2],
+        "balance": row[3],
+        "last_daily_claim": row[4],
+        "xp": row[5],
     }
 
 
@@ -1656,9 +1451,7 @@ def get_user_data(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -1668,53 +1461,33 @@ def get_user_data(
             balance,
             last_daily_claim,
             xp
-
         FROM users
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
 
-
     row = cur.fetchone()
 
-
     cur.close()
-
     conn.close()
-
 
     if not row:
         return None
 
-
     return {
-        "telegram_id":
-            row[0],
-
-        "first_name":
-            row[1],
-
-        "username":
-            row[2],
-
-        "balance":
-            row[3],
-
-        "last_daily_claim":
-            row[4],
-
-        "xp":
-            row[5],
+        "telegram_id": row[0],
+        "first_name": row[1],
+        "username": row[2],
+        "balance": row[3],
+        "last_daily_claim": row[4],
+        "xp": row[5],
     }
 
 
-# =========================================================
-# XP
-# =========================================================
-
-def calculate_level(xp):
+def calculate_level(
+    xp
+):
 
     return (
         int(
@@ -1739,7 +1512,6 @@ def get_league(level):
             "next_level": None,
         }
 
-
     if level >= 20:
 
         return {
@@ -1749,7 +1521,6 @@ def get_league(level):
             "min_level": 20,
             "next_level": 30,
         }
-
 
     if level >= 10:
 
@@ -1761,7 +1532,6 @@ def get_league(level):
             "next_level": 20,
         }
 
-
     if level >= 5:
 
         return {
@@ -1771,7 +1541,6 @@ def get_league(level):
             "min_level": 5,
             "next_level": 10,
         }
-
 
     return {
         "key": "bronze",
@@ -1788,30 +1557,23 @@ def xp_info(xp):
         xp or 0
     )
 
-
     level = calculate_level(
         xp
     )
 
-
-    current = xp % 100
-
+    current = (
+        xp % 100
+    )
 
     return {
-        "xp":
-            xp,
-
-        "level":
-            level,
-
+        "xp": xp,
+        "level": level,
         "league":
             get_league(
                 level
             ),
-
         "current_level_xp":
             current,
-
         "xp_to_next_level":
             100 - current,
     }
@@ -1827,34 +1589,25 @@ def add_xp(
         cursor is None
     )
 
-
     conn = (
         get_db()
         if own_connection
         else None
     )
 
-
     if own_connection:
-
         cursor = conn.cursor()
-
 
     cursor.execute("""
         SELECT xp
-
         FROM users
-
         WHERE telegram_id = %s
-
         FOR UPDATE
     """, (
         telegram_id,
     ))
 
-
     row = cursor.fetchone()
-
 
     old_xp = int(
         row[0]
@@ -1862,11 +1615,9 @@ def add_xp(
         else 0
     )
 
-
     old_level = calculate_level(
         old_xp
     )
-
 
     new_xp = (
         old_xp
@@ -1876,28 +1627,22 @@ def add_xp(
         )
     )
 
-
     new_level = calculate_level(
         new_xp
     )
 
-
     cursor.execute("""
         UPDATE users
-
         SET
             xp = %s,
             updated_at = NOW()
-
         WHERE telegram_id = %s
     """, (
         new_xp,
         telegram_id,
     ))
 
-
     reward = 0
-
 
     for level_number in range(
         old_level + 1,
@@ -1906,63 +1651,47 @@ def add_xp(
 
         level_reward = 100
 
-
         if (
             level_number % 5
             ==
             0
         ):
-
             level_reward += 500
 
-
         reward += level_reward
-
 
     if reward > 0:
 
         cursor.execute("""
             UPDATE users
-
             SET
                 balance =
                     balance + %s,
-
                 updated_at =
                     NOW()
-
             WHERE telegram_id = %s
         """, (
             reward,
             telegram_id,
         ))
 
-
     if own_connection:
 
         conn.commit()
 
         cursor.close()
-
         conn.close()
-
 
     result = xp_info(
         new_xp
     )
 
-
     result[
         "level_reward"
     ] = reward
 
-
     return result
 
-
-# =========================================================
-# DAILY TASKS
-# =========================================================
 
 def task_date():
 
@@ -1981,52 +1710,41 @@ def ensure_daily_tasks(
         cursor is None
     )
 
-
     conn = (
         get_db()
         if own
         else None
     )
 
-
     if own:
-
         cursor = conn.cursor()
 
-
     today = task_date()
-
 
     cursor.execute("""
         INSERT INTO daily_tasks (
             telegram_id,
             task_date
         )
-
         VALUES (
             %s,
             %s
         )
-
         ON CONFLICT (
             telegram_id,
             task_date
         )
-
         DO NOTHING
     """, (
         telegram_id,
         today,
     ))
 
-
     if mark_login:
 
         cursor.execute("""
             UPDATE daily_tasks
-
             SET login_done = TRUE
-
             WHERE
                 telegram_id = %s
                 AND
@@ -2036,13 +1754,11 @@ def ensure_daily_tasks(
             today,
         ))
 
-
     if own:
 
         conn.commit()
 
         cursor.close()
-
         conn.close()
 
 
@@ -2057,14 +1773,11 @@ def increment_daily_bet(
         True
     )
 
-
     cursor.execute("""
         UPDATE daily_tasks
-
         SET
             bets_count =
                 bets_count + 1
-
         WHERE
             telegram_id = %s
             AND
@@ -2086,14 +1799,11 @@ def increment_daily_win(
         True
     )
 
-
     cursor.execute("""
         UPDATE daily_tasks
-
         SET
             wins_count =
                 wins_count + 1
-
         WHERE
             telegram_id = %s
             AND
@@ -2110,16 +1820,13 @@ def get_daily_tasks(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     ensure_daily_tasks(
         telegram_id,
         cur,
         mark_login
     )
-
 
     cur.execute("""
         SELECT
@@ -2129,9 +1836,7 @@ def get_daily_tasks(
             login_claimed,
             bets_claimed,
             win_claimed
-
         FROM daily_tasks
-
         WHERE
             telegram_id = %s
             AND
@@ -2141,21 +1846,15 @@ def get_daily_tasks(
         task_date(),
     ))
 
-
     row = cur.fetchone()
-
 
     conn.commit()
 
     cur.close()
-
     conn.close()
 
-
     if not row:
-
         return []
-
 
     return [
 
@@ -2171,10 +1870,8 @@ def get_daily_tasks(
                 bool(row[0]),
             "claimed":
                 bool(row[3]),
-            "reward_type":
-                "xp",
-            "reward":
-                50,
+            "reward_type": "xp",
+            "reward": 50,
         },
 
         {
@@ -2200,8 +1897,7 @@ def get_daily_tasks(
                 bool(row[4]),
             "reward_type":
                 "coins",
-            "reward":
-                100,
+            "reward": 100,
         },
 
         {
@@ -2227,15 +1923,10 @@ def get_daily_tasks(
                 bool(row[5]),
             "reward_type":
                 "coins",
-            "reward":
-                150,
+            "reward": 150,
         },
     ]
 
-
-# =========================================================
-# 5 DOLLAR API
-# =========================================================
 
 def five_headers():
 
@@ -2253,7 +1944,7 @@ def five_headers():
 def five_get(
     path,
     params=None,
-    attempts=2
+    attempts=4
 ):
 
     if not FIVE_DOLLAR_FOOTBALL_API_KEY:
@@ -2262,9 +1953,7 @@ def five_get(
             "FIVE_DOLLAR_FOOTBALL_API_KEY not found"
         )
 
-
     last_error = None
-
 
     for attempt in range(
         attempts
@@ -2286,13 +1975,11 @@ def five_get(
                 timeout=15
             )
 
-
         except requests.RequestException as error:
 
             last_error = str(
                 error
             )
-
 
             if attempt < attempts - 1:
 
@@ -2302,9 +1989,7 @@ def five_get(
 
                 continue
 
-
             raise
-
 
         if response.status_code == 429:
 
@@ -2312,15 +1997,17 @@ def five_get(
                 "5DollarFootballAPI rate limit"
             )
 
-
             if attempt < attempts - 1:
 
                 time.sleep(
                     2
+                    *
+                    (
+                        attempt + 1
+                    )
                 )
 
                 continue
-
 
         if response.status_code != 200:
 
@@ -2330,7 +2017,6 @@ def five_get(
                     response.json()
                 )
 
-
             except Exception:
 
                 payload = (
@@ -2339,19 +2025,13 @@ def five_get(
                     ]
                 )
 
-
             raise RuntimeError(
                 "5DollarFootballAPI HTTP "
                 f"{response.status_code}: "
                 f"{payload}"
             )
 
-
-        data = response.json()
-
-
-        return data
-
+        return response.json()
 
     raise RuntimeError(
         last_error
@@ -2360,15 +2040,10 @@ def five_get(
     )
 
 
-# =========================================================
-# DATE
-# =========================================================
-
 def parse_match_datetime(value):
 
     if not value:
         return None
-
 
     if isinstance(
         value,
@@ -2377,13 +2052,11 @@ def parse_match_datetime(value):
 
         result = value
 
-
     else:
 
         raw = str(
             value
         ).strip()
-
 
         if raw.endswith(
             "Z"
@@ -2395,18 +2068,15 @@ def parse_match_datetime(value):
                 "+00:00"
             )
 
-
         try:
 
             result = datetime.fromisoformat(
                 raw
             )
 
-
         except Exception:
 
             return None
-
 
     if result.tzinfo is None:
 
@@ -2414,15 +2084,10 @@ def parse_match_datetime(value):
             tzinfo=timezone.utc
         )
 
-
     return result.astimezone(
         timezone.utc
     )
 
-
-# =========================================================
-# ODDS
-# =========================================================
 
 def first_snapshot(market):
 
@@ -2430,9 +2095,7 @@ def first_snapshot(market):
         market,
         dict
     ):
-
         return None
-
 
     return (
         market.get(
@@ -2452,25 +2115,19 @@ def first_snapshot(market):
 def extract_bookmakers(payload):
 
     if not payload:
-
         return []
-
 
     if isinstance(
         payload,
         list
     ):
-
         return payload
-
 
     if not isinstance(
         payload,
         dict
     ):
-
         return []
-
 
     if isinstance(
         payload.get(
@@ -2478,16 +2135,13 @@ def extract_bookmakers(payload):
         ),
         list
     ):
-
         return payload[
             "bookmakers"
         ]
 
-
     data = payload.get(
         "data"
     )
-
 
     if (
         isinstance(
@@ -2507,7 +2161,6 @@ def extract_bookmakers(payload):
             "bookmakers"
         ]
 
-
     if {
         "1x2",
         "asian_handicap",
@@ -2519,16 +2172,10 @@ def extract_bookmakers(payload):
     ):
 
         return [{
-            "name":
-                "Bet 365",
-
-            "slug":
-                "bet365",
-
-            "odds":
-                payload,
+            "name": "Bet 365",
+            "slug": "bet365",
+            "odds": payload,
         }]
-
 
     return []
 
@@ -2536,36 +2183,20 @@ def extract_bookmakers(payload):
 def parse_odds_response(payload):
 
     result = {
-
-        "odds":
-            None,
-
-        "totals":
-            {},
-
-        "btts":
-            None,
-
-        "handicaps":
-            None,
-
-        "bookmaker":
-            None,
-
-        "available_markets":
-            [],
+        "odds": None,
+        "totals": {},
+        "btts": None,
+        "handicaps": None,
+        "bookmaker": None,
+        "available_markets": [],
     }
-
 
     bookmakers = extract_bookmakers(
         payload
     )
 
-
     if not bookmakers:
-
         return result
-
 
     bookmaker = next(
         (
@@ -2584,7 +2215,6 @@ def parse_odds_response(payload):
         bookmakers[0]
     )
 
-
     result[
         "bookmaker"
     ] = (
@@ -2595,7 +2225,6 @@ def parse_odds_response(payload):
         "Bet 365"
     )
 
-
     odds = (
         bookmaker.get(
             "odds"
@@ -2604,14 +2233,11 @@ def parse_odds_response(payload):
         {}
     )
 
-
     if not isinstance(
         odds,
         dict
     ):
-
         return result
-
 
     result[
         "available_markets"
@@ -2619,13 +2245,11 @@ def parse_odds_response(payload):
         odds.keys()
     )
 
-
     snapshot = first_snapshot(
         odds.get(
             "1x2"
         )
     )
-
 
     if isinstance(
         snapshot,
@@ -2639,25 +2263,21 @@ def parse_odds_response(payload):
                 snapshot.get(
                     "home"
                 ),
-
             "draw":
                 snapshot.get(
                     "draw"
                 ),
-
             "away":
                 snapshot.get(
                     "away"
                 ),
         }
 
-
     snapshot = first_snapshot(
         odds.get(
             "btts"
         )
     )
-
 
     if isinstance(
         snapshot,
@@ -2671,13 +2291,11 @@ def parse_odds_response(payload):
                 snapshot.get(
                     "yes"
                 ),
-
             "no":
                 snapshot.get(
                     "no"
                 ),
         }
-
 
     fixed_lines = (
         odds.get(
@@ -2691,7 +2309,6 @@ def parse_odds_response(payload):
         []
     )
 
-
     if isinstance(
         fixed_lines,
         dict
@@ -2704,7 +2321,6 @@ def parse_odds_response(payload):
             or
             []
         )
-
 
     if isinstance(
         fixed_lines,
@@ -2721,29 +2337,22 @@ def parse_odds_response(payload):
                     )
                 )
 
-
             except Exception:
 
                 continue
 
-
             if line not in TOTAL_POINTS:
-
                 continue
-
 
             snapshot = first_snapshot(
                 item
             )
 
-
             if not isinstance(
                 snapshot,
                 dict
             ):
-
                 continue
-
 
             result[
                 "totals"
@@ -2756,20 +2365,17 @@ def parse_odds_response(payload):
                     snapshot.get(
                         "over"
                     ),
-
                 "under":
                     snapshot.get(
                         "under"
                     ),
             }
 
-
     snapshot = first_snapshot(
         odds.get(
             "goal_line"
         )
     )
-
 
     if isinstance(
         snapshot,
@@ -2784,11 +2390,9 @@ def parse_odds_response(payload):
                 )
             )
 
-
         except Exception:
 
             line = None
-
 
         if (
             line in TOTAL_POINTS
@@ -2796,8 +2400,7 @@ def parse_odds_response(payload):
             str(
                 line
             )
-            not in
-            result[
+            not in result[
                 "totals"
             ]
         ):
@@ -2813,20 +2416,17 @@ def parse_odds_response(payload):
                     snapshot.get(
                         "over"
                     ),
-
                 "under":
                     snapshot.get(
                         "under"
                     ),
             }
 
-
     snapshot = first_snapshot(
         odds.get(
             "asian_handicap"
         )
     )
-
 
     if isinstance(
         snapshot,
@@ -2841,16 +2441,15 @@ def parse_odds_response(payload):
                 )
             )
 
-
         except Exception:
 
             home_line = None
 
-
         if home_line is not None:
 
-            away_line = -home_line
-
+            away_line = (
+                -home_line
+            )
 
             home_key = (
                 str(
@@ -2864,7 +2463,6 @@ def parse_odds_response(payload):
                 )
             )
 
-
             away_key = (
                 str(
                     away_line
@@ -2876,7 +2474,6 @@ def parse_odds_response(payload):
                     "."
                 )
             )
-
 
             result[
                 "handicaps"
@@ -2903,13 +2500,8 @@ def parse_odds_response(payload):
                     away_line,
             }
 
-
     return result
 
-
-# =========================================================
-# MATCH NORMALIZER
-# =========================================================
 
 def get_league_key_by_id(
     league_id
@@ -2922,7 +2514,6 @@ def get_league_key_by_id(
                 league_id
             )
         )
-
 
     except Exception:
 
@@ -2942,7 +2533,6 @@ def make_match_from_item(
         {}
     )
 
-
     home = (
         teams.get(
             "home"
@@ -2950,7 +2540,6 @@ def make_match_from_item(
         or
         {}
     )
-
 
     away = (
         teams.get(
@@ -2960,7 +2549,6 @@ def make_match_from_item(
         {}
     )
 
-
     league = (
         item.get(
             "league"
@@ -2969,11 +2557,9 @@ def make_match_from_item(
         {}
     )
 
-
     league_id = league.get(
         "id"
     )
-
 
     league_key = (
         get_league_key_by_id(
@@ -2983,7 +2569,6 @@ def make_match_from_item(
         fallback_league_key
     )
 
-
     league_config = (
         LEAGUES.get(
             league_key
@@ -2992,22 +2577,16 @@ def make_match_from_item(
         {}
     )
 
-
     home_name = home.get(
         "name",
         "Unknown"
     )
-
 
     away_name = away.get(
         "name",
         "Unknown"
     )
 
-
-    # ВАЖНО:
-    # только быстрый кэш логотипов,
-    # без внешних запросов.
     home_logo = (
         home.get(
             "logo"
@@ -3017,7 +2596,6 @@ def make_match_from_item(
             home_name
         )
     )
-
 
     away_logo = (
         away.get(
@@ -3029,13 +2607,11 @@ def make_match_from_item(
         )
     )
 
-
     parsed = parse_odds_response(
         item.get(
             "odds"
         )
     )
-
 
     goals = (
         item.get(
@@ -3044,7 +2620,6 @@ def make_match_from_item(
         or
         {}
     )
-
 
     match = {
 
@@ -3164,7 +2739,6 @@ def make_match_from_item(
             ),
     }
 
-
     totals = (
         parsed.get(
             "totals"
@@ -3172,7 +2746,6 @@ def make_match_from_item(
         or
         {}
     )
-
 
     for line in TOTAL_POINTS:
 
@@ -3187,14 +2760,12 @@ def make_match_from_item(
             )
         )
 
-
         value = totals.get(
             str(
                 line
             ),
             {}
         )
-
 
         if (
             value.get(
@@ -3211,20 +2782,16 @@ def make_match_from_item(
             match[
                 field
             ] = {
-                "point":
-                    line,
-
+                "point": line,
                 "over":
                     value.get(
                         "over"
                     ),
-
                 "under":
                     value.get(
                         "under"
                     ),
             }
-
 
         else:
 
@@ -3232,13 +2799,8 @@ def make_match_from_item(
                 field
             ] = None
 
-
     return match
 
-
-# =========================================================
-# FIXTURES
-# =========================================================
 
 def fetch_league_id_fixtures(
     league_key,
@@ -3268,17 +2830,13 @@ def fetch_league_id_fixtures(
             "order":
                 "asc",
 
-            "page":
-                1,
+            "page": 1,
 
-            "per_page":
-                50,
+            "per_page": 50,
         }
     )
 
-
     result = []
-
 
     for item in (
         data.get(
@@ -3295,7 +2853,6 @@ def fetch_league_id_fixtures(
                 league_key
             )
 
-
             if match.get(
                 "fixture_id"
             ):
@@ -3304,14 +2861,12 @@ def fetch_league_id_fixtures(
                     match
                 )
 
-
         except Exception as error:
 
             print(
                 "Fixture parse error:",
                 error
             )
-
 
     return result
 
@@ -3327,11 +2882,9 @@ def load_league_fixtures(
             "Неизвестная лига"
         )
 
-
     cached = league_fixture_cache.get(
         league_key
     )
-
 
     if (
         not force
@@ -3351,16 +2904,13 @@ def load_league_fixtures(
             "data"
         ]
 
-
     now = datetime.now(
         timezone.utc
     )
 
-
     start_ts = int(
         now.timestamp()
     )
-
 
     end_ts = int(
         (
@@ -3373,7 +2923,6 @@ def load_league_fixtures(
         ).timestamp()
     )
 
-
     league_ids = (
         LEAGUES[
             league_key
@@ -3382,18 +2931,21 @@ def load_league_fixtures(
         ]
     )
 
-
     result = []
 
+    successful_requests = 0
 
-    # Если у турнира несколько ID,
-    # они тоже загружаются параллельно.
+    request_errors = []
+
     with ThreadPoolExecutor(
         max_workers=
-            min(
-                3,
-                len(
-                    league_ids
+            max(
+                1,
+                min(
+                    2,
+                    len(
+                        league_ids
+                    )
                 )
             )
     ) as executor:
@@ -3410,19 +2962,29 @@ def load_league_fixtures(
             in league_ids
         ]
 
-
         for future in as_completed(
             futures
         ):
 
             try:
 
-                result.extend(
+                loaded = (
                     future.result()
                 )
 
+                successful_requests += 1
+
+                result.extend(
+                    loaded
+                )
 
             except Exception as error:
+
+                request_errors.append(
+                    str(
+                        error
+                    )
+                )
 
                 print(
                     "League load error:",
@@ -3430,9 +2992,42 @@ def load_league_fixtures(
                     error
                 )
 
+    if successful_requests == 0:
+
+        if (
+            cached
+            and
+            cached.get(
+                "data"
+            ) is not None
+        ):
+
+            return cached[
+                "data"
+            ]
+
+        raise RuntimeError(
+            "Не удалось загрузить "
+            +
+            LEAGUES[
+                league_key
+            ].get(
+                "name",
+                league_key
+            )
+            +
+            (
+                ": "
+                +
+                request_errors[0]
+
+                if request_errors
+
+                else ""
+            )
+        )
 
     unique = {}
-
 
     for match in result:
 
@@ -3442,11 +3037,9 @@ def load_league_fixtures(
             ]
         )
 
-
         unique[
             fixture_id
         ] = match
-
 
         fixture_detail_cache[
             str(
@@ -3455,16 +3048,13 @@ def load_league_fixtures(
         ] = {
             "time":
                 time.time(),
-
             "data":
                 match,
         }
 
-
     result = list(
         unique.values()
     )
-
 
     result.sort(
         key=lambda match:
@@ -3475,17 +3065,14 @@ def load_league_fixtures(
             ""
     )
 
-
     league_fixture_cache[
         league_key
     ] = {
         "time":
             time.time(),
-
         "data":
             result,
     }
-
 
     return result
 
@@ -3496,11 +3083,8 @@ def load_default_fixtures(
 
     result = []
 
-
-    # Ключевое ускорение:
-    # все 5 топ-лиг загружаются одновременно.
     with ThreadPoolExecutor(
-        max_workers=5
+        max_workers=2
     ) as executor:
 
         future_map = {
@@ -3516,7 +3100,6 @@ def load_default_fixtures(
             in DEFAULT_LEAGUES
         }
 
-
         for future in as_completed(
             future_map
         ):
@@ -3527,13 +3110,11 @@ def load_default_fixtures(
                 ]
             )
 
-
             try:
 
                 result.extend(
                     future.result()
                 )
-
 
             except Exception as error:
 
@@ -3543,9 +3124,7 @@ def load_default_fixtures(
                     error
                 )
 
-
     unique = {}
-
 
     for match in result:
 
@@ -3557,11 +3136,9 @@ def load_default_fixtures(
             )
         ] = match
 
-
     result = list(
         unique.values()
     )
-
 
     result.sort(
         key=lambda match:
@@ -3572,14 +3149,12 @@ def load_default_fixtures(
             ""
     )
 
-
     return result
 
 
 def get_all_cached_matches():
 
     unique = {}
-
 
     for cache in (
         league_fixture_cache.values()
@@ -3599,7 +3174,6 @@ def get_all_cached_matches():
                 )
             )
 
-
             if fixture_id:
 
                 unique[
@@ -3607,7 +3181,6 @@ def get_all_cached_matches():
                         fixture_id
                     )
                 ] = match
-
 
     return list(
         unique.values()
@@ -3624,11 +3197,9 @@ def find_cached_fixture(
         )
     )
 
-
     cached = fixture_detail_cache.get(
         key
     )
-
 
     if (
         cached
@@ -3646,13 +3217,8 @@ def find_cached_fixture(
             "data"
         ]
 
-
     return None
 
-
-# =========================================================
-# FIXTURE ODDS
-# =========================================================
 
 def fetch_fixture_odds(
     fixture_id,
@@ -3665,11 +3231,9 @@ def fetch_fixture_odds(
         )
     )
 
-
     cached = odds_cache.get(
         key
     )
-
 
     if (
         not force
@@ -3689,29 +3253,24 @@ def fetch_fixture_odds(
             "data"
         ]
 
-
     data = five_get(
         f"/v1/fixtures/"
         f"{int(fixture_id)}"
         f"/odds"
     )
 
-
     parsed = parse_odds_response(
         data
     )
-
 
     odds_cache[
         key
     ] = {
         "time":
             time.time(),
-
         "data":
             parsed,
     }
-
 
     return parsed
 
@@ -3727,13 +3286,11 @@ def apply_parsed_odds_to_match(
         "odds"
     )
 
-
     match[
         "btts"
     ] = parsed.get(
         "btts"
     )
-
 
     match[
         "handicaps"
@@ -3741,13 +3298,11 @@ def apply_parsed_odds_to_match(
         "handicaps"
     )
 
-
     match[
         "bookmaker"
     ] = parsed.get(
         "bookmaker"
     )
-
 
     totals = (
         parsed.get(
@@ -3756,7 +3311,6 @@ def apply_parsed_odds_to_match(
         or
         {}
     )
-
 
     for line in TOTAL_POINTS:
 
@@ -3771,7 +3325,6 @@ def apply_parsed_odds_to_match(
             )
         )
 
-
         value = totals.get(
             str(
                 line
@@ -3779,19 +3332,15 @@ def apply_parsed_odds_to_match(
             {}
         )
 
-
         match[
             field
         ] = (
             {
-                "point":
-                    line,
-
+                "point": line,
                 "over":
                     value.get(
                         "over"
                     ),
-
                 "under":
                     value.get(
                         "under"
@@ -3810,10 +3359,8 @@ def apply_parsed_odds_to_match(
                 is not None
             )
 
-            else
-            None
+            else None
         )
-
 
     return match
 
@@ -3830,13 +3377,11 @@ def get_fixture(
             fixture_id
         )
 
-
         if cached:
 
             match = dict(
                 cached
             )
-
 
             if (
                 with_odds
@@ -3852,26 +3397,20 @@ def get_fixture(
                         fixture_id
                     )
 
-
                     apply_parsed_odds_to_match(
                         match,
                         parsed
                     )
 
-
                 except Exception:
-
                     pass
 
-
             return match
-
 
     data = five_get(
         f"/v1/fixtures/"
         f"{int(fixture_id)}"
     )
-
 
     item = (
         data.get(
@@ -3881,11 +3420,9 @@ def get_fixture(
         {}
     )
 
-
     match = make_match_from_item(
         item
     )
-
 
     if (
         with_odds
@@ -3901,17 +3438,13 @@ def get_fixture(
                 fixture_id
             )
 
-
             apply_parsed_odds_to_match(
                 match,
                 parsed
             )
 
-
         except Exception:
-
             pass
-
 
     fixture_detail_cache[
         str(
@@ -3922,18 +3455,12 @@ def get_fixture(
     ] = {
         "time":
             time.time(),
-
         "data":
             match,
     }
 
-
     return match
 
-
-# =========================================================
-# BET MARKET
-# =========================================================
 
 def normalize_line_key(line):
 
@@ -3967,7 +3494,6 @@ def match_market_odd(
         ).strip()
     )
 
-
     odds = (
         match.get(
             "odds"
@@ -3975,7 +3501,6 @@ def match_market_odd(
         or
         {}
     )
-
 
     if selection == "П1":
 
@@ -3986,7 +3511,6 @@ def match_market_odd(
             "П1",
         )
 
-
     if selection == "X":
 
         return (
@@ -3995,7 +3519,6 @@ def match_market_odd(
             ),
             "X",
         )
-
 
     if selection == "П2":
 
@@ -4006,7 +3529,6 @@ def match_market_odd(
             "П2",
         )
 
-
     btts = (
         match.get(
             "btts"
@@ -4014,7 +3536,6 @@ def match_market_odd(
         or
         {}
     )
-
 
     if selection == "ОЗ Да":
 
@@ -4025,7 +3546,6 @@ def match_market_odd(
             "ОЗ Да",
         )
 
-
     if selection == "ОЗ Нет":
 
         return (
@@ -4035,12 +3555,10 @@ def match_market_odd(
             "ОЗ Нет",
         )
 
-
     total_match = re.fullmatch(
         r"Т([БМ])\s*([0-9.]+)",
         selection
     )
-
 
     if total_match:
 
@@ -4049,7 +3567,6 @@ def match_market_odd(
                 2
             )
         )
-
 
         field = (
             "total_"
@@ -4062,7 +3579,6 @@ def match_market_odd(
             )
         )
 
-
         market = (
             match.get(
                 field
@@ -4070,7 +3586,6 @@ def match_market_odd(
             or
             {}
         )
-
 
         side = (
             "over"
@@ -4084,7 +3599,6 @@ def match_market_odd(
             "under"
         )
 
-
         return (
             market.get(
                 side
@@ -4095,12 +3609,10 @@ def match_market_odd(
             f"{line}",
         )
 
-
     handicap_match = re.fullmatch(
         r"Ф([12])\(([-+]?[0-9.]+)\)",
         selection
     )
-
 
     if handicap_match:
 
@@ -4110,13 +3622,11 @@ def match_market_odd(
             )
         )
 
-
         line = float(
             handicap_match.group(
                 2
             )
         )
-
 
         side = (
             "home"
@@ -4125,11 +3635,9 @@ def match_market_odd(
             "away"
         )
 
-
         line_key = normalize_line_key(
             line
         )
-
 
         odd = (
             (
@@ -4148,7 +3656,6 @@ def match_market_odd(
             )
         )
 
-
         signed = (
             f"+{line_key}"
             if line > 0
@@ -4156,12 +3663,10 @@ def match_market_odd(
             line_key
         )
 
-
         return (
             odd,
             f"Ф{team_number}({signed})",
         )
-
 
     return (
         None,
@@ -4179,13 +3684,11 @@ def resolve_canonical_bet(
         True
     )
 
-
     kickoff = parse_match_datetime(
         match.get(
             "date"
         )
     )
-
 
     if (
         kickoff
@@ -4201,14 +3704,12 @@ def resolve_canonical_bet(
             "Матч уже начался. Ставки закрыты"
         )
 
-
     odd, canonical = (
         match_market_odd(
             match,
             selection
         )
     )
-
 
     if odd is None:
 
@@ -4217,17 +3718,14 @@ def resolve_canonical_bet(
             True
         )
 
-
         temp = dict(
             match
         )
-
 
         apply_parsed_odds_to_match(
             temp,
             parsed
         )
-
 
         odd, canonical = (
             match_market_odd(
@@ -4236,13 +3734,11 @@ def resolve_canonical_bet(
             )
         )
 
-
     if odd is None:
 
         raise ValueError(
             "Этот исход сейчас недоступен"
         )
-
 
     odd = round(
         float(
@@ -4250,7 +3746,6 @@ def resolve_canonical_bet(
         ),
         4
     )
-
 
     return {
 
@@ -4277,10 +3772,6 @@ def resolve_canonical_bet(
     }
 
 
-# =========================================================
-# RESULT CALCULATION
-# =========================================================
-
 def calculate_bet_result(
     selection,
     home_score,
@@ -4293,7 +3784,6 @@ def calculate_bet_result(
         away_score
     )
 
-
     if selection == "П1":
 
         return (
@@ -4302,7 +3792,6 @@ def calculate_bet_result(
             else
             "loss"
         )
-
 
     if selection == "X":
 
@@ -4313,7 +3802,6 @@ def calculate_bet_result(
             "loss"
         )
 
-
     if selection == "П2":
 
         return (
@@ -4322,7 +3810,6 @@ def calculate_bet_result(
             else
             "loss"
         )
-
 
     if selection == "ОЗ Да":
 
@@ -4335,7 +3822,6 @@ def calculate_bet_result(
             "loss"
         )
 
-
     if selection == "ОЗ Нет":
 
         return (
@@ -4347,12 +3833,10 @@ def calculate_bet_result(
             "loss"
         )
 
-
     total_match = re.fullmatch(
         r"Т([БМ])\s*([0-9.]+)",
         selection
     )
-
 
     if total_match:
 
@@ -4361,7 +3845,6 @@ def calculate_bet_result(
                 2
             )
         )
-
 
         if total_match.group(
             1
@@ -4375,7 +3858,6 @@ def calculate_bet_result(
 
             return "refund"
 
-
         if total < line:
             return "win"
 
@@ -4384,12 +3866,10 @@ def calculate_bet_result(
 
         return "refund"
 
-
     handicap_match = re.fullmatch(
         r"Ф([12])\(([-+]?[0-9.]+)\)",
         selection
     )
-
 
     if handicap_match:
 
@@ -4399,13 +3879,11 @@ def calculate_bet_result(
             )
         )
 
-
         handicap = float(
             handicap_match.group(
                 2
             )
         )
-
 
         if team == 1:
 
@@ -4417,7 +3895,6 @@ def calculate_bet_result(
                 away_score
             )
 
-
         else:
 
             value = (
@@ -4428,7 +3905,6 @@ def calculate_bet_result(
                 home_score
             )
 
-
         if value > 0:
             return "win"
 
@@ -4437,13 +3913,8 @@ def calculate_bet_result(
 
         return "refund"
 
-
     return None
 
-
-# =========================================================
-# RESULTS
-# =========================================================
 
 def get_result(
     fixture_id
@@ -4455,11 +3926,9 @@ def get_result(
         )
     )
 
-
     cached = result_cache.get(
         key
     )
-
 
     if (
         cached
@@ -4477,7 +3946,6 @@ def get_result(
             "data"
         ]
 
-
     try:
 
         data = get_fixture(
@@ -4486,20 +3954,16 @@ def get_result(
             True
         )
 
-
         result_cache[
             key
         ] = {
             "time":
                 time.time(),
-
             "data":
                 data,
         }
 
-
         return data
-
 
     except Exception as error:
 
@@ -4509,22 +3973,15 @@ def get_result(
             error
         )
 
-
         return None
 
-
-# =========================================================
-# SETTLEMENT
-# =========================================================
 
 def settle_user_bets(
     telegram_id
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -4533,9 +3990,7 @@ def settle_user_bets(
             selection,
             amount,
             possible
-
         FROM bets
-
         WHERE
             telegram_id = %s
             AND
@@ -4545,9 +4000,7 @@ def settle_user_bets(
             AND
             (
                 kickoff_at IS NULL
-
                 OR
-
                 kickoff_at <=
                     NOW()
                     -
@@ -4558,9 +4011,7 @@ def settle_user_bets(
         SETTLEMENT_AFTER_KICKOFF_MINUTES,
     ))
 
-
     rows = cur.fetchall()
-
 
     for row in rows:
 
@@ -4572,11 +4023,9 @@ def settle_user_bets(
             possible,
         ) = row
 
-
         match = get_result(
             fixture_id
         )
-
 
         if (
             not match
@@ -4590,28 +4039,22 @@ def settle_user_bets(
             !=
             "finished"
         ):
-
             continue
-
 
         home_score = match.get(
             "home_score"
         )
 
-
         away_score = match.get(
             "away_score"
         )
-
 
         if (
             home_score is None
             or
             away_score is None
         ):
-
             continue
-
 
         result = calculate_bet_result(
             selection,
@@ -4623,51 +4066,39 @@ def settle_user_bets(
             )
         )
 
-
         if result == "win":
 
             status = "Выиграла"
-
             payout = int(
                 possible
             )
 
-
         elif result == "refund":
 
             status = "Возврат"
-
             payout = int(
                 amount
             )
 
-
         elif result == "loss":
 
             status = "Проиграла"
-
             payout = 0
 
-
         else:
-
             continue
-
 
         score = (
             f"{int(home_score)}:"
             f"{int(away_score)}"
         )
 
-
         cur.execute("""
             UPDATE bets
-
             SET
                 status = %s,
                 settled = TRUE,
                 score = %s
-
             WHERE
                 id = %s
                 AND
@@ -4678,27 +4109,22 @@ def settle_user_bets(
             bet_id,
         ))
 
-
         if cur.rowcount == 1:
 
             if payout > 0:
 
                 cur.execute("""
                     UPDATE users
-
                     SET
                         balance =
                             balance + %s,
-
                         updated_at =
                             NOW()
-
                     WHERE telegram_id = %s
                 """, (
                     payout,
                     telegram_id,
                 ))
-
 
             if result == "win":
 
@@ -4708,17 +4134,14 @@ def settle_user_bets(
                     cur
                 )
 
-
                 increment_daily_win(
                     telegram_id,
                     cur
                 )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
 
@@ -4727,17 +4150,13 @@ def settle_user_parlays(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
             id,
             amount
-
         FROM parlays
-
         WHERE
             telegram_id = %s
             AND
@@ -4748,11 +4167,12 @@ def settle_user_parlays(
         telegram_id,
     ))
 
+    parlay_rows = cur.fetchall()
 
-    parlays = cur.fetchall()
-
-
-    for parlay_id, amount in parlays:
+    for (
+        parlay_id,
+        amount
+    ) in parlay_rows:
 
         cur.execute("""
             SELECT
@@ -4762,26 +4182,20 @@ def settle_user_parlays(
                 odd,
                 status,
                 kickoff_at
-
             FROM parlay_legs
-
             WHERE parlay_id = %s
-
             ORDER BY id ASC
         """, (
             parlay_id,
         ))
 
-
         legs = cur.fetchall()
-
 
         any_loss = False
 
         all_resolved = True
 
         effective_odd = 1.0
-
 
         for leg in legs:
 
@@ -4794,13 +4208,10 @@ def settle_user_parlays(
                 kickoff_at,
             ) = leg
 
-
             if leg_status == "Проиграла":
 
                 any_loss = True
-
                 continue
-
 
             if leg_status == "Выиграла":
 
@@ -4810,11 +4221,8 @@ def settle_user_parlays(
 
                 continue
 
-
             if leg_status == "Возврат":
-
                 continue
-
 
             if kickoff_at:
 
@@ -4832,14 +4240,11 @@ def settle_user_parlays(
                 ):
 
                     all_resolved = False
-
                     continue
-
 
             match = get_result(
                 fixture_id
             )
-
 
             if (
                 not match
@@ -4855,19 +4260,15 @@ def settle_user_parlays(
             ):
 
                 all_resolved = False
-
                 continue
-
 
             home_score = match.get(
                 "home_score"
             )
 
-
             away_score = match.get(
                 "away_score"
             )
-
 
             if (
                 home_score is None
@@ -4876,9 +4277,7 @@ def settle_user_parlays(
             ):
 
                 all_resolved = False
-
                 continue
-
 
             result = calculate_bet_result(
                 selection,
@@ -4890,7 +4289,6 @@ def settle_user_parlays(
                 )
             )
 
-
             if result == "win":
 
                 new_status = (
@@ -4901,13 +4299,11 @@ def settle_user_parlays(
                     odd
                 )
 
-
             elif result == "refund":
 
                 new_status = (
                     "Возврат"
                 )
-
 
             elif result == "loss":
 
@@ -4917,27 +4313,21 @@ def settle_user_parlays(
 
                 any_loss = True
 
-
             else:
 
                 all_resolved = False
-
                 continue
-
 
             score = (
                 f"{int(home_score)}:"
                 f"{int(away_score)}"
             )
 
-
             cur.execute("""
                 UPDATE parlay_legs
-
                 SET
                     status = %s,
                     score = %s
-
                 WHERE id = %s
             """, (
                 new_status,
@@ -4945,22 +4335,17 @@ def settle_user_parlays(
                 leg_id,
             ))
 
-
         if any_loss:
 
             cur.execute("""
                 UPDATE parlays
-
                 SET
                     status =
                         'Проиграла',
-
                     settled =
                         TRUE,
-
                     settled_at =
                         NOW()
-
                 WHERE
                     id = %s
                     AND
@@ -4969,14 +4354,10 @@ def settle_user_parlays(
                 parlay_id,
             ))
 
-
             continue
-
 
         if not all_resolved:
-
             continue
-
 
         if effective_odd <= 1.000001:
 
@@ -4987,7 +4368,6 @@ def settle_user_parlays(
             payout = int(
                 amount
             )
-
 
         else:
 
@@ -5005,15 +4385,12 @@ def settle_user_parlays(
                 0.5
             )
 
-
         cur.execute("""
             UPDATE parlays
-
             SET
                 status = %s,
                 settled = TRUE,
                 settled_at = NOW()
-
             WHERE
                 id = %s
                 AND
@@ -5023,7 +4400,6 @@ def settle_user_parlays(
             parlay_id,
         ))
 
-
         if (
             cur.rowcount == 1
             and
@@ -5032,20 +4408,16 @@ def settle_user_parlays(
 
             cur.execute("""
                 UPDATE users
-
                 SET
                     balance =
                         balance + %s,
-
                     updated_at =
                         NOW()
-
                 WHERE telegram_id = %s
             """, (
                 payout,
                 telegram_id,
             ))
-
 
             if final_status == "Выиграла":
 
@@ -5055,32 +4427,23 @@ def settle_user_parlays(
                     cur
                 )
 
-
                 increment_daily_win(
                     telegram_id,
                     cur
                 )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
-
-# =========================================================
-# BET LISTS
-# =========================================================
 
 def get_user_bets(
     telegram_id
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -5095,58 +4458,31 @@ def get_user_bets(
             settled,
             score,
             created_at
-
         FROM bets
-
         WHERE telegram_id = %s
-
         ORDER BY id DESC
     """, (
         telegram_id,
     ))
 
-
     rows = cur.fetchall()
 
-
     cur.close()
-
     conn.close()
-
 
     return [
 
         {
-            "id":
-                row[0],
-
-            "fixture_id":
-                row[1],
-
-            "match":
-                row[2],
-
-            "selection":
-                row[3],
-
-            "odd":
-                row[4],
-
-            "amount":
-                row[5],
-
-            "possible":
-                row[6],
-
-            "status":
-                row[7],
-
-            "settled":
-                row[8],
-
-            "score":
-                row[9],
-
+            "id": row[0],
+            "fixture_id": row[1],
+            "match": row[2],
+            "selection": row[3],
+            "odd": row[4],
+            "amount": row[5],
+            "possible": row[6],
+            "status": row[7],
+            "settled": row[8],
+            "score": row[9],
             "created_at":
                 row[10].isoformat()
                 if row[10]
@@ -5162,9 +4498,7 @@ def get_user_parlays(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -5176,27 +4510,22 @@ def get_user_parlays(
             settled,
             created_at,
             settled_at
-
         FROM parlays
-
         WHERE telegram_id = %s
-
         ORDER BY id DESC
     """, (
         telegram_id,
     ))
 
-
     rows = cur.fetchall()
-
 
     result = []
 
-
     for row in rows:
 
-        parlay_id = row[0]
-
+        parlay_id = (
+            row[0]
+        )
 
         cur.execute("""
             SELECT
@@ -5207,65 +4536,36 @@ def get_user_parlays(
                 odd,
                 status,
                 score
-
             FROM parlay_legs
-
             WHERE parlay_id = %s
-
             ORDER BY id ASC
         """, (
             parlay_id,
         ))
 
-
         legs = [
 
             {
-                "id":
-                    leg[0],
-
-                "fixture_id":
-                    leg[1],
-
-                "match":
-                    leg[2],
-
-                "selection":
-                    leg[3],
-
-                "odd":
-                    leg[4],
-
-                "status":
-                    leg[5],
-
-                "score":
-                    leg[6],
+                "id": leg[0],
+                "fixture_id": leg[1],
+                "match": leg[2],
+                "selection": leg[3],
+                "odd": leg[4],
+                "status": leg[5],
+                "score": leg[6],
             }
 
             for leg in cur.fetchall()
         ]
 
-
         result.append({
 
-            "id":
-                row[0],
-
-            "amount":
-                row[1],
-
-            "total_odd":
-                row[2],
-
-            "possible":
-                row[3],
-
-            "status":
-                row[4],
-
-            "settled":
-                row[5],
+            "id": row[0],
+            "amount": row[1],
+            "total_odd": row[2],
+            "possible": row[3],
+            "status": row[4],
+            "settled": row[5],
 
             "created_at":
                 row[6].isoformat()
@@ -5281,58 +4581,41 @@ def get_user_parlays(
                 legs,
         })
 
-
     cur.close()
-
     conn.close()
-
 
     return result
 
-
-# =========================================================
-# STATS
-# =========================================================
 
 def get_profile_stats(
     telegram_id
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
             COUNT(*),
-
             COUNT(*) FILTER (
                 WHERE status = 'Активна'
             ),
-
             COUNT(*) FILTER (
                 WHERE status = 'Выиграла'
             ),
-
             COUNT(*) FILTER (
                 WHERE status = 'Проиграла'
             ),
-
             COUNT(*) FILTER (
                 WHERE status = 'Возврат'
             )
-
         FROM bets
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
 
-
     row = cur.fetchone()
-
 
     total = int(
         row[0] or 0
@@ -5354,19 +4637,19 @@ def get_profile_stats(
         row[4] or 0
     )
 
-
     win_rate = (
         round(
             wins
             /
             (
-                wins + losses
+                wins
+                +
+                losses
             )
             *
             100,
             1
         )
-
         if (
             wins
             +
@@ -5374,39 +4657,28 @@ def get_profile_stats(
             >
             0
         )
-
-        else
-        0
+        else 0
     )
-
 
     cur.execute("""
         SELECT
             COUNT(*),
-
             COUNT(*) FILTER (
                 WHERE status = 'Выиграла'
             ),
-
             COUNT(*) FILTER (
                 WHERE status = 'Проиграла'
             )
-
         FROM parlays
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
 
-
     parlay = cur.fetchone()
 
-
     cur.close()
-
     conn.close()
-
 
     return {
 
@@ -5454,10 +4726,6 @@ def get_profile_stats(
     }
 
 
-# =========================================================
-# ACHIEVEMENTS
-# =========================================================
-
 def get_achievements(
     telegram_id
 ):
@@ -5466,63 +4734,46 @@ def get_achievements(
         telegram_id
     )
 
-
     if not user:
-
         return []
-
 
     xp = int(
         user[
             "xp"
         ]
-        or
-        0
+        or 0
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT COUNT(*)
-
         FROM bets
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
-
 
     bets_count = int(
         cur.fetchone()[0]
     )
 
-
     cur.execute("""
         SELECT COUNT(*)
-
         FROM parlays
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
 
-
     parlay_count = int(
         cur.fetchone()[0]
     )
 
-
     cur.execute("""
         SELECT COUNT(*)
-
         FROM bets
-
         WHERE
             telegram_id = %s
             AND
@@ -5531,22 +4782,17 @@ def get_achievements(
         telegram_id,
     ))
 
-
     wins = int(
         cur.fetchone()[0]
     )
 
-
     cur.execute("""
         SELECT achievement_key
-
         FROM achievement_claims
-
         WHERE telegram_id = %s
     """, (
         telegram_id,
     ))
-
 
     claimed = {
         row[0]
@@ -5554,11 +4800,8 @@ def get_achievements(
         in cur.fetchall()
     }
 
-
     cur.close()
-
     conn.close()
-
 
     values = {
 
@@ -5582,9 +4825,7 @@ def get_achievements(
             0,
     }
 
-
     result = []
-
 
     for achievement in ACHIEVEMENTS:
 
@@ -5594,7 +4835,6 @@ def get_achievements(
             ],
             0
         )
-
 
         result.append({
 
@@ -5623,22 +4863,15 @@ def get_achievements(
                 claimed,
         })
 
-
     return result
 
-
-# =========================================================
-# FAVORITES
-# =========================================================
 
 def get_user_favorites(
     telegram_id
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -5647,27 +4880,20 @@ def get_user_favorites(
             kickoff_at,
             notifications_enabled,
             notification_sent
-
         FROM match_favorites
-
         WHERE
             telegram_id = %s
             AND
             kickoff_at > NOW()
-
         ORDER BY kickoff_at ASC
     """, (
         telegram_id,
     ))
 
-
     rows = cur.fetchall()
 
-
     cur.close()
-
     conn.close()
-
 
     return [
 
@@ -5710,13 +4936,11 @@ def add_favorite_match(
         False
     )
 
-
     kickoff = parse_match_datetime(
         match.get(
             "date"
         )
     )
-
 
     if not kickoff:
 
@@ -5724,11 +4948,8 @@ def add_favorite_match(
             "Не удалось определить время матча"
         )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         INSERT INTO match_favorites (
@@ -5737,47 +4958,36 @@ def add_favorite_match(
             match_name,
             kickoff_at
         )
-
         VALUES (
             %s,
             %s,
             %s,
             %s
         )
-
         ON CONFLICT (
             telegram_id,
             fixture_id
         )
-
         DO UPDATE SET
             match_name =
                 EXCLUDED.match_name,
-
             kickoff_at =
                 EXCLUDED.kickoff_at,
-
             notifications_enabled =
                 TRUE,
-
             updated_at =
                 NOW()
     """, (
         telegram_id,
-
         fixture_id,
-
         f"{match['home']} — "
         f"{match['away']}",
-
         kickoff,
     ))
-
 
     conn.commit()
 
     cur.close()
-
     conn.close()
 
 
@@ -5787,13 +4997,10 @@ def remove_favorite_match(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         DELETE FROM match_favorites
-
         WHERE
             telegram_id = %s
             AND
@@ -5803,11 +5010,9 @@ def remove_favorite_match(
         fixture_id,
     ))
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
 
@@ -5816,22 +5021,16 @@ def get_user_favorite_teams(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT team_name
-
         FROM favorite_teams
-
         WHERE telegram_id = %s
-
         ORDER BY created_at ASC
     """, (
         telegram_id,
     ))
-
 
     result = [
         row[0]
@@ -5839,11 +5038,8 @@ def get_user_favorite_teams(
         in cur.fetchall()
     ]
 
-
     cur.close()
-
     conn.close()
-
 
     return result
 
@@ -5857,11 +5053,8 @@ def add_favorite_team(
         team_name
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         INSERT INTO favorite_teams (
@@ -5869,18 +5062,15 @@ def add_favorite_team(
             team_name,
             normalized_name
         )
-
         VALUES (
             %s,
             %s,
             %s
         )
-
         ON CONFLICT (
             telegram_id,
             normalized_name
         )
-
         DO UPDATE SET
             team_name =
                 EXCLUDED.team_name
@@ -5890,11 +5080,9 @@ def add_favorite_team(
         key,
     ))
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
 
@@ -5904,13 +5092,10 @@ def remove_favorite_team(
 ):
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         DELETE FROM favorite_teams
-
         WHERE
             telegram_id = %s
             AND
@@ -5922,17 +5107,11 @@ def remove_favorite_team(
         ),
     ))
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
-
-# =========================================================
-# TELEGRAM
-# =========================================================
 
 def send_telegram_message(
     telegram_id,
@@ -5951,7 +5130,6 @@ def send_telegram_message(
                 int(
                     telegram_id
                 ),
-
             "text":
                 str(
                     text
@@ -5961,9 +5139,7 @@ def send_telegram_message(
         timeout=10
     )
 
-
     data = response.json()
-
 
     if not data.get(
         "ok"
@@ -5976,16 +5152,10 @@ def send_telegram_message(
         )
 
 
-# =========================================================
-# RESULT NOTIFICATIONS
-# =========================================================
-
 def process_result_notifications():
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -5997,22 +5167,16 @@ def process_result_notifications():
             possible,
             status,
             score
-
         FROM bets
-
         WHERE
             settled = TRUE
             AND
             result_notified = FALSE
-
         ORDER BY id ASC
-
         LIMIT 50
     """)
 
-
     singles = cur.fetchall()
-
 
     for row in singles:
 
@@ -6027,7 +5191,6 @@ def process_result_notifications():
             score,
         ) = row
 
-
         if status == "Выиграла":
 
             message = (
@@ -6038,7 +5201,6 @@ def process_result_notifications():
                 f"🪙 +{possible} монет"
             )
 
-
         elif status == "Проиграла":
 
             message = (
@@ -6048,7 +5210,6 @@ def process_result_notifications():
                 f"🏁 Счёт: {score}"
             )
 
-
         else:
 
             message = (
@@ -6057,7 +5218,6 @@ def process_result_notifications():
                 f"🪙 +{amount} монет"
             )
 
-
         try:
 
             send_telegram_message(
@@ -6065,19 +5225,15 @@ def process_result_notifications():
                 message
             )
 
-
             cur.execute("""
                 UPDATE bets
-
                 SET
                     result_notified = TRUE,
                     result_notified_at = NOW()
-
                 WHERE id = %s
             """, (
                 bet_id,
             ))
-
 
         except Exception as error:
 
@@ -6085,7 +5241,6 @@ def process_result_notifications():
                 "Bet notification error:",
                 error
             )
-
 
     cur.execute("""
         SELECT
@@ -6095,24 +5250,16 @@ def process_result_notifications():
             possible,
             total_odd,
             status
-
         FROM parlays
-
         WHERE
             settled = TRUE
             AND
             result_notified = FALSE
-
         ORDER BY id ASC
-
         LIMIT 50
     """)
 
-
-    parlay_rows = (
-        cur.fetchall()
-    )
-
+    parlay_rows = cur.fetchall()
 
     for row in parlay_rows:
 
@@ -6125,7 +5272,6 @@ def process_result_notifications():
             status,
         ) = row
 
-
         if status == "Выиграла":
 
             message = (
@@ -6135,14 +5281,12 @@ def process_result_notifications():
                 f"🪙 +{possible} монет"
             )
 
-
         elif status == "Проиграла":
 
             message = (
                 "❌ Экспресс проиграл\n\n"
                 f"🧾 Экспресс #{parlay_id}"
             )
-
 
         else:
 
@@ -6152,7 +5296,6 @@ def process_result_notifications():
                 f"🪙 +{amount} монет"
             )
 
-
         try:
 
             send_telegram_message(
@@ -6160,19 +5303,15 @@ def process_result_notifications():
                 message
             )
 
-
             cur.execute("""
                 UPDATE parlays
-
                 SET
                     result_notified = TRUE,
                     result_notified_at = NOW()
-
                 WHERE id = %s
             """, (
                 parlay_id,
             ))
-
 
         except Exception as error:
 
@@ -6181,24 +5320,16 @@ def process_result_notifications():
                 error
             )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
-
-# =========================================================
-# FAVORITE MATCH NOTIFICATIONS
-# =========================================================
 
 def process_match_notifications():
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -6206,9 +5337,7 @@ def process_match_notifications():
             fixture_id,
             match_name,
             kickoff_at
-
         FROM match_favorites
-
         WHERE
             notifications_enabled = TRUE
             AND
@@ -6220,17 +5349,13 @@ def process_match_notifications():
                 NOW()
                 +
                 (%s * INTERVAL '1 minute')
-
         ORDER BY kickoff_at ASC
-
         LIMIT 50
     """, (
         NOTIFICATION_MINUTES_BEFORE,
     ))
 
-
     rows = cur.fetchall()
-
 
     for row in rows:
 
@@ -6240,7 +5365,6 @@ def process_match_notifications():
             match_name,
             kickoff_at,
         ) = row
-
 
         minutes = max(
             1,
@@ -6257,7 +5381,6 @@ def process_match_notifications():
             )
         )
 
-
         try:
 
             send_telegram_message(
@@ -6270,14 +5393,11 @@ def process_match_notifications():
                 )
             )
 
-
             cur.execute("""
                 UPDATE match_favorites
-
                 SET
                     notification_sent = TRUE,
                     updated_at = NOW()
-
                 WHERE
                     telegram_id = %s
                     AND
@@ -6287,7 +5407,6 @@ def process_match_notifications():
                 fixture_id,
             ))
 
-
         except Exception as error:
 
             print(
@@ -6295,54 +5414,35 @@ def process_match_notifications():
                 error
             )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
 
-# =========================================================
-# FAVORITE TEAM NOTIFICATIONS
-# =========================================================
-
 def process_favorite_team_notifications():
 
-    # Никаких загрузок 13 лиг отсюда.
-    # Используем только уже готовый кэш.
     matches = get_all_cached_matches()
 
-
     if not matches:
-
         return
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
             telegram_id,
             team_name,
             normalized_name
-
         FROM favorite_teams
     """)
 
-
-    favorite_rows = (
-        cur.fetchall()
-    )
-
+    favorite_rows = cur.fetchall()
 
     now = datetime.now(
         timezone.utc
     )
-
 
     for match in matches:
 
@@ -6352,18 +5452,14 @@ def process_favorite_team_notifications():
             )
         )
 
-
         if not kickoff:
-
             continue
-
 
         seconds = (
             kickoff
             -
             now
         ).total_seconds()
-
 
         if (
             seconds <= 0
@@ -6374,9 +5470,7 @@ def process_favorite_team_notifications():
             *
             60
         ):
-
             continue
-
 
         home_key = favorite_team_key(
             match.get(
@@ -6384,20 +5478,17 @@ def process_favorite_team_notifications():
             )
         )
 
-
         away_key = favorite_team_key(
             match.get(
                 "away"
             )
         )
 
-
         fixture_id = int(
             match[
                 "fixture_id"
             ]
         )
-
 
         for (
             telegram_id,
@@ -6409,15 +5500,11 @@ def process_favorite_team_notifications():
                 home_key,
                 away_key,
             }:
-
                 continue
-
 
             cur.execute("""
                 SELECT 1
-
                 FROM match_favorites
-
                 WHERE
                     telegram_id = %s
                     AND
@@ -6427,11 +5514,8 @@ def process_favorite_team_notifications():
                 fixture_id,
             ))
 
-
             if cur.fetchone():
-
                 continue
-
 
             cur.execute("""
                 INSERT INTO favorite_team_notifications (
@@ -6439,15 +5523,12 @@ def process_favorite_team_notifications():
                     fixture_id,
                     team_name
                 )
-
                 VALUES (
                     %s,
                     %s,
                     %s
                 )
-
                 ON CONFLICT DO NOTHING
-
                 RETURNING fixture_id
             """, (
                 telegram_id,
@@ -6455,11 +5536,8 @@ def process_favorite_team_notifications():
                 team_name,
             ))
 
-
             if not cur.fetchone():
-
                 continue
-
 
             try:
 
@@ -6476,13 +5554,11 @@ def process_favorite_team_notifications():
                     )
                 )
 
-
             except Exception:
 
                 cur.execute("""
                     DELETE FROM
                     favorite_team_notifications
-
                     WHERE
                         telegram_id = %s
                         AND
@@ -6492,34 +5568,23 @@ def process_favorite_team_notifications():
                     fixture_id,
                 ))
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
 
-
-# =========================================================
-# BACKGROUND WORKERS
-# =========================================================
 
 def get_users_with_due_bets():
 
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT DISTINCT telegram_id
-
         FROM (
 
             SELECT telegram_id
-
             FROM bets
-
             WHERE
                 settled = FALSE
                 AND
@@ -6527,9 +5592,7 @@ def get_users_with_due_bets():
                 AND
                 (
                     kickoff_at IS NULL
-
                     OR
-
                     kickoff_at <=
                         NOW()
                         -
@@ -6539,12 +5602,9 @@ def get_users_with_due_bets():
             UNION
 
             SELECT p.telegram_id
-
             FROM parlays p
-
             JOIN parlay_legs l
                 ON l.parlay_id = p.id
-
             WHERE
                 p.settled = FALSE
                 AND
@@ -6554,9 +5614,7 @@ def get_users_with_due_bets():
                 AND
                 (
                     l.kickoff_at IS NULL
-
                     OR
-
                     l.kickoff_at <=
                         NOW()
                         -
@@ -6564,13 +5622,11 @@ def get_users_with_due_bets():
                 )
 
         ) due
-
         LIMIT 50
     """, (
         SETTLEMENT_AFTER_KICKOFF_MINUTES,
         SETTLEMENT_AFTER_KICKOFF_MINUTES,
     ))
-
 
     users = [
         int(
@@ -6580,11 +5636,8 @@ def get_users_with_due_bets():
         in cur.fetchall()
     ]
 
-
     cur.close()
-
     conn.close()
-
 
     return users
 
@@ -6595,7 +5648,6 @@ def settlement_worker():
         15
     )
 
-
     while True:
 
         try:
@@ -6604,21 +5656,17 @@ def settlement_worker():
                 get_users_with_due_bets()
             )
 
-
             for telegram_id in users:
 
                 settle_user_bets(
                     telegram_id
                 )
 
-
                 settle_user_parlays(
                     telegram_id
                 )
 
-
             process_result_notifications()
-
 
         except Exception as error:
 
@@ -6626,7 +5674,6 @@ def settlement_worker():
                 "Settlement worker error:",
                 error
             )
-
 
         time.sleep(
             SETTLEMENT_CHECK_SECONDS
@@ -6639,13 +5686,11 @@ def notification_worker():
         10
     )
 
-
     while True:
 
         try:
 
             process_match_notifications()
-
 
         except Exception as error:
 
@@ -6653,7 +5698,6 @@ def notification_worker():
                 "Notification worker error:",
                 error
             )
-
 
         time.sleep(
             NOTIFICATION_CHECK_SECONDS
@@ -6666,13 +5710,11 @@ def favorite_team_worker():
         30
     )
 
-
     while True:
 
         try:
 
             process_favorite_team_notifications()
-
 
         except Exception as error:
 
@@ -6680,7 +5722,6 @@ def favorite_team_worker():
                 "Favorite team worker error:",
                 error
             )
-
 
         time.sleep(
             FAVORITE_TEAM_SCAN_SECONDS
@@ -6691,56 +5732,40 @@ def start_workers():
 
     global workers_started
 
-
     with workers_lock:
 
         if workers_started:
-
             return
 
-
         workers_started = True
-
 
         threading.Thread(
             target=
                 settlement_worker,
-
             daemon=
                 True,
-
             name=
                 "betcoin-settlement",
         ).start()
 
-
         threading.Thread(
             target=
                 notification_worker,
-
             daemon=
                 True,
-
             name=
                 "betcoin-match-notifications",
         ).start()
 
-
         threading.Thread(
             target=
                 favorite_team_worker,
-
             daemon=
                 True,
-
             name=
                 "betcoin-team-notifications",
         ).start()
 
-
-# =========================================================
-# ROOT
-# =========================================================
 
 @app.route("/")
 def root():
@@ -6778,10 +5803,6 @@ def root():
             True,
     })
 
-
-# =========================================================
-# LEAGUES
-# =========================================================
 
 @app.route(
     "/api/leagues"
@@ -6826,10 +5847,6 @@ def api_leagues():
     })
 
 
-# =========================================================
-# MATCHES
-# =========================================================
-
 @app.route(
     "/api/matches"
 )
@@ -6846,7 +5863,6 @@ def api_matches():
             ""
         ).strip()
 
-
         force = (
             request.args.get(
                 "refresh"
@@ -6855,9 +5871,7 @@ def api_matches():
             "1"
         )
 
-
         start = time.time()
-
 
         if (
             not league_key
@@ -6871,7 +5885,6 @@ def api_matches():
                 )
             )
 
-
         elif league_key in LEAGUES:
 
             fixtures = (
@@ -6880,7 +5893,6 @@ def api_matches():
                     force
                 )
             )
-
 
         else:
 
@@ -6891,7 +5903,6 @@ def api_matches():
                 "error":
                     "Неизвестная лига",
             }), 400
-
 
         return jsonify({
 
@@ -6917,7 +5928,6 @@ def api_matches():
             "matches":
                 fixtures,
         })
-
 
     except Exception as error:
 
@@ -6952,7 +5962,6 @@ def api_match(
             ),
         })
 
-
     except Exception as error:
 
         return jsonify({
@@ -6966,10 +5975,6 @@ def api_match(
         }), 500
 
 
-# =========================================================
-# SESSION
-# =========================================================
-
 @app.route(
     "/api/session",
     methods=[
@@ -6982,22 +5987,14 @@ def api_session():
         require_telegram_user()
     )
 
-
     if error:
         return error
 
-
     try:
-
-        # ВАЖНО:
-        # здесь больше нет settle_user_bets()
-        # и settle_user_parlays().
-        # Поэтому открытие приложения не ждёт API матчей.
 
         user = get_or_create_user(
             tg_user
         )
-
 
         telegram_id = (
             user[
@@ -7005,18 +6002,15 @@ def api_session():
             ]
         )
 
-
         last_claim = user.get(
             "last_daily_claim"
         )
-
 
         available = True
 
         seconds_left = 0
 
         next_claim = None
-
 
         if last_claim:
 
@@ -7028,16 +6022,13 @@ def api_session():
                 )
             )
 
-
             now = datetime.now(
                 timezone.utc
             )
 
-
             if now < next_claim:
 
                 available = False
-
 
                 seconds_left = int(
                     (
@@ -7047,7 +6038,6 @@ def api_session():
                     ).total_seconds()
                 )
 
-
         return jsonify({
 
             "success":
@@ -7056,12 +6046,10 @@ def api_session():
             "user": {
                 "telegram_id":
                     telegram_id,
-
                 "first_name":
                     user[
                         "first_name"
                     ],
-
                 "username":
                     user[
                         "username"
@@ -7123,8 +6111,8 @@ def api_session():
             },
 
             "daily_reward": {
-                "amount":
-                    300,
+
+                "amount": 300,
 
                 "available":
                     available,
@@ -7142,7 +6130,6 @@ def api_session():
             },
         })
 
-
     except Exception as error:
 
         return jsonify({
@@ -7156,10 +6143,6 @@ def api_session():
         }), 500
 
 
-# =========================================================
-# SINGLE BET
-# =========================================================
-
 @app.route(
     "/api/bets",
     methods=[
@@ -7172,15 +6155,12 @@ def api_bets():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
-
 
     try:
 
@@ -7190,13 +6170,11 @@ def api_bets():
             )
         )
 
-
         amount = int(
             body.get(
                 "amount"
             )
         )
-
 
         selection = str(
             body.get(
@@ -7205,13 +6183,11 @@ def api_bets():
             )
         ).strip()
 
-
         if amount <= 0:
 
             raise ValueError(
                 "Неправильная сумма"
             )
-
 
         canonical = (
             resolve_canonical_bet(
@@ -7220,11 +6196,9 @@ def api_bets():
             )
         )
 
-
         user = get_or_create_user(
             tg_user
         )
-
 
         telegram_id = (
             user[
@@ -7232,38 +6206,28 @@ def api_bets():
             ]
         )
 
-
         conn = get_db()
-
         cur = conn.cursor()
-
 
         cur.execute("""
             SELECT balance
-
             FROM users
-
             WHERE telegram_id = %s
-
             FOR UPDATE
         """, (
             telegram_id,
         ))
 
-
         current_balance = int(
             cur.fetchone()[0]
         )
-
 
         if amount > current_balance:
 
             conn.rollback()
 
             cur.close()
-
             conn.close()
-
 
             return jsonify({
                 "success":
@@ -7273,13 +6237,11 @@ def api_bets():
                     "Недостаточно монет",
             }), 400
 
-
         odd = (
             canonical[
                 "odd"
             ]
         )
-
 
         possible = int(
             amount
@@ -7289,23 +6251,18 @@ def api_bets():
             0.5
         )
 
-
         cur.execute("""
             UPDATE users
-
             SET
                 balance =
                     balance - %s,
-
                 updated_at =
                     NOW()
-
             WHERE telegram_id = %s
         """, (
             amount,
             telegram_id,
         ))
-
 
         cur.execute("""
             INSERT INTO bets (
@@ -7319,7 +6276,6 @@ def api_bets():
                 provider,
                 kickoff_at
             )
-
             VALUES (
                 %s,
                 %s,
@@ -7331,37 +6287,27 @@ def api_bets():
                 'five-dollar',
                 %s
             )
-
             RETURNING id
         """, (
             telegram_id,
-
             fixture_id,
-
             canonical[
                 "match"
             ],
-
             canonical[
                 "selection"
             ],
-
             odd,
-
             amount,
-
             possible,
-
             canonical[
                 "kickoff_at"
             ],
         ))
 
-
         bet_id = (
             cur.fetchone()[0]
         )
-
 
         ensure_daily_tasks(
             telegram_id,
@@ -7369,12 +6315,10 @@ def api_bets():
             True
         )
 
-
         increment_daily_bet(
             telegram_id,
             cur
         )
-
 
         add_xp(
             telegram_id,
@@ -7382,18 +6326,14 @@ def api_bets():
             cur
         )
 
-
         conn.commit()
 
         cur.close()
-
         conn.close()
-
 
         fresh = get_user_data(
             telegram_id
         )
-
 
         return jsonify({
 
@@ -7419,7 +6359,6 @@ def api_bets():
                 ),
         })
 
-
     except ValueError as error:
 
         return jsonify({
@@ -7431,7 +6370,6 @@ def api_bets():
                     error
                 ),
         }), 400
-
 
     except Exception as error:
 
@@ -7446,10 +6384,6 @@ def api_bets():
         }), 500
 
 
-# =========================================================
-# PARLAY
-# =========================================================
-
 @app.route(
     "/api/parlays",
     methods=[
@@ -7462,15 +6396,12 @@ def api_parlays():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
-
 
     try:
 
@@ -7480,12 +6411,10 @@ def api_parlays():
             )
         )
 
-
         legs = body.get(
             "legs",
             []
         )
-
 
         if (
             amount <= 0
@@ -7506,7 +6435,6 @@ def api_parlays():
                 "В экспрессе нужно минимум 2 события"
             )
 
-
         if len(
             legs
         ) > 15:
@@ -7515,13 +6443,8 @@ def api_parlays():
                 "Максимум 15 событий"
             )
 
-
         validated = []
 
-        seen = set()
-
-
-        # Проверяем коэффициенты параллельно.
         def validate_leg(
             leg
         ):
@@ -7532,14 +6455,12 @@ def api_parlays():
                         "fixture_id"
                     ]
                 ),
-
                 str(
                     leg[
                         "selection"
                     ]
                 )
             )
-
 
         fixture_ids = [
             int(
@@ -7549,7 +6470,6 @@ def api_parlays():
             )
             for leg in legs
         ]
-
 
         if len(
             fixture_ids
@@ -7562,7 +6482,6 @@ def api_parlays():
             raise ValueError(
                 "Нельзя добавить два исхода одного матча"
             )
-
 
         with ThreadPoolExecutor(
             max_workers=
@@ -7582,16 +6501,13 @@ def api_parlays():
                 for leg in legs
             ]
 
-
             for future in futures:
 
                 validated.append(
                     future.result()
                 )
 
-
         total_odd = 1.0
-
 
         for leg in validated:
 
@@ -7601,12 +6517,10 @@ def api_parlays():
                 ]
             )
 
-
         total_odd = round(
             total_odd,
             4
         )
-
 
         possible = int(
             amount
@@ -7616,11 +6530,9 @@ def api_parlays():
             0.5
         )
 
-
         user = get_or_create_user(
             tg_user
         )
-
 
         telegram_id = (
             user[
@@ -7628,38 +6540,28 @@ def api_parlays():
             ]
         )
 
-
         conn = get_db()
-
         cur = conn.cursor()
-
 
         cur.execute("""
             SELECT balance
-
             FROM users
-
             WHERE telegram_id = %s
-
             FOR UPDATE
         """, (
             telegram_id,
         ))
 
-
         current_balance = int(
             cur.fetchone()[0]
         )
-
 
         if amount > current_balance:
 
             conn.rollback()
 
             cur.close()
-
             conn.close()
-
 
             return jsonify({
                 "success":
@@ -7669,23 +6571,18 @@ def api_parlays():
                     "Недостаточно монет",
             }), 400
 
-
         cur.execute("""
             UPDATE users
-
             SET
                 balance =
                     balance - %s,
-
                 updated_at =
                     NOW()
-
             WHERE telegram_id = %s
         """, (
             amount,
             telegram_id,
         ))
-
 
         cur.execute("""
             INSERT INTO parlays (
@@ -7694,14 +6591,12 @@ def api_parlays():
                 total_odd,
                 possible
             )
-
             VALUES (
                 %s,
                 %s,
                 %s,
                 %s
             )
-
             RETURNING id
         """, (
             telegram_id,
@@ -7710,11 +6605,9 @@ def api_parlays():
             possible,
         ))
 
-
         parlay_id = (
             cur.fetchone()[0]
         )
-
 
         for leg in validated:
 
@@ -7728,7 +6621,6 @@ def api_parlays():
                     provider,
                     kickoff_at
                 )
-
                 VALUES (
                     %s,
                     %s,
@@ -7740,28 +6632,22 @@ def api_parlays():
                 )
             """, (
                 parlay_id,
-
                 leg[
                     "fixture_id"
                 ],
-
                 leg[
                     "match"
                 ],
-
                 leg[
                     "selection"
                 ],
-
                 leg[
                     "odd"
                 ],
-
                 leg[
                     "kickoff_at"
                 ],
             ))
-
 
         ensure_daily_tasks(
             telegram_id,
@@ -7769,12 +6655,10 @@ def api_parlays():
             True
         )
 
-
         increment_daily_bet(
             telegram_id,
             cur
         )
-
 
         add_xp(
             telegram_id,
@@ -7782,18 +6666,14 @@ def api_parlays():
             cur
         )
 
-
         conn.commit()
 
         cur.close()
-
         conn.close()
-
 
         fresh = get_user_data(
             telegram_id
         )
-
 
         return jsonify({
 
@@ -7822,7 +6702,6 @@ def api_parlays():
                 ),
         })
 
-
     except ValueError as error:
 
         return jsonify({
@@ -7834,7 +6713,6 @@ def api_parlays():
                     error
                 ),
         }), 400
-
 
     except Exception as error:
 
@@ -7849,10 +6727,6 @@ def api_parlays():
         }), 500
 
 
-# =========================================================
-# FAVORITE MATCH ROUTES
-# =========================================================
-
 @app.route(
     "/api/favorites",
     methods=[
@@ -7865,15 +6739,12 @@ def api_favorites():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
-
 
     return jsonify({
 
@@ -7901,20 +6772,16 @@ def api_favorites_toggle():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
 
-
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -7922,13 +6789,11 @@ def api_favorites_toggle():
         ]
     )
 
-
     fixture_id = int(
         body[
             "fixture_id"
         ]
     )
-
 
     favorite = bool(
         body.get(
@@ -7937,7 +6802,6 @@ def api_favorites_toggle():
         )
     )
 
-
     if favorite:
 
         add_favorite_match(
@@ -7945,14 +6809,12 @@ def api_favorites_toggle():
             fixture_id
         )
 
-
     else:
 
         remove_favorite_match(
             telegram_id,
             fixture_id
         )
-
 
     return jsonify({
 
@@ -7978,27 +6840,22 @@ def api_favorites_sync():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
 
-
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
             "telegram_id"
         ]
     )
-
 
     for fixture_id in body.get(
         "fixture_ids",
@@ -8014,11 +6871,8 @@ def api_favorites_sync():
                 )
             )
 
-
         except Exception:
-
             pass
-
 
     return jsonify({
 
@@ -8032,10 +6886,6 @@ def api_favorites_sync():
     })
 
 
-# =========================================================
-# FAVORITE TEAMS
-# =========================================================
-
 @app.route(
     "/api/favorite-teams",
     methods=[
@@ -8048,15 +6898,12 @@ def api_favorite_teams():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
-
 
     return jsonify({
 
@@ -8084,27 +6931,22 @@ def api_favorite_teams_toggle():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
 
-
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
             "telegram_id"
         ]
     )
-
 
     team_name = str(
         body.get(
@@ -8113,14 +6955,12 @@ def api_favorite_teams_toggle():
         )
     ).strip()
 
-
     favorite = bool(
         body.get(
             "favorite",
             True
         )
     )
-
 
     if favorite:
 
@@ -8129,14 +6969,12 @@ def api_favorite_teams_toggle():
             team_name
         )
 
-
     else:
 
         remove_favorite_team(
             telegram_id,
             team_name
         )
-
 
     return jsonify({
 
@@ -8162,15 +7000,12 @@ def api_favorite_teams_sync():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -8178,11 +7013,9 @@ def api_favorite_teams_sync():
         ]
     )
 
-
     body = request.get_json(
         silent=True
     ) or {}
-
 
     for team in body.get(
         "teams",
@@ -8198,11 +7031,8 @@ def api_favorite_teams_sync():
                 )
             )
 
-
         except Exception:
-
             pass
-
 
     return jsonify({
 
@@ -8216,10 +7046,6 @@ def api_favorite_teams_sync():
     })
 
 
-# =========================================================
-# LEADERBOARD
-# =========================================================
-
 @app.route(
     "/api/leaderboard",
     methods=[
@@ -8232,20 +7058,15 @@ def api_leaderboard():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT
@@ -8253,19 +7074,14 @@ def api_leaderboard():
             first_name,
             balance,
             xp
-
         FROM users
-
         ORDER BY
             xp DESC,
             balance DESC
-
         LIMIT 50
     """)
 
-
     players = []
-
 
     for rank, row in enumerate(
         cur.fetchall(),
@@ -8277,7 +7093,6 @@ def api_leaderboard():
                 row[3]
             )
         )
-
 
         players.append({
 
@@ -8311,7 +7126,6 @@ def api_leaderboard():
                 ),
         })
 
-
     my_rank = next(
         (
             player[
@@ -8333,11 +7147,8 @@ def api_leaderboard():
         None
     )
 
-
     cur.close()
-
     conn.close()
-
 
     return jsonify({
 
@@ -8352,10 +7163,6 @@ def api_leaderboard():
     })
 
 
-# =========================================================
-# DAILY REWARD
-# =========================================================
-
 @app.route(
     "/api/daily-reward",
     methods=[
@@ -8368,15 +7175,12 @@ def api_daily_reward():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -8384,34 +7188,25 @@ def api_daily_reward():
         ]
     )
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         SELECT last_daily_claim
-
         FROM users
-
         WHERE telegram_id = %s
-
         FOR UPDATE
     """, (
         telegram_id,
     ))
 
-
     last_claim = (
         cur.fetchone()[0]
     )
 
-
     now = datetime.now(
         timezone.utc
     )
-
 
     if (
         last_claim
@@ -8428,9 +7223,7 @@ def api_daily_reward():
         conn.rollback()
 
         cur.close()
-
         conn.close()
-
 
         return jsonify({
 
@@ -8441,26 +7234,20 @@ def api_daily_reward():
                 "Бонус уже получен",
         }), 400
 
-
     cur.execute("""
         UPDATE users
-
         SET
             balance =
                 balance + 300,
-
             last_daily_claim =
                 %s,
-
             updated_at =
                 NOW()
-
         WHERE telegram_id = %s
     """, (
         now,
         telegram_id,
     ))
-
 
     add_xp(
         telegram_id,
@@ -8468,18 +7255,14 @@ def api_daily_reward():
         cur
     )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
-
 
     fresh = get_user_data(
         telegram_id
     )
-
 
     return jsonify({
 
@@ -8501,10 +7284,6 @@ def api_daily_reward():
     })
 
 
-# =========================================================
-# TASK CLAIM
-# =========================================================
-
 @app.route(
     "/api/tasks/claim",
     methods=[
@@ -8517,25 +7296,20 @@ def api_task_claim():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
 
-
     key = body.get(
         "task_key"
     )
 
-
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -8543,12 +7317,10 @@ def api_task_claim():
         ]
     )
 
-
     tasks = get_daily_tasks(
         telegram_id,
         True
     )
-
 
     target = next(
         (
@@ -8562,7 +7334,6 @@ def api_task_claim():
         ),
         None
     )
-
 
     if (
         not target
@@ -8584,7 +7355,6 @@ def api_task_claim():
                 "Награда недоступна",
         }), 400
 
-
     column_map = {
 
         "login":
@@ -8597,23 +7367,17 @@ def api_task_claim():
             "win_claimed",
     }
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     column = column_map[
         key
     ]
 
-
     cur.execute(
         f"""
         UPDATE daily_tasks
-
         SET {column} = TRUE
-
         WHERE
             telegram_id = %s
             AND
@@ -8625,27 +7389,22 @@ def api_task_claim():
         )
     )
 
-
     if target[
         "reward_type"
     ] == "coins":
 
         cur.execute("""
             UPDATE users
-
             SET
                 balance =
                     balance + %s
-
             WHERE telegram_id = %s
         """, (
             target[
                 "reward"
             ],
-
             telegram_id,
         ))
-
 
     else:
 
@@ -8657,18 +7416,14 @@ def api_task_claim():
             cur
         )
 
-
     conn.commit()
 
     cur.close()
-
     conn.close()
-
 
     fresh = get_user_data(
         telegram_id
     )
-
 
     return jsonify({
 
@@ -8695,10 +7450,6 @@ def api_task_claim():
     })
 
 
-# =========================================================
-# ACHIEVEMENT CLAIM
-# =========================================================
-
 @app.route(
     "/api/achievements/claim",
     methods=[
@@ -8711,25 +7462,20 @@ def api_achievement_claim():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     body = request.get_json(
         silent=True
     ) or {}
 
-
     key = body.get(
         "achievement_key"
     )
 
-
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -8737,13 +7483,11 @@ def api_achievement_claim():
         ]
     )
 
-
     achievements = (
         get_achievements(
             telegram_id
         )
     )
-
 
     achievement = next(
         (
@@ -8758,7 +7502,6 @@ def api_achievement_claim():
         ),
         None
     )
-
 
     if (
         not achievement
@@ -8780,58 +7523,45 @@ def api_achievement_claim():
                 "Награда недоступна",
         }), 400
 
-
     conn = get_db()
-
     cur = conn.cursor()
-
 
     cur.execute("""
         INSERT INTO achievement_claims (
             telegram_id,
             achievement_key
         )
-
         VALUES (
             %s,
             %s
         )
-
         ON CONFLICT DO NOTHING
     """, (
         telegram_id,
         key,
     ))
 
-
     cur.execute("""
         UPDATE users
-
         SET
             balance =
                 balance + %s
-
         WHERE telegram_id = %s
     """, (
         achievement[
             "reward"
         ],
-
         telegram_id,
     ))
-
 
     conn.commit()
 
     cur.close()
-
     conn.close()
-
 
     fresh = get_user_data(
         telegram_id
     )
-
 
     return jsonify({
 
@@ -8852,10 +7582,6 @@ def api_achievement_claim():
     })
 
 
-# =========================================================
-# SETTLE
-# =========================================================
-
 @app.route(
     "/api/settle",
     methods=[
@@ -8868,15 +7594,12 @@ def api_settle():
         require_telegram_user()
     )
 
-
     if error:
         return error
-
 
     user = get_or_create_user(
         tg_user
     )
-
 
     telegram_id = (
         user[
@@ -8884,23 +7607,17 @@ def api_settle():
         ]
     )
 
-
-    # Ручная проверка остаётся,
-    # но этот маршрут вызывается не при первом открытии.
     settle_user_bets(
         telegram_id
     )
-
 
     settle_user_parlays(
         telegram_id
     )
 
-
     fresh = get_user_data(
         telegram_id
     )
-
 
     return jsonify({
 
@@ -8937,10 +7654,6 @@ def api_settle():
     })
 
 
-# =========================================================
-# LOGO REFRESH
-# =========================================================
-
 @app.route(
     "/api/logo-refresh/<league_key>"
 )
@@ -8958,7 +7671,6 @@ def api_logo_refresh(
                 "Неизвестная лига",
         }), 400
 
-
     try:
 
         count = (
@@ -8966,7 +7678,6 @@ def api_logo_refresh(
                 league_key
             )
         )
-
 
         return jsonify({
 
@@ -8979,7 +7690,6 @@ def api_logo_refresh(
             "saved":
                 count,
         })
-
 
     except Exception as error:
 
@@ -8994,16 +7704,11 @@ def api_logo_refresh(
         }), 500
 
 
-# =========================================================
-# START
-# =========================================================
-
 try:
 
     init_database()
 
     rebuild_global_logo_cache()
-
 
 except Exception as error:
 
@@ -9024,7 +7729,6 @@ if __name__ == "__main__":
             "10000"
         )
     )
-
 
     app.run(
         host="0.0.0.0",

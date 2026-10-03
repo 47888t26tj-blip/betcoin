@@ -11455,6 +11455,78 @@ function renderAll(){
    INIT
 =================================== */
 
+function applyStartupDeepLink(){
+
+    try{
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const page =
+            params.get(
+                "page"
+            );
+
+        const scoreView =
+            params.get(
+                "score_view"
+            );
+
+        const allowedPages = [
+            "home",
+            "matches",
+            "bets",
+            "games",
+            "leaderboard",
+            "profile"
+        ];
+
+        if(
+            page
+            &&
+            allowedPages.includes(
+                page
+            )
+        ){
+
+            showPage(
+                page
+            );
+        }
+
+        if(
+            page === "games"
+            &&
+            scoreView
+            &&
+            [
+                "play",
+                "history",
+                "leaderboard",
+                "leagues"
+            ].includes(
+                scoreView
+            )
+        ){
+
+            setScoreGameView(
+                scoreView
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            "Deep link:",
+            error
+        );
+    }
+}
+
+
+
 async function init(){
 
     updateParlay();
@@ -11475,6 +11547,8 @@ async function init(){
 
 
     renderAll();
+
+    applyStartupDeepLink();
 
 
     setInterval(
@@ -11645,4 +11719,4 @@ init();
 </script>
 
 </body>
-</htm
+</html>

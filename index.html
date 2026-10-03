@@ -975,6 +975,155 @@ button{
 }
 
 
+
+.score-game-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:13px;
+    padding:4px;
+    border-radius:13px;
+    background:#10141c;
+    border:1px solid var(--border);
+}
+
+.score-game-tab{
+    border:0;
+    min-height:40px;
+    border-radius:10px;
+    background:transparent;
+    color:var(--muted);
+    font-weight:900;
+}
+
+.score-game-tab.active{
+    background:var(--card2);
+    color:#fff;
+}
+
+.score-history-filters{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    margin:10px 0;
+    scrollbar-width:none;
+}
+
+.score-history-filters::-webkit-scrollbar{
+    display:none;
+}
+
+.score-history-chip{
+    flex:0 0 auto;
+    border:1px solid var(--border);
+    background:var(--card2);
+    color:var(--muted);
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:900;
+}
+
+.score-history-chip.active{
+    border-color:var(--accent);
+    background:rgba(47,128,255,.18);
+    color:#fff;
+}
+
+.score-history-list{
+    display:grid;
+    gap:8px;
+}
+
+.score-history-card{
+    padding:13px;
+    border-radius:15px;
+    background:#10141c;
+    border:1px solid var(--border);
+}
+
+.score-history-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:flex-start;
+}
+
+.score-history-teams{
+    min-width:0;
+    font-size:14px;
+    font-weight:900;
+}
+
+.score-history-league{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.score-history-status{
+    flex:0 0 auto;
+    padding:5px 8px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:900;
+}
+
+.score-history-status.pending{
+    color:var(--orange);
+    background:rgba(255,159,67,.12);
+}
+
+.score-history-status.exact,
+.score-history-status.outcome{
+    color:var(--green);
+    background:rgba(37,192,109,.12);
+}
+
+.score-history-status.lost{
+    color:var(--red);
+    background:rgba(255,82,82,.12);
+}
+
+.score-history-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:10px;
+}
+
+.score-history-score{
+    padding:10px;
+    border-radius:12px;
+    text-align:center;
+    background:var(--card2);
+}
+
+.score-history-score small{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:4px;
+}
+
+.score-history-score b{
+    font-size:20px;
+}
+
+.score-history-meta{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.score-history-reward{
+    margin-top:7px;
+    color:var(--gold);
+    font-size:11px;
+    font-weight:900;
+}
+
+
 /* ===================================
    🎡 WHEEL
 =================================== */
@@ -1866,6 +2015,31 @@ LIVE
 Угадан только исход: +150 🪙
 </div>
 
+<div class="score-game-tabs">
+
+<button
+    id="scoreGamePlayTab"
+    class="score-game-tab active"
+    onclick="setScoreGameView('play')"
+>
+⚽ Играть
+</button>
+
+<button
+    id="scoreGameHistoryTab"
+    class="score-game-tab"
+    onclick="setScoreGameView('history')"
+>
+📋 Мои прогнозы
+</button>
+
+</div>
+
+
+<div
+    id="scoreGamePlayView"
+>
+
 <div
     id="scoreGame"
     style="margin-top:12px"
@@ -1873,6 +2047,27 @@ LIVE
 
 <div class="loader">
 Загружаем игру...
+</div>
+
+</div>
+
+</div>
+
+
+<div
+    id="scoreGameHistoryView"
+    style="display:none"
+>
+
+<div
+    id="scoreGameHistory"
+    style="margin-top:12px"
+>
+
+<div class="loader">
+Загружаем прогнозы...
+</div>
+
 </div>
 
 </div>
@@ -2630,6 +2825,12 @@ let predictionGame = {};
 
 let scoreGame = {};
 
+let scoreGameHistory = [];
+
+let scoreGameView = "play";
+
+let scoreHistoryFilter = "all";
+
 let loginStreak = {};
 
 let myRank = null;
@@ -2866,6 +3067,16 @@ function showPage(
     ){
 
         loadSession();
+    }
+
+
+    if(
+        name
+        ===
+        "games"
+    ){
+
+        loadScoreGameHistory();
     }
 
 
@@ -6872,6 +7083,497 @@ function renderScoreGame(){
 }
 
 
+
+function setScoreGameView(
+    view
+){
+
+    scoreGameView =
+        view === "history"
+        ?
+        "history"
+        :
+        "play";
+
+
+    const playView =
+        document.getElementById(
+            "scoreGamePlayView"
+        );
+
+    const historyView =
+        document.getElementById(
+            "scoreGameHistoryView"
+        );
+
+    const playTab =
+        document.getElementById(
+            "scoreGamePlayTab"
+        );
+
+    const historyTab =
+        document.getElementById(
+            "scoreGameHistoryTab"
+        );
+
+
+    if(playView){
+
+        playView.style.display =
+            scoreGameView === "play"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    if(historyView){
+
+        historyView.style.display =
+            scoreGameView === "history"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    playTab?.classList.toggle(
+        "active",
+        scoreGameView === "play"
+    );
+
+    historyTab?.classList.toggle(
+        "active",
+        scoreGameView === "history"
+    );
+
+
+    if(
+        scoreGameView ===
+        "history"
+    ){
+
+        loadScoreGameHistory();
+    }
+}
+
+
+function setScoreHistoryFilter(
+    filter
+){
+
+    scoreHistoryFilter =
+        filter
+        ||
+        "all";
+
+    renderScoreGameHistory();
+}
+
+
+async function loadScoreGameHistory(){
+
+    const box =
+        document.getElementById(
+            "scoreGameHistory"
+        );
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/history",
+                {
+                    limit:50
+                }
+            );
+
+
+        scoreGameHistory =
+            data.history
+            ||
+            [];
+
+
+        renderScoreGameHistory();
+
+
+    }catch(error){
+
+        console.error(
+            "Score game history:",
+            error
+        );
+
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить прогнозы
+                    </div>
+                `;
+        }
+    }
+}
+
+
+function scoreHistoryDateText(
+    value
+){
+
+    if(!value){
+
+        return "";
+    }
+
+
+    const date =
+        new Date(
+            value
+        );
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "";
+    }
+
+
+    return date.toLocaleString(
+        "ru-RU",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+function renderScoreGameHistory(){
+
+    const box =
+        document.getElementById(
+            "scoreGameHistory"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    let items =
+        [
+            ...scoreGameHistory
+        ];
+
+
+    if(
+        scoreHistoryFilter ===
+        "pending"
+    ){
+
+        items =
+            items.filter(
+                item =>
+                    item.status
+                    ===
+                    "pending"
+            );
+    }
+
+
+    if(
+        scoreHistoryFilter ===
+        "won"
+    ){
+
+        items =
+            items.filter(
+                item =>
+                    item.status
+                    ===
+                    "exact"
+                    ||
+                    item.status
+                    ===
+                    "outcome"
+            );
+    }
+
+
+    if(
+        scoreHistoryFilter ===
+        "lost"
+    ){
+
+        items =
+            items.filter(
+                item =>
+                    item.status
+                    ===
+                    "lost"
+            );
+    }
+
+
+    const filters =
+        `
+            <div class="score-history-filters">
+
+                <button
+                    class="score-history-chip ${scoreHistoryFilter === "all" ? "active" : ""}"
+                    onclick="setScoreHistoryFilter('all')"
+                >
+                    Все
+                </button>
+
+                <button
+                    class="score-history-chip ${scoreHistoryFilter === "pending" ? "active" : ""}"
+                    onclick="setScoreHistoryFilter('pending')"
+                >
+                    Активные
+                </button>
+
+                <button
+                    class="score-history-chip ${scoreHistoryFilter === "won" ? "active" : ""}"
+                    onclick="setScoreHistoryFilter('won')"
+                >
+                    Угаданные
+                </button>
+
+                <button
+                    class="score-history-chip ${scoreHistoryFilter === "lost" ? "active" : ""}"
+                    onclick="setScoreHistoryFilter('lost')"
+                >
+                    Не угадано
+                </button>
+
+            </div>
+        `;
+
+
+    if(!items.length){
+
+        box.innerHTML =
+            filters
+            +
+            `
+                <div class="empty">
+                    Пока здесь нет прогнозов
+                </div>
+            `;
+
+        return;
+    }
+
+
+    box.innerHTML =
+        filters
+        +
+        `
+            <div class="score-history-list">
+
+                ${items.map(
+                    item => {
+
+                        const finalScore =
+                            (
+                                item.final_home
+                                !=
+                                null
+                                &&
+                                item.final_away
+                                !=
+                                null
+                            )
+                            ?
+                            `${item.final_home}:${item.final_away}`
+                            :
+                            "—";
+
+
+                        const statusIcon =
+                            item.status === "exact"
+                            ?
+                            "🎯"
+                            :
+                            item.status === "outcome"
+                            ?
+                            "✅"
+                            :
+                            item.status === "lost"
+                            ?
+                            "❌"
+                            :
+                            "⏳";
+
+
+                        const reward =
+                            (
+                                Number(
+                                    item.reward_coins
+                                    ||
+                                    0
+                                )
+                                >
+                                0
+                                ||
+                                Number(
+                                    item.reward_xp
+                                    ||
+                                    0
+                                )
+                                >
+                                0
+                            )
+                            ?
+                            `
+                                <div class="score-history-reward">
+                                    ${
+                                        Number(
+                                            item.reward_coins
+                                            ||
+                                            0
+                                        )
+                                        >
+                                        0
+                                        ?
+                                        `+${item.reward_coins} 🪙`
+                                        :
+                                        ""
+                                    }
+
+                                    ${
+                                        Number(
+                                            item.reward_xp
+                                            ||
+                                            0
+                                        )
+                                        >
+                                        0
+                                        ?
+                                        ` +${item.reward_xp} XP`
+                                        :
+                                        ""
+                                    }
+                                </div>
+                            `
+                            :
+                            "";
+
+
+                        return `
+                            <div class="score-history-card">
+
+                                <div class="score-history-head">
+
+                                    <div class="score-history-teams">
+
+                                        ${esc(
+                                            item.home_team
+                                            ||
+                                            ""
+                                        )}
+                                        —
+                                        ${esc(
+                                            item.away_team
+                                            ||
+                                            ""
+                                        )}
+
+                                        <div class="score-history-league">
+                                            ${esc(
+                                                item.league
+                                                ||
+                                                "Футбол"
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                    <div
+                                        class="score-history-status ${esc(item.status)}"
+                                    >
+                                        ${statusIcon}
+                                        ${esc(
+                                            item.status_text
+                                            ||
+                                            ""
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="score-history-grid">
+
+                                    <div class="score-history-score">
+
+                                        <small>
+                                            Твой прогноз
+                                        </small>
+
+                                        <b>
+                                            ${item.predicted_home}
+                                            :
+                                            ${item.predicted_away}
+                                        </b>
+
+                                    </div>
+
+
+                                    <div class="score-history-score">
+
+                                        <small>
+                                            Итоговый счёт
+                                        </small>
+
+                                        <b>
+                                            ${finalScore}
+                                        </b>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="score-history-meta">
+
+                                    🕒
+                                    ${scoreHistoryDateText(
+                                        item.kickoff_at
+                                        ||
+                                        item.picked_at
+                                    )}
+
+                                </div>
+
+                                ${reward}
+
+                            </div>
+                        `;
+                    }
+                ).join("")}
+
+            </div>
+        `;
+}
+
+
 async function pickExactScore(){
 
     if(
@@ -6989,6 +7691,9 @@ async function pickExactScore(){
         tg.showAlert(
             `⚽ Прогноз ${home}:${away} сохранён`
         );
+
+
+        loadScoreGameHistory();
 
 
     }catch(error){
@@ -7294,6 +7999,12 @@ function renderGames(){
     renderPredictionGame();
 
     renderScoreGame();
+
+    renderScoreGameHistory();
+
+    setScoreGameView(
+        scoreGameView
+    );
 
     renderWheel();
 }

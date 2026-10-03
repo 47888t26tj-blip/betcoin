@@ -978,7 +978,7 @@ button{
 
 .score-game-tabs{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(3,1fr);
     gap:6px;
     margin-top:13px;
     padding:4px;
@@ -1361,6 +1361,143 @@ button{
     color:var(--gold);
     font-size:11px;
     font-weight:900;
+}
+
+
+.score-predictor-me{
+    margin:12px 0 9px;
+    padding:13px;
+    border-radius:15px;
+    border:1px solid rgba(47,128,255,.35);
+    background:rgba(47,128,255,.09);
+}
+
+.score-predictor-me-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.score-predictor-me-top span{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:800;
+}
+
+.score-predictor-me-top b{
+    color:var(--accent);
+    font-size:19px;
+}
+
+.score-predictor-me-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-top:9px;
+}
+
+.score-predictor-me-stat{
+    padding:8px 4px;
+    border-radius:10px;
+    background:rgba(255,255,255,.04);
+    text-align:center;
+}
+
+.score-predictor-me-stat b{
+    display:block;
+    font-size:14px;
+}
+
+.score-predictor-me-stat small{
+    display:block;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:8px;
+}
+
+.score-predictor-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-top:9px;
+}
+
+.score-predictor-row{
+    display:grid;
+    grid-template-columns:38px minmax(0,1fr) auto;
+    align-items:center;
+    gap:9px;
+    padding:11px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:#10141c;
+}
+
+.score-predictor-row.me{
+    border-color:rgba(47,128,255,.45);
+    background:rgba(47,128,255,.08);
+}
+
+.score-predictor-row.top1{
+    border-color:rgba(255,209,102,.4);
+}
+
+.score-predictor-rank{
+    text-align:center;
+    font-size:17px;
+    font-weight:900;
+}
+
+.score-predictor-main{
+    min-width:0;
+}
+
+.score-predictor-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+    font-weight:900;
+}
+
+.score-predictor-sub{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:9px;
+}
+
+.score-predictor-right{
+    text-align:right;
+}
+
+.score-predictor-right b{
+    display:block;
+    color:var(--gold);
+    font-size:14px;
+}
+
+.score-predictor-right small{
+    display:block;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:8px;
+}
+
+.score-predictor-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:12px;
+    font-size:15px;
+    font-weight:900;
+}
+
+.score-predictor-title small{
+    color:var(--muted);
+    font-size:9px;
+    font-weight:700;
 }
 
 
@@ -2273,6 +2410,14 @@ LIVE
 📋 Мои прогнозы
 </button>
 
+<button
+    id="scoreGameLeaderboardTab"
+    class="score-game-tab"
+    onclick="setScoreGameView('leaderboard')"
+>
+🏆 Рейтинг
+</button>
+
 </div>
 
 
@@ -2306,6 +2451,25 @@ LIVE
 
 <div class="loader">
 Загружаем прогнозы...
+</div>
+
+</div>
+
+</div>
+
+
+<div
+    id="scoreGameLeaderboardView"
+    style="display:none"
+>
+
+<div
+    id="scoreGameLeaderboard"
+    style="margin-top:12px"
+>
+
+<div class="loader">
+Загружаем рейтинг...
 </div>
 
 </div>
@@ -3068,6 +3232,12 @@ let scoreGame = {};
 let scoreGameHistory = [];
 
 let scoreGameStats = {};
+
+let scoreGameLeaderboard = [];
+
+let scoreGameLeaderboardMe = null;
+
+let scoreGameLeaderboardRank = null;
 
 let scoreGameView = "play";
 
@@ -7331,9 +7501,15 @@ function setScoreGameView(
 ){
 
     scoreGameView =
-        view === "history"
+        [
+            "play",
+            "history",
+            "leaderboard"
+        ].includes(
+            view
+        )
         ?
-        "history"
+        view
         :
         "play";
 
@@ -7348,6 +7524,11 @@ function setScoreGameView(
             "scoreGameHistoryView"
         );
 
+    const leaderboardView =
+        document.getElementById(
+            "scoreGameLeaderboardView"
+        );
+
     const playTab =
         document.getElementById(
             "scoreGamePlayTab"
@@ -7356,6 +7537,11 @@ function setScoreGameView(
     const historyTab =
         document.getElementById(
             "scoreGameHistoryTab"
+        );
+
+    const leaderboardTab =
+        document.getElementById(
+            "scoreGameLeaderboardTab"
         );
 
 
@@ -7381,6 +7567,17 @@ function setScoreGameView(
     }
 
 
+    if(leaderboardView){
+
+        leaderboardView.style.display =
+            scoreGameView === "leaderboard"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
     playTab?.classList.toggle(
         "active",
         scoreGameView === "play"
@@ -7391,6 +7588,11 @@ function setScoreGameView(
         scoreGameView === "history"
     );
 
+    leaderboardTab?.classList.toggle(
+        "active",
+        scoreGameView === "leaderboard"
+    );
+
 
     if(
         scoreGameView ===
@@ -7399,8 +7601,16 @@ function setScoreGameView(
 
         loadScoreGameHistory();
     }
-}
 
+
+    if(
+        scoreGameView ===
+        "leaderboard"
+    ){
+
+        loadScoreGameLeaderboard();
+    }
+}
 
 function setScoreHistoryFilter(
     filter
@@ -7467,6 +7677,243 @@ async function loadScoreGameHistory(){
                 `;
         }
     }
+}
+
+
+async function loadScoreGameLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeaderboard"
+        );
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leaderboard",
+                {
+                    limit:50
+                }
+            );
+
+
+        scoreGameLeaderboard =
+            data.players
+            ||
+            [];
+
+        scoreGameLeaderboardMe =
+            data.me
+            ||
+            null;
+
+        scoreGameLeaderboardRank =
+            data.my_rank
+            ??
+            null;
+
+
+        renderScoreGameLeaderboard();
+
+
+    }catch(error){
+
+        console.error(
+            "Score game leaderboard:",
+            error
+        );
+
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить рейтинг
+                    </div>
+                `;
+        }
+    }
+}
+
+
+function scoreLeaderboardMedal(
+    rank
+){
+
+    if(Number(rank) === 1){
+        return "🥇";
+    }
+
+    if(Number(rank) === 2){
+        return "🥈";
+    }
+
+    if(Number(rank) === 3){
+        return "🥉";
+    }
+
+    return `#${rank}`;
+}
+
+
+function renderScoreGameLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeaderboard"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    const me =
+        scoreGameLeaderboardMe;
+
+
+    const myCard =
+        me
+        ?
+        `
+            <div class="score-predictor-me">
+
+                <div class="score-predictor-me-top">
+                    <span>Твоё место в рейтинге</span>
+                    <b>#${me.rank}</b>
+                </div>
+
+                <div class="score-predictor-me-stats">
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.exact_wins}</b>
+                        <small>точных</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.successful}</b>
+                        <small>успешных</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${Number(me.success_rate || 0).toFixed(1)}%</b>
+                        <small>успех</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.best_streak}</b>
+                        <small>рекорд серии</small>
+                    </div>
+
+                </div>
+
+            </div>
+        `
+        :
+        `
+            <div class="score-predictor-me">
+                <div class="muted" style="text-align:center">
+                    Сделай первый прогноз на счёт, чтобы попасть в рейтинг
+                </div>
+            </div>
+        `;
+
+
+    const title =
+        `
+            <div class="score-predictor-title">
+                <span>🏆 Топ прогнозистов</span>
+                <small>Точный счёт → успех → % → серия</small>
+            </div>
+        `;
+
+
+    if(
+        !scoreGameLeaderboard.length
+    ){
+
+        box.innerHTML =
+            myCard
+            +
+            title
+            +
+            `
+                <div class="empty" style="margin-top:9px">
+                    Рейтинг пока пуст
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const rows =
+        scoreGameLeaderboard
+        .map(
+            player => {
+
+                const isMe =
+                    currentUser
+                    &&
+                    Number(
+                        player.telegram_id
+                    )
+                    ===
+                    Number(
+                        currentUser.telegram_id
+                    );
+
+                return `
+                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(player.rank) === 1 ? "top1" : ""}">
+
+                        <div class="score-predictor-rank">
+                            ${scoreLeaderboardMedal(player.rank)}
+                        </div>
+
+                        <div class="score-predictor-main">
+
+                            <div class="score-predictor-name">
+                                ${esc(player.first_name || "Игрок")}
+                                ${isMe ? " • ты" : ""}
+                            </div>
+
+                            <div class="score-predictor-sub">
+                                ✅ ${player.successful} успешных
+                                •
+                                ${Number(player.success_rate || 0).toFixed(1)}%
+                                •
+                                🔥 ${player.best_streak}
+                            </div>
+
+                        </div>
+
+                        <div class="score-predictor-right">
+                            <b>🎯 ${player.exact_wins}</b>
+                            <small>${player.total} прогнозов</small>
+                        </div>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    box.innerHTML =
+        myCard
+        +
+        title
+        +
+        `
+            <div class="score-predictor-list">
+                ${rows}
+            </div>
+        `;
 }
 
 

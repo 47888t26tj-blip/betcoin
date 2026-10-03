@@ -2,21 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>BetCoin</title>
-
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 :root{
     --bg:#0b0d12;
@@ -29,52 +20,32 @@
     --green:#25c06d;
     --red:#ff5252;
     --orange:#ff9f43;
-    --gold:#ffd166;
+    --gold:#ffd166
 }
 
-html,
-body{
+html,body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
 }
 
-body{
-    padding-bottom:90px;
-}
-
-.app{
-    max-width:700px;
-    margin:auto;
-}
-
-.page{
-    display:none;
-    padding:16px;
-}
-
-.page.active{
-    display:block;
-}
+body{padding-bottom:90px}
+.app{max-width:700px;margin:auto}
+.page{display:none;padding:16px}
+.page.active{display:block}
 
 .topbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:10px;
-    margin-bottom:15px;
+    margin-bottom:15px
 }
 
-.brand,
-.title{
+.brand,.title{
     font-size:25px;
-    font-weight:900;
+    font-weight:900
 }
 
 .balance{
@@ -82,32 +53,29 @@ body{
     border:1px solid var(--border);
     border-radius:14px;
     padding:9px 12px;
-    font-weight:900;
+    font-weight:900
 }
 
-.card,
-.match-card{
+.card,.match-card{
     background:var(--card);
     border:1px solid var(--border);
     border-radius:17px;
     padding:13px;
-    margin-bottom:10px;
+    margin-bottom:10px
 }
 
-.notice,
-.muted{
+.notice,.muted{
     color:var(--muted);
-    font-size:12px;
+    font-size:12px
 }
 
-.empty,
-.loader{
+.empty,.loader{
     padding:22px;
     text-align:center;
     background:var(--card);
     border:1px solid var(--border);
     border-radius:17px;
-    color:var(--muted);
+    color:var(--muted)
 }
 
 .dashboard{
@@ -115,38 +83,26 @@ body{
     border:1px solid rgba(47,128,255,.35);
     border-radius:22px;
     background:
-        radial-gradient(
-            circle at top right,
-            rgba(47,128,255,.3),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #171c28,
-            #10131a
-        );
-    margin-bottom:13px;
+        radial-gradient(circle at top right,rgba(47,128,255,.3),transparent 45%),
+        linear-gradient(135deg,#171c28,#10131a);
+    margin-bottom:13px
 }
 
-.dashboard-row,
-.row,
-.match-head,
-.task-row,
-.bet-row{
+.dashboard-row,.row,.match-head,.task-row,.bet-row{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:10px;
+    gap:10px
 }
 
 .dashboard-name{
     font-size:21px;
-    font-weight:900;
+    font-weight:900
 }
 
 .dashboard-coins{
     font-size:21px;
-    font-weight:900;
+    font-weight:900
 }
 
 .xp-row{
@@ -155,26 +111,26 @@ body{
     margin-top:13px;
     margin-bottom:5px;
     color:var(--muted);
-    font-size:11px;
+    font-size:11px
 }
 
 .xp-bar{
     height:9px;
     background:#0c0f15;
     border-radius:99px;
-    overflow:hidden;
+    overflow:hidden
 }
 
 .xp-fill{
     height:100%;
-    background:var(--accent);
+    background:var(--accent)
 }
 
 .quick-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:7px;
-    margin:14px 0;
+    margin:14px 0
 }
 
 .quick{
@@ -183,57 +139,54 @@ body{
     background:var(--card);
     color:#fff;
     border-radius:15px;
-    font-weight:800;
+    font-weight:800
 }
 
 .quick b{
     display:block;
     font-size:21px;
-    margin-bottom:4px;
+    margin-bottom:4px
 }
 
 .section-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin:18px 0 9px;
+    margin:18px 0 9px
 }
 
 .section-head h2{
     margin:0;
-    font-size:18px;
+    font-size:18px
 }
 
 .link{
     border:0;
     background:transparent;
     color:var(--accent);
-    font-weight:800;
+    font-weight:800
 }
 
-.search,
-.input{
+.search,.input{
     width:100%;
     padding:12px;
     background:#0e1117;
     border:1px solid var(--border);
     border-radius:13px;
     color:#fff;
-    outline:none;
+    outline:none
 }
 
-.filters,
-.leagues{
+.filters,.leagues{
     display:flex;
     gap:7px;
     overflow-x:auto;
     margin:10px 0;
-    scrollbar-width:none;
+    scrollbar-width:none
 }
 
-.filters::-webkit-scrollbar,
-.leagues::-webkit-scrollbar{
-    display:none;
+.filters::-webkit-scrollbar,.leagues::-webkit-scrollbar{
+    display:none
 }
 
 .chip{
@@ -244,13 +197,13 @@ body{
     padding:8px 12px;
     border-radius:999px;
     font-weight:800;
-    font-size:12px;
+    font-size:12px
 }
 
 .chip.active{
     background:var(--accent);
     border-color:var(--accent);
-    color:#fff;
+    color:#fff
 }
 
 .live-title{
@@ -259,7 +212,7 @@ body{
     gap:7px;
     font-size:18px;
     font-weight:900;
-    margin:16px 0 9px;
+    margin:16px 0 9px
 }
 
 .live-dot{
@@ -267,9 +220,7 @@ body{
     height:8px;
     border-radius:50%;
     background:var(--red);
-    box-shadow:
-        0 0 0 4px
-        rgba(255,82,82,.12);
+    box-shadow:0 0 0 4px rgba(255,82,82,.12)
 }
 
 .badge{
@@ -277,48 +228,38 @@ body{
     padding:3px 7px;
     border-radius:999px;
     font-size:9px;
-    font-weight:900;
+    font-weight:900
 }
 
 .badge.live{
     background:rgba(255,82,82,.15);
-    color:#ff7777;
+    color:#ff7777
 }
 
 .badge.ft{
     background:rgba(146,152,167,.15);
-    color:#bcc1cc;
+    color:#bcc1cc
 }
 
-.match-meta{
-    min-width:0;
-}
+.match-meta{min-width:0}
 
 .league{
     color:var(--muted);
     font-size:10px;
     white-space:nowrap;
     overflow:hidden;
-    text-overflow:ellipsis;
+    text-overflow:ellipsis
 }
 
 .time{
     font-size:12px;
     font-weight:900;
-    margin-top:3px;
+    margin-top:3px
 }
 
-.time.live{
-    color:#ff7777;
-}
-
-.time.soon{
-    color:var(--orange);
-}
-
-.time.started{
-    color:var(--green);
-}
+.time.live{color:#ff7777}
+.time.soon{color:var(--orange)}
+.time.started{color:var(--green)}
 
 .star{
     width:33px;
@@ -327,23 +268,19 @@ body{
     background:var(--card2);
     color:var(--muted);
     border-radius:10px;
-    font-size:18px;
+    font-size:18px
 }
 
-.star.on{
-    color:var(--gold);
-}
+.star.on{color:var(--gold)}
 
 .team-row{
     display:flex;
     align-items:center;
     gap:9px;
-    min-height:37px;
+    min-height:37px
 }
 
-.team-row + .team-row{
-    margin-top:5px;
-}
+.team-row+.team-row{margin-top:5px}
 
 .logo{
     width:31px;
@@ -354,12 +291,12 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    overflow:hidden;
+    overflow:hidden
 }
 
 .logo img{
     max-width:25px;
-    max-height:25px;
+    max-height:25px
 }
 
 .team-name{
@@ -368,34 +305,30 @@ body{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    font-weight:800;
+    font-weight:800
 }
 
 .score{
     font-size:17px;
-    font-weight:900;
+    font-weight:900
 }
 
-.score.live{
-    color:var(--green);
-}
+.score.live{color:var(--green)}
 
 .team-star{
     border:0;
     background:transparent;
     color:#555d6d;
-    font-size:17px;
+    font-size:17px
 }
 
-.team-star.on{
-    color:var(--gold);
-}
+.team-star.on{color:var(--gold)}
 
 .odds{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:6px;
-    margin-top:10px;
+    margin-top:10px
 }
 
 .odd{
@@ -404,39 +337,39 @@ body{
     background:var(--card2);
     color:#fff;
     border-radius:11px;
-    font-weight:900;
+    font-weight:900
 }
 
 .odd small{
     display:block;
     color:var(--muted);
-    font-size:9px;
+    font-size:9px
 }
 
 .odd.selected{
     border-color:var(--accent);
-    background:rgba(47,128,255,.18);
+    background:rgba(47,128,255,.18)
 }
 
 .odd.disabled{
     opacity:.4;
-    pointer-events:none;
+    pointer-events:none
 }
 
 .market-title{
     margin:18px 0 8px;
     font-size:17px;
-    font-weight:900;
+    font-weight:900
 }
 
 .market-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:7px;
+    gap:7px
 }
 
 .market-grid.three{
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr)
 }
 
 .tabs{
@@ -445,7 +378,7 @@ body{
     background:var(--card);
     padding:4px;
     border-radius:13px;
-    margin-bottom:10px;
+    margin-bottom:10px
 }
 
 .tab{
@@ -453,12 +386,12 @@ body{
     background:transparent;
     color:var(--muted);
     padding:9px;
-    border-radius:10px;
+    border-radius:10px
 }
 
 .tab.active{
     background:var(--card2);
-    color:#fff;
+    color:#fff
 }
 
 .status{
@@ -466,27 +399,27 @@ body{
     padding:4px 7px;
     border-radius:999px;
     font-size:10px;
-    font-weight:900;
+    font-weight:900
 }
 
 .status.active{
     color:var(--orange);
-    background:rgba(255,159,67,.12);
+    background:rgba(255,159,67,.12)
 }
 
 .status.win{
     color:var(--green);
-    background:rgba(37,192,109,.12);
+    background:rgba(37,192,109,.12)
 }
 
 .status.loss{
     color:var(--red);
-    background:rgba(255,82,82,.12);
+    background:rgba(255,82,82,.12)
 }
 
 .status.refund{
     color:var(--muted);
-    background:rgba(146,152,167,.12);
+    background:rgba(146,152,167,.12)
 }
 
 .btn{
@@ -497,21 +430,17 @@ body{
     background:var(--accent);
     color:#fff;
     font-weight:900;
-    margin-top:9px;
+    margin-top:9px
 }
 
-.btn.secondary{
-    background:var(--card2);
-}
+.btn.secondary{background:var(--card2)}
 
 .btn.danger{
     background:rgba(255,82,82,.15);
-    color:var(--red);
+    color:var(--red)
 }
 
-.btn:disabled{
-    opacity:.45;
-}
+.btn:disabled{opacity:.45}
 
 .small-btn{
     border:0;
@@ -519,7 +448,7 @@ body{
     color:#fff;
     border-radius:9px;
     padding:7px 9px;
-    font-weight:800;
+    font-weight:800
 }
 
 .repeat{
@@ -530,30 +459,98 @@ body{
     background:rgba(47,128,255,.12);
     color:#8eb8ff;
     border-radius:10px;
-    font-weight:900;
+    font-weight:900
 }
 
 .stat-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:7px;
+    gap:7px
 }
 
 .stat{
     padding:11px;
     border-radius:14px;
     background:var(--card);
-    border:1px solid var(--border);
+    border:1px solid var(--border)
 }
 
 .stat b{
     display:block;
-    font-size:20px;
+    font-size:20px
 }
 
 .promo-result{
     margin-top:8px;
-    font-size:12px;
+    font-size:12px
+}
+
+.wheel-card{
+    text-align:center;
+    overflow:hidden
+}
+
+.wheel-disc{
+    width:170px;
+    height:170px;
+    margin:14px auto 10px;
+    border-radius:50%;
+    border:7px solid #252b37;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:900;
+    box-shadow:
+        0 12px 32px rgba(0,0,0,.35),
+        inset 0 0 0 5px rgba(255,255,255,.04);
+    background:
+        conic-gradient(
+            #2f80ff 0deg 60deg,
+            #25c06d 60deg 120deg,
+            #ff9f43 120deg 180deg,
+            #8e6cff 180deg 240deg,
+            #ff5252 240deg 300deg,
+            #ffd166 300deg 360deg
+        );
+    position:relative;
+    transition:transform 2.3s cubic-bezier(.12,.72,.14,1)
+}
+
+.wheel-disc::after{
+    content:"🎁";
+    position:absolute;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#11151d;
+    border:5px solid #fff;
+    font-size:29px
+}
+
+.wheel-pointer{
+    width:0;
+    height:0;
+    margin:0 auto -16px;
+    border-left:13px solid transparent;
+    border-right:13px solid transparent;
+    border-top:24px solid #fff;
+    position:relative;
+    z-index:2
+}
+
+.wheel-result{
+    font-size:18px;
+    font-weight:900;
+    margin-top:10px;
+    min-height:24px
+}
+
+.wheel-disc.spinning{
+    transform:rotate(2160deg)
 }
 
 .overlay{
@@ -562,12 +559,10 @@ body{
     z-index:100;
     inset:0;
     background:rgba(0,0,0,.72);
-    align-items:flex-end;
+    align-items:flex-end
 }
 
-.overlay.show{
-    display:flex;
-}
+.overlay.show{display:flex}
 
 .modal{
     width:100%;
@@ -578,7 +573,7 @@ body{
     background:#151820;
     border:1px solid var(--border);
     border-radius:23px 23px 0 0;
-    padding:18px;
+    padding:18px
 }
 
 .mini{
@@ -594,29 +589,25 @@ body{
     border:1px solid rgba(47,128,255,.55);
     border-radius:16px;
     padding:10px;
-    box-shadow:0 8px 35px rgba(0,0,0,.45);
+    box-shadow:0 8px 35px rgba(0,0,0,.45)
 }
 
-.mini.show{
-    display:block;
-}
+.mini.show{display:block}
 
 .mini-top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:center
 }
 
 .mini-bottom{
     display:grid;
     grid-template-columns:90px 1fr auto;
     gap:7px;
-    margin-top:8px;
+    margin-top:8px
 }
 
-.mini input{
-    min-width:0;
-}
+.mini input{min-width:0}
 
 .nav{
     position:fixed;
@@ -628,27 +619,23 @@ body{
     grid-template-columns:repeat(5,1fr);
     min-height:72px;
     background:#12151d;
-    border-top:1px solid var(--border);
+    border-top:1px solid var(--border)
 }
 
 .nav button{
     border:0;
     background:transparent;
-    color:var(--muted);
+    color:var(--muted)
 }
 
-.nav button.active{
-    color:#fff;
-}
+.nav button.active{color:#fff}
 
 .nav span{
     display:block;
-    font-size:20px;
+    font-size:20px
 }
 
-.nav small{
-    font-size:10px;
-}
+.nav small{font-size:10px}
 
 .back{
     border:0;
@@ -656,9 +643,8 @@ body{
     color:var(--accent);
     padding:0;
     margin-bottom:13px;
-    font-size:16px;
+    font-size:16px
 }
-
 </style>
 </head>
 
@@ -666,187 +652,102 @@ body{
 
 <div class="app">
 
-<section
-    id="page-home"
-    class="page active"
->
+<section id="page-home" class="page active">
 
 <div class="topbar">
-
-<div class="brand">
-⚽ BetCoin
+    <div class="brand">⚽ BetCoin</div>
+    <div class="balance">🪙 <span data-balance>0</span></div>
 </div>
-
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
-
-</div>
-
 
 <div class="dashboard">
 
 <div class="dashboard-row">
 
 <div>
-
-<div
-    id="homeName"
-    class="dashboard-name"
->
-Игрок
+    <div id="homeName" class="dashboard-name">Игрок</div>
+    <div id="homeLeague" class="muted">🥉 Бронза • Уровень 1</div>
 </div>
 
-<div
-    id="homeLeague"
-    class="muted"
->
-🥉 Бронза • Уровень 1
-</div>
+<div id="homeCoins" class="dashboard-coins">0 🪙</div>
 
 </div>
-
-<div
-    id="homeCoins"
-    class="dashboard-coins"
->
-0 🪙
-</div>
-
-</div>
-
 
 <div class="xp-row">
-
-<span>
-Прогресс уровня
-</span>
-
-<span id="homeXp">
-0 / 100 XP
-</span>
-
+    <span>Прогресс уровня</span>
+    <span id="homeXp">0 / 100 XP</span>
 </div>
-
 
 <div class="xp-bar">
-
-<div
-    id="homeXpFill"
-    class="xp-fill"
-    style="width:0"
-></div>
-
+    <div id="homeXpFill" class="xp-fill" style="width:0"></div>
 </div>
 
 </div>
-
 
 <div class="quick-grid">
 
-<button
-    class="quick"
-    onclick="quick('today')"
->
-<b>📅</b>
-Сегодня
+<button class="quick" onclick="quick('today')">
+    <b>📅</b>
+    Сегодня
 </button>
 
-<button
-    class="quick"
-    onclick="quick('top5')"
->
-<b>⭐</b>
-Топ-5
+<button class="quick" onclick="quick('top5')">
+    <b>⭐</b>
+    Топ-5
 </button>
 
-<button
-    class="quick"
-    onclick="quick('champions_league')"
->
-<b>🏆</b>
-Еврокубки
+<button class="quick" onclick="quick('champions_league')">
+    <b>🏆</b>
+    Еврокубки
 </button>
 
-<button
-    class="quick"
-    onclick="quick('myteams')"
->
-<b>❤️</b>
-Мои команды
+<button class="quick" onclick="quick('myteams')">
+    <b>❤️</b>
+    Мои команды
 </button>
 
 </div>
 
-
-<div
-    id="homeLiveWrap"
-    style="display:none"
->
+<div id="homeLiveWrap" style="display:none">
 
 <div class="live-title">
-
-<span class="live-dot"></span>
-
-LIVE
-
+    <span class="live-dot"></span>
+    LIVE
 </div>
 
 <div id="homeLive"></div>
 
 </div>
 
-
 <div class="section-head">
 
-<h2>
-🔥 Популярные
-</h2>
+<h2>🔥 Популярные</h2>
 
-<button
-    class="link"
-    onclick="quick('top5')"
->
-Все
+<button class="link" onclick="quick('top5')">
+    Все
 </button>
 
 </div>
 
 <div id="homePopular"></div>
 
-
 <div class="section-head">
 
-<h2>
-⚡ Активные ставки
-</h2>
+<h2>⚡ Активные ставки</h2>
 
-<button
-    class="link"
-    onclick="showPage('bets')"
->
-Открыть
+<button class="link" onclick="showPage('bets')">
+    Открыть
 </button>
 
 </div>
 
 <div id="homeBets"></div>
 
-
 <div class="section-head">
 
-<h2>
-⚽ Ближайшие
-</h2>
+<h2>⚽ Ближайшие</h2>
 
-<button
-    class="link"
-    onclick="showPage('matches')"
->
-Все
+<button class="link" onclick="showPage('matches')">
+    Все
 </button>
 
 </div>
@@ -856,243 +757,135 @@ LIVE
 </section>
 
 
-<section
-    id="page-matches"
-    class="page"
->
+<section id="page-matches" class="page">
 
 <div class="topbar">
 
 <div class="title">
-Матчи
+    Матчи
 </div>
 
 <div class="balance">
-🪙
-<span data-balance>
-0
-</span>
+    🪙 <span data-balance>0</span>
 </div>
 
 </div>
-
 
 <input
     id="search"
     class="search"
     placeholder="🔎 Найти команду..."
-    oninput="
-        searchQuery=
-            this.value
-            .toLowerCase()
-            .trim();
-
-        renderMatches()
-    "
+    oninput="searchQuery=this.value.toLowerCase().trim();renderMatches()"
 >
 
-
-<div
-    id="liveWrap"
-    style="display:none"
->
+<div id="liveWrap" style="display:none">
 
 <div class="live-title">
-
-<span class="live-dot"></span>
-
-LIVE
-
+    <span class="live-dot"></span>
+    LIVE
 </div>
 
 <div id="liveList"></div>
 
 </div>
 
-
 <div class="filters">
 
-<button
-    class="chip date-chip active"
-    data-v="all"
-    onclick="setDateFilter('all')"
->
-Все
+<button class="chip date-chip active" data-v="all" onclick="setDateFilter('all')">
+    Все
 </button>
 
-<button
-    class="chip date-chip"
-    data-v="today"
-    onclick="setDateFilter('today')"
->
-Сегодня
+<button class="chip date-chip" data-v="today" onclick="setDateFilter('today')">
+    Сегодня
 </button>
 
-<button
-    class="chip date-chip"
-    data-v="tomorrow"
-    onclick="setDateFilter('tomorrow')"
->
-Завтра
+<button class="chip date-chip" data-v="tomorrow" onclick="setDateFilter('tomorrow')">
+    Завтра
 </button>
 
-<button
-    class="chip date-chip"
-    data-v="myteams"
-    onclick="setDateFilter('myteams')"
->
-⭐ Мои команды
+<button class="chip date-chip" data-v="myteams" onclick="setDateFilter('myteams')">
+    ⭐ Мои команды
 </button>
 
 </div>
-
 
 <div class="leagues">
 
-<button
-    class="chip league-chip active"
-    data-v="top5"
-    onclick="loadLeague('top5')"
->
-Топ-5
+<button class="chip league-chip active" data-v="top5" onclick="loadLeague('top5')">
+    Топ-5
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="premier_league"
-    onclick="loadLeague('premier_league')"
->
-🏴 АПЛ
+<button class="chip league-chip" data-v="premier_league" onclick="loadLeague('premier_league')">
+    🏴 АПЛ
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="la_liga"
-    onclick="loadLeague('la_liga')"
->
-🇪🇸 Ла Лига
+<button class="chip league-chip" data-v="la_liga" onclick="loadLeague('la_liga')">
+    🇪🇸 Ла Лига
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="serie_a"
-    onclick="loadLeague('serie_a')"
->
-🇮🇹 Серия А
+<button class="chip league-chip" data-v="serie_a" onclick="loadLeague('serie_a')">
+    🇮🇹 Серия А
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="bundesliga"
-    onclick="loadLeague('bundesliga')"
->
-🇩🇪 Бундеслига
+<button class="chip league-chip" data-v="bundesliga" onclick="loadLeague('bundesliga')">
+    🇩🇪 Бундеслига
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="ligue_1"
-    onclick="loadLeague('ligue_1')"
->
-🇫🇷 Лига 1
+<button class="chip league-chip" data-v="ligue_1" onclick="loadLeague('ligue_1')">
+    🇫🇷 Лига 1
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="champions_league"
-    onclick="loadLeague('champions_league')"
->
-🏆 ЛЧ
+<button class="chip league-chip" data-v="champions_league" onclick="loadLeague('champions_league')">
+    🏆 ЛЧ
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="europa_league"
-    onclick="loadLeague('europa_league')"
->
-🟠 ЛЕ
+<button class="chip league-chip" data-v="europa_league" onclick="loadLeague('europa_league')">
+    🟠 ЛЕ
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="conference_league"
-    onclick="loadLeague('conference_league')"
->
-🟢 ЛК
+<button class="chip league-chip" data-v="conference_league" onclick="loadLeague('conference_league')">
+    🟢 ЛК
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="championship"
-    onclick="loadLeague('championship')"
->
-Чемпионшип
+<button class="chip league-chip" data-v="championship" onclick="loadLeague('championship')">
+    Чемпионшип
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="eredivisie"
-    onclick="loadLeague('eredivisie')"
->
-🇳🇱 Эредивизи
+<button class="chip league-chip" data-v="eredivisie" onclick="loadLeague('eredivisie')">
+    🇳🇱 Эредивизи
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="primeira_liga"
-    onclick="loadLeague('primeira_liga')"
->
-🇵🇹 Португалия
+<button class="chip league-chip" data-v="primeira_liga" onclick="loadLeague('primeira_liga')">
+    🇵🇹 Португалия
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="mls"
-    onclick="loadLeague('mls')"
->
-🇺🇸 MLS
+<button class="chip league-chip" data-v="mls" onclick="loadLeague('mls')">
+    🇺🇸 MLS
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="saudi_pro_league"
-    onclick="loadLeague('saudi_pro_league')"
->
-🇸🇦 Саудовская
+<button class="chip league-chip" data-v="saudi_pro_league" onclick="loadLeague('saudi_pro_league')">
+    🇸🇦 Саудовская
 </button>
 
-<button
-    class="chip league-chip"
-    data-v="favorites"
-    onclick="loadLeague('favorites')"
->
-⭐ Избранное
+<button class="chip league-chip" data-v="favorites" onclick="loadLeague('favorites')">
+    ⭐ Избранное
 </button>
 
 </div>
-
 
 <div id="matchesList">
-
-<div class="loader">
-Загружаем матчи...
-</div>
-
+    <div class="loader">
+        Загружаем матчи...
+    </div>
 </div>
 
 </section>
 
 
-<section
-    id="page-match"
-    class="page"
->
+<section id="page-match" class="page">
 
-<button
-    class="back"
-    onclick="showPage('matches',false)"
->
-← Назад
+<button class="back" onclick="showPage('matches',false)">
+    ← Назад
 </button>
 
 <div id="matchDetail"></div>
@@ -1100,105 +893,63 @@ LIVE
 </section>
 
 
-<section
-    id="page-bets"
-    class="page"
->
+<section id="page-bets" class="page">
 
 <div class="topbar">
 
 <div class="title">
-🎟 Ставки
+    🎟 Ставки
 </div>
 
 <div class="balance">
-🪙
-<span data-balance>
-0
-</span>
+    🪙 <span data-balance>0</span>
 </div>
 
 </div>
-
 
 <div class="tabs">
 
-<button
-    id="tabSingle"
-    class="tab active"
-    onclick="switchBets('single')"
->
-Ординары
+<button id="tabSingle" class="tab active" onclick="switchBets('single')">
+    Ординары
 </button>
 
-<button
-    id="tabParlay"
-    class="tab"
-    onclick="switchBets('parlay')"
->
-Экспрессы
+<button id="tabParlay" class="tab" onclick="switchBets('parlay')">
+    Экспрессы
 </button>
 
 </div>
-
 
 <div class="filters">
 
-<button
-    class="chip bet-chip active"
-    data-v="all"
-    onclick="setBetFilter('all')"
->
-Все
+<button class="chip bet-chip active" data-v="all" onclick="setBetFilter('all')">
+    Все
 </button>
 
-<button
-    class="chip bet-chip"
-    data-v="active"
-    onclick="setBetFilter('active')"
->
-Активные
+<button class="chip bet-chip" data-v="active" onclick="setBetFilter('active')">
+    Активные
 </button>
 
-<button
-    class="chip bet-chip"
-    data-v="win"
-    onclick="setBetFilter('win')"
->
-Выигранные
+<button class="chip bet-chip" data-v="win" onclick="setBetFilter('win')">
+    Выигранные
 </button>
 
-<button
-    class="chip bet-chip"
-    data-v="loss"
-    onclick="setBetFilter('loss')"
->
-Проигранные
+<button class="chip bet-chip" data-v="loss" onclick="setBetFilter('loss')">
+    Проигранные
 </button>
 
 </div>
 
-
 <div id="singleBets"></div>
 
-<div
-    id="parlayBets"
-    style="display:none"
-></div>
+<div id="parlayBets" style="display:none"></div>
 
 </section>
 
 
-<section
-    id="page-leaderboard"
-    class="page"
->
+<section id="page-leaderboard" class="page">
 
-<div
-    class="title"
-    style="margin-bottom:12px"
->
-🏆 Лидеры
+<div class="title" style="margin-bottom:12px">
+    🏆 Лидеры
 </div>
 
 <div id="leaderboard"></div>
@@ -1206,49 +957,29 @@ LIVE
 </section>
 
 
-<section
-    id="page-profile"
-    class="page"
->
+<section id="page-profile" class="page">
 
 <div class="topbar">
 
 <div class="title">
-👤 Профиль
+    👤 Профиль
 </div>
 
 <div class="balance">
-🪙
-<span data-balance>
-0
-</span>
+    🪙 <span data-balance>0</span>
 </div>
 
 </div>
-
 
 <div class="card">
 
-<div
-    id="profileName"
-    style="
-        font-size:21px;
-        font-weight:900
-    "
->
-Игрок
+<div id="profileName" style="font-size:21px;font-weight:900">
+    Игрок
 </div>
 
-<div
-    id="profileLeague"
-    class="muted"
-></div>
+<div id="profileLeague" class="muted"></div>
 
-
-<div
-    class="row"
-    style="margin-top:12px"
->
+<div class="row" style="margin-top:12px">
 
 <span id="profileLevel"></span>
 
@@ -1256,64 +987,38 @@ LIVE
 
 </div>
 
-
 <div class="xp-bar">
-
-<div
-    id="profileXpFill"
-    class="xp-fill"
-></div>
-
+    <div id="profileXpFill" class="xp-fill"></div>
 </div>
 
-
-<div
-    id="profileRank"
-    class="muted"
-    style="margin-top:7px"
-></div>
+<div id="profileRank" class="muted" style="margin-top:7px"></div>
 
 </div>
 
 
 <div class="card">
 
-<b>
-🎁 Ежедневный бонус
-</b>
+<b>🎁 Ежедневный бонус</b>
 
 <div class="muted">
-+300 монет каждые 24 часа
+    +300 монет каждые 24 часа
 </div>
 
-<button
-    id="dailyBtn"
-    class="btn"
-    onclick="claimDaily()"
->
-Получить +300
+<button id="dailyBtn" class="btn" onclick="claimDaily()">
+    Получить +300
 </button>
 
-<div
-    id="dailyInfo"
-    class="muted"
-    style="margin-top:7px"
-></div>
+<div id="dailyInfo" class="muted" style="margin-top:7px"></div>
 
 </div>
 
 
 <div class="card">
 
-<b>
-🎟 Промокод
-</b>
+<b>🎟 Промокод</b>
 
-<div
-    class="muted"
-    style="margin:5px 0 10px"
->
-Введи код и получи виртуальные монеты или XP
+<div class="muted" style="margin:5px 0 10px">
+    Введи код и получи виртуальные монеты или XP
 </div>
 
 <input
@@ -1324,42 +1029,46 @@ LIVE
     style="text-transform:uppercase"
 >
 
-<button
-    id="promoBtn"
-    class="btn"
-    onclick="redeemPromo()"
->
-Активировать
+<button id="promoBtn" class="btn" onclick="redeemPromo()">
+    Активировать
 </button>
 
-<div
-    id="promoResult"
-    class="promo-result muted"
-></div>
+<div id="promoResult" class="promo-result muted"></div>
 
 </div>
 
 
-<h3>
-📊 Статистика
-</h3>
+<div class="card wheel-card">
 
-<div
-    id="stats"
-    class="stat-grid"
-></div>
+<b>🎡 Колесо удачи</b>
 
+<div class="muted" style="margin-top:5px">
+    1 бесплатное вращение раз в 24 часа
+</div>
 
-<h3>
-✅ Задания
-</h3>
+<div class="wheel-pointer"></div>
+
+<div id="wheelDisc" class="wheel-disc"></div>
+
+<button id="wheelBtn" class="btn" onclick="spinLuckyWheel()">
+    Крутить бесплатно
+</button>
+
+<div id="wheelInfo" class="muted" style="margin-top:8px"></div>
+
+<div id="wheelResult" class="wheel-result"></div>
+
+</div>
+
+<h3>📊 Статистика</h3>
+
+<div id="stats" class="stat-grid"></div>
+
+<h3>✅ Задания</h3>
 
 <div id="tasks"></div>
 
-
-<h3>
-🏅 Достижения
-</h3>
+<h3>🏅 Достижения</h3>
 
 <div id="achievements"></div>
 
@@ -1368,37 +1077,25 @@ LIVE
 </div>
 
 
-<div
-    id="miniParlay"
-    class="mini"
->
+<div id="miniParlay" class="mini">
 
-<div
-    class="mini-top"
-    onclick="openParlay()"
->
+<div class="mini-top" onclick="openParlay()">
 
 <div>
 
-<b>
-🧾 Экспресс
-</b>
+<b>🧾 Экспресс</b>
 
-<div
-    id="miniMeta"
-    class="muted"
->
-0 событий
+<div id="miniMeta" class="muted">
+    0 событий
 </div>
 
 </div>
 
 <b id="miniOdd">
-x1.00
+    x1.00
 </b>
 
 </div>
-
 
 <div class="mini-bottom">
 
@@ -1408,26 +1105,7 @@ x1.00
     type="number"
     min="1"
     placeholder="Ставка"
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(
-                        this.value
-                    )
-                    ||
-                    0
-                )
-            );
-
-        document.getElementById(
-            'parlayStake'
-        ).value=
-            this.value;
-
-        updateParlay()
-    "
+    oninput="parlayStake=Math.max(0,Math.floor(Number(this.value)||0));document.getElementById('parlayStake').value=this.value;updateParlay()"
 >
 
 <div class="muted">
@@ -1436,16 +1114,13 @@ x1.00
 <br>
 
 <b id="miniWin">
-—
+    —
 </b>
 
 </div>
 
-<button
-    class="small-btn"
-    onclick="openParlay()"
->
-Открыть
+<button class="small-btn" onclick="openParlay()">
+    Открыть
 </button>
 
 </div>
@@ -1455,86 +1130,54 @@ x1.00
 
 <nav class="nav">
 
-<button
-    id="nav-home"
-    class="active"
-    onclick="showPage('home')"
->
-<span>🏠</span>
-<small>Главная</small>
+<button id="nav-home" class="active" onclick="showPage('home')">
+    <span>🏠</span>
+    <small>Главная</small>
 </button>
 
-<button
-    id="nav-matches"
-    onclick="showPage('matches')"
->
-<span>⚽</span>
-<small>Матчи</small>
+<button id="nav-matches" onclick="showPage('matches')">
+    <span>⚽</span>
+    <small>Матчи</small>
 </button>
 
-<button
-    id="nav-bets"
-    onclick="showPage('bets')"
->
-<span>🎟</span>
-<small>Ставки</small>
+<button id="nav-bets" onclick="showPage('bets')">
+    <span>🎟</span>
+    <small>Ставки</small>
 </button>
 
-<button
-    id="nav-leaderboard"
-    onclick="showPage('leaderboard')"
->
-<span>🏆</span>
-<small>Лидеры</small>
+<button id="nav-leaderboard" onclick="showPage('leaderboard')">
+    <span>🏆</span>
+    <small>Лидеры</small>
 </button>
 
-<button
-    id="nav-profile"
-    onclick="showPage('profile')"
->
-<span>👤</span>
-<small>Профиль</small>
+<button id="nav-profile" onclick="showPage('profile')">
+    <span>👤</span>
+    <small>Профиль</small>
 </button>
 
 </nav>
 
 
-<div
-    id="choiceOverlay"
-    class="overlay"
->
+<div id="choiceOverlay" class="overlay">
 
 <div class="modal">
 
 <h2>
-Выбери тип ставки
+    Выбери тип ставки
 </h2>
 
-<div
-    id="choiceInfo"
-    class="card"
-></div>
+<div id="choiceInfo" class="card"></div>
 
-<button
-    class="btn"
-    onclick="openSingle()"
->
-Ординар
+<button class="btn" onclick="openSingle()">
+    Ординар
 </button>
 
-<button
-    id="parlayChoiceBtn"
-    class="btn secondary"
-    onclick="toggleParlayChoice()"
->
-+ Экспресс
+<button id="parlayChoiceBtn" class="btn secondary" onclick="toggleParlayChoice()">
+    + Экспресс
 </button>
 
-<button
-    class="btn danger"
-    onclick="closeOverlay('choiceOverlay')"
->
-Закрыть
+<button class="btn danger" onclick="closeOverlay('choiceOverlay')">
+    Закрыть
 </button>
 
 </div>
@@ -1542,21 +1185,15 @@ x1.00
 </div>
 
 
-<div
-    id="singleOverlay"
-    class="overlay"
->
+<div id="singleOverlay" class="overlay">
 
 <div class="modal">
 
 <h2>
-Ординар
+    Ординар
 </h2>
 
-<div
-    id="singleInfo"
-    class="card"
-></div>
+<div id="singleInfo" class="card"></div>
 
 <input
     id="singleStake"
@@ -1567,25 +1204,14 @@ x1.00
     oninput="updateSingleWin()"
 >
 
-<div
-    id="singleWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
+<div id="singleWin" class="muted" style="margin-top:7px"></div>
 
-<button
-    id="singleBtn"
-    class="btn"
-    onclick="confirmSingle()"
->
-Поставить
+<button id="singleBtn" class="btn" onclick="confirmSingle()">
+    Поставить
 </button>
 
-<button
-    class="btn danger"
-    onclick="closeOverlay('singleOverlay')"
->
-Закрыть
+<button class="btn danger" onclick="closeOverlay('singleOverlay')">
+    Закрыть
 </button>
 
 </div>
@@ -1593,36 +1219,27 @@ x1.00
 </div>
 
 
-<div
-    id="parlayOverlay"
-    class="overlay"
->
+<div id="parlayOverlay" class="overlay">
 
 <div class="modal">
 
 <h2>
-🧾 Экспресс
+    🧾 Экспресс
 </h2>
 
 <div id="parlayList"></div>
 
-
 <div class="card">
 
 Событий:
-<b id="parlayCount">
-0
-</b>
+<b id="parlayCount">0</b>
 
 <br>
 
 Общий кэф:
-<b id="parlayOdd">
-1.00
-</b>
+<b id="parlayOdd">1.00</b>
 
 </div>
-
 
 <input
     id="parlayStake"
@@ -1630,47 +1247,17 @@ x1.00
     type="number"
     min="1"
     placeholder="Сумма"
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(
-                        this.value
-                    )
-                    ||
-                    0
-                )
-            );
-
-        document.getElementById(
-            'miniStake'
-        ).value=
-            this.value;
-
-        updateParlay()
-    "
+    oninput="parlayStake=Math.max(0,Math.floor(Number(this.value)||0));document.getElementById('miniStake').value=this.value;updateParlay()"
 >
 
-<div
-    id="parlayWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
+<div id="parlayWin" class="muted" style="margin-top:7px"></div>
 
-<button
-    id="parlayBtn"
-    class="btn"
-    onclick="confirmParlay()"
->
-Поставить экспресс
+<button id="parlayBtn" class="btn" onclick="confirmParlay()">
+    Поставить экспресс
 </button>
 
-<button
-    class="btn danger"
-    onclick="clearParlay()"
->
-Очистить
+<button class="btn danger" onclick="clearParlay()">
+    Очистить
 </button>
 
 </div>
@@ -1697,15 +1284,10 @@ const initData =
 
 
 let balance = 0;
-
 let matches = [];
-
 let loaded = {};
-
 let bets = [];
-
 let parlays = [];
-
 let liveMap = {};
 
 let favoriteMatches =
@@ -1727,59 +1309,30 @@ let favoriteTeams =
     );
 
 let parlaySlip = [];
-
 let parlayStake = 0;
-
-let currentLeague =
-    "top5";
-
-let dateFilter =
-    "all";
-
-let searchQuery =
-    "";
-
-let betFilter =
-    "all";
-
-let betTab =
-    "single";
-
-let selectedBet =
-    null;
-
-let currentUser =
-    null;
-
+let currentLeague = "top5";
+let dateFilter = "all";
+let searchQuery = "";
+let betFilter = "all";
+let betTab = "single";
+let selectedBet = null;
+let currentUser = null;
 let xp = 0;
-
 let level = 1;
-
-let leagueInfo =
-    {};
-
+let leagueInfo = {};
 let levelXp = 0;
-
-let stats =
-    {};
-
-let tasks =
-    [];
-
-let achievements =
-    [];
-
-let daily =
-    {};
-
-let myRank =
-    null;
+let stats = {};
+let tasks = [];
+let achievements = [];
+let daily = {};
+let wheel = {};
+let myRank = null;
 
 
 const esc =
-    value =>
+    s =>
         String(
-            value ?? ""
+            s ?? ""
         )
         .replaceAll(
             "&",
@@ -1804,9 +1357,9 @@ const esc =
 
 
 const js =
-    value =>
+    s =>
         String(
-            value ?? ""
+            s ?? ""
         )
         .replaceAll(
             "\\",
@@ -1823,9 +1376,9 @@ const js =
 
 
 const tkey =
-    value =>
+    s =>
         String(
-            value || ""
+            s || ""
         )
         .trim()
         .toLowerCase();
@@ -1836,7 +1389,7 @@ async function post(
     body={}
 ){
 
-    const response =
+    const r =
         await fetch(
             SERVER_URL
             +
@@ -1862,27 +1415,25 @@ async function post(
         );
 
 
-    const data =
-        await response.json();
+    const d =
+        await r.json();
 
 
     if(
-        !response.ok
+        !r.ok
         ||
-        data.success
-        ===
-        false
+        d.success === false
     ){
 
         throw new Error(
-            data.error
+            d.error
             ||
             "Ошибка сервера"
         );
     }
 
 
-    return data;
+    return d;
 }
 
 
@@ -1893,8 +1444,8 @@ function setBalances(){
         "[data-balance]"
     )
     .forEach(
-        element =>
-            element.textContent =
+        x =>
+            x.textContent =
                 balance
     );
 
@@ -1906,11 +1457,10 @@ function setBalances(){
 }
 
 
-function closeOverlay(
-    id
-){
+function closeOverlay(id){
 
-    document.getElementById(
+    document
+    .getElementById(
         id
     )
     .classList.remove(
@@ -1929,14 +1479,15 @@ function showPage(
         ".page"
     )
     .forEach(
-        page =>
-            page.classList.remove(
+        x =>
+            x.classList.remove(
                 "active"
             )
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "page-"
         +
         name
@@ -1953,14 +1504,15 @@ function showPage(
             ".nav button"
         )
         .forEach(
-            button =>
-                button.classList.remove(
+            x =>
+                x.classList.remove(
                     "active"
                 )
         );
 
 
-        document.getElementById(
+        document
+        .getElementById(
             "nav-"
             +
             name
@@ -1972,8 +1524,7 @@ function showPage(
 
 
     if(
-        name
-        ===
+        name ===
         "leaderboard"
     ){
 
@@ -1982,12 +1533,10 @@ function showPage(
 
 
     if(
-        name
-        ===
+        name ===
         "profile"
         ||
-        name
-        ===
+        name ===
         "bets"
     ){
 
@@ -2002,9 +1551,7 @@ function showPage(
 }
 
 
-function quick(
-    value
-){
+function quick(v){
 
     showPage(
         "matches"
@@ -2012,8 +1559,7 @@ function quick(
 
 
     if(
-        value
-        ===
+        v ===
         "today"
     ){
 
@@ -2024,11 +1570,9 @@ function quick(
         loadLeague(
             "top5"
         );
-    }
 
-    else if(
-        value
-        ===
+    }else if(
+        v ===
         "myteams"
     ){
 
@@ -2039,24 +1583,21 @@ function quick(
         loadLeague(
             "top5"
         );
-    }
 
-    else{
+    }else{
 
         setDateFilter(
             "all"
         );
 
         loadLeague(
-            value
+            v
         );
     }
 }
 
 
-function logo(
-    url
-){
+function logo(url){
 
     return url
 
@@ -2066,9 +1607,7 @@ function logo(
         <div class="logo">
             <img
                 src="${esc(url)}"
-                onerror="
-                    this.parentElement.innerHTML='⚽'
-                "
+                onerror="this.parentElement.innerHTML='⚽'"
             >
         </div>
     `
@@ -2083,117 +1622,101 @@ function logo(
 }
 
 
-function parseDate(
-    value
-){
+function parseDate(v){
 
-    const date =
+    const d =
         new Date(
-            value
+            v
         );
 
 
     return Number.isFinite(
-        date.getTime()
+        d.getTime()
     )
     ?
-    date
+    d
     :
     null;
 }
+function isToday(v){
 
-
-function isToday(
-    value
-){
-
-    const date =
+    const d =
         parseDate(
-            value
+            v
         );
 
-
-    const now =
+    const n =
         new Date();
 
 
     return (
-        !!date
+        !!d
         &&
-        date.toDateString()
+        d.toDateString()
         ===
-        now.toDateString()
+        n.toDateString()
     );
 }
 
 
-function isTomorrow(
-    value
-){
+function isTomorrow(v){
 
-    const date =
+    const d =
         parseDate(
-            value
+            v
         );
 
-
-    const tomorrow =
+    const n =
         new Date();
 
 
-    tomorrow.setDate(
-        tomorrow.getDate()
+    n.setDate(
+        n.getDate()
         +
         1
     );
 
 
     return (
-        !!date
+        !!d
         &&
-        date.toDateString()
+        d.toDateString()
         ===
-        tomorrow.toDateString()
+        n.toDateString()
     );
 }
 
 
-function isFavTeam(
-    name
-){
+function isFavTeam(n){
 
     return favoriteTeams.some(
-        team =>
+        x =>
             tkey(
-                team
+                x
             )
             ===
             tkey(
-                name
+                n
             )
     );
 }
 
 
-function hasFavTeam(
-    match
-){
+function hasFavTeam(m){
 
     return (
         isFavTeam(
-            match.home
+            m.home
         )
         ||
         isFavTeam(
-            match.away
+            m.away
         )
     );
 }
 
 
-function findMatch(
-    id
-){
+function findMatch(id){
 
     id =
         Number(
@@ -2210,20 +1733,20 @@ function findMatch(
     ){
 
         for(
-            const match
+            const m
             of
             list || []
         ){
 
             if(
                 Number(
-                    match.fixture_id
+                    m.fixture_id
                 )
                 ===
                 id
             ){
 
-                return match;
+                return m;
             }
         }
     }
@@ -2233,14 +1756,12 @@ function findMatch(
 }
 
 
-function kickoff(
-    match
-){
+function kickoff(m){
 
     const live =
         liveMap[
             Number(
-                match.fixture_id
+                m.fixture_id
             )
         ];
 
@@ -2249,13 +1770,9 @@ function kickoff(
 
         const score =
             (
-                live.home_score
-                !=
-                null
+                live.home_score != null
                 &&
-                live.away_score
-                !=
-                null
+                live.away_score != null
             )
             ?
             `${live.home_score}:${live.away_score}`
@@ -2268,8 +1785,7 @@ function kickoff(
         ){
 
             return{
-                started:
-                    true,
+                started:true,
 
                 text:
                     score
@@ -2289,8 +1805,7 @@ function kickoff(
         ){
 
             return{
-                started:
-                    true,
+                started:true,
 
                 text:
                     score
@@ -2306,29 +1821,24 @@ function kickoff(
     }
 
 
-    const date =
+    const d =
         parseDate(
-            match.date
+            m.date
         );
 
 
-    if(!date){
+    if(!d){
 
         return{
-            started:
-                false,
-
-            text:
-                "Время уточняется",
-
-            c:
-                ""
+            started:false,
+            text:"Время уточняется",
+            c:""
         };
     }
 
 
     let ms =
-        date
+        d
         -
         Date.now();
 
@@ -2338,19 +1848,14 @@ function kickoff(
     ){
 
         return{
-            started:
-                true,
-
-            text:
-                "● Начался",
-
-            c:
-                "started"
+            started:true,
+            text:"● Начался",
+            c:"started"
         };
     }
 
 
-    let minutes =
+    let min =
         Math.floor(
             ms
             /
@@ -2359,147 +1864,129 @@ function kickoff(
 
 
     if(
-        minutes < 60
+        min < 60
     ){
 
         return{
-            started:
-                false,
+            started:false,
 
             text:
                 `Через ${Math.max(
                     1,
-                    minutes
+                    min
                 )} мин`,
 
-            c:
-                "soon"
+            c:"soon"
         };
     }
 
 
-    let hours =
+    let h =
         Math.floor(
-            minutes
+            min
             /
             60
         );
 
 
     if(
-        hours < 24
+        h < 24
     ){
 
         return{
-            started:
-                false,
-
-            text:
-                `Через ${hours} ч ${minutes % 60} мин`,
-
-            c:
-                ""
+            started:false,
+            text:`Через ${h} ч ${min % 60} мин`,
+            c:""
         };
     }
 
 
     return{
-        started:
-            false,
+        started:false,
 
         text:
-            date.toLocaleString(
+            d.toLocaleString(
                 "ru-RU",
                 {
-                    day:
-                        "2-digit",
-
-                    month:
-                        "2-digit",
-
-                    hour:
-                        "2-digit",
-
-                    minute:
-                        "2-digit"
+                    day:"2-digit",
+                    month:"2-digit",
+                    hour:"2-digit",
+                    minute:"2-digit"
                 }
             ),
 
-        c:
-            ""
+        c:""
     };
 }
 
 
 function selectedInParlay(
     id,
-    selection
+    sel
 ){
 
     return parlaySlip.some(
-        item =>
+        x =>
             Number(
-                item.fixture_id
+                x.fixture_id
             )
             ===
             Number(
                 id
             )
             &&
-            item.selection
+            x.selection
             ===
-            selection
+            sel
     );
 }
 
 
 function oddBtn(
-    match,
-    selection,
+    m,
+    sel,
     odd,
     label
 ){
 
-    const number =
+    const o =
         Number(
             odd
         );
 
 
-    const matchKickoff =
+    const k =
         kickoff(
-            match
+            m
         );
 
 
-    const selected =
+    const selOn =
         selectedInParlay(
-            match.fixture_id,
-            selection
+            m.fixture_id,
+            sel
         );
 
 
     if(
-        matchKickoff.started
+        k.started
         ||
         !Number.isFinite(
-            number
+            o
         )
         ||
-        number <= 1
+        o <= 1
     ){
 
         return `
-            <button
-                class="odd disabled"
-            >
+            <button class="odd disabled">
 
                 <small>
                     ${esc(label)}
                 </small>
 
                 ${
-                    matchKickoff.started
+                    k.started
                     ?
                     "Закрыто"
                     :
@@ -2513,74 +2000,68 @@ function oddBtn(
 
     return `
         <button
-            class="odd ${selected ? "selected" : ""}"
+            class="odd ${selOn ? "selected" : ""}"
 
             onclick="
                 event.stopPropagation();
 
                 selectBet(
-                    ${Number(match.fixture_id)},
-                    '${js(match.home)}',
-                    '${js(match.away)}',
-                    '${js(selection)}',
-                    ${number},
-                    '${js(match.date)}'
+                    ${Number(m.fixture_id)},
+                    '${js(m.home)}',
+                    '${js(m.away)}',
+                    '${js(sel)}',
+                    ${o},
+                    '${js(m.date)}'
                 )
             "
         >
 
             <small>
-                ${selected ? "✓ " : ""}
+                ${selOn ? "✓ " : ""}
                 ${esc(label)}
             </small>
 
-            ${number.toFixed(2)}
+            ${o.toFixed(2)}
 
         </button>
     `;
 }
 
 
-function renderMatch(
-    match
-){
+function renderMatch(m){
 
-    const matchKickoff =
+    const k =
         kickoff(
-            match
+            m
         );
 
 
     const live =
         liveMap[
             Number(
-                match.fixture_id
+                m.fixture_id
             )
         ];
 
 
-    const hasScore =
+    const score =
         live
         &&
-        live.home_score
-        !=
-        null
+        live.home_score != null
         &&
-        live.away_score
-        !=
-        null;
+        live.away_score != null;
 
 
-    const favorite =
+    const fav =
         favoriteMatches.includes(
             Number(
-                match.fixture_id
+                m.fixture_id
             )
         );
 
 
-    const odds =
-        match.odds
+    const o =
+        m.odds
         ||
         {};
 
@@ -2588,12 +2069,7 @@ function renderMatch(
     return `
         <div
             class="match-card"
-
-            onclick="
-                openMatch(
-                    ${Number(match.fixture_id)}
-                )
-            "
+            onclick="openMatch(${Number(m.fixture_id)})"
         >
 
             <div class="match-head">
@@ -2605,59 +2081,41 @@ function renderMatch(
                         ${
                             live?.live
                             ?
-                            `
-                                <span class="badge live">
-                                    LIVE
-                                </span>
-                            `
+                            '<span class="badge live">LIVE</span> '
                             :
-                            ""
+                            ''
                         }
 
                         ${
                             live?.finished
                             ?
-                            `
-                                <span class="badge ft">
-                                    FT
-                                </span>
-                            `
+                            '<span class="badge ft">FT</span> '
                             :
-                            ""
+                            ''
                         }
 
                         ${esc(
-                            match.league
+                            m.league
                             ||
                             "Футбол"
                         )}
 
                     </div>
 
-
-                    <div
-                        class="time ${matchKickoff.c}"
-                    >
-                        ${esc(
-                            matchKickoff.text
-                        )}
+                    <div class="time ${k.c}">
+                        ${esc(k.text)}
                     </div>
 
                 </div>
 
-
                 <button
-                    class="star ${favorite ? "on" : ""}"
-
+                    class="star ${fav ? "on" : ""}"
                     onclick="
                         event.stopPropagation();
-
-                        toggleFavoriteMatch(
-                            ${Number(match.fixture_id)}
-                        )
+                        toggleFavoriteMatch(${Number(m.fixture_id)})
                     "
                 >
-                    ${favorite ? "★" : "☆"}
+                    ${fav ? "★" : "☆"}
                 </button>
 
             </div>
@@ -2666,22 +2124,18 @@ function renderMatch(
             <div class="team-row">
 
                 ${logo(
-                    match.home_logo
+                    m.home_logo
                 )}
 
                 <div class="team-name">
-                    ${esc(
-                        match.home
-                    )}
+                    ${esc(m.home)}
                 </div>
 
                 ${
-                    hasScore
+                    score
                     ?
                     `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
+                        <div class="score ${live.live ? "live" : ""}">
                             ${live.home_score}
                         </div>
                     `
@@ -2690,17 +2144,13 @@ function renderMatch(
                 }
 
                 <button
-                    class="team-star ${isFavTeam(match.home) ? "on" : ""}"
-
+                    class="team-star ${isFavTeam(m.home) ? "on" : ""}"
                     onclick="
                         event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.home)}'
-                        )
+                        toggleFavoriteTeam('${js(m.home)}')
                     "
                 >
-                    ${isFavTeam(match.home) ? "★" : "☆"}
+                    ${isFavTeam(m.home) ? "★" : "☆"}
                 </button>
 
             </div>
@@ -2709,22 +2159,18 @@ function renderMatch(
             <div class="team-row">
 
                 ${logo(
-                    match.away_logo
+                    m.away_logo
                 )}
 
                 <div class="team-name">
-                    ${esc(
-                        match.away
-                    )}
+                    ${esc(m.away)}
                 </div>
 
                 ${
-                    hasScore
+                    score
                     ?
                     `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
+                        <div class="score ${live.live ? "live" : ""}">
                             ${live.away_score}
                         </div>
                     `
@@ -2733,17 +2179,13 @@ function renderMatch(
                 }
 
                 <button
-                    class="team-star ${isFavTeam(match.away) ? "on" : ""}"
-
+                    class="team-star ${isFavTeam(m.away) ? "on" : ""}"
                     onclick="
                         event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.away)}'
-                        )
+                        toggleFavoriteTeam('${js(m.away)}')
                     "
                 >
-                    ${isFavTeam(match.away) ? "★" : "☆"}
+                    ${isFavTeam(m.away) ? "★" : "☆"}
                 </button>
 
             </div>
@@ -2752,23 +2194,23 @@ function renderMatch(
             <div class="odds">
 
                 ${oddBtn(
-                    match,
+                    m,
                     "П1",
-                    odds.home,
+                    o.home,
                     "П1"
                 )}
 
                 ${oddBtn(
-                    match,
+                    m,
                     "X",
-                    odds.draw,
+                    o.draw,
                     "X"
                 )}
 
                 ${oddBtn(
-                    match,
+                    m,
                     "П2",
-                    odds.away,
+                    o.away,
                     "П2"
                 )}
 
@@ -2783,7 +2225,7 @@ async function loadLive(){
 
     try{
 
-        const response =
+        const r =
             await fetch(
                 SERVER_URL
                 +
@@ -2791,52 +2233,46 @@ async function loadLive(){
             );
 
 
-        const data =
-            await response.json();
+        const d =
+            await r.json();
 
 
         if(
-            !response.ok
+            !r.ok
             ||
-            !data.success
+            !d.success
         ){
-
             return;
         }
 
 
-        liveMap =
-            {};
+        liveMap = {};
 
 
         for(
-            const match
+            const m
             of
-            data.matches
-            ||
-            []
+            d.matches || []
         ){
 
             liveMap[
                 Number(
-                    match.fixture_id
+                    m.fixture_id
                 )
             ] =
-                match;
+                m;
         }
 
 
         renderLive();
-
         renderMatches();
-
         renderHome();
 
 
-    }catch(error){
+    }catch(e){
 
         console.error(
-            error
+            e
         );
     }
 }
@@ -2844,13 +2280,13 @@ async function loadLive(){
 
 function renderLive(){
 
-    const live =
+    const arr =
         Object.values(
             liveMap
         )
         .filter(
-            item =>
-                item.live
+            x =>
+                x.live
         );
 
 
@@ -2865,6 +2301,7 @@ function renderLive(){
                 "homeLiveWrap",
                 "homeLive"
             ],
+
             [
                 "liveWrap",
                 "liveList"
@@ -2872,47 +2309,47 @@ function renderLive(){
         ]
     ){
 
-        const wrapper =
+        const w =
             document.getElementById(
                 wrap
             );
 
 
         if(
-            live.length
+            arr.length
         ){
 
-            wrapper.style.display =
+            w.style.display =
                 "block";
 
 
-            document.getElementById(
+            document
+            .getElementById(
                 list
-            ).innerHTML =
-                live
+            )
+            .innerHTML =
+                arr
                 .map(
-                    item =>
+                    l =>
                         renderMatch({
                             ...findMatch(
-                                item.fixture_id
+                                l.fixture_id
                             ),
-                            ...item
+                            ...l
                         })
                 )
                 .join("");
 
         }else{
 
-            wrapper.style.display =
+            w.style.display =
                 "none";
         }
     }
 }
 
 
-async function loadLeague(
-    key
-){
+async function loadLeague(key){
 
     currentLeague =
         key;
@@ -2923,10 +2360,10 @@ async function loadLeague(
         ".league-chip"
     )
     .forEach(
-        button =>
-            button.classList.toggle(
+        x =>
+            x.classList.toggle(
                 "active",
-                button.dataset.v
+                x.dataset.v
                 ===
                 key
             )
@@ -2934,8 +2371,7 @@ async function loadLeague(
 
 
     if(
-        key
-        ===
+        key ===
         "favorites"
     ){
 
@@ -2963,14 +2399,12 @@ async function loadLeague(
     }
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "matchesList"
-    ).innerHTML =
-        `
-            <div class="loader">
-                Загружаем...
-            </div>
-        `;
+    )
+    .innerHTML =
+        '<div class="loader">Загружаем...</div>';
 
 
     try{
@@ -2981,9 +2415,7 @@ async function loadLeague(
             "/api/matches"
             +
             (
-                key
-                ===
-                "top5"
+                key === "top5"
                 ?
                 ""
                 :
@@ -2995,24 +2427,24 @@ async function loadLeague(
             );
 
 
-        const response =
+        const r =
             await fetch(
                 url
             );
 
 
-        const data =
-            await response.json();
+        const d =
+            await r.json();
 
 
         if(
-            !response.ok
+            !r.ok
             ||
-            !data.success
+            !d.success
         ){
 
             throw new Error(
-                data.error
+                d.error
                 ||
                 "Ошибка"
             );
@@ -3021,7 +2453,7 @@ async function loadLeague(
 
         matches =
             (
-                data.matches
+                d.matches
                 ||
                 []
             )
@@ -3049,28 +2481,26 @@ async function loadLeague(
         renderAll();
 
 
-    }catch(error){
+    }catch(e){
 
-        document.getElementById(
+        document
+        .getElementById(
             "matchesList"
-        ).innerHTML =
+        )
+        .innerHTML =
             `
                 <div class="empty">
-                    ${esc(
-                        error.message
-                    )}
+                    ${esc(e.message)}
                 </div>
             `;
     }
 }
 
 
-function setDateFilter(
-    value
-){
+function setDateFilter(v){
 
     dateFilter =
-        value;
+        v;
 
 
     document
@@ -3078,12 +2508,12 @@ function setDateFilter(
         ".date-chip"
     )
     .forEach(
-        button =>
-            button.classList.toggle(
+        x =>
+            x.classList.toggle(
                 "active",
-                button.dataset.v
+                x.dataset.v
                 ===
-                value
+                v
             )
     );
 
@@ -3092,51 +2522,40 @@ function setDateFilter(
 }
 
 
-function filtered(
-    list
-){
+function filtered(list){
 
     return list.filter(
-        match =>
-
+        m =>
             (
-                dateFilter
-                ===
-                "all"
+                dateFilter === "all"
 
                 ||
 
                 (
-                    dateFilter
-                    ===
-                    "today"
+                    dateFilter === "today"
                     &&
                     isToday(
-                        match.date
+                        m.date
                     )
                 )
 
                 ||
 
                 (
-                    dateFilter
-                    ===
-                    "tomorrow"
+                    dateFilter === "tomorrow"
                     &&
                     isTomorrow(
-                        match.date
+                        m.date
                     )
                 )
 
                 ||
 
                 (
-                    dateFilter
-                    ===
-                    "myteams"
+                    dateFilter === "myteams"
                     &&
                     hasFavTeam(
-                        match
+                        m
                     )
                 )
             )
@@ -3149,7 +2568,7 @@ function filtered(
                 ||
 
                 (
-                    `${match.home} ${match.away} ${match.league}`
+                    `${m.home} ${m.away} ${m.league}`
                 )
                 .toLowerCase()
                 .includes(
@@ -3162,8 +2581,7 @@ function filtered(
 
 function allMatches(){
 
-    const map =
-        {};
+    const map = {};
 
 
     for(
@@ -3175,15 +2593,15 @@ function allMatches(){
     ){
 
         for(
-            const match
+            const m
             of
             list || []
         ){
 
             map[
-                match.fixture_id
+                m.fixture_id
             ] =
-                match;
+                m;
         }
     }
 
@@ -3197,18 +2615,17 @@ function allMatches(){
 function renderMatches(){
 
     let list =
-        currentLeague
-        ===
+        currentLeague ===
         "favorites"
 
         ?
 
         allMatches()
         .filter(
-            match =>
+            m =>
                 favoriteMatches.includes(
                     Number(
-                        match.fixture_id
+                        m.fixture_id
                     )
                 )
         )
@@ -3224,9 +2641,11 @@ function renderMatches(){
         );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "matchesList"
-    ).innerHTML =
+    )
+    .innerHTML =
         list.length
 
         ?
@@ -3239,20 +2658,14 @@ function renderMatches(){
 
         :
 
-        `
-            <div class="empty">
-                Матчи не найдены
-            </div>
-        `;
+        '<div class="empty">Матчи не найдены</div>';
 
 
     renderLive();
 }
 
 
-async function toggleFavoriteMatch(
-    id
-){
+async function toggleFavoriteMatch(id){
 
     id =
         Number(
@@ -3268,18 +2681,12 @@ async function toggleFavoriteMatch(
 
     favoriteMatches =
         old
-
         ?
-
         favoriteMatches.filter(
-            value =>
-                value
-                !==
-                id
+            x =>
+                x !== id
         )
-
         :
-
         [
             ...favoriteMatches,
             id
@@ -3299,7 +2706,7 @@ async function toggleFavoriteMatch(
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/favorites/toggle",
                 {
@@ -3314,16 +2721,16 @@ async function toggleFavoriteMatch(
 
         favoriteMatches =
             (
-                data.favorites
+                d.favorites
                 ||
                 []
             )
             .map(
-                item =>
+                x =>
                     Number(
-                        item.fixture_id
+                        x.fixture_id
                         ??
-                        item
+                        x
                     )
             );
 
@@ -3339,18 +2746,16 @@ async function toggleFavoriteMatch(
         renderAll();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
     }
 }
 
 
-async function toggleFavoriteTeam(
-    name
-){
+async function toggleFavoriteTeam(name){
 
     const old =
         isFavTeam(
@@ -3360,22 +2765,18 @@ async function toggleFavoriteTeam(
 
     favoriteTeams =
         old
-
         ?
-
         favoriteTeams.filter(
-            team =>
+            x =>
                 tkey(
-                    team
+                    x
                 )
                 !==
                 tkey(
                     name
                 )
         )
-
         :
-
         [
             ...favoriteTeams,
             name
@@ -3395,7 +2796,7 @@ async function toggleFavoriteTeam(
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/favorite-teams/toggle",
                 {
@@ -3409,7 +2810,7 @@ async function toggleFavoriteTeam(
 
 
         favoriteTeams =
-            data.favorite_teams
+            d.favorite_teams
             ||
             favoriteTeams;
 
@@ -3425,18 +2826,16 @@ async function toggleFavoriteTeam(
         renderAll();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
     }
 }
 
 
-async function openMatch(
-    id
-){
+async function openMatch(id){
 
     showPage(
         "match",
@@ -3451,16 +2850,12 @@ async function openMatch(
 
 
     box.innerHTML =
-        `
-            <div class="loader">
-                Загрузка...
-            </div>
-        `;
+        '<div class="loader">Загрузка...</div>';
 
 
     try{
 
-        const response =
+        const r =
             await fetch(
                 SERVER_URL
                 +
@@ -3470,33 +2865,29 @@ async function openMatch(
             );
 
 
-        const match =
-            await response.json();
+        const m =
+            await r.json();
 
 
         if(
-            !response.ok
+            !r.ok
             ||
-            match.success
-            ===
-            false
+            m.success === false
         ){
 
             throw new Error(
-                match.error
+                m.error
                 ||
                 "Ошибка"
             );
         }
 
 
-        let html =
+        let h =
             renderMatch(
-                match
-            );
-
-
-        html +=
+                m
+            )
+            +
             `
                 <div class="market-title">
                     Исход матча
@@ -3504,26 +2895,9 @@ async function openMatch(
 
                 <div class="market-grid three">
 
-                    ${oddBtn(
-                        match,
-                        "П1",
-                        match.odds?.home,
-                        "П1"
-                    )}
-
-                    ${oddBtn(
-                        match,
-                        "X",
-                        match.odds?.draw,
-                        "X"
-                    )}
-
-                    ${oddBtn(
-                        match,
-                        "П2",
-                        match.odds?.away,
-                        "П2"
-                    )}
+                    ${oddBtn(m,"П1",m.odds?.home,"П1")}
+                    ${oddBtn(m,"X",m.odds?.draw,"X")}
+                    ${oddBtn(m,"П2",m.odds?.away,"П2")}
 
                 </div>
             `;
@@ -3540,8 +2914,8 @@ async function openMatch(
             ]
         ){
 
-            const market =
-                match[
+            const x =
+                m[
                     "total_"
                     +
                     String(
@@ -3554,11 +2928,9 @@ async function openMatch(
                 ];
 
 
-            if(
-                market
-            ){
+            if(x){
 
-                html +=
+                h +=
                     `
                         <div class="market-title">
                             Тотал ${line}
@@ -3567,16 +2939,16 @@ async function openMatch(
                         <div class="market-grid">
 
                             ${oddBtn(
-                                match,
+                                m,
                                 `ТБ ${line}`,
-                                market.over,
+                                x.over,
                                 `ТБ ${line}`
                             )}
 
                             ${oddBtn(
-                                match,
+                                m,
                                 `ТМ ${line}`,
-                                market.under,
+                                x.under,
                                 `ТМ ${line}`
                             )}
 
@@ -3587,10 +2959,10 @@ async function openMatch(
 
 
         if(
-            match.btts
+            m.btts
         ){
 
-            html +=
+            h +=
                 `
                     <div class="market-title">
                         Обе забьют
@@ -3599,16 +2971,16 @@ async function openMatch(
                     <div class="market-grid">
 
                         ${oddBtn(
-                            match,
+                            m,
                             "ОЗ Да",
-                            match.btts.yes,
+                            m.btts.yes,
                             "Да"
                         )}
 
                         ${oddBtn(
-                            match,
+                            m,
                             "ОЗ Нет",
-                            match.btts.no,
+                            m.btts.no,
                             "Нет"
                         )}
 
@@ -3618,32 +2990,32 @@ async function openMatch(
 
 
         if(
-            match.handicaps
+            m.handicaps
         ){
 
-            const home =
+            const a =
                 Object.entries(
-                    match.handicaps.home
+                    m.handicaps.home
                     ||
                     {}
                 )[0];
 
 
-            const away =
+            const b =
                 Object.entries(
-                    match.handicaps.away
+                    m.handicaps.away
                     ||
                     {}
                 )[0];
 
 
             if(
-                home
+                a
                 &&
-                away
+                b
             ){
 
-                html +=
+                h +=
                     `
                         <div class="market-title">
                             Фора
@@ -3652,17 +3024,17 @@ async function openMatch(
                         <div class="market-grid">
 
                             ${oddBtn(
-                                match,
-                                `Ф1(${home[0]})`,
-                                home[1],
-                                `Ф1 (${home[0]})`
+                                m,
+                                `Ф1(${a[0]})`,
+                                a[1],
+                                `Ф1 (${a[0]})`
                             )}
 
                             ${oddBtn(
-                                match,
-                                `Ф2(${away[0]})`,
-                                away[1],
-                                `Ф2 (${away[0]})`
+                                m,
+                                `Ф2(${b[0]})`,
+                                b[1],
+                                `Ф2 (${b[0]})`
                             )}
 
                         </div>
@@ -3672,17 +3044,15 @@ async function openMatch(
 
 
         box.innerHTML =
-            html;
+            h;
 
 
-    }catch(error){
+    }catch(e){
 
         box.innerHTML =
             `
                 <div class="empty">
-                    ${esc(
-                        error.message
-                    )}
+                    ${esc(e.message)}
                 </div>
             `;
     }
@@ -3714,28 +3084,29 @@ function selectBet(
     }
 
 
-    selectedBet =
-        {
-            fixture_id:
-                Number(
-                    id
-                ),
+    selectedBet = {
+        fixture_id:
+            Number(
+                id
+            ),
 
-            match:
-                `${home} — ${away}`,
+        match:
+            `${home} — ${away}`,
 
-            selection,
+        selection,
 
-            odd:
-                Number(
-                    odd
-                )
-        };
+        odd:
+            Number(
+                odd
+            )
+    };
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "choiceInfo"
-    ).innerHTML =
+    )
+    .innerHTML =
         `
             <b>
                 ${esc(
@@ -3744,24 +3115,16 @@ function selectBet(
             </b>
 
             <div class="muted">
-
-                ${esc(
-                    selection
-                )}
-
-                •
-
-                ${Number(
-                    odd
-                ).toFixed(2)}
-
+                ${esc(selection)} • ${Number(odd).toFixed(2)}
             </div>
         `;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayChoiceBtn"
-    ).textContent =
+    )
+    .textContent =
         selectedInParlay(
             id,
             selection
@@ -3772,9 +3135,11 @@ function selectBet(
         "+ Экспресс";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "choiceOverlay"
-    ).classList.add(
+    )
+    .classList.add(
         "show"
     );
 }
@@ -3787,9 +3152,11 @@ function openSingle(){
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleInfo"
-    ).innerHTML =
+    )
+    .innerHTML =
         `
             <b>
                 ${esc(
@@ -3798,31 +3165,27 @@ function openSingle(){
             </b>
 
             <div class="muted">
-
-                ${esc(
-                    selectedBet.selection
-                )}
-
-                •
-
-                ${selectedBet.odd.toFixed(2)}
-
+                ${esc(selectedBet.selection)} • ${selectedBet.odd.toFixed(2)}
             </div>
         `;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleStake"
-    ).value =
+    )
+    .value =
         "";
 
 
     updateSingleWin();
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleOverlay"
-    ).classList.add(
+    )
+    .classList.add(
         "show"
     );
 }
@@ -3830,43 +3193,45 @@ function openSingle(){
 
 function updateSingleWin(){
 
-    const amount =
+    const a =
         Number(
-            document.getElementById(
+            document
+            .getElementById(
                 "singleStake"
-            ).value
+            )
+            .value
         );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleWin"
-    ).textContent =
-        amount > 0
+    )
+    .textContent =
+        a > 0
         &&
         selectedBet
-
         ?
-
         `Возможный выигрыш: ${Math.round(
-            amount
+            a
             *
             selectedBet.odd
         )} 🪙`
-
         :
-
         "";
 }
 
 
 async function confirmSingle(){
 
-    const amount =
+    const a =
         Math.floor(
             Number(
-                document.getElementById(
+                document
+                .getElementById(
                     "singleStake"
-                ).value
+                )
+                .value
             )
             ||
             0
@@ -3876,7 +3241,7 @@ async function confirmSingle(){
     if(
         !selectedBet
         ||
-        amount <= 0
+        a <= 0
     ){
 
         tg.showAlert(
@@ -3887,19 +3252,19 @@ async function confirmSingle(){
     }
 
 
-    const button =
+    const b =
         document.getElementById(
             "singleBtn"
         );
 
 
-    button.disabled =
+    b.disabled =
         true;
 
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/bets",
                 {
@@ -3909,17 +3274,18 @@ async function confirmSingle(){
                     selection:
                         selectedBet.selection,
 
-                    amount
+                    amount:
+                        a
                 }
             );
 
 
         balance =
-            data.balance;
+            d.balance;
 
 
         bets =
-            data.bets
+            d.bets
             ||
             bets;
 
@@ -3927,7 +3293,6 @@ async function confirmSingle(){
         setBalances();
 
         renderBets();
-
 
         closeOverlay(
             "singleOverlay"
@@ -3942,16 +3307,16 @@ async function confirmSingle(){
         await loadSession();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
 
 
     }finally{
 
-        button.disabled =
+        b.disabled =
             false;
     }
 }
@@ -3959,27 +3324,27 @@ async function confirmSingle(){
 
 function toggleParlayChoice(){
 
-    const index =
+    const i =
         parlaySlip.findIndex(
-            item =>
+            x =>
                 Number(
-                    item.fixture_id
+                    x.fixture_id
                 )
                 ===
                 selectedBet.fixture_id
                 &&
-                item.selection
+                x.selection
                 ===
                 selectedBet.selection
         );
 
 
     if(
-        index >= 0
+        i >= 0
     ){
 
         parlaySlip.splice(
-            index,
+            i,
             1
         );
 
@@ -3987,9 +3352,9 @@ function toggleParlayChoice(){
 
         if(
             parlaySlip.some(
-                item =>
+                x =>
                     Number(
-                        item.fixture_id
+                        x.fixture_id
                     )
                     ===
                     selectedBet.fixture_id
@@ -4037,13 +3402,13 @@ function parlayOdd(){
 
     return parlaySlip.reduce(
         (
-            total,
-            item
+            a,
+            x
         ) =>
-            total
+            a
             *
             Number(
-                item.odd
+                x.odd
             ),
         1
     );
@@ -4052,11 +3417,11 @@ function parlayOdd(){
 
 function updateParlay(){
 
-    const count =
+    const c =
         parlaySlip.length;
 
 
-    const odd =
+    const o =
         parlayOdd();
 
 
@@ -4066,35 +3431,43 @@ function updateParlay(){
         Math.round(
             parlayStake
             *
-            odd
+            o
         )
         :
         0;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "miniParlay"
-    ).classList.toggle(
+    )
+    .classList.toggle(
         "show",
-        count > 0
+        c > 0
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "miniMeta"
-    ).textContent =
-        `${count} событий`;
+    )
+    .textContent =
+        `${c} событий`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "miniOdd"
-    ).textContent =
-        `x${odd.toFixed(2)}`;
+    )
+    .textContent =
+        `x${o.toFixed(2)}`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "miniWin"
-    ).textContent =
+    )
+    .textContent =
         win
         ?
         `${win} 🪙`
@@ -4102,21 +3475,29 @@ function updateParlay(){
         "—";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayCount"
-    ).textContent =
-        count;
+    )
+    .textContent =
+        c;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayOdd"
-    ).textContent =
-        odd.toFixed(2);
+    )
+    .textContent =
+        o.toFixed(
+            2
+        );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayWin"
-    ).textContent =
+    )
+    .textContent =
         win
         ?
         `Возможный выигрыш: ${win} 🪙`
@@ -4132,70 +3513,47 @@ function updateParlay(){
 
 function renderParlayList(){
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayList"
-    ).innerHTML =
+    )
+    .innerHTML =
         parlaySlip.length
-
         ?
-
         parlaySlip
         .map(
             (
-                item,
-                index
-            ) => `
-                <div class="card">
+                x,
+                i
+            ) =>
+                `
+                    <div class="card">
 
-                    <b>
-                        ${index + 1}.
-                        ${esc(
-                            item.match
-                        )}
-                    </b>
+                        <b>
+                            ${i + 1}. ${esc(x.match)}
+                        </b>
 
-                    <div class="muted">
+                        <div class="muted">
+                            ${esc(x.selection)} • ${Number(x.odd).toFixed(2)}
+                        </div>
 
-                        ${esc(
-                            item.selection
-                        )}
-
-                        •
-
-                        ${Number(
-                            item.odd
-                        ).toFixed(2)}
+                        <button
+                            class="small-btn"
+                            style="margin-top:7px"
+                            onclick="
+                                parlaySlip.splice(${i},1);
+                                updateParlay()
+                            "
+                        >
+                            Удалить
+                        </button>
 
                     </div>
-
-                    <button
-                        class="small-btn"
-                        style="margin-top:7px"
-
-                        onclick="
-                            parlaySlip.splice(
-                                ${index},
-                                1
-                            );
-
-                            updateParlay()
-                        "
-                    >
-                        Удалить
-                    </button>
-
-                </div>
-            `
+                `
         )
         .join("")
-
         :
-
-        `
-            <div class="empty">
-                Экспресс пуст
-            </div>
-        `;
+        '<div class="empty">Экспресс пуст</div>';
 }
 
 
@@ -4204,9 +3562,11 @@ function openParlay(){
     updateParlay();
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayOverlay"
-    ).classList.add(
+    )
+    .classList.add(
         "show"
     );
 }
@@ -4214,23 +3574,24 @@ function openParlay(){
 
 function clearParlay(){
 
-    parlaySlip =
-        [];
+    parlaySlip = [];
+
+    parlayStake = 0;
 
 
-    parlayStake =
-        0;
-
-
-    document.getElementById(
+    document
+    .getElementById(
         "miniStake"
-    ).value =
+    )
+    .value =
         "";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayStake"
-    ).value =
+    )
+    .value =
         "";
 
 
@@ -4246,9 +3607,7 @@ function clearParlay(){
 async function confirmParlay(){
 
     if(
-        parlaySlip.length
-        <
-        2
+        parlaySlip.length < 2
     ){
 
         tg.showAlert(
@@ -4271,19 +3630,19 @@ async function confirmParlay(){
     }
 
 
-    const button =
+    const b =
         document.getElementById(
             "parlayBtn"
         );
 
 
-    button.disabled =
+    b.disabled =
         true;
 
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/parlays",
                 {
@@ -4292,12 +3651,12 @@ async function confirmParlay(){
 
                     legs:
                         parlaySlip.map(
-                            item => ({
+                            x => ({
                                 fixture_id:
-                                    item.fixture_id,
+                                    x.fixture_id,
 
                                 selection:
-                                    item.selection
+                                    x.selection
                             })
                         )
                 }
@@ -4305,27 +3664,24 @@ async function confirmParlay(){
 
 
         balance =
-            data.balance;
+            d.balance;
 
 
         parlays =
-            data.parlays
+            d.parlays
             ||
             parlays;
 
 
         clearParlay();
 
-
         setBalances();
 
         renderBets();
 
-
         showPage(
             "bets"
         );
-
 
         switchBets(
             "parlay"
@@ -4340,113 +3696,75 @@ async function confirmParlay(){
         await loadSession();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
 
 
     }finally{
 
-        button.disabled =
+        b.disabled =
             false;
     }
 }
 
 
-function stClass(
-    status
-){
+function stClass(s){
 
-    return status
-    ===
-    "Выиграла"
-
+    return s === "Выиграла"
     ?
-
     "win"
-
     :
-
-    status
-    ===
-    "Проиграла"
-
+    s === "Проиграла"
     ?
-
     "loss"
-
     :
-
-    status
-    ===
-    "Возврат"
-
+    s === "Возврат"
     ?
-
     "refund"
-
     :
-
     "active";
 }
 
 
-function passFilter(
-    item
-){
+function passFilter(x){
 
     return (
-        betFilter
-        ===
-        "all"
+        betFilter === "all"
 
         ||
 
         (
-            betFilter
-            ===
-            "active"
+            betFilter === "active"
             &&
-            item.status
-            ===
-            "Активна"
+            x.status === "Активна"
         )
 
         ||
 
         (
-            betFilter
-            ===
-            "win"
+            betFilter === "win"
             &&
-            item.status
-            ===
-            "Выиграла"
+            x.status === "Выиграла"
         )
 
         ||
 
         (
-            betFilter
-            ===
-            "loss"
+            betFilter === "loss"
             &&
-            item.status
-            ===
-            "Проиграла"
+            x.status === "Проиграла"
         )
     );
 }
 
 
-function setBetFilter(
-    value
-){
+function setBetFilter(v){
 
     betFilter =
-        value;
+        v;
 
 
     document
@@ -4454,12 +3772,10 @@ function setBetFilter(
         ".bet-chip"
     )
     .forEach(
-        button =>
-            button.classList.toggle(
+        x =>
+            x.classList.toggle(
                 "active",
-                button.dataset.v
-                ===
-                value
+                x.dataset.v === v
             )
     );
 
@@ -4468,52 +3784,50 @@ function setBetFilter(
 }
 
 
-function switchBets(
-    value
-){
+function switchBets(v){
 
     betTab =
-        value;
+        v;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "tabSingle"
-    ).classList.toggle(
+    )
+    .classList.toggle(
         "active",
-        value
-        ===
-        "single"
+        v === "single"
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "tabParlay"
-    ).classList.toggle(
+    )
+    .classList.toggle(
         "active",
-        value
-        ===
-        "parlay"
+        v === "parlay"
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleBets"
-    ).style.display =
-        value
-        ===
-        "single"
+    )
+    .style.display =
+        v === "single"
         ?
         "block"
         :
         "none";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "parlayBets"
-    ).style.display =
-        value
-        ===
-        "parlay"
+    )
+    .style.display =
+        v === "parlay"
         ?
         "block"
         :
@@ -4523,235 +3837,161 @@ function switchBets(
 
 function renderBets(){
 
-    const singles =
+    const s =
         bets.filter(
             passFilter
         );
 
 
-    const express =
+    const p =
         parlays.filter(
             passFilter
         );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "singleBets"
-    ).innerHTML =
-        singles.length
-
+    )
+    .innerHTML =
+        s.length
         ?
-
-        singles
+        s
         .map(
-            item => `
-                <div class="card">
+            x =>
+                `
+                    <div class="card">
 
-                    <span
-                        class="status ${stClass(item.status)}"
-                    >
-                        ${esc(
-                            item.status
-                        )}
-                    </span>
-
-                    <h3>
-                        ${esc(
-                            item.match
-                        )}
-                    </h3>
-
-                    <div>
-
-                        ${esc(
-                            item.selection
-                        )}
-
-                        •
-
-                        ${Number(
-                            item.odd
-                        ).toFixed(2)}
-
-                    </div>
-
-                    ${
-                        item.score
-                        ?
-                        `
-                            <div class="muted">
-                                Счёт:
-                                ${esc(
-                                    item.score
-                                )}
-                            </div>
-                        `
-                        :
-                        ""
-                    }
-
-                    <div class="bet-row">
-
-                        <span>
-                            Ставка
+                        <span class="status ${stClass(x.status)}">
+                            ${esc(x.status)}
                         </span>
 
-                        <b>
-                            ${item.amount} 🪙
-                        </b>
+                        <h3>
+                            ${esc(x.match)}
+                        </h3>
 
-                    </div>
+                        <div>
+                            ${esc(x.selection)} • ${Number(x.odd).toFixed(2)}
+                        </div>
 
-                    <div class="bet-row">
-
-                        <span>
-                            Выигрыш
-                        </span>
-
-                        <b>
-                            ${item.possible} 🪙
-                        </b>
-
-                    </div>
-
-                </div>
-            `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Нет ставок
-            </div>
-        `;
-
-
-    document.getElementById(
-        "parlayBets"
-    ).innerHTML =
-        express.length
-
-        ?
-
-        express
-        .map(
-            item => `
-                <div class="card">
-
-                    <span
-                        class="status ${stClass(item.status)}"
-                    >
-                        ${esc(
-                            item.status
-                        )}
-                    </span>
-
-                    <h3>
-                        🧾 Экспресс #${item.id}
-                    </h3>
-
-                    <div class="bet-row">
-
-                        <span>
-                            Кэф
-                        </span>
-
-                        <b>
-                            ${Number(
-                                item.total_odd
-                            ).toFixed(2)}
-                        </b>
-
-                    </div>
-
-                    <div class="bet-row">
-
-                        <span>
-                            Ставка
-                        </span>
-
-                        <b>
-                            ${item.amount} 🪙
-                        </b>
-
-                    </div>
-
-                    <div class="bet-row">
-
-                        <span>
-                            Выигрыш
-                        </span>
-
-                        <b>
-                            ${item.possible} 🪙
-                        </b>
-
-                    </div>
-
-                    ${
-                        (
-                            item.legs
-                            ||
-                            []
-                        )
-                        .map(
-                            (
-                                leg,
-                                index
-                            ) => `
-                                <div class="card">
-
-                                    <b>
-                                        ${index + 1}.
-                                        ${esc(
-                                            leg.match
-                                        )}
-                                    </b>
-
-                                    <div class="muted">
-
-                                        ${esc(
-                                            leg.selection
-                                        )}
-
-                                        •
-
-                                        ${Number(
-                                            leg.odd
-                                        ).toFixed(2)}
-
-                                    </div>
-
-                                    <span
-                                        class="status ${stClass(leg.status)}"
-                                    >
-                                        ${esc(
-                                            leg.status
-                                            ||
-                                            "Активна"
-                                        )}
-                                    </span>
-
+                        ${
+                            x.score
+                            ?
+                            `
+                                <div class="muted">
+                                    Счёт: ${esc(x.score)}
                                 </div>
                             `
-                        )
-                        .join("")
-                    }
+                            :
+                            ""
+                        }
 
-                </div>
-            `
+                        <div class="bet-row">
+
+                            <span>
+                                Ставка
+                            </span>
+
+                            <b>
+                                ${x.amount} 🪙
+                            </b>
+
+                        </div>
+
+                        <div class="bet-row">
+
+                            <span>
+                                Выигрыш
+                            </span>
+
+                            <b>
+                                ${x.possible} 🪙
+                            </b>
+
+                        </div>
+
+                    </div>
+                `
         )
         .join("")
-
         :
+        '<div class="empty">Нет ставок</div>';
 
-        `
-            <div class="empty">
-                Нет экспрессов
-            </div>
-        `;
+
+    document
+    .getElementById(
+        "parlayBets"
+    )
+    .innerHTML =
+        p.length
+        ?
+        p
+        .map(
+            x =>
+                `
+                    <div class="card">
+
+                        <span class="status ${stClass(x.status)}">
+                            ${esc(x.status)}
+                        </span>
+
+                        <h3>
+                            🧾 Экспресс #${x.id}
+                        </h3>
+
+                        <div class="bet-row">
+                            <span>Кэф</span>
+                            <b>${Number(x.total_odd).toFixed(2)}</b>
+                        </div>
+
+                        <div class="bet-row">
+                            <span>Ставка</span>
+                            <b>${x.amount} 🪙</b>
+                        </div>
+
+                        <div class="bet-row">
+                            <span>Выигрыш</span>
+                            <b>${x.possible} 🪙</b>
+                        </div>
+
+                        ${
+                            (
+                                x.legs
+                                ||
+                                []
+                            )
+                            .map(
+                                (
+                                    l,
+                                    i
+                                ) =>
+                                    `
+                                        <div class="card">
+
+                                            <b>
+                                                ${i + 1}. ${esc(l.match)}
+                                            </b>
+
+                                            <div class="muted">
+                                                ${esc(l.selection)} • ${Number(l.odd).toFixed(2)}
+                                            </div>
+
+                                            <span class="status ${stClass(l.status)}">
+                                                ${esc(l.status || "Активна")}
+                                            </span>
+
+                                        </div>
+                                    `
+                            )
+                            .join("")
+                        }
+
+                    </div>
+                `
+        )
+        .join("")
+        :
+        '<div class="empty">Нет экспрессов</div>';
 
 
     renderHome();
@@ -4762,7 +4002,7 @@ async function loadSession(){
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/session"
             );
@@ -4770,33 +4010,33 @@ async function loadSession(){
 
         balance =
             Number(
-                data.balance
+                d.balance
                 ||
                 0
             );
 
 
         currentUser =
-            data.user
+            d.user
             ||
             null;
 
 
         bets =
-            data.bets
+            d.bets
             ||
             [];
 
 
         parlays =
-            data.parlays
+            d.parlays
             ||
             [];
 
 
         xp =
             Number(
-                data.xp
+                d.xp
                 ||
                 0
             );
@@ -4804,52 +4044,58 @@ async function loadSession(){
 
         level =
             Number(
-                data.level
+                d.level
                 ||
                 1
             );
 
 
         leagueInfo =
-            data.league
+            d.league
             ||
             {};
 
 
         levelXp =
             Number(
-                data.current_level_xp
+                d.current_level_xp
                 ||
                 0
             );
 
 
         stats =
-            data.stats
+            d.stats
             ||
             {};
 
 
         tasks =
-            data.tasks
+            d.tasks
             ||
             [];
 
 
         achievements =
-            data.achievements
+            d.achievements
             ||
             [];
 
 
         daily =
-            data.daily_reward
+            d.daily_reward
+            ||
+            {};
+
+
+        wheel =
+            d.wheel
             ||
             {};
 
 
         myRank =
-            data.leaderboard?.my_rank
+            d.leaderboard?.my_rank
             ??
             null;
 
@@ -4858,17 +4104,18 @@ async function loadSession(){
             [
                 ...new Set([
                     ...favoriteMatches,
+
                     ...(
-                        data.favorites
+                        d.favorites
                         ||
                         []
                     )
                     .map(
-                        item =>
+                        x =>
                             Number(
-                                item.fixture_id
+                                x.fixture_id
                                 ??
-                                item
+                                x
                             )
                     )
                 ])
@@ -4880,7 +4127,7 @@ async function loadSession(){
                 ...new Set([
                     ...favoriteTeams,
                     ...(
-                        data.favorite_teams
+                        d.favorite_teams
                         ||
                         []
                     )
@@ -4913,10 +4160,10 @@ async function loadSession(){
         renderHome();
 
 
-    }catch(error){
+    }catch(e){
 
         console.error(
-            error
+            e
         );
     }
 }
@@ -4924,33 +4171,37 @@ async function loadSession(){
 
 function renderHome(){
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeName"
-    ).textContent =
+    )
+    .textContent =
         currentUser?.first_name
         ||
         "Игрок";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeLeague"
-    ).textContent =
-        `${leagueInfo.icon || "🥉"} `
-        +
-        `${leagueInfo.name || "Бронза"} `
-        +
-        `• Уровень ${level}`;
+    )
+    .textContent =
+        `${leagueInfo.icon || "🥉"} ${leagueInfo.name || "Бронза"} • Уровень ${level}`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeXp"
-    ).textContent =
+    )
+    .textContent =
         `${levelXp} / 100 XP`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeXpFill"
-    ).style.width =
+    )
+    .style.width =
         `${Math.min(
             levelXp,
             100
@@ -4964,16 +4215,18 @@ function renderHome(){
             []
         )
         .filter(
-            match =>
+            x =>
                 !kickoff(
-                    match
+                    x
                 ).started
         );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homePopular"
-    ).innerHTML =
+    )
+    .innerHTML =
         top
         .slice(
             0,
@@ -4983,19 +4236,15 @@ function renderHome(){
             renderMatch
         )
         .join("")
-
         ||
-
-        `
-            <div class="empty">
-                Нет матчей
-            </div>
-        `;
+        '<div class="empty">Нет матчей</div>';
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeUpcoming"
-    ).innerHTML =
+    )
+    .innerHTML =
         top
         .slice(
             0,
@@ -5005,105 +4254,80 @@ function renderHome(){
             renderMatch
         )
         .join("")
-
         ||
-
-        `
-            <div class="empty">
-                Нет ближайших матчей
-            </div>
-        `;
+        '<div class="empty">Нет ближайших матчей</div>';
 
 
-    const active =
-        [
-            ...bets
-            .filter(
-                item =>
-                    item.status
-                    ===
-                    "Активна"
-            )
-            .slice(
-                0,
-                2
-            ),
+    const active = [
+        ...bets
+        .filter(
+            x =>
+                x.status === "Активна"
+        )
+        .slice(
+            0,
+            2
+        ),
 
-            ...parlays
-            .filter(
-                item =>
-                    item.status
-                    ===
-                    "Активна"
-            )
-            .slice(
-                0,
-                1
-            )
-        ];
+        ...parlays
+        .filter(
+            x =>
+                x.status === "Активна"
+        )
+        .slice(
+            0,
+            1
+        )
+    ];
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeBets"
-    ).innerHTML =
+    )
+    .innerHTML =
         active.length
-
         ?
-
         active
         .map(
-            item => `
-                <div class="card">
+            x =>
+                `
+                    <div class="card">
 
-                    <span class="status active">
-                        Активна
-                    </span>
+                        <span class="status active">
+                            Активна
+                        </span>
 
-                    <div
-                        style="
-                            font-weight:900;
-                            margin-top:6px
-                        "
-                    >
-                        ${esc(
-                            item.match
-                            ||
-                            `Экспресс #${item.id}`
-                        )}
-                    </div>
+                        <div style="font-weight:900;margin-top:6px">
+                            ${esc(x.match || `Экспресс #${x.id}`)}
+                        </div>
 
-                    <div class="muted">
+                        <div class="muted">
 
-                        ${
-                            item.selection
-                            ?
-                            esc(
-                                item.selection
-                            )
-                            :
-                            `${
-                                (
-                                    item.legs
-                                    ||
-                                    []
-                                ).length
-                            } событий`
-                        }
+                            ${
+                                x.selection
+                                ?
+                                esc(
+                                    x.selection
+                                )
+                                :
+                                `${
+                                    (
+                                        x.legs
+                                        ||
+                                        []
+                                    ).length
+                                } событий`
+                            }
+
+                        </div>
 
                     </div>
-
-                </div>
-            `
+                `
         )
         .join("")
-
         :
-
-        `
-            <div class="empty">
-                Нет активных ставок
-            </div>
-        `;
+        '<div class="empty">Нет активных ставок</div>';
 
 
     renderLive();
@@ -5112,46 +4336,56 @@ function renderHome(){
 
 function renderProfile(){
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileName"
-    ).textContent =
+    )
+    .textContent =
         currentUser?.first_name
         ||
         "Игрок";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileLeague"
-    ).textContent =
-        `${leagueInfo.icon || ""} `
-        +
-        `${leagueInfo.name || ""}`;
+    )
+    .textContent =
+        `${leagueInfo.icon || ""} ${leagueInfo.name || ""}`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileLevel"
-    ).textContent =
+    )
+    .textContent =
         `Уровень ${level}`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileXp"
-    ).textContent =
+    )
+    .textContent =
         `${xp} XP`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileXpFill"
-    ).style.width =
+    )
+    .style.width =
         `${Math.min(
             levelXp,
             100
         )}%`;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "profileRank"
-    ).textContent =
+    )
+    .textContent =
         myRank
         ?
         `Место: #${myRank}`
@@ -5159,9 +4393,11 @@ function renderProfile(){
         "Место: —";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "stats"
-    ).innerHTML =
+    )
+    .innerHTML =
         [
             [
                 stats.total_bets
@@ -5169,16 +4405,19 @@ function renderProfile(){
                 0,
                 "Ординаров"
             ],
+
             [
                 stats.wins
                 ||
                 0,
                 "Побед"
             ],
+
             [
                 `${stats.win_rate || 0}%`,
                 "Процент побед"
             ],
+
             [
                 stats.total_parlays
                 ||
@@ -5187,178 +4426,147 @@ function renderProfile(){
             ]
         ]
         .map(
-            item => `
-                <div class="stat">
+            x =>
+                `
+                    <div class="stat">
 
-                    <b>
-                        ${item[0]}
-                    </b>
+                        <b>
+                            ${x[0]}
+                        </b>
 
-                    <span class="muted">
-                        ${item[1]}
-                    </span>
+                        <span class="muted">
+                            ${x[1]}
+                        </span>
 
-                </div>
-            `
+                    </div>
+                `
         )
         .join("");
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "tasks"
-    ).innerHTML =
+    )
+    .innerHTML =
         tasks
         .map(
-            item => `
-                <div class="card task-row">
+            x =>
+                `
+                    <div class="card task-row">
 
-                    <div>
+                        <div>
 
-                        <b>
-                            ${esc(
-                                item.title
-                            )}
-                        </b>
+                            <b>
+                                ${esc(x.title)}
+                            </b>
 
-                        <div class="muted">
-
-                            ${item.progress}/${item.target}
-
-                            •
-
-                            +${item.reward}
-
-                            ${
-                                item.reward_type
-                                ===
-                                "xp"
-                                ?
-                                "XP"
-                                :
-                                "🪙"
-                            }
+                            <div class="muted">
+                                ${x.progress}/${x.target} • +${x.reward} ${x.reward_type === "xp" ? "XP" : "🪙"}
+                            </div>
 
                         </div>
 
+                        <button
+                            class="small-btn"
+                            ${
+                                !x.completed
+                                ||
+                                x.claimed
+                                ?
+                                "disabled"
+                                :
+                                ""
+                            }
+                            onclick="claimTask('${js(x.key)}')"
+                        >
+                            ${
+                                x.claimed
+                                ?
+                                "Получено"
+                                :
+                                x.completed
+                                ?
+                                "Забрать"
+                                :
+                                "В процессе"
+                            }
+                        </button>
+
                     </div>
-
-                    <button
-                        class="small-btn"
-
-                        ${
-                            !item.completed
-                            ||
-                            item.claimed
-                            ?
-                            "disabled"
-                            :
-                            ""
-                        }
-
-                        onclick="
-                            claimTask(
-                                '${js(item.key)}'
-                            )
-                        "
-                    >
-
-                        ${
-                            item.claimed
-                            ?
-                            "Получено"
-                            :
-                            item.completed
-                            ?
-                            "Забрать"
-                            :
-                            "В процессе"
-                        }
-
-                    </button>
-
-                </div>
-            `
+                `
         )
         .join("");
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "achievements"
-    ).innerHTML =
+    )
+    .innerHTML =
         achievements
         .map(
-            item => `
-                <div class="card task-row">
+            x =>
+                `
+                    <div class="card task-row">
 
-                    <div>
+                        <div>
 
-                        <b>
-                            ${esc(
-                                item.title
-                            )}
-                        </b>
+                            <b>
+                                ${esc(x.title)}
+                            </b>
 
-                        <div class="muted">
-
-                            ${item.progress}/${item.target}
-
-                            •
-
-                            +${item.reward} 🪙
+                            <div class="muted">
+                                ${x.progress}/${x.target} • +${x.reward} 🪙
+                            </div>
 
                         </div>
 
+                        <button
+                            class="small-btn"
+                            ${
+                                !x.completed
+                                ||
+                                x.claimed
+                                ?
+                                "disabled"
+                                :
+                                ""
+                            }
+                            onclick="claimAchievement('${js(x.key)}')"
+                        >
+                            ${
+                                x.claimed
+                                ?
+                                "Получено"
+                                :
+                                x.completed
+                                ?
+                                "Забрать"
+                                :
+                                "Закрыто"
+                            }
+                        </button>
+
                     </div>
-
-                    <button
-                        class="small-btn"
-
-                        ${
-                            !item.completed
-                            ||
-                            item.claimed
-                            ?
-                            "disabled"
-                            :
-                            ""
-                        }
-
-                        onclick="
-                            claimAchievement(
-                                '${js(item.key)}'
-                            )
-                        "
-                    >
-
-                        ${
-                            item.claimed
-                            ?
-                            "Получено"
-                            :
-                            item.completed
-                            ?
-                            "Забрать"
-                            :
-                            "Закрыто"
-                        }
-
-                    </button>
-
-                </div>
-            `
+                `
         )
         .join("");
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "dailyBtn"
-    ).disabled =
+    )
+    .disabled =
         !daily.available;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "dailyBtn"
-    ).textContent =
+    )
+    .textContent =
         daily.available
         ?
         "Получить +300"
@@ -5366,26 +4574,19 @@ function renderProfile(){
         "Уже получено";
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "dailyInfo"
-    ).textContent =
+    )
+    .textContent =
         daily.available
-
         ?
-
         "Бонус доступен"
-
         :
+        `Следующий бонус через ${Math.floor(Number(daily.seconds_left || 0) / 3600)} ч`;
 
-        `Следующий бонус через ${Math.floor(
-            Number(
-                daily.seconds_left
-                ||
-                0
-            )
-            /
-            3600
-        )} ч`;
+
+    renderWheel();
 }
 
 
@@ -5406,18 +4607,16 @@ async function claimDaily(){
         );
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
     }
 }
 
 
-async function claimTask(
-    key
-){
+async function claimTask(key){
 
     try{
 
@@ -5433,18 +4632,16 @@ async function claimTask(
         await loadSession();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
     }
 }
 
 
-async function claimAchievement(
-    key
-){
+async function claimAchievement(key){
 
     try{
 
@@ -5460,10 +4657,10 @@ async function claimAchievement(
         await loadSession();
 
 
-    }catch(error){
+    }catch(e){
 
         tg.showAlert(
-            error.message
+            e.message
         );
     }
 }
@@ -5477,7 +4674,7 @@ async function redeemPromo(){
         );
 
 
-    const button =
+    const btn =
         document.getElementById(
             "promoBtn"
         );
@@ -5505,11 +4702,11 @@ async function redeemPromo(){
     }
 
 
-    button.disabled =
+    btn.disabled =
         true;
 
 
-    button.textContent =
+    btn.textContent =
         "Проверяем...";
 
 
@@ -5519,7 +4716,7 @@ async function redeemPromo(){
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/promo/redeem",
                 {
@@ -5530,7 +4727,7 @@ async function redeemPromo(){
 
         balance =
             Number(
-                data.balance
+                d.balance
                 ??
                 balance
             );
@@ -5545,28 +4742,28 @@ async function redeemPromo(){
 
         if(
             Number(
-                data.reward_coins
+                d.reward_coins
             )
             >
             0
         ){
 
             rewards.push(
-                `+${data.reward_coins} 🪙`
+                `+${d.reward_coins} 🪙`
             );
         }
 
 
         if(
             Number(
-                data.reward_xp
+                d.reward_xp
             )
             >
             0
         ){
 
             rewards.push(
-                `+${data.reward_xp} XP`
+                `+${d.reward_xp} XP`
             );
         }
 
@@ -5587,22 +4784,310 @@ async function redeemPromo(){
         );
 
 
-    }catch(error){
+    }catch(e){
 
         box.textContent =
             "❌ "
             +
-            error.message;
+            e.message;
 
 
     }finally{
 
-        button.disabled =
+        btn.disabled =
             false;
 
 
-        button.textContent =
+        btn.textContent =
             "Активировать";
+    }
+}
+
+
+function wheelWaitText(seconds){
+
+    seconds =
+        Math.max(
+            0,
+            Number(
+                seconds
+            )
+            ||
+            0
+        );
+
+
+    const h =
+        Math.floor(
+            seconds
+            /
+            3600
+        );
+
+
+    const m =
+        Math.floor(
+            (
+                seconds
+                %
+                3600
+            )
+            /
+            60
+        );
+
+
+    if(
+        h > 0
+    ){
+
+        return `${h} ч ${m} мин`;
+    }
+
+
+    if(
+        m > 0
+    ){
+
+        return `${m} мин`;
+    }
+
+
+    return `${Math.max(
+        1,
+        Math.ceil(
+            seconds
+        )
+    )} сек`;
+}
+
+
+function renderWheel(){
+
+    const btn =
+        document.getElementById(
+            "wheelBtn"
+        );
+
+
+    const info =
+        document.getElementById(
+            "wheelInfo"
+        );
+
+
+    if(
+        !btn
+        ||
+        !info
+    ){
+        return;
+    }
+
+
+    const available =
+        wheel?.available
+        !==
+        false;
+
+
+    btn.disabled =
+        !available;
+
+
+    btn.textContent =
+        available
+        ?
+        "Крутить бесплатно"
+        :
+        "Уже использовано";
+
+
+    info.textContent =
+        available
+        ?
+        "Вращение доступно 🎁"
+        :
+        `Следующее вращение через ${wheelWaitText(wheel?.seconds_left || 0)}`;
+}
+
+
+async function spinLuckyWheel(){
+
+    const btn =
+        document.getElementById(
+            "wheelBtn"
+        );
+
+
+    const disc =
+        document.getElementById(
+            "wheelDisc"
+        );
+
+
+    const result =
+        document.getElementById(
+            "wheelResult"
+        );
+
+
+    if(
+        !btn
+        ||
+        btn.disabled
+    ){
+        return;
+    }
+
+
+    btn.disabled =
+        true;
+
+
+    result.textContent =
+        "";
+
+
+    disc.classList.remove(
+        "spinning"
+    );
+
+
+    void disc.offsetWidth;
+
+
+    disc.classList.add(
+        "spinning"
+    );
+
+
+    try{
+
+        const d =
+            await post(
+                "/api/wheel/spin"
+            );
+
+
+        balance =
+            Number(
+                d.balance
+                ??
+                balance
+            );
+
+
+        xp =
+            Number(
+                d.xp
+                ??
+                xp
+            );
+
+
+        level =
+            Number(
+                d.level
+                ??
+                level
+            );
+
+
+        leagueInfo =
+            d.league
+            ||
+            leagueInfo;
+
+
+        levelXp =
+            Number(
+                d.current_level_xp
+                ??
+                levelXp
+            );
+
+
+        wheel =
+            d.wheel
+            ||
+            wheel;
+
+
+        setBalances();
+
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    2300
+                )
+        );
+
+
+        result.textContent =
+            `🎉 ${d.reward_label}`;
+
+
+        tg.showAlert(
+            `Колесо удачи: ${d.reward_label}`
+        );
+
+
+        renderProfile();
+
+        renderHome();
+
+
+    }catch(e){
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    700
+                )
+        );
+
+
+        result.textContent =
+            `❌ ${e.message}`;
+
+
+        tg.showAlert(
+            e.message
+        );
+
+
+        try{
+
+            const d =
+                await post(
+                    "/api/wheel/status"
+                );
+
+
+            wheel =
+                d.wheel
+                ||
+                wheel;
+
+
+        }catch(_){}
+
+
+        renderWheel();
+
+
+    }finally{
+
+        disc.classList.remove(
+            "spinning"
+        );
+
+
+        renderWheel();
     }
 }
 
@@ -5611,68 +5096,45 @@ async function loadLeaderboard(){
 
     try{
 
-        const data =
+        const d =
             await post(
                 "/api/leaderboard"
             );
 
 
         myRank =
-            data.my_rank;
+            d.my_rank;
 
 
-        document.getElementById(
+        document
+        .getElementById(
             "leaderboard"
-        ).innerHTML =
+        )
+        .innerHTML =
             (
-                data.players
+                d.players
                 ||
                 []
             )
             .map(
-                item => `
-                    <div class="card">
+                x =>
+                    `
+                        <div class="card">
 
-                        <b>
-                            #${item.rank}
-                            ${esc(
-                                item.first_name
-                            )}
-                        </b>
+                            <b>
+                                #${x.rank} ${esc(x.first_name)}
+                            </b>
 
-                        <div class="muted">
+                            <div class="muted">
+                                ${x.league?.icon || ""} ${esc(x.league?.name || "")} • Уровень ${x.level}
+                            </div>
 
-                            ${
-                                item.league?.icon
-                                ||
-                                ""
-                            }
-
-                            ${esc(
-                                item.league?.name
-                                ||
-                                ""
-                            )}
-
-                            •
-
-                            Уровень
-                            ${item.level}
+                            <div>
+                                ${x.xp} XP • ${x.balance} 🪙
+                            </div>
 
                         </div>
-
-                        <div>
-
-                            ${item.xp} XP
-
-                            •
-
-                            ${item.balance} 🪙
-
-                        </div>
-
-                    </div>
-                `
+                    `
             )
             .join("");
 
@@ -5680,10 +5142,10 @@ async function loadLeaderboard(){
         renderProfile();
 
 
-    }catch(error){
+    }catch(e){
 
         console.error(
-            error
+            e
         );
     }
 }
@@ -5732,6 +5194,44 @@ async function init(){
     setInterval(
         ()=>{
 
+            if(
+                wheel
+                &&
+                wheel.available === false
+                &&
+                Number(
+                    wheel.seconds_left
+                )
+                >
+                0
+            ){
+
+                wheel.seconds_left =
+                    Math.max(
+                        0,
+                        Number(
+                            wheel.seconds_left
+                        )
+                        -
+                        15
+                    );
+
+
+                if(
+                    wheel.seconds_left
+                    ===
+                    0
+                ){
+
+                    wheel.available =
+                        true;
+                }
+
+
+                renderWheel();
+            }
+
+
             renderMatches();
 
             renderHome();
@@ -5752,7 +5252,7 @@ async function init(){
 
             try{
 
-                const data =
+                const d =
                     await post(
                         "/api/settle"
                     );
@@ -5760,26 +5260,26 @@ async function init(){
 
                 balance =
                     Number(
-                        data.balance
+                        d.balance
                         ??
                         balance
                     );
 
 
                 bets =
-                    data.bets
+                    d.bets
                     ||
                     bets;
 
 
                 parlays =
-                    data.parlays
+                    d.parlays
                     ||
                     parlays;
 
 
                 stats =
-                    data.stats
+                    d.stats
                     ||
                     stats;
 
@@ -5787,10 +5287,10 @@ async function init(){
                 renderAll();
 
 
-            }catch(error){
+            }catch(e){
 
                 console.error(
-                    error
+                    e
                 );
             }
 

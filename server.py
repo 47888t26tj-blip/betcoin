@@ -5196,7 +5196,7 @@ def add_favorite_team(
 
     cur.close()
     conn.close()
-    def remove_favorite_team(
+def remove_favorite_team(
     telegram_id,
     team_name
 ):

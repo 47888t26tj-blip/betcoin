@@ -70,6 +70,11 @@ RENDER_EXTERNAL_URL = os.environ.get(
     ""
 ).strip()
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get(
+    "RENDER_EXTERNAL_HOSTNAME",
+    ""
+).strip()
+
 
 FIVE_API_URL = "https://api.5dollarfootballapi.com"
 FOOTBALL_DATA_URL = "https://api.football-data.org/v4"
@@ -10124,7 +10129,16 @@ def setup_telegram_webhook():
             "/telegram/webhook"
             if RENDER_EXTERNAL_URL
             else
-            ""
+            (
+                "https://"
+                +
+                RENDER_EXTERNAL_HOSTNAME.strip("/")
+                +
+                "/telegram/webhook"
+                if RENDER_EXTERNAL_HOSTNAME
+                else
+                ""
+            )
         )
     )
 
@@ -10867,6 +10881,89 @@ def telegram_webhook():
             "ok": True
         })
 
+
+
+
+# =========================================================
+# TELEGRAM WEBHOOK SETUP / STATUS
+# =========================================================
+
+@app.route(
+    "/telegram/setup-webhook",
+    methods=[
+        "GET"
+    ]
+)
+def telegram_setup_webhook():
+
+    if not TELEGRAM_BOT_TOKEN:
+
+        return jsonify({
+            "ok": False,
+            "error":
+                "TELEGRAM_BOT_TOKEN is not set"
+        }), 500
+
+    base_url = (
+        request.host_url.rstrip("/")
+    )
+
+    webhook_url = (
+        base_url
+        +
+        "/telegram/webhook"
+    )
+
+    result = telegram_api_call(
+        "setWebhook",
+        {
+            "url":
+                webhook_url,
+            "allowed_updates": [
+                "message"
+            ],
+            "drop_pending_updates":
+                False
+        }
+    )
+
+    return jsonify({
+        "ok":
+            bool(
+                result.get(
+                    "ok"
+                )
+            ),
+        "webhook_url":
+            webhook_url,
+        "telegram":
+            result
+    })
+
+
+@app.route(
+    "/telegram/status",
+    methods=[
+        "GET"
+    ]
+)
+def telegram_webhook_status():
+
+    if not TELEGRAM_BOT_TOKEN:
+
+        return jsonify({
+            "ok": False,
+            "error":
+                "TELEGRAM_BOT_TOKEN is not set"
+        }), 500
+
+    result = telegram_api_call(
+        "getWebhookInfo"
+    )
+
+    return jsonify(
+        result
+    )
 
 
 # =========================================================

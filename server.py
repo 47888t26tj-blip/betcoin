@@ -50,6 +50,27 @@ TELEGRAM_BOT_TOKEN = os.environ.get(
 ).strip()
 
 
+BETCOIN_WEBAPP_URL = os.environ.get(
+    "BETCOIN_WEBAPP_URL",
+    ""
+).strip()
+
+TELEGRAM_WEBHOOK_URL = os.environ.get(
+    "TELEGRAM_WEBHOOK_URL",
+    ""
+).strip()
+
+BETCOIN_START_IMAGE_URL = os.environ.get(
+    "BETCOIN_START_IMAGE_URL",
+    ""
+).strip()
+
+RENDER_EXTERNAL_URL = os.environ.get(
+    "RENDER_EXTERNAL_URL",
+    ""
+).strip()
+
+
 FIVE_API_URL = "https://api.5dollarfootballapi.com"
 FOOTBALL_DATA_URL = "https://api.football-data.org/v4"
 
@@ -9587,6 +9608,556 @@ def refresh_live_matches_once():
 # 🔔 TELEGRAM УВЕДОМЛЕНИЯ МАТЧА ДНЯ
 # =========================================================
 
+_bot_webapp_url_cache = {
+    "value": None,
+    "checked_at": 0
+}
+
+
+def telegram_api_call(
+    method,
+    payload=None,
+    timeout=12
+):
+
+    if not TELEGRAM_BOT_TOKEN:
+        return {
+            "ok": False
+        }
+
+    try:
+
+        response = requests.post(
+            (
+                "https://api.telegram.org/bot"
+                + TELEGRAM_BOT_TOKEN
+                + "/"
+                + method
+            ),
+            json=(
+                payload
+                or
+                {}
+            ),
+            timeout=timeout
+        )
+
+        data = response.json()
+
+        if not response.ok:
+
+            print(
+                "Telegram API error:",
+                method,
+                response.status_code,
+                str(data)[:500],
+                flush=True
+            )
+
+        return data
+
+    except Exception as error:
+
+        print(
+            "Telegram API exception:",
+            method,
+            error,
+            flush=True
+        )
+
+        return {
+            "ok": False
+        }
+
+
+def get_bot_webapp_url():
+
+    if BETCOIN_WEBAPP_URL:
+        return BETCOIN_WEBAPP_URL
+
+    now_ts = time.time()
+
+    cached_value = (
+        _bot_webapp_url_cache.get(
+            "value"
+        )
+    )
+
+    checked_at = float(
+        _bot_webapp_url_cache.get(
+            "checked_at",
+            0
+        )
+        or
+        0
+    )
+
+    if (
+        cached_value
+        and
+        now_ts - checked_at < 3600
+    ):
+        return cached_value
+
+    data = telegram_api_call(
+        "getChatMenuButton"
+    )
+
+    url = ""
+
+    if data.get("ok"):
+
+        menu_button = (
+            data.get("result")
+            or
+            {}
+        )
+
+        if (
+            menu_button.get("type")
+            ==
+            "web_app"
+        ):
+
+            url = str(
+                (
+                    menu_button.get(
+                        "web_app"
+                    )
+                    or
+                    {}
+                ).get(
+                    "url"
+                )
+                or
+                ""
+            ).strip()
+
+    _bot_webapp_url_cache[
+        "value"
+    ] = url
+
+    _bot_webapp_url_cache[
+        "checked_at"
+    ] = now_ts
+
+    return url
+
+
+def webapp_url_with_params(
+    page=None,
+    score_view=None
+):
+
+    base = get_bot_webapp_url()
+
+    if not base:
+        return ""
+
+    params = []
+
+    if page:
+        params.append(
+            "page="
+            +
+            str(page)
+        )
+
+    if score_view:
+        params.append(
+            "score_view="
+            +
+            str(score_view)
+        )
+
+    if not params:
+        return base
+
+    separator = (
+        "&"
+        if "?" in base
+        else
+        "?"
+    )
+
+    return (
+        base
+        +
+        separator
+        +
+        "&".join(
+            params
+        )
+    )
+
+
+def betcoin_start_keyboard():
+
+    base_url = (
+        webapp_url_with_params()
+    )
+
+    if not base_url:
+        return None
+
+    match_url = (
+        webapp_url_with_params(
+            page="games",
+            score_view="play"
+        )
+    )
+
+    rating_url = (
+        webapp_url_with_params(
+            page="games",
+            score_view="leaderboard"
+        )
+    )
+
+    profile_url = (
+        webapp_url_with_params(
+            page="profile"
+        )
+    )
+
+    return {
+        "inline_keyboard": [
+            [
+                {
+                    "text":
+                        "🎮 Открыть BetCoin",
+                    "web_app": {
+                        "url":
+                            base_url
+                    }
+                }
+            ],
+            [
+                {
+                    "text":
+                        "⭐ Матч дня",
+                    "web_app": {
+                        "url":
+                            match_url
+                    }
+                },
+                {
+                    "text":
+                        "🏆 Рейтинг",
+                    "web_app": {
+                        "url":
+                            rating_url
+                    }
+                }
+            ],
+            [
+                {
+                    "text":
+                        "👤 Профиль",
+                    "web_app": {
+                        "url":
+                            profile_url
+                    }
+                }
+            ]
+        ]
+    }
+
+
+def send_betcoin_start(
+    chat_id,
+    first_name=None
+):
+
+    name = str(
+        first_name
+        or
+        ""
+    ).strip()
+
+    greeting = (
+        f", {name}"
+        if name
+        else
+        ""
+    )
+
+    text = (
+        f"⚽ Добро пожаловать в BetCoin{greeting}!\n\n"
+        "Футбольный Mini App с прогнозами, играми и соревнованиями.\n\n"
+        "⭐ Матч дня\n"
+        "🎯 Точный счёт\n"
+        "🏆 Рейтинг прогнозистов\n"
+        "👥 Приватные лиги\n\n"
+        "Открывай BetCoin и начинай 👇"
+    )
+
+    reply_markup = (
+        betcoin_start_keyboard()
+    )
+
+    payload = {
+        "chat_id": int(
+            chat_id
+        ),
+        "text": text,
+        "disable_web_page_preview": True
+    }
+
+    if reply_markup:
+
+        payload[
+            "reply_markup"
+        ] = reply_markup
+
+    if BETCOIN_START_IMAGE_URL:
+
+        photo_payload = {
+            "chat_id": int(
+                chat_id
+            ),
+            "photo":
+                BETCOIN_START_IMAGE_URL,
+            "caption": text
+        }
+
+        if reply_markup:
+
+            photo_payload[
+                "reply_markup"
+            ] = reply_markup
+
+        result = telegram_api_call(
+            "sendPhoto",
+            photo_payload
+        )
+
+        if result.get("ok"):
+            return True
+
+    result = telegram_api_call(
+        "sendMessage",
+        payload
+    )
+
+    return bool(
+        result.get(
+            "ok"
+        )
+    )
+
+
+def send_betcoin_command_open(
+    chat_id,
+    title,
+    page=None,
+    score_view=None
+):
+
+    url = webapp_url_with_params(
+        page=page,
+        score_view=score_view
+    )
+
+    payload = {
+        "chat_id": int(
+            chat_id
+        ),
+        "text": str(
+            title
+        )
+    }
+
+    if url:
+
+        payload[
+            "reply_markup"
+        ] = {
+            "inline_keyboard": [
+                [
+                    {
+                        "text":
+                            "Открыть BetCoin",
+                        "web_app": {
+                            "url":
+                                url
+                        }
+                    }
+                ]
+            ]
+        }
+
+    result = telegram_api_call(
+        "sendMessage",
+        payload
+    )
+
+    return bool(
+        result.get(
+            "ok"
+        )
+    )
+
+
+def handle_telegram_update(
+    update
+):
+
+    message = (
+        update.get(
+            "message"
+        )
+        or
+        {}
+    )
+
+    if not message:
+        return
+
+    chat = (
+        message.get(
+            "chat"
+        )
+        or
+        {}
+    )
+
+    sender = (
+        message.get(
+            "from"
+        )
+        or
+        {}
+    )
+
+    chat_id = chat.get(
+        "id"
+    )
+
+    text = str(
+        message.get(
+            "text"
+        )
+        or
+        ""
+    ).strip()
+
+    if not chat_id:
+        return
+
+    command = (
+        text.split(
+            " ",
+            1
+        )[0]
+        .split(
+            "@",
+            1
+        )[0]
+        .lower()
+    )
+
+    if command == "/start":
+
+        send_betcoin_start(
+            chat_id,
+            sender.get(
+                "first_name"
+            )
+        )
+
+        return
+
+    if command == "/play":
+
+        send_betcoin_command_open(
+            chat_id,
+            "🎮 Открыть BetCoin",
+        )
+
+        return
+
+    if command == "/match":
+
+        send_betcoin_command_open(
+            chat_id,
+            "⭐ Матч дня",
+            page="games",
+            score_view="play"
+        )
+
+        return
+
+    if command == "/leaders":
+
+        send_betcoin_command_open(
+            chat_id,
+            "🏆 Рейтинг прогнозистов",
+            page="games",
+            score_view="leaderboard"
+        )
+
+        return
+
+    if command == "/profile":
+
+        send_betcoin_command_open(
+            chat_id,
+            "👤 Твой профиль BetCoin",
+            page="profile"
+        )
+
+        return
+
+
+def setup_telegram_webhook():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return False
+
+    webhook_url = (
+        TELEGRAM_WEBHOOK_URL
+        or
+        (
+            RENDER_EXTERNAL_URL.rstrip("/")
+            +
+            "/telegram/webhook"
+            if RENDER_EXTERNAL_URL
+            else
+            ""
+        )
+    )
+
+    if not webhook_url:
+        return False
+
+    result = telegram_api_call(
+        "setWebhook",
+        {
+            "url":
+                webhook_url,
+            "allowed_updates": [
+                "message"
+            ],
+            "drop_pending_updates":
+                False
+        }
+    )
+
+    if result.get("ok"):
+
+        print(
+            "Telegram webhook ready:",
+            webhook_url,
+            flush=True
+        )
+
+        return True
+
+    return False
+
+
+
 def send_telegram_message(
     telegram_id,
     text
@@ -10237,12 +10808,65 @@ def ensure_runtime_ready():
 
         start_workers()
 
+        try:
+            setup_telegram_webhook()
+        except Exception as error:
+            print(
+                "Telegram webhook setup error:",
+                error,
+                flush=True
+            )
+
         runtime_ready = True
 
         print(
             "BetCoin runtime started successfully",
             flush=True
         )
+
+
+# =========================================================
+# TELEGRAM WEBHOOK
+# =========================================================
+
+@app.route(
+    "/telegram/webhook",
+    methods=[
+        "POST"
+    ]
+)
+def telegram_webhook():
+
+    try:
+
+        update = (
+            request.get_json(
+                silent=True
+            )
+            or
+            {}
+        )
+
+        handle_telegram_update(
+            update
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
+    except Exception as error:
+
+        print(
+            "Telegram webhook error:",
+            error,
+            flush=True
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
 
 
 # =========================================================

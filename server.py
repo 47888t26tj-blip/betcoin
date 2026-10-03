@@ -256,6 +256,9 @@ SCORE_GAME_LOOKAHEAD_DAYS = 7
 
 SCORE_GAME_MAX_SCORE = 10
 
+SCORE_GAME_REMINDER_FROM_MINUTES = 45
+SCORE_GAME_REMINDER_TO_MINUTES = 75
+
 
 WHEEL_REWARDS = [
 
@@ -1103,6 +1106,44 @@ def init_database():
         ON score_game_picks (
             telegram_id,
             game_date DESC
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS score_game_notifications (
+
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            game_date DATE NOT NULL,
+
+            reminder_sent BOOLEAN NOT NULL
+                DEFAULT FALSE,
+
+            reminder_sent_at TIMESTAMPTZ,
+
+            result_sent BOOLEAN NOT NULL
+                DEFAULT FALSE,
+
+            result_sent_at TIMESTAMPTZ,
+
+            PRIMARY KEY (
+                telegram_id,
+                game_date
+            )
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_score_game_notifications_result
+
+        ON score_game_notifications (
+            game_date,
+            result_sent
         )
     """)
 
@@ -9541,6 +9582,458 @@ def refresh_live_matches_once():
             )
 
 
+
+# =========================================================
+# 🔔 TELEGRAM УВЕДОМЛЕНИЯ МАТЧА ДНЯ
+# =========================================================
+
+def send_telegram_message(
+    telegram_id,
+    text
+):
+
+    if not TELEGRAM_BOT_TOKEN:
+        return False
+
+    try:
+
+        response = requests.post(
+            (
+                "https://api.telegram.org/bot"
+                + TELEGRAM_BOT_TOKEN
+                + "/sendMessage"
+            ),
+            json={
+                "chat_id": int(
+                    telegram_id
+                ),
+                "text": str(
+                    text
+                ),
+                "disable_web_page_preview": True
+            },
+            timeout=12
+        )
+
+        if not response.ok:
+
+            print(
+                "Telegram send error:",
+                telegram_id,
+                response.status_code,
+                response.text[:300],
+                flush=True
+            )
+
+            return False
+
+        data = response.json()
+
+        return bool(
+            data.get(
+                "ok"
+            )
+        )
+
+    except Exception as error:
+
+        print(
+            "Telegram send exception:",
+            telegram_id,
+            error,
+            flush=True
+        )
+
+        return False
+
+
+def score_game_reminder_worker_once():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return 0
+
+    today = score_game_date()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            fixture_id,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM score_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    round_row = cur.fetchone()
+
+    if not round_row:
+
+        cur.close()
+        conn.close()
+
+        try:
+            ensure_score_game_round()
+        except Exception:
+            pass
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                fixture_id,
+                home_team,
+                away_team,
+                league_name,
+                kickoff_at
+
+            FROM score_game_rounds
+
+            WHERE game_date = %s
+        """, (
+            today,
+        ))
+
+        round_row = cur.fetchone()
+
+    if not round_row:
+
+        cur.close()
+        conn.close()
+        return 0
+
+    (
+        fixture_id,
+        home_team,
+        away_team,
+        league_name,
+        kickoff_at
+    ) = round_row
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    minutes_left = (
+        kickoff_at
+        -
+        now
+    ).total_seconds() / 60
+
+    if (
+        minutes_left
+        <
+        SCORE_GAME_REMINDER_FROM_MINUTES
+        or
+        minutes_left
+        >
+        SCORE_GAME_REMINDER_TO_MINUTES
+    ):
+
+        cur.close()
+        conn.close()
+        return 0
+
+    cur.execute("""
+        SELECT
+            u.telegram_id,
+            COALESCE(
+                NULLIF(
+                    u.first_name,
+                    ''
+                ),
+                'Игрок'
+            )
+
+        FROM users u
+
+        LEFT JOIN score_game_picks p
+            ON p.telegram_id =
+                u.telegram_id
+            AND p.game_date = %s
+
+        LEFT JOIN score_game_notifications n
+            ON n.telegram_id =
+                u.telegram_id
+            AND n.game_date = %s
+
+        WHERE
+            p.telegram_id IS NULL
+            AND
+            COALESCE(
+                n.reminder_sent,
+                FALSE
+            ) = FALSE
+
+        ORDER BY
+            u.updated_at DESC
+
+        LIMIT 100
+    """, (
+        today,
+        today
+    ))
+
+    users = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    sent_count = 0
+
+    for (
+        telegram_id,
+        first_name
+    ) in users:
+
+        local_kickoff = (
+            kickoff_at.astimezone(
+                timezone(
+                    timedelta(
+                        hours=3
+                    )
+                )
+            )
+        )
+
+        text = (
+            "⚽ BetCoin — Матч дня\n\n"
+            f"{home_team} — {away_team}\n"
+            f"{league_name or 'Футбол'}\n"
+            f"Начало в {local_kickoff.strftime('%H:%M')}\n\n"
+            "До матча около часа, а ты ещё не сделал прогноз на точный счёт 👀\n"
+            "Открой BetCoin и сделай прогноз."
+        )
+
+        if not send_telegram_message(
+            telegram_id,
+            text
+        ):
+            continue
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                INSERT INTO score_game_notifications (
+                    telegram_id,
+                    game_date,
+                    reminder_sent,
+                    reminder_sent_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    TRUE,
+                    NOW()
+                )
+
+                ON CONFLICT (
+                    telegram_id,
+                    game_date
+                )
+                DO UPDATE SET
+                    reminder_sent = TRUE,
+                    reminder_sent_at = NOW()
+            """, (
+                telegram_id,
+                today
+            ))
+
+            conn.commit()
+
+            sent_count += 1
+
+        except Exception:
+
+            conn.rollback()
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+    return sent_count
+
+
+def score_game_result_notifications_once():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return 0
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.telegram_id,
+            p.game_date,
+            r.home_team,
+            r.away_team,
+            p.predicted_home,
+            p.predicted_away,
+            p.final_home,
+            p.final_away,
+            p.exact_win,
+            p.outcome_win,
+            p.reward_coins,
+            p.reward_xp
+
+        FROM score_game_picks p
+
+        JOIN score_game_rounds r
+            ON r.game_date =
+                p.game_date
+
+        LEFT JOIN score_game_notifications n
+            ON n.telegram_id =
+                p.telegram_id
+            AND n.game_date =
+                p.game_date
+
+        WHERE
+            p.settled = TRUE
+            AND
+            COALESCE(
+                n.result_sent,
+                FALSE
+            ) = FALSE
+
+        ORDER BY
+            p.settled_at ASC
+
+        LIMIT 100
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    sent_count = 0
+
+    for row in rows:
+
+        (
+            telegram_id,
+            game_date,
+            home_team,
+            away_team,
+            predicted_home,
+            predicted_away,
+            final_home,
+            final_away,
+            exact_win,
+            outcome_win,
+            reward_coins,
+            reward_xp
+        ) = row
+
+        if exact_win:
+
+            title = (
+                "🎯 ТОЧНЫЙ СЧЁТ!"
+            )
+
+            reward_text = (
+                f"\n+{int(reward_coins or 0)} 🪙"
+                f"  +{int(reward_xp or 0)} XP"
+            )
+
+        elif outcome_win:
+
+            title = (
+                "✅ Исход угадан"
+            )
+
+            reward_text = (
+                f"\n+{int(reward_coins or 0)} 🪙"
+            )
+
+        else:
+
+            title = (
+                "❌ Прогноз не сыграл"
+            )
+
+            reward_text = ""
+
+        text = (
+            "⚽ BetCoin — Матч дня\n\n"
+            f"{home_team} — {away_team}\n"
+            f"Итог: {final_home}:{final_away}\n"
+            f"Твой прогноз: {predicted_home}:{predicted_away}\n\n"
+            f"{title}"
+            f"{reward_text}\n\n"
+            "Открой BetCoin — завтра будет новый Матч дня."
+        )
+
+        if not send_telegram_message(
+            telegram_id,
+            text
+        ):
+            continue
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                INSERT INTO score_game_notifications (
+                    telegram_id,
+                    game_date,
+                    result_sent,
+                    result_sent_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    TRUE,
+                    NOW()
+                )
+
+                ON CONFLICT (
+                    telegram_id,
+                    game_date
+                )
+                DO UPDATE SET
+                    result_sent = TRUE,
+                    result_sent_at = NOW()
+            """, (
+                telegram_id,
+                game_date
+            ))
+
+            conn.commit()
+
+            sent_count += 1
+
+        except Exception:
+
+            conn.rollback()
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+    return sent_count
+
+
+
 # =========================================================
 # BACKGROUND WORKERS
 # =========================================================
@@ -9652,6 +10145,10 @@ def settlement_worker():
             settle_score_game_picks(
                 30
             )
+
+            score_game_reminder_worker_once()
+
+            score_game_result_notifications_once()
 
         except Exception as error:
 

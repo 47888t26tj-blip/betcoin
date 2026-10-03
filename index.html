@@ -2835,8 +2835,8 @@ x1.00
     id="miniStake"
     class="input"
     type="number"
-    min="1"
-    placeholder="Ставка"
+    min="100"
+    placeholder="Минимум 100"
 
     oninput="
         parlayStake=
@@ -3012,8 +3012,8 @@ x1.00
     id="singleStake"
     class="input"
     type="number"
-    min="1"
-    placeholder="Сумма"
+    min="100"
+    placeholder="Минимум 100"
     oninput="updateSingleWin()"
 >
 
@@ -3083,8 +3083,8 @@ x1.00
     id="parlayStake"
     class="input"
     type="number"
-    min="1"
-    placeholder="Сумма"
+    min="100"
+    placeholder="Минимум 100"
 
     oninput="
         parlayStake=
@@ -5531,11 +5531,11 @@ async function confirmSingle(){
     if(
         !selectedBet
         ||
-        amount <= 0
+        amount < 100
     ){
 
         tg.showAlert(
-            "Введите сумму"
+            "Минимальная ставка — 100 монет"
         );
 
         return;
@@ -5938,11 +5938,11 @@ async function confirmParlay(){
 
 
     if(
-        parlayStake <= 0
+        parlayStake < 100
     ){
 
         tg.showAlert(
-            "Введите сумму"
+            "Минимальная ставка — 100 монет"
         );
 
         return;

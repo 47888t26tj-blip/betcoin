@@ -553,6 +553,161 @@ body{
 
 
 /* ==============================
+   🔥 СЕРИЯ ВХОДОВ
+============================== */
+
+.streak-card{
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255,159,67,.2),
+            transparent 43%
+        ),
+        linear-gradient(
+            145deg,
+            #1c1815,
+            #151820
+        );
+
+    border:
+        1px solid
+        rgba(255,159,67,.3);
+
+    border-radius:20px;
+
+    padding:15px;
+
+    margin-bottom:12px;
+}
+
+.streak-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.streak-title{
+    font-size:18px;
+    font-weight:900;
+}
+
+.streak-count{
+    background:
+        rgba(255,159,67,.14);
+
+    border:
+        1px solid
+        rgba(255,159,67,.25);
+
+    color:
+        var(--orange);
+
+    padding:
+        6px 10px;
+
+    border-radius:
+        999px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+}
+
+.streak-days{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+    margin-top:14px;
+}
+
+.streak-day{
+    min-width:0;
+    min-height:76px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    gap:3px;
+
+    border-radius:12px;
+
+    background:#10131a;
+
+    border:
+        1px solid
+        var(--border);
+
+    color:
+        var(--muted);
+}
+
+.streak-day b{
+    font-size:12px;
+    color:#fff;
+}
+
+.streak-day span{
+    font-size:17px;
+}
+
+.streak-day small{
+    font-size:8px;
+    text-align:center;
+}
+
+.streak-day.completed{
+    border-color:
+        rgba(37,192,109,.4);
+
+    background:
+        rgba(37,192,109,.1);
+
+    color:
+        var(--green);
+}
+
+.streak-day.current{
+    border-color:
+        rgba(255,159,67,.65);
+
+    background:
+        rgba(255,159,67,.12);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(255,159,67,.06);
+}
+
+.streak-day.final{
+    background:
+        rgba(255,209,102,.08);
+
+    border-color:
+        rgba(255,209,102,.3);
+}
+
+.streak-message{
+    margin-top:10px;
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+}
+
+.streak-reward{
+    margin-top:10px;
+    font-size:14px;
+    font-weight:900;
+    text-align:center;
+    color:var(--gold);
+}
+
+
+/* ==============================
    🎮 ИГРЫ
 ============================== */
 
@@ -875,17 +1030,11 @@ body{
     bottom:0;
 
     display:grid;
-
-    grid-template-columns:
-        repeat(6,1fr);
+    grid-template-columns:repeat(6,1fr);
 
     min-height:72px;
-
     background:#12151d;
-
-    border-top:
-        1px solid
-        var(--border);
+    border-top:1px solid var(--border);
 }
 
 .nav button{
@@ -1557,39 +1706,27 @@ LIVE
     class="wheel-disc"
 >
 
-<span
-    class="wheel-label wheel-label-1"
->
+<span class="wheel-label wheel-label-1">
 50
 </span>
 
-<span
-    class="wheel-label wheel-label-2"
->
+<span class="wheel-label wheel-label-2">
 100
 </span>
 
-<span
-    class="wheel-label wheel-label-3"
->
+<span class="wheel-label wheel-label-3">
 200
 </span>
 
-<span
-    class="wheel-label wheel-label-4"
->
+<span class="wheel-label wheel-label-4">
 500
 </span>
 
-<span
-    class="wheel-label wheel-label-5"
->
+<span class="wheel-label wheel-label-5">
 1000
 </span>
 
-<span
-    class="wheel-label wheel-label-6"
->
+<span class="wheel-label wheel-label-6">
 100 XP
 </span>
 
@@ -1709,6 +1846,65 @@ LIVE
     id="profileRank"
     class="muted"
     style="margin-top:7px"
+></div>
+
+</div>
+
+
+<!-- 🔥 СЕРИЯ ВХОДОВ -->
+
+<div
+    class="streak-card"
+>
+
+<div class="streak-head">
+
+<div>
+
+<div class="streak-title">
+🔥 Серия входов
+</div>
+
+<div class="muted">
+Заходи каждый день и забирай награды
+</div>
+
+</div>
+
+<div
+    id="streakCount"
+    class="streak-count"
+>
+День 1
+</div>
+
+</div>
+
+
+<div
+    id="streakDays"
+    class="streak-days"
+></div>
+
+
+<div
+    id="streakReward"
+    class="streak-reward"
+></div>
+
+
+<button
+    id="streakBtn"
+    class="btn"
+    onclick="claimLoginStreak()"
+>
+Забрать награду
+</button>
+
+
+<div
+    id="streakMessage"
+    class="streak-message"
 ></div>
 
 </div>
@@ -1910,9 +2106,7 @@ x1.00
     onclick="showPage('home')"
 >
 
-<span>
-🏠
-</span>
+<span>🏠</span>
 
 <small>
 Главная
@@ -1926,9 +2120,7 @@ x1.00
     onclick="showPage('matches')"
 >
 
-<span>
-⚽
-</span>
+<span>⚽</span>
 
 <small>
 Матчи
@@ -1942,9 +2134,7 @@ x1.00
     onclick="showPage('bets')"
 >
 
-<span>
-🎟
-</span>
+<span>🎟</span>
 
 <small>
 Ставки
@@ -1958,9 +2148,7 @@ x1.00
     onclick="showPage('games')"
 >
 
-<span>
-🎮
-</span>
+<span>🎮</span>
 
 <small>
 Игры
@@ -1974,9 +2162,7 @@ x1.00
     onclick="showPage('leaderboard')"
 >
 
-<span>
-🏆
-</span>
+<span>🏆</span>
 
 <small>
 Лидеры
@@ -1990,9 +2176,7 @@ x1.00
     onclick="showPage('profile')"
 >
 
-<span>
-👤
-</span>
+<span>👤</span>
 
 <small>
 Профиль
@@ -2291,6 +2475,8 @@ let wheel = {};
 
 let predictionGame = {};
 
+let loginStreak = {};
+
 let myRank = null;
 
 
@@ -2423,9 +2609,11 @@ function setBalances(){
     );
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "homeCoins"
-    ).textContent =
+    )
+    .textContent =
         `${balance} 🪙`;
 }
 
@@ -2554,7 +2742,6 @@ function quick(
             "today"
         );
 
-
         loadLeague(
             "top5"
         );
@@ -2570,7 +2757,6 @@ function quick(
             "myteams"
         );
 
-
         loadLeague(
             "top5"
         );
@@ -2581,7 +2767,6 @@ function quick(
         setDateFilter(
             "all"
         );
-
 
         loadLeague(
             value
@@ -2801,8 +2986,7 @@ function kickoff(match){
         ){
 
             return{
-                started:
-                    true,
+                started:true,
 
                 text:
                     score
@@ -2811,8 +2995,7 @@ function kickoff(match){
                     :
                     "FT",
 
-                c:
-                    "started"
+                c:"started"
             };
         }
 
@@ -2822,8 +3005,7 @@ function kickoff(match){
         ){
 
             return{
-                started:
-                    true,
+                started:true,
 
                 text:
                     score
@@ -2832,8 +3014,7 @@ function kickoff(match){
                     :
                     "● LIVE",
 
-                c:
-                    "live"
+                c:"live"
             };
         }
     }
@@ -2894,8 +3075,7 @@ function kickoff(match){
                     minutes
                 )} мин`,
 
-            c:
-                "soon"
+            c:"soon"
         };
     }
 
@@ -2930,17 +3110,10 @@ function kickoff(match){
             date.toLocaleString(
                 "ru-RU",
                 {
-                    day:
-                        "2-digit",
-
-                    month:
-                        "2-digit",
-
-                    hour:
-                        "2-digit",
-
-                    minute:
-                        "2-digit"
+                    day:"2-digit",
+                    month:"2-digit",
+                    hour:"2-digit",
+                    minute:"2-digit"
                 }
             ),
 
@@ -3008,9 +3181,7 @@ function oddBtn(
     ){
 
         return `
-            <button
-                class="odd disabled"
-            >
+            <button class="odd disabled">
 
                 <small>
                     ${esc(label)}
@@ -3121,11 +3292,7 @@ function renderMatch(match){
                         ${
                             live?.live
                             ?
-                            `
-                                <span class="badge live">
-                                    LIVE
-                                </span>
-                            `
+                            `<span class="badge live">LIVE</span>`
                             :
                             ""
                         }
@@ -3133,11 +3300,7 @@ function renderMatch(match){
                         ${
                             live?.finished
                             ?
-                            `
-                                <span class="badge ft">
-                                    FT
-                                </span>
-                            `
+                            `<span class="badge ft">FT</span>`
                             :
                             ""
                         }
@@ -3150,13 +3313,8 @@ function renderMatch(match){
 
                     </div>
 
-
-                    <div
-                        class="time ${matchKickoff.c}"
-                    >
-                        ${esc(
-                            matchKickoff.text
-                        )}
+                    <div class="time ${matchKickoff.c}">
+                        ${esc(matchKickoff.text)}
                     </div>
 
                 </div>
@@ -3173,9 +3331,7 @@ function renderMatch(match){
                         )
                     "
                 >
-
                     ${favorite ? "★" : "☆"}
-
                 </button>
 
             </div>
@@ -3188,11 +3344,8 @@ function renderMatch(match){
                 )}
 
                 <div class="team-name">
-                    ${esc(
-                        match.home
-                    )}
+                    ${esc(match.home)}
                 </div>
-
 
                 ${
                     hasScore
@@ -3208,7 +3361,6 @@ function renderMatch(match){
                     ""
                 }
 
-
                 <button
                     class="team-star ${isFavTeam(match.home) ? "on" : ""}"
 
@@ -3220,9 +3372,7 @@ function renderMatch(match){
                         )
                     "
                 >
-
                     ${isFavTeam(match.home) ? "★" : "☆"}
-
                 </button>
 
             </div>
@@ -3235,11 +3385,8 @@ function renderMatch(match){
                 )}
 
                 <div class="team-name">
-                    ${esc(
-                        match.away
-                    )}
+                    ${esc(match.away)}
                 </div>
-
 
                 ${
                     hasScore
@@ -3255,7 +3402,6 @@ function renderMatch(match){
                     ""
                 }
 
-
                 <button
                     class="team-star ${isFavTeam(match.away) ? "on" : ""}"
 
@@ -3267,9 +3413,7 @@ function renderMatch(match){
                         )
                     "
                 >
-
                     ${isFavTeam(match.away) ? "★" : "☆"}
-
                 </button>
 
             </div>
@@ -3485,7 +3629,6 @@ async function loadLeague(
                 key
             ];
 
-
         renderMatches();
 
         return;
@@ -3593,9 +3736,7 @@ async function loadLeague(
         .innerHTML =
             `
                 <div class="empty">
-                    ${esc(
-                        error.message
-                    )}
+                    ${esc(error.message)}
                 </div>
             `;
     }
@@ -4221,9 +4362,7 @@ async function openMatch(
         box.innerHTML =
             `
                 <div class="empty">
-                    ${esc(
-                        error.message
-                    )}
+                    ${esc(error.message)}
                 </div>
             `;
     }
@@ -4256,6 +4395,7 @@ function selectBet(
 
 
     selectedBet = {
+
         fixture_id:
             Number(
                 id
@@ -4264,7 +4404,8 @@ function selectBet(
         match:
             `${home} — ${away}`,
 
-        selection,
+        selection:
+            selection,
 
         odd:
             Number(
@@ -4280,9 +4421,7 @@ function selectBet(
     .innerHTML =
         `
             <b>
-                ${esc(
-                    selectedBet.match
-                )}
+                ${esc(selectedBet.match)}
             </b>
 
             <div class="muted">
@@ -4340,16 +4479,12 @@ function openSingle(){
     .innerHTML =
         `
             <b>
-                ${esc(
-                    selectedBet.match
-                )}
+                ${esc(selectedBet.match)}
             </b>
 
             <div class="muted">
 
-                ${esc(
-                    selectedBet.selection
-                )}
+                ${esc(selectedBet.selection)}
 
                 •
 
@@ -4446,8 +4581,7 @@ async function confirmSingle(){
 
 
     const button =
-        document
-        .getElementById(
+        document.getElementById(
             "singleBtn"
         );
 
@@ -4475,7 +4609,11 @@ async function confirmSingle(){
 
 
         balance =
-            data.balance;
+            Number(
+                data.balance
+                ??
+                balance
+            );
 
 
         bets =
@@ -4825,7 +4963,9 @@ function clearParlay(){
 async function confirmParlay(){
 
     if(
-        parlaySlip.length < 2
+        parlaySlip.length
+        <
+        2
     ){
 
         tg.showAlert(
@@ -4849,8 +4989,7 @@ async function confirmParlay(){
 
 
     const button =
-        document
-        .getElementById(
+        document.getElementById(
             "parlayBtn"
         );
 
@@ -4883,7 +5022,11 @@ async function confirmParlay(){
 
 
         balance =
-            data.balance;
+            Number(
+                data.balance
+                ??
+                balance
+            );
 
 
         parlays =
@@ -4893,7 +5036,6 @@ async function confirmParlay(){
 
 
         clearParlay();
-
 
         setBalances();
 
@@ -4933,9 +5075,7 @@ async function confirmParlay(){
 }
 
 
-function stClass(
-    status
-){
+function stClass(status){
 
     return status
     ===
@@ -4971,9 +5111,7 @@ function stClass(
 }
 
 
-function passFilter(
-    item
-){
+function passFilter(item){
 
     return (
         betFilter
@@ -5019,9 +5157,7 @@ function passFilter(
 }
 
 
-function setBetFilter(
-    value
-){
+function setBetFilter(value){
 
     betFilter =
         value;
@@ -5046,9 +5182,7 @@ function setBetFilter(
 }
 
 
-function switchBets(
-    value
-){
+function switchBets(value){
 
     betTab =
         value;
@@ -5340,13 +5474,405 @@ function renderBets(){
 
 
 /* ==============================
+   🔥 СЕРИЯ ВХОДОВ
+============================== */
+
+
+function renderLoginStreak(){
+
+    const daysBox =
+        document.getElementById(
+            "streakDays"
+        );
+
+
+    const countBox =
+        document.getElementById(
+            "streakCount"
+        );
+
+
+    const rewardBox =
+        document.getElementById(
+            "streakReward"
+        );
+
+
+    const messageBox =
+        document.getElementById(
+            "streakMessage"
+        );
+
+
+    const button =
+        document.getElementById(
+            "streakBtn"
+        );
+
+
+    if(
+        !daysBox
+        ||
+        !countBox
+        ||
+        !rewardBox
+        ||
+        !messageBox
+        ||
+        !button
+    ){
+
+        return;
+    }
+
+
+    const rewards =
+        loginStreak.rewards
+        ||
+        [];
+
+
+    daysBox.innerHTML =
+        rewards
+        .map(
+            item => {
+
+                let icon =
+                    "🔒";
+
+
+                let classes =
+                    "streak-day";
+
+
+                if(
+                    item.completed
+                ){
+
+                    icon =
+                        "✅";
+
+                    classes +=
+                        " completed";
+                }
+
+
+                if(
+                    item.current
+                ){
+
+                    icon =
+                        "🔥";
+
+                    classes +=
+                        " current";
+                }
+
+
+                if(
+                    Number(
+                        item.day
+                    )
+                    ===
+                    7
+                ){
+
+                    classes +=
+                        " final";
+                }
+
+
+                const rewardText =
+                    Number(
+                        item.xp
+                        ||
+                        0
+                    )
+                    >
+                    0
+
+                    ?
+
+                    `${item.coins}🪙 +${item.xp}XP`
+
+                    :
+
+                    `${item.coins}🪙`;
+
+
+                return `
+                    <div class="${classes}">
+
+                        <b>
+                            ${item.day}
+                        </b>
+
+                        <span>
+                            ${icon}
+                        </span>
+
+                        <small>
+                            ${rewardText}
+                        </small>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    const nextDay =
+        Number(
+            loginStreak.next_day
+            ||
+            1
+        );
+
+
+    const currentDay =
+        Number(
+            loginStreak.current_day
+            ||
+            0
+        );
+
+
+    countBox.textContent =
+        loginStreak.claimed_today
+
+        ?
+
+        `Серия: ${currentDay} 🔥`
+
+        :
+
+        `День ${nextDay}`;
+
+
+    const reward =
+        loginStreak.next_reward
+        ||
+        {
+            coins:100,
+            xp:0
+        };
+
+
+    rewardBox.textContent =
+        Number(
+            reward.xp
+            ||
+            0
+        )
+        >
+        0
+
+        ?
+
+        `Сегодня: +${reward.coins} 🪙 +${reward.xp} XP`
+
+        :
+
+        `Сегодня: +${reward.coins} 🪙`;
+
+
+    button.disabled =
+        loginStreak.available
+        !==
+        true;
+
+
+    button.textContent =
+        loginStreak.available
+        ===
+        true
+
+        ?
+
+        "Забрать награду"
+
+        :
+
+        "Награда получена ✅";
+
+
+    if(
+        loginStreak.claimed_today
+    ){
+
+        messageBox.textContent =
+            "Возвращайся завтра, чтобы продолжить серию 🔥";
+
+
+    }else if(
+        loginStreak.streak_broken
+    ){
+
+        messageBox.textContent =
+            "Серия была прервана. Начинаем снова с 1-го дня.";
+
+
+    }else if(
+        currentDay > 0
+    ){
+
+        messageBox.textContent =
+            `Продолжай серию — следующий день ${nextDay}.`;
+
+
+    }else{
+
+        messageBox.textContent =
+            "Начни серию прямо сегодня.";
+    }
+}
+
+
+async function claimLoginStreak(){
+
+    const button =
+        document.getElementById(
+            "streakBtn"
+        );
+
+
+    if(
+        !button
+        ||
+        button.disabled
+    ){
+
+        return;
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Получаем...";
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/login-streak/claim"
+            );
+
+
+        balance =
+            Number(
+                data.balance
+                ??
+                balance
+            );
+
+
+        xp =
+            Number(
+                data.xp
+                ??
+                xp
+            );
+
+
+        level =
+            Number(
+                data.level
+                ??
+                level
+            );
+
+
+        leagueInfo =
+            data.league
+            ||
+            leagueInfo;
+
+
+        levelXp =
+            Number(
+                data.current_level_xp
+                ??
+                levelXp
+            );
+
+
+        loginStreak =
+            data.login_streak
+            ||
+            loginStreak;
+
+
+        setBalances();
+
+        renderLoginStreak();
+
+        renderProfile();
+
+        renderHome();
+
+
+        const rewards =
+            [];
+
+
+        if(
+            Number(
+                data.reward_coins
+            )
+            >
+            0
+        ){
+
+            rewards.push(
+                `+${data.reward_coins} 🪙`
+            );
+        }
+
+
+        if(
+            Number(
+                data.reward_xp
+            )
+            >
+            0
+        ){
+
+            rewards.push(
+                `+${data.reward_xp} XP`
+            );
+        }
+
+
+        tg.showAlert(
+            `🔥 День ${data.claimed_day}: ${rewards.join(" • ")}`
+        );
+
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+
+    }finally{
+
+        renderLoginStreak();
+    }
+}
+
+
+/* ==============================
    🎯 УГАДАЙ ИСХОД
 ============================== */
 
 
-function predictionDateText(
-    value
-){
+function predictionDateText(value){
 
     const date =
         parseDate(
@@ -5363,17 +5889,10 @@ function predictionDateText(
     return date.toLocaleString(
         "ru-RU",
         {
-            day:
-                "2-digit",
-
-            month:
-                "2-digit",
-
-            hour:
-                "2-digit",
-
-            minute:
-                "2-digit"
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
         }
     );
 }
@@ -5382,8 +5901,7 @@ function predictionDateText(
 function renderPredictionGame(){
 
     const box =
-        document
-        .getElementById(
+        document.getElementById(
             "predictionGame"
         );
 
@@ -5406,13 +5924,11 @@ function renderPredictionGame(){
             `
                 <div class="empty">
 
-                    ${
-                        esc(
-                            predictionGame?.message
-                            ||
-                            "Пока нет подходящего матча"
-                        )
-                    }
+                    ${esc(
+                        predictionGame?.message
+                        ||
+                        "Пока нет подходящего матча"
+                    )}
 
                 </div>
             `;
@@ -5536,24 +6052,6 @@ function renderPredictionGame(){
     }
 
 
-    const homeSelected =
-        pick
-        ===
-        "П1";
-
-
-    const drawSelected =
-        pick
-        ===
-        "X";
-
-
-    const awaySelected =
-        pick
-        ===
-        "П2";
-
-
     box.innerHTML =
         `
             <div class="prediction-match">
@@ -5610,7 +6108,7 @@ function renderPredictionGame(){
                     <button
                         class="
                             prediction-btn
-                            ${homeSelected ? "selected" : ""}
+                            ${pick === "П1" ? "selected" : ""}
                         "
 
                         ${!canPick ? "disabled" : ""}
@@ -5634,7 +6132,7 @@ function renderPredictionGame(){
                     <button
                         class="
                             prediction-btn
-                            ${drawSelected ? "selected" : ""}
+                            ${pick === "X" ? "selected" : ""}
                         "
 
                         ${!canPick ? "disabled" : ""}
@@ -5656,7 +6154,7 @@ function renderPredictionGame(){
                     <button
                         class="
                             prediction-btn
-                            ${awaySelected ? "selected" : ""}
+                            ${pick === "П2" ? "selected" : ""}
                         "
 
                         ${!canPick ? "disabled" : ""}
@@ -5702,45 +6200,13 @@ async function pickPrediction(
     }
 
 
-    const home =
-        predictionGame.home_team
-        ||
-        "Хозяева";
-
-
-    const away =
-        predictionGame.away_team
-        ||
-        "Гости";
-
-
-    const label =
-        prediction
-        ===
-        "П1"
-
-        ?
-
-        `П1 — ${home}`
-
-        :
-
-        prediction
-        ===
-        "П2"
-
-        ?
-
-        `П2 — ${away}`
-
-        :
-
-        "X — Ничья";
-
-
     const confirmed =
         confirm(
-            `Выбрать ${label}?\n\nИзменить прогноз потом нельзя.`
+            "Подтвердить прогноз "
+            +
+            prediction
+            +
+            "?\n\nИзменить его потом нельзя."
         );
 
 
@@ -5818,9 +6284,7 @@ async function refreshPredictionGame(){
 ============================== */
 
 
-function wheelWaitText(
-    seconds
-){
+function wheelWaitText(seconds){
 
     seconds =
         Math.max(
@@ -5881,15 +6345,13 @@ function wheelWaitText(
 function renderWheel(){
 
     const button =
-        document
-        .getElementById(
+        document.getElementById(
             "wheelBtn"
         );
 
 
     const info =
-        document
-        .getElementById(
+        document.getElementById(
             "wheelInfo"
         );
 
@@ -5946,22 +6408,19 @@ function renderWheel(){
 async function spinLuckyWheel(){
 
     const button =
-        document
-        .getElementById(
+        document.getElementById(
             "wheelBtn"
         );
 
 
     const disc =
-        document
-        .getElementById(
+        document.getElementById(
             "wheelDisc"
         );
 
 
     const result =
-        document
-        .getElementById(
+        document.getElementById(
             "wheelResult"
         );
 
@@ -6232,6 +6691,12 @@ async function loadSession(){
             {};
 
 
+        loginStreak =
+            data.login_streak
+            ||
+            {};
+
+
         wheel =
             data.wheel
             ||
@@ -6311,6 +6776,8 @@ async function loadSession(){
         renderHome();
 
         renderGames();
+
+        renderLoginStreak();
 
 
     }catch(error){
@@ -6691,9 +7158,7 @@ function renderProfile(){
                         <div>
 
                             <b>
-                                ${esc(
-                                    item.title
-                                )}
+                                ${esc(item.title)}
                             </b>
 
                             <div class="muted">
@@ -6789,9 +7254,7 @@ function renderProfile(){
                         <div>
 
                             <b>
-                                ${esc(
-                                    item.title
-                                )}
+                                ${esc(item.title)}
                             </b>
 
                             <div class="muted">
@@ -6905,6 +7368,9 @@ function renderProfile(){
             /
             3600
         )} ч`;
+
+
+    renderLoginStreak();
 }
 
 
@@ -6991,22 +7457,19 @@ async function claimAchievement(
 async function redeemPromo(){
 
     const input =
-        document
-        .getElementById(
+        document.getElementById(
             "promoInput"
         );
 
 
     const button =
-        document
-        .getElementById(
+        document.getElementById(
             "promoBtn"
         );
 
 
     const box =
-        document
-        .getElementById(
+        document.getElementById(
             "promoResult"
         );
 
@@ -7232,6 +7695,8 @@ function renderAll(){
 
     renderGames();
 
+    renderLoginStreak();
+
     renderLive();
 
     updateParlay();
@@ -7312,6 +7777,8 @@ async function init(){
 
             renderHome();
 
+            renderLoginStreak();
+
         },
         15000
     );
@@ -7342,6 +7809,36 @@ async function init(){
                     );
 
 
+                xp =
+                    Number(
+                        data.xp
+                        ??
+                        xp
+                    );
+
+
+                level =
+                    Number(
+                        data.level
+                        ??
+                        level
+                    );
+
+
+                leagueInfo =
+                    data.league
+                    ||
+                    leagueInfo;
+
+
+                levelXp =
+                    Number(
+                        data.current_level_xp
+                        ??
+                        levelXp
+                    );
+
+
                 bets =
                     data.bets
                     ||
@@ -7364,6 +7861,12 @@ async function init(){
                     data.prediction_game
                     ||
                     predictionGame;
+
+
+                loginStreak =
+                    data.login_streak
+                    ||
+                    loginStreak;
 
 
                 renderAll();

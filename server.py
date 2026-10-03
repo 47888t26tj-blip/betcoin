@@ -339,7 +339,7 @@ LOGIN_STREAK_REWARDS = {
         "coins": 700,
         "xp": 100
     }
-]
+}
 
 
 ACHIEVEMENTS = [

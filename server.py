@@ -1108,6 +1108,62 @@ def init_database():
 
 
     # =====================================================
+    # 👥 ПРИВАТНЫЕ ЛИГИ ПРОГНОЗИСТОВ
+    # =====================================================
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS predictor_leagues (
+
+            id SERIAL PRIMARY KEY,
+
+            owner_telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            name TEXT NOT NULL,
+
+            invite_code TEXT NOT NULL UNIQUE,
+
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS predictor_league_members (
+
+            league_id INTEGER NOT NULL
+                REFERENCES predictor_leagues(id)
+                ON DELETE CASCADE,
+
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            joined_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
+
+            PRIMARY KEY (
+                league_id,
+                telegram_id
+            )
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_predictor_league_members_user
+
+        ON predictor_league_members (
+            telegram_id,
+            joined_at DESC
+        )
+    """)
+
+
+    # =====================================================
     # 🔥 СЕРИЯ ВХОДОВ
     # =====================================================
 
@@ -6595,6 +6651,586 @@ def get_score_game_leaderboard(
     }
 
 
+
+def _predictor_league_code():
+
+    alphabet = (
+        "ABCDEFGHJKLMNPQRSTUVWXYZ"
+        "23456789"
+    )
+
+    for _ in range(30):
+
+        code = "".join(
+            secrets.choice(
+                alphabet
+            )
+            for _ in range(6)
+        )
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT 1
+            FROM predictor_leagues
+            WHERE invite_code = %s
+        """, (
+            code,
+        ))
+
+        exists = cur.fetchone()
+
+        cur.close()
+        conn.close()
+
+        if not exists:
+            return code
+
+    raise RuntimeError(
+        "Не удалось создать код лиги"
+    )
+
+
+def get_predictor_leagues(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id,
+            l.created_at,
+            COUNT(m2.telegram_id)::INTEGER AS members_count
+
+        FROM predictor_leagues l
+
+        JOIN predictor_league_members mine
+            ON mine.league_id = l.id
+            AND mine.telegram_id = %s
+
+        LEFT JOIN predictor_league_members m2
+            ON m2.league_id = l.id
+
+        GROUP BY
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id,
+            l.created_at
+
+        ORDER BY
+            l.created_at DESC
+    """, (
+        telegram_id,
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [
+        {
+            "id": int(row[0]),
+            "name": row[1],
+            "invite_code": row[2],
+            "owner_telegram_id": int(row[3]),
+            "is_owner": (
+                int(row[3])
+                ==
+                int(telegram_id)
+            ),
+            "created_at": (
+                row[4].isoformat()
+                if row[4]
+                else None
+            ),
+            "members_count": int(
+                row[5]
+                or
+                0
+            )
+        }
+        for row in rows
+    ]
+
+
+def create_predictor_league(
+    telegram_id,
+    name
+):
+
+    name = str(
+        name
+        or
+        ""
+    ).strip()
+
+    if len(name) < 2:
+        raise ValueError(
+            "Название лиги слишком короткое"
+        )
+
+    if len(name) > 32:
+        raise ValueError(
+            "Название лиги — максимум 32 символа"
+        )
+
+    code = _predictor_league_code()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO predictor_leagues (
+                owner_telegram_id,
+                name,
+                invite_code
+            )
+            VALUES (
+                %s,
+                %s,
+                %s
+            )
+            RETURNING id
+        """, (
+            telegram_id,
+            name,
+            code
+        ))
+
+        league_id = int(
+            cur.fetchone()[0]
+        )
+
+        cur.execute("""
+            INSERT INTO predictor_league_members (
+                league_id,
+                telegram_id
+            )
+            VALUES (
+                %s,
+                %s
+            )
+            ON CONFLICT DO NOTHING
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return {
+        "league_id": league_id,
+        "invite_code": code
+    }
+
+
+def join_predictor_league(
+    telegram_id,
+    invite_code
+):
+
+    code = str(
+        invite_code
+        or
+        ""
+    ).strip().upper()
+
+    if not code:
+        raise ValueError(
+            "Введи код приглашения"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                id,
+                name
+            FROM predictor_leagues
+            WHERE invite_code = %s
+        """, (
+            code,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига с таким кодом не найдена"
+            )
+
+        league_id = int(
+            row[0]
+        )
+
+        cur.execute("""
+            INSERT INTO predictor_league_members (
+                league_id,
+                telegram_id
+            )
+            VALUES (
+                %s,
+                %s
+            )
+            ON CONFLICT DO NOTHING
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        joined = (
+            cur.rowcount
+            ==
+            1
+        )
+
+        conn.commit()
+
+        return {
+            "league_id": league_id,
+            "name": row[1],
+            "joined": joined
+        }
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+def leave_predictor_league(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                owner_telegram_id
+            FROM predictor_leagues
+            WHERE id = %s
+        """, (
+            league_id,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига не найдена"
+            )
+
+        if (
+            int(row[0])
+            ==
+            int(telegram_id)
+        ):
+            raise ValueError(
+                "Создатель не может выйти из лиги"
+            )
+
+        cur.execute("""
+            DELETE FROM predictor_league_members
+            WHERE
+                league_id = %s
+                AND
+                telegram_id = %s
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+def get_predictor_league_leaderboard(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id
+        FROM predictor_leagues l
+
+        JOIN predictor_league_members m
+            ON m.league_id = l.id
+
+        WHERE
+            l.id = %s
+            AND
+            m.telegram_id = %s
+    """, (
+        league_id,
+        telegram_id
+    ))
+
+    league_row = cur.fetchone()
+
+    if not league_row:
+
+        cur.close()
+        conn.close()
+
+        raise ValueError(
+            "Ты не состоишь в этой лиге"
+        )
+
+    cur.execute("""
+        WITH distinct_dates AS (
+            SELECT DISTINCT
+                p.telegram_id,
+                p.game_date
+            FROM score_game_picks p
+
+            JOIN predictor_league_members lm
+                ON lm.telegram_id = p.telegram_id
+                AND lm.league_id = %s
+        ),
+
+        numbered_dates AS (
+            SELECT
+                telegram_id,
+                game_date,
+                game_date
+                -
+                (
+                    ROW_NUMBER() OVER (
+                        PARTITION BY telegram_id
+                        ORDER BY game_date
+                    )
+                )::INTEGER AS streak_group
+            FROM distinct_dates
+        ),
+
+        streaks AS (
+            SELECT
+                telegram_id,
+                COUNT(*)::INTEGER AS streak_length
+            FROM numbered_dates
+            GROUP BY
+                telegram_id,
+                streak_group
+        ),
+
+        best_streaks AS (
+            SELECT
+                telegram_id,
+                MAX(streak_length)::INTEGER AS best_streak
+            FROM streaks
+            GROUP BY telegram_id
+        ),
+
+        aggregated AS (
+            SELECT
+                u.telegram_id,
+
+                COALESCE(
+                    NULLIF(u.first_name, ''),
+                    NULLIF(u.username, ''),
+                    'Игрок'
+                ) AS display_name,
+
+                COUNT(p.*)::INTEGER AS total,
+
+                COUNT(*) FILTER (
+                    WHERE p.settled = TRUE
+                )::INTEGER AS settled,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win = TRUE
+                )::INTEGER AS exact_wins,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win IS NOT TRUE
+                        AND
+                        p.outcome_win = TRUE
+                )::INTEGER AS outcome_wins
+
+            FROM predictor_league_members lm
+
+            JOIN users u
+                ON u.telegram_id = lm.telegram_id
+
+            LEFT JOIN score_game_picks p
+                ON p.telegram_id = u.telegram_id
+
+            WHERE lm.league_id = %s
+
+            GROUP BY
+                u.telegram_id,
+                u.first_name,
+                u.username
+        ),
+
+        metrics AS (
+            SELECT
+                a.*,
+
+                (
+                    a.exact_wins
+                    +
+                    a.outcome_wins
+                )::INTEGER AS successful,
+
+                CASE
+                    WHEN a.settled > 0
+                    THEN ROUND(
+                        (
+                            a.exact_wins
+                            +
+                            a.outcome_wins
+                        )
+                        *
+                        100.0
+                        /
+                        a.settled,
+                        1
+                    )
+                    ELSE 0
+                END AS success_rate,
+
+                COALESCE(
+                    bs.best_streak,
+                    0
+                )::INTEGER AS best_streak
+
+            FROM aggregated a
+
+            LEFT JOIN best_streaks bs
+                ON bs.telegram_id = a.telegram_id
+        )
+
+        SELECT
+            telegram_id,
+            display_name,
+            total,
+            settled,
+            exact_wins,
+            outcome_wins,
+            successful,
+            success_rate,
+            best_streak
+
+        FROM metrics
+
+        ORDER BY
+            exact_wins DESC,
+            successful DESC,
+            success_rate DESC,
+            best_streak DESC,
+            settled DESC,
+            total DESC,
+            telegram_id ASC
+    """, (
+        league_id,
+        league_id
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    players = []
+
+    for index, row in enumerate(
+        rows,
+        start=1
+    ):
+
+        players.append({
+            "rank": index,
+            "telegram_id": int(row[0]),
+            "first_name": row[1] or "Игрок",
+            "total": int(row[2] or 0),
+            "settled": int(row[3] or 0),
+            "exact_wins": int(row[4] or 0),
+            "outcome_wins": int(row[5] or 0),
+            "successful": int(row[6] or 0),
+            "success_rate": float(row[7] or 0),
+            "best_streak": int(row[8] or 0)
+        })
+
+    return {
+        "league": {
+            "id": int(league_row[0]),
+            "name": league_row[1],
+            "invite_code": league_row[2],
+            "owner_telegram_id": int(league_row[3]),
+            "is_owner": (
+                int(league_row[3])
+                ==
+                int(telegram_id)
+            )
+        },
+        "players": players
+    }
+
+
+
 def make_score_game_pick(
     telegram_id,
     predicted_home,
@@ -9778,6 +10414,269 @@ def api_score_game_leaderboard():
             "success": False,
             "error": str(error)
         }), 500
+
+
+# =========================================================
+# 👥 ПРИВАТНЫЕ ЛИГИ ПРОГНОЗИСТОВ API
+# =========================================================
+
+@app.route(
+    "/api/games/score/leagues",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_leagues():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/create",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_create():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = create_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "name"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/join",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_join():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = join_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "code"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/leave",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_leave():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        leave_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/leaderboard",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_leaderboard():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = get_predictor_league_leaderboard(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result
+        })
+
+    except (ValueError, TypeError) as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
 
 
 # =========================================================

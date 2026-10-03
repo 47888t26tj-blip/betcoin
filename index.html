@@ -1001,6 +1001,96 @@ button{
     color:#fff;
 }
 
+.score-history-summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-top:12px;
+}
+
+.score-history-stat{
+    min-width:0;
+    padding:10px 5px;
+    border-radius:13px;
+    text-align:center;
+    background:#10141c;
+    border:1px solid var(--border);
+}
+
+.score-history-stat span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.score-history-stat b{
+    display:block;
+    margin-top:4px;
+    font-size:20px;
+}
+
+.score-history-stat.exact b{
+    color:var(--gold);
+}
+
+.score-history-stat.outcome b{
+    color:var(--green);
+}
+
+.score-history-stat.lost b{
+    color:var(--red);
+}
+
+.score-history-rate{
+    margin-top:8px;
+    padding:11px;
+    border-radius:14px;
+    background:#10141c;
+    border:1px solid var(--border);
+}
+
+.score-history-rate > div:first-child{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-size:12px;
+}
+
+.score-history-rate > div:first-child span{
+    color:var(--muted);
+}
+
+.score-history-rate > div:first-child b{
+    color:var(--green);
+    font-size:16px;
+}
+
+.score-history-rate-bar{
+    height:7px;
+    margin-top:8px;
+    overflow:hidden;
+    border-radius:999px;
+    background:#0b0f15;
+}
+
+.score-history-rate-fill{
+    height:100%;
+    border-radius:999px;
+    background:var(--green);
+    transition:width .25s ease;
+}
+
+.score-history-rate small{
+    display:block;
+    margin-top:7px;
+    color:var(--muted);
+    font-size:10px;
+}
+
 .score-history-filters{
     display:flex;
     gap:6px;
@@ -2826,6 +2916,8 @@ let predictionGame = {};
 let scoreGame = {};
 
 let scoreGameHistory = [];
+
+let scoreGameStats = {};
 
 let scoreGameView = "play";
 
@@ -7198,6 +7290,12 @@ async function loadScoreGameHistory(){
             [];
 
 
+        scoreGameStats =
+            data.stats
+            ||
+            {};
+
+
         renderScoreGameHistory();
 
 
@@ -7330,6 +7428,101 @@ function renderScoreGameHistory(){
     }
 
 
+    const total =
+        Number(
+            scoreGameStats.total
+            ||
+            0
+        );
+
+    const exactWins =
+        Number(
+            scoreGameStats.exact_wins
+            ||
+            0
+        );
+
+    const outcomeWins =
+        Number(
+            scoreGameStats.outcome_wins
+            ||
+            0
+        );
+
+    const losses =
+        Number(
+            scoreGameStats.losses
+            ||
+            0
+        );
+
+    const pending =
+        Number(
+            scoreGameStats.pending
+            ||
+            0
+        );
+
+    const successRate =
+        Number(
+            scoreGameStats.success_rate
+            ||
+            0
+        );
+
+
+    const statsHtml =
+        `
+            <div class="score-history-summary">
+
+                <div class="score-history-stat">
+                    <span>Всего</span>
+                    <b>${total}</b>
+                </div>
+
+                <div class="score-history-stat exact">
+                    <span>Точный счёт</span>
+                    <b>${exactWins}</b>
+                </div>
+
+                <div class="score-history-stat outcome">
+                    <span>Исход</span>
+                    <b>${outcomeWins}</b>
+                </div>
+
+                <div class="score-history-stat lost">
+                    <span>Промахи</span>
+                    <b>${losses}</b>
+                </div>
+
+            </div>
+
+            <div class="score-history-rate">
+
+                <div>
+                    <span>Успешность</span>
+                    <b>${successRate}%</b>
+                </div>
+
+                <div class="score-history-rate-bar">
+                    <div
+                        class="score-history-rate-fill"
+                        style="width:${Math.max(0, Math.min(100, successRate))}%"
+                    ></div>
+                </div>
+
+                ${
+                    pending > 0
+                    ?
+                    `<small>⏳ В ожидании: ${pending}</small>`
+                    :
+                    `<small>Все прогнозы рассчитаны</small>`
+                }
+
+            </div>
+        `;
+
+
     const filters =
         `
             <div class="score-history-filters">
@@ -7369,6 +7562,8 @@ function renderScoreGameHistory(){
     if(!items.length){
 
         box.innerHTML =
+            statsHtml
+            +
             filters
             +
             `
@@ -7382,6 +7577,8 @@ function renderScoreGameHistory(){
 
 
     box.innerHTML =
+        statsHtml
+        +
         filters
         +
         `

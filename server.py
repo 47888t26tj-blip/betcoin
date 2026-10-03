@@ -6191,6 +6191,21 @@ def get_score_game_stats(telegram_id):
 
     row = cur.fetchone()
 
+    cur.execute("""
+        SELECT DISTINCT game_date
+        FROM score_game_picks
+        WHERE telegram_id = %s
+        ORDER BY game_date ASC
+    """, (
+        telegram_id,
+    ))
+
+    prediction_dates = [
+        item[0]
+        for item in cur.fetchall()
+        if item[0] is not None
+    ]
+
     cur.close()
     conn.close()
 
@@ -6221,6 +6236,63 @@ def get_score_game_stats(telegram_id):
         else 0
     )
 
+    best_streak = 0
+    running_streak = 0
+    previous_date = None
+
+    for prediction_date in prediction_dates:
+
+        if (
+            previous_date is not None
+            and
+            prediction_date
+            ==
+            previous_date
+            +
+            timedelta(days=1)
+        ):
+
+            running_streak += 1
+
+        else:
+
+            running_streak = 1
+
+        best_streak = max(
+            best_streak,
+            running_streak
+        )
+
+        previous_date = prediction_date
+
+    current_streak = 0
+
+    if prediction_dates:
+
+        today = score_game_date()
+        latest_date = prediction_dates[-1]
+
+        if latest_date in (
+            today,
+            today - timedelta(days=1)
+        ):
+
+            current_streak = 1
+            expected_date = latest_date - timedelta(days=1)
+
+            for prediction_date in reversed(
+                prediction_dates[:-1]
+            ):
+
+                if prediction_date == expected_date:
+
+                    current_streak += 1
+                    expected_date -= timedelta(days=1)
+
+                elif prediction_date < expected_date:
+
+                    break
+
     return {
         "total": total,
         "pending": pending,
@@ -6230,7 +6302,9 @@ def get_score_game_stats(telegram_id):
         "losses": losses,
         "successful": successful,
         "success_rate": success_rate,
-        "exact_rate": exact_rate
+        "exact_rate": exact_rate,
+        "current_streak": current_streak,
+        "best_streak": best_streak
     }
 
 

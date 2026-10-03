@@ -175,6 +175,126 @@ body{
     background:var(--accent);
 }
 
+
+/* ==============================
+   🎁 НАГРАДЫ НА ГЛАВНОЙ
+============================== */
+
+.home-rewards{
+    display:none;
+    margin-bottom:13px;
+}
+
+.home-rewards.show{
+    display:block;
+}
+
+.reward-alert{
+    position:relative;
+    overflow:hidden;
+
+    padding:14px;
+
+    margin-bottom:8px;
+
+    border-radius:17px;
+
+    border:
+        1px solid
+        rgba(255,159,67,.35);
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255,159,67,.18),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #1d1814,
+            #151820
+        );
+}
+
+.reward-alert.wheel{
+    border-color:
+        rgba(47,128,255,.4);
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(47,128,255,.2),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #151b27,
+            #151820
+        );
+}
+
+.reward-alert-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.reward-alert-icon{
+    width:46px;
+    height:46px;
+
+    flex:0 0 46px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:14px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    font-size:25px;
+}
+
+.reward-alert-content{
+    flex:1;
+    min-width:0;
+}
+
+.reward-alert-title{
+    font-size:15px;
+    font-weight:900;
+}
+
+.reward-alert-text{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.reward-alert-btn{
+    width:auto;
+    min-width:75px;
+
+    border:0;
+
+    padding:9px 11px;
+
+    border-radius:11px;
+
+    background:var(--orange);
+
+    color:#fff;
+
+    font-weight:900;
+}
+
+.reward-alert.wheel .reward-alert-btn{
+    background:var(--accent);
+}
+
+
 .quick-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -677,10 +797,6 @@ body{
 
     background:
         rgba(255,159,67,.12);
-
-    box-shadow:
-        0 0 0 2px
-        rgba(255,159,67,.06);
 }
 
 .streak-day.final{
@@ -1013,10 +1129,6 @@ body{
     margin-top:8px;
 }
 
-.mini input{
-    min-width:0;
-}
-
 
 /* ==============================
    НИЖНЕЕ МЕНЮ
@@ -1030,11 +1142,17 @@ body{
     bottom:0;
 
     display:grid;
-    grid-template-columns:repeat(6,1fr);
+
+    grid-template-columns:
+        repeat(6,1fr);
 
     min-height:72px;
+
     background:#12151d;
-    border-top:1px solid var(--border);
+
+    border-top:
+        1px solid
+        var(--border);
 }
 
 .nav button{
@@ -1156,6 +1274,14 @@ body{
 </div>
 
 </div>
+
+
+<!-- 🎁 ДОСТУПНЫЕ НАГРАДЫ -->
+
+<div
+    id="homeRewards"
+    class="home-rewards"
+></div>
 
 
 <div class="quick-grid">
@@ -1851,11 +1977,7 @@ LIVE
 </div>
 
 
-<!-- 🔥 СЕРИЯ ВХОДОВ -->
-
-<div
-    class="streak-card"
->
+<div class="streak-card">
 
 <div class="streak-head">
 
@@ -2609,11 +2731,9 @@ function setBalances(){
     );
 
 
-    document
-    .getElementById(
+    document.getElementById(
         "homeCoins"
-    )
-    .textContent =
+    ).textContent =
         `${balance} 🪙`;
 }
 
@@ -3119,6 +3239,171 @@ function kickoff(match){
 
         c:""
     };
+}
+
+
+/* ==============================
+   🎁 НАГРАДЫ НА ГЛАВНОЙ
+============================== */
+
+function renderHomeRewards(){
+
+    const box =
+        document.getElementById(
+            "homeRewards"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    const cards =
+        [];
+
+
+    if(
+        loginStreak
+        &&
+        loginStreak.available
+        ===
+        true
+    ){
+
+        const reward =
+            loginStreak.next_reward
+            ||
+            {
+                coins:100,
+                xp:0
+            };
+
+
+        const rewardText =
+            Number(
+                reward.xp
+                ||
+                0
+            )
+            >
+            0
+
+            ?
+
+            `+${reward.coins} 🪙 +${reward.xp} XP`
+
+            :
+
+            `+${reward.coins} 🪙`;
+
+
+        cards.push(
+            `
+                <div class="reward-alert">
+
+                    <div class="reward-alert-row">
+
+                        <div class="reward-alert-icon">
+                            🔥
+                        </div>
+
+                        <div class="reward-alert-content">
+
+                            <div class="reward-alert-title">
+                                Награда дня доступна
+                            </div>
+
+                            <div class="reward-alert-text">
+
+                                День
+                                ${loginStreak.next_day || 1}
+
+                                •
+
+                                ${rewardText}
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="reward-alert-btn"
+
+                            onclick="
+                                showPage('profile')
+                            "
+                        >
+                            Забрать
+                        </button>
+
+                    </div>
+
+                </div>
+            `
+        );
+    }
+
+
+    if(
+        wheel
+        &&
+        wheel.available
+        ===
+        true
+    ){
+
+        cards.push(
+            `
+                <div class="reward-alert wheel">
+
+                    <div class="reward-alert-row">
+
+                        <div class="reward-alert-icon">
+                            🎡
+                        </div>
+
+                        <div class="reward-alert-content">
+
+                            <div class="reward-alert-title">
+                                Бесплатное вращение
+                            </div>
+
+                            <div class="reward-alert-text">
+                                Колесо удачи снова доступно
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="reward-alert-btn"
+
+                            onclick="
+                                showPage('games')
+                            "
+                        >
+                            Крутить
+                        </button>
+
+                    </div>
+
+                </div>
+            `
+        );
+    }
+
+
+    box.innerHTML =
+        cards.join("");
+
+
+    box.classList.toggle(
+        "show",
+        cards.length
+        >
+        0
+    );
 }
 
 
@@ -5477,7 +5762,6 @@ function renderBets(){
    🔥 СЕРИЯ ВХОДОВ
 ============================== */
 
-
 function renderLoginStreak(){
 
     const daysBox =
@@ -5726,6 +6010,9 @@ function renderLoginStreak(){
         messageBox.textContent =
             "Начни серию прямо сегодня.";
     }
+
+
+    renderHomeRewards();
 }
 
 
@@ -5815,6 +6102,8 @@ async function claimLoginStreak(){
 
         renderHome();
 
+        renderHomeRewards();
+
 
         const rewards =
             [];
@@ -5863,6 +6152,8 @@ async function claimLoginStreak(){
     }finally{
 
         renderLoginStreak();
+
+        renderHomeRewards();
     }
 }
 
@@ -5870,7 +6161,6 @@ async function claimLoginStreak(){
 /* ==============================
    🎯 УГАДАЙ ИСХОД
 ============================== */
-
 
 function predictionDateText(value){
 
@@ -6283,7 +6573,6 @@ async function refreshPredictionGame(){
    🎡 КОЛЕСО
 ============================== */
 
-
 function wheelWaitText(seconds){
 
     seconds =
@@ -6402,6 +6691,9 @@ function renderWheel(){
             ||
             0
         )}`;
+
+
+    renderHomeRewards();
 }
 
 
@@ -6535,6 +6827,8 @@ async function spinLuckyWheel(){
 
         renderHome();
 
+        renderHomeRewards();
+
 
     }catch(error){
 
@@ -6584,6 +6878,8 @@ async function spinLuckyWheel(){
 
 
         renderWheel();
+
+        renderHomeRewards();
     }
 }
 
@@ -6599,7 +6895,6 @@ function renderGames(){
 /* ==============================
    СЕССИЯ
 ============================== */
-
 
 async function loadSession(){
 
@@ -6779,6 +7074,8 @@ async function loadSession(){
 
         renderLoginStreak();
 
+        renderHomeRewards();
+
 
     }catch(error){
 
@@ -6792,7 +7089,6 @@ async function loadSession(){
 /* ==============================
    ГЛАВНАЯ
 ============================== */
-
 
 function renderHome(){
 
@@ -6999,6 +7295,8 @@ function renderHome(){
         `;
 
 
+    renderHomeRewards();
+
     renderLive();
 }
 
@@ -7006,7 +7304,6 @@ function renderHome(){
 /* ==============================
    ПРОФИЛЬ
 ============================== */
-
 
 function renderProfile(){
 
@@ -7371,6 +7668,8 @@ function renderProfile(){
 
 
     renderLoginStreak();
+
+    renderHomeRewards();
 }
 
 
@@ -7597,7 +7896,6 @@ async function redeemPromo(){
    ЛИДЕРБОРД
 ============================== */
 
-
 async function loadLeaderboard(){
 
     try{
@@ -7680,7 +7978,6 @@ async function loadLeaderboard(){
    ОБЩИЙ RENDER
 ============================== */
 
-
 function renderAll(){
 
     setBalances();
@@ -7697,6 +7994,8 @@ function renderAll(){
 
     renderLoginStreak();
 
+    renderHomeRewards();
+
     renderLive();
 
     updateParlay();
@@ -7706,7 +8005,6 @@ function renderAll(){
 /* ==============================
    ЗАПУСК
 ============================== */
-
 
 async function init(){
 
@@ -7778,6 +8076,8 @@ async function init(){
             renderHome();
 
             renderLoginStreak();
+
+            renderHomeRewards();
 
         },
         15000

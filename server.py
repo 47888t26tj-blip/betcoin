@@ -246,6 +246,8 @@ for league_key, league_data in LEAGUES.items():
 # =========================================================
 
 FIXTURES_CACHE_SECONDS = 1800
+AUTO_FIXTURES_REFRESH_SECONDS = 3600
+AUTO_FIXTURES_START_DELAY_SECONDS = 45
 ODDS_CACHE_SECONDS = 21600
 RESULT_CACHE_SECONDS = 300
 
@@ -11278,6 +11280,74 @@ def settlement_worker():
         )
 
 
+def fixtures_worker():
+
+    time.sleep(
+        AUTO_FIXTURES_START_DELAY_SECONDS
+    )
+
+    while True:
+
+        started_at = time.time()
+
+        refreshed = 0
+        failed = 0
+
+        for league_key in LEAGUES.keys():
+
+            try:
+
+                fixtures = (
+                    load_league_fixtures(
+                        league_key,
+                        force=True
+                    )
+                )
+
+                refreshed += len(
+                    fixtures
+                    or
+                    []
+                )
+
+            except Exception as error:
+
+                failed += 1
+
+                print(
+                    "Fixtures auto refresh:",
+                    league_key,
+                    error,
+                    flush=True
+                )
+
+            # Небольшая пауза между лигами,
+            # чтобы не ударять по API пачкой запросов.
+            time.sleep(
+                2
+            )
+
+        print(
+            "Fixtures auto refresh done:",
+            "matches=",
+            refreshed,
+            "failed_leagues=",
+            failed,
+            "seconds=",
+            round(
+                time.time()
+                -
+                started_at,
+                1
+            ),
+            flush=True
+        )
+
+        time.sleep(
+            AUTO_FIXTURES_REFRESH_SECONDS
+        )
+
+
 def live_worker():
 
     time.sleep(
@@ -11331,6 +11401,16 @@ def start_workers():
                 True,
             name=
                 "betcoin-live"
+        ).start()
+
+
+        threading.Thread(
+            target=
+                fixtures_worker,
+            daemon=
+                True,
+            name=
+                "betcoin-fixtures"
         ).start()
 
 

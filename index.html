@@ -4938,6 +4938,36 @@ function renderLive(){
    MATCH LOADING
 =================================== */
 
+
+async function autoRefreshMatches(){
+
+    try{
+
+        const key =
+            currentLeague
+            ||
+            "top5";
+
+        // Сбрасываем только текущую лигу,
+        // чтобы сервер реально проверил свежее расписание.
+        delete loaded[
+            key
+        ];
+
+        await loadLeague(
+            key
+        );
+
+    }catch(error){
+
+        console.error(
+            "Auto matches refresh:",
+            error
+        );
+    }
+}
+
+
 async function loadLeague(
     key
 ){
@@ -11893,6 +11923,14 @@ async function init(){
     setInterval(
         loadLive,
         30000
+    );
+
+
+    // Автоматически подхватываем новые матчи,
+    // пока пользователь держит Mini App открытым.
+    setInterval(
+        autoRefreshMatches,
+        600000
     );
 
 

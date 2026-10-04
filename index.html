@@ -2039,7 +2039,8 @@ button{
 =================================== */
 
 .leaders-tabs{
-    display:flex;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
     gap:7px;
     margin-bottom:12px;
 }
@@ -2294,6 +2295,182 @@ body.parlay-mini-open #page-matches{
     body.parlay-mini-open #page-match{
         padding-bottom:205px;
     }
+}
+
+
+
+/* ===================================
+   👤 PROFILE 2.0 / ONBOARDING
+=================================== */
+
+.profile-hero{
+    padding:16px;
+    border-radius:18px;
+    border:1px solid rgba(92,225,145,.22);
+    background:linear-gradient(
+        135deg,
+        rgba(92,225,145,.10),
+        rgba(47,128,255,.05)
+    );
+    margin-bottom:12px;
+}
+
+.profile-title-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:5px 8px;
+    border-radius:999px;
+    background:rgba(255,209,102,.10);
+    color:var(--gold);
+    font-size:11px;
+    font-weight:900;
+    margin-top:6px;
+}
+
+.profile-extra-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+    margin-top:12px;
+}
+
+.profile-extra-card{
+    padding:11px;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+}
+
+.profile-extra-card b{
+    display:block;
+    font-size:20px;
+}
+
+.notify-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:11px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.notify-row:last-child{
+    border-bottom:0;
+}
+
+.switch{
+    position:relative;
+    width:44px;
+    height:24px;
+    flex:0 0 44px;
+}
+
+.switch input{
+    display:none;
+}
+
+.switch span{
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:#2a303d;
+    transition:.2s;
+}
+
+.switch span:after{
+    content:"";
+    position:absolute;
+    width:18px;
+    height:18px;
+    top:3px;
+    left:3px;
+    border-radius:50%;
+    background:#fff;
+    transition:.2s;
+}
+
+.switch input:checked + span{
+    background:var(--accent);
+}
+
+.switch input:checked + span:after{
+    transform:translateX(20px);
+}
+
+.parlay-collapse-btn{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:900;
+    padding:0;
+}
+
+.mini.collapsed .mini-bottom{
+    display:none;
+}
+
+.mini.collapsed{
+    padding-bottom:9px;
+}
+
+.onboarding{
+    position:fixed;
+    z-index:300;
+    inset:0;
+    background:rgba(0,0,0,.76);
+    display:none;
+    align-items:flex-end;
+}
+
+.onboarding.show{
+    display:flex;
+}
+
+.onboarding-card{
+    width:100%;
+    max-width:700px;
+    margin:0 auto;
+    background:#151820;
+    border:1px solid var(--border);
+    border-radius:24px 24px 0 0;
+    padding:22px 18px 24px;
+}
+
+.onboarding-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.onboarding-title{
+    font-size:24px;
+    font-weight:950;
+}
+
+.onboarding-text{
+    color:var(--muted);
+    line-height:1.45;
+    margin-top:8px;
+}
+
+.onboarding-dots{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+    margin:18px 0 8px;
+}
+
+.onboarding-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#333a49;
+}
+
+.onboarding-dot.active{
+    background:var(--accent);
 }
 
 </style>
@@ -3184,6 +3361,15 @@ LIVE
 🎯 Точный счёт
 </button>
 
+
+<button
+    id="leadersTabWeekly"
+    class="leaders-tab"
+    onclick="setLeaderboardMode('weekly')"
+>
+📅 Неделя
+</button>
+
 </div>
 
 <div id="leaderboardMe"></div>
@@ -3218,7 +3404,7 @@ LIVE
 </div>
 
 
-<div class="card">
+<div class="profile-hero">
 
 <div
     id="profileName"
@@ -3260,6 +3446,37 @@ LIVE
     class="muted"
     style="margin-top:7px"
 ></div>
+
+<div
+    id="profileTitleBadge"
+    class="profile-title-badge"
+>
+🏅 Новичок
+</div>
+
+<div class="profile-extra-grid">
+
+<div class="profile-extra-card">
+<b id="profilePredSuccess">0%</b>
+<span class="muted">успешность</span>
+</div>
+
+<div class="profile-extra-card">
+<b id="profileExactWins">0</b>
+<span class="muted">точных счетов</span>
+</div>
+
+<div class="profile-extra-card">
+<b id="profileBestStreak">0</b>
+<span class="muted">лучший стрик</span>
+</div>
+
+<div class="profile-extra-card">
+<b id="profilePrivateLeagues">0</b>
+<span class="muted">приватных лиг</span>
+</div>
+
+</div>
 
 </div>
 
@@ -3473,6 +3690,75 @@ LIVE
 </div>
 
 
+
+<div class="card">
+
+<b>
+🔔 Уведомления
+</b>
+
+<div class="muted" style="margin-top:4px">
+Выбери, какие сообщения присылать в Telegram
+</div>
+
+<div class="notify-row">
+<div>
+<b>⭐ Матч дня</b>
+<div class="muted">Напоминание перед матчем</div>
+</div>
+<label class="switch">
+<input id="notifyMatchDay" type="checkbox" onchange="saveNotificationSettings()">
+<span></span>
+</label>
+</div>
+
+<div class="notify-row">
+<div>
+<b>⭐ Избранные матчи</b>
+<div class="muted">Напоминания по избранному</div>
+</div>
+<label class="switch">
+<input id="notifyFavorite" type="checkbox" onchange="saveNotificationSettings()">
+<span></span>
+</label>
+</div>
+
+<div class="notify-row">
+<div>
+<b>🎟 Результаты ставок</b>
+<div class="muted">Итог ординаров и экспрессов</div>
+</div>
+<label class="switch">
+<input id="notifyBets" type="checkbox" onchange="saveNotificationSettings()">
+<span></span>
+</label>
+</div>
+
+<div class="notify-row">
+<div>
+<b>🎯 Результаты прогнозов</b>
+<div class="muted">Точный счёт и угадай исход</div>
+</div>
+<label class="switch">
+<input id="notifyPredictions" type="checkbox" onchange="saveNotificationSettings()">
+<span></span>
+</label>
+</div>
+
+<div class="notify-row">
+<div>
+<b>👥 Рефералы</b>
+<div class="muted">Когда приходит новый друг</div>
+</div>
+<label class="switch">
+<input id="notifyReferral" type="checkbox" onchange="saveNotificationSettings()">
+<span></span>
+</label>
+</div>
+
+</div>
+
+
 <h3>
 📊 Статистика
 </h3>
@@ -3530,9 +3816,19 @@ LIVE
 
 </div>
 
+<div style="display:flex;align-items:center;gap:10px">
 <b id="miniOdd">
 x1.00
 </b>
+
+<button
+    id="miniCollapseBtn"
+    class="parlay-collapse-btn"
+    onclick="event.stopPropagation();toggleMiniParlay()"
+>
+Свернуть
+</button>
+</div>
 
 </div>
 
@@ -3915,6 +4211,9 @@ let selectedBet = null;
 
 let currentUser = null;
 let referralInfo = {};
+let notificationSettings = {};
+let profileExtra = {};
+let onboardingStep = 0;
 
 let xp = 0;
 
@@ -10767,6 +11066,18 @@ async function loadSession(){
             {};
 
 
+        notificationSettings =
+            data.notification_settings
+            ||
+            {};
+
+
+        profileExtra =
+            data.profile_extra
+            ||
+            {};
+
+
         bets =
             data.bets
             ||
@@ -11730,6 +12041,348 @@ function shareReferralLink(){
 }
 
 
+function renderProfileExtra(){
+
+    const title =
+        document.getElementById(
+            "profileTitleBadge"
+        );
+
+    const success =
+        document.getElementById(
+            "profilePredSuccess"
+        );
+
+    const exact =
+        document.getElementById(
+            "profileExactWins"
+        );
+
+    const streak =
+        document.getElementById(
+            "profileBestStreak"
+        );
+
+    const leagues =
+        document.getElementById(
+            "profilePrivateLeagues"
+        );
+
+    if(title){
+        title.textContent =
+            `🏅 ${profileExtra?.title || "Новичок"}`;
+    }
+
+    if(success){
+        success.textContent =
+            `${Number(profileExtra?.prediction_success_rate || 0)}%`;
+    }
+
+    if(exact){
+        exact.textContent =
+            Number(
+                profileExtra?.prediction_exact
+                ||
+                0
+            );
+    }
+
+    if(streak){
+        streak.textContent =
+            Number(
+                profileExtra?.best_streak
+                ||
+                0
+            );
+    }
+
+    if(leagues){
+        leagues.textContent =
+            Number(
+                profileExtra?.private_leagues
+                ||
+                0
+            );
+    }
+}
+
+
+function renderNotificationSettings(){
+
+    const mapping = {
+        notifyMatchDay:
+            "match_day",
+
+        notifyFavorite:
+            "favorite_match",
+
+        notifyBets:
+            "bet_result",
+
+        notifyPredictions:
+            "prediction_result",
+
+        notifyReferral:
+            "referral"
+    };
+
+    for(
+        const [
+            id,
+            key
+        ]
+        of
+        Object.entries(
+            mapping
+        )
+    ){
+
+        const input =
+            document.getElementById(
+                id
+            );
+
+        if(input){
+
+            input.checked =
+                notificationSettings?.[
+                    key
+                ]
+                !==
+                false;
+        }
+    }
+}
+
+
+async function saveNotificationSettings(){
+
+    const settings = {
+        match_day:
+            !!document.getElementById(
+                "notifyMatchDay"
+            )?.checked,
+
+        favorite_match:
+            !!document.getElementById(
+                "notifyFavorite"
+            )?.checked,
+
+        bet_result:
+            !!document.getElementById(
+                "notifyBets"
+            )?.checked,
+
+        prediction_result:
+            !!document.getElementById(
+                "notifyPredictions"
+            )?.checked,
+
+        referral:
+            !!document.getElementById(
+                "notifyReferral"
+            )?.checked
+    };
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/notification-settings",
+                settings
+            );
+
+        notificationSettings =
+            data.settings
+            ||
+            settings;
+
+        renderNotificationSettings();
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+function toggleMiniParlay(){
+
+    const mini =
+        document.getElementById(
+            "miniParlay"
+        );
+
+    const button =
+        document.getElementById(
+            "miniCollapseBtn"
+        );
+
+    if(!mini){
+        return;
+    }
+
+    mini.classList.toggle(
+        "collapsed"
+    );
+
+    if(button){
+
+        button.textContent =
+            mini.classList.contains(
+                "collapsed"
+            )
+            ?
+            "Развернуть"
+            :
+            "Свернуть";
+    }
+}
+
+
+const onboardingSlides = [
+    {
+        icon:"⚽",
+        title:"Добро пожаловать в BetCoin",
+        text:"Смотри футбольные матчи, выбирай рынки и собирай виртуальные ставки."
+    },
+    {
+        icon:"🎯",
+        title:"Прогнозируй каждый день",
+        text:"Играй в «Угадай исход» и «Точный счёт», получай монеты и XP."
+    },
+    {
+        icon:"🏆",
+        title:"Поднимайся в рейтинге",
+        text:"Соревнуйся с игроками, вступай в приватные лиги и приглашай друзей."
+    }
+];
+
+
+function renderOnboarding(){
+
+    const slide =
+        onboardingSlides[
+            onboardingStep
+        ];
+
+    if(!slide){
+        return;
+    }
+
+    document.getElementById(
+        "onboardingIcon"
+    ).textContent =
+        slide.icon;
+
+    document.getElementById(
+        "onboardingTitle"
+    ).textContent =
+        slide.title;
+
+    document.getElementById(
+        "onboardingText"
+    ).textContent =
+        slide.text;
+
+    document.getElementById(
+        "onboardingDots"
+    ).innerHTML =
+        onboardingSlides
+        .map(
+            (
+                _,
+                index
+            ) =>
+                `
+                    <span
+                        class="
+                            onboarding-dot
+                            ${
+                                index
+                                ===
+                                onboardingStep
+                                ?
+                                "active"
+                                :
+                                ""
+                            }
+                        "
+                    ></span>
+                `
+        )
+        .join("");
+
+    document.getElementById(
+        "onboardingBtn"
+    ).textContent =
+        onboardingStep
+        ===
+        onboardingSlides.length - 1
+        ?
+        "Начать"
+        :
+        "Далее";
+}
+
+
+function showOnboardingIfNeeded(){
+
+    if(
+        localStorage.getItem(
+            "betcoinOnboardingDone"
+        )
+    ){
+        return;
+    }
+
+    onboardingStep = 0;
+
+    document.getElementById(
+        "onboarding"
+    )?.classList.add(
+        "show"
+    );
+
+    renderOnboarding();
+}
+
+
+function nextOnboarding(){
+
+    if(
+        onboardingStep
+        <
+        onboardingSlides.length - 1
+    ){
+
+        onboardingStep += 1;
+        renderOnboarding();
+        return;
+    }
+
+    finishOnboarding();
+}
+
+
+function finishOnboarding(){
+
+    localStorage.setItem(
+        "betcoinOnboardingDone",
+        "1"
+    );
+
+    document.getElementById(
+        "onboarding"
+    )?.classList.remove(
+        "show"
+    );
+}
+
+
 /* ===================================
    PROFILE
 =================================== */
@@ -11737,6 +12390,8 @@ function shareReferralLink(){
 function renderProfile(){
 
     renderReferral();
+    renderNotificationSettings();
+    renderProfileExtra();
 
     document
     .getElementById(
@@ -12393,6 +13048,22 @@ function leaderboardMetric(
     }
 
 
+    if(
+        leaderboardMode
+        ===
+        "weekly"
+    ){
+
+        return {
+            main:
+                `${Number(item.successful_predictions || 0)} ✅`,
+
+            sub:
+                `${Number(item.settled_predictions || 0)} прогнозов за 7 дней`
+        };
+    }
+
+
     return {
         main:
             `${Number(item.xp || 0).toLocaleString("ru-RU")} XP`,
@@ -12461,6 +13132,16 @@ function renderLeaderboard(){
     ?.classList.toggle(
         "active",
         leaderboardMode === "exact"
+    );
+
+
+    document
+    .getElementById(
+        "leadersTabWeekly"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "weekly"
     );
 
 
@@ -12693,7 +13374,8 @@ async function setLeaderboardMode(
         [
             "xp",
             "coins",
-            "exact"
+            "exact",
+            "weekly"
         ].includes(
             mode
         )
@@ -12906,6 +13588,11 @@ async function init(){
 
     applyStartupDeepLink();
 
+    setTimeout(
+        showOnboardingIfNeeded,
+        350
+    );
+
 
     setInterval(
         ()=>{
@@ -13081,6 +13768,59 @@ async function init(){
 init();
 
 </script>
+
+
+<div
+    id="onboarding"
+    class="onboarding"
+>
+
+<div class="onboarding-card">
+
+<div
+    id="onboardingIcon"
+    class="onboarding-icon"
+>
+⚽
+</div>
+
+<div
+    id="onboardingTitle"
+    class="onboarding-title"
+>
+Добро пожаловать в BetCoin
+</div>
+
+<div
+    id="onboardingText"
+    class="onboarding-text"
+>
+Смотри матчи, делай прогнозы и соревнуйся с другими игроками.
+</div>
+
+<div
+    id="onboardingDots"
+    class="onboarding-dots"
+></div>
+
+<button
+    id="onboardingBtn"
+    class="btn"
+    onclick="nextOnboarding()"
+>
+Далее
+</button>
+
+<button
+    class="btn secondary"
+    onclick="finishOnboarding()"
+>
+Пропустить
+</button>
+
+</div>
+
+</div>
 
 </body>
 </html>

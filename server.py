@@ -454,10 +454,6 @@ fixture_detail_cache = {}
 odds_cache = {}
 result_cache = {}
 live_match_cache = {}
-match_center_cache = {}
-team_form_cache = {}
-standings_cache = {}
-match_stats_cache = {}
 global_logo_cache = {}
 
 
@@ -4834,13 +4830,17 @@ def load_default_fixtures(
 ):
 
     result = []
+    failed = []
+    succeeded = []
 
     with ThreadPoolExecutor(
         max_workers=max(
             1,
             min(
                 5,
-                len(DEFAULT_LEAGUES)
+                len(
+                    DEFAULT_LEAGUES
+                )
             )
         )
     ) as executor:
@@ -4867,11 +4867,23 @@ def load_default_fixtures(
 
             try:
 
-                result.extend(
+                items = (
                     future.result()
                 )
 
+                succeeded.append(
+                    league_key
+                )
+
+                result.extend(
+                    items
+                )
+
             except Exception as error:
+
+                failed.append(
+                    league_key
+                )
 
                 print(
                     "Top5 load error:",
@@ -4884,11 +4896,19 @@ def load_default_fixtures(
 
     for match in result:
 
-        unique[
-            int(
-                match["fixture_id"]
-            )
-        ] = match
+        try:
+
+            unique[
+                int(
+                    match[
+                        "fixture_id"
+                    ]
+                )
+            ] = match
+
+        except Exception:
+
+            continue
 
     result = list(
         unique.values()
@@ -4897,15 +4917,75 @@ def load_default_fixtures(
     result.sort(
         key=
             lambda match:
-                match.get("date")
+                match.get(
+                    "date"
+                )
                 or
                 ""
     )
+
+    # Если часть лиг не загрузилась, это не ошибка всей вкладки.
+    if failed:
+
+        league_source_status[
+            "top5"
+        ] = {
+            "source":
+                (
+                    "mixed"
+                    if result
+                    else
+                    "partial"
+                ),
+
+            "stale":
+                False,
+
+            "refreshing":
+                False,
+
+            "message":
+                (
+                    "Часть лиг временно не обновилась"
+                    if result
+                    else
+                    "Матчи временно загружаются дольше обычного"
+                )
+        }
+
+    elif result:
+
+        league_source_status[
+            "top5"
+        ] = {
+            "source":
+                "five-dollar",
+
+            "stale":
+                False,
+
+            "refreshing":
+                False,
+
+            "message":
+                None
+        }
 
     return result
 
 
 def get_top5_source_status():
+
+    explicit = (
+        league_source_status.get(
+            "top5"
+        )
+    )
+
+    if explicit:
+
+        return explicit
+
 
     statuses = [
         league_source_status.get(
@@ -4915,6 +4995,7 @@ def get_top5_source_status():
         for key
         in DEFAULT_LEAGUES
     ]
+
 
     if any(
         item.get(
@@ -4940,6 +5021,7 @@ def get_top5_source_status():
                 "Часть матчей загружена из резервного источника"
         }
 
+
     if any(
         item.get(
             "refreshing"
@@ -4962,6 +5044,7 @@ def get_top5_source_status():
                 "Показаны сохранённые матчи • обновляем в фоне"
         }
 
+
     if any(
         item.get(
             "stale"
@@ -4983,6 +5066,7 @@ def get_top5_source_status():
             "message":
                 "Часть матчей показана из сохранённого кэша"
         }
+
 
     return {
         "source":
@@ -5246,871 +5330,6 @@ def get_fixture(
     }
 
     return match
-
-
-
-# =========================================================
-# MATCH CENTER 2.0
-# =========================================================
-
-def simple_team_result(
-    item,
-    team_id
-):
-
-    teams = (
-        item.get(
-            "teams"
-        )
-        or
-        {}
-    )
-
-    home = (
-        teams.get(
-            "home"
-        )
-        or
-        {}
-    )
-
-    away = (
-        teams.get(
-            "away"
-        )
-        or
-        {}
-    )
-
-    goals = (
-        item.get(
-            "goals"
-        )
-        or
-        {}
-    )
-
-    home_score = goals.get(
-        "home"
-    )
-
-    away_score = goals.get(
-        "away"
-    )
-
-    is_home = (
-        int(
-            home.get(
-                "id"
-            )
-            or
-            0
-        )
-        ==
-        int(
-            team_id
-        )
-    )
-
-    if (
-        home_score
-        is None
-        or
-        away_score
-        is None
-    ):
-
-        outcome = None
-
-    else:
-
-        team_score = (
-            home_score
-            if is_home
-            else
-            away_score
-        )
-
-        opponent_score = (
-            away_score
-            if is_home
-            else
-            home_score
-        )
-
-        if team_score > opponent_score:
-            outcome = "W"
-        elif team_score < opponent_score:
-            outcome = "L"
-        else:
-            outcome = "D"
-
-    return {
-        "fixture_id":
-            item.get(
-                "id"
-            ),
-
-        "date":
-            item.get(
-                "kickoff_utc"
-            ),
-
-        "home":
-            home.get(
-                "name",
-                "Unknown"
-            ),
-
-        "away":
-            away.get(
-                "name",
-                "Unknown"
-            ),
-
-        "home_id":
-            home.get(
-                "id"
-            ),
-
-        "away_id":
-            away.get(
-                "id"
-            ),
-
-        "home_score":
-            home_score,
-
-        "away_score":
-            away_score,
-
-        "outcome":
-            outcome
-    }
-
-
-def get_team_form(
-    team_id
-):
-
-    team_id = int(
-        team_id
-    )
-
-    key = str(
-        team_id
-    )
-
-    cached = (
-        team_form_cache.get(
-            key
-        )
-    )
-
-    if (
-        cached
-        and
-        time.time()
-        -
-        cached[
-            "time"
-        ]
-        <
-        900
-    ):
-
-        return cached[
-            "data"
-        ]
-
-    data = five_get(
-        f"/v1/teams/{team_id}/fixtures",
-        {
-            "status":
-                "finished",
-
-            "order":
-                "desc",
-
-            "page":
-                1,
-
-            "per_page":
-                20
-        },
-        attempts=
-            1,
-        timeout_seconds=
-            7
-    )
-
-    items = []
-
-    for item in (
-        data.get(
-            "data"
-        )
-        or
-        []
-    ):
-
-        try:
-
-            items.append(
-                simple_team_result(
-                    item,
-                    team_id
-                )
-            )
-
-        except Exception:
-
-            continue
-
-    result = {
-        "recent":
-            items[
-                :5
-            ],
-
-        "all_recent":
-            items
-    }
-
-    team_form_cache[
-        key
-    ] = {
-        "time":
-            time.time(),
-
-        "data":
-            result
-    }
-
-    return result
-
-
-def get_league_standings(
-    league_id
-):
-
-    if not league_id:
-
-        return []
-
-    key = str(
-        int(
-            league_id
-        )
-    )
-
-    cached = (
-        standings_cache.get(
-            key
-        )
-    )
-
-    if (
-        cached
-        and
-        time.time()
-        -
-        cached[
-            "time"
-        ]
-        <
-        1800
-    ):
-
-        return cached[
-            "data"
-        ]
-
-    data = five_get(
-        "/v1/standings",
-        {
-            "league":
-                int(
-                    league_id
-                ),
-
-            "type":
-                "total"
-        },
-        attempts=
-            1,
-        timeout_seconds=
-            7
-    )
-
-    payload = (
-        data.get(
-            "data"
-        )
-        or
-        {}
-    )
-
-    table = (
-        payload.get(
-            "table"
-        )
-        or
-        []
-    )
-
-    standings_cache[
-        key
-    ] = {
-        "time":
-            time.time(),
-
-        "data":
-            table
-    }
-
-    return table
-
-
-def get_match_statistics(
-    fixture_id
-):
-
-    fixture_id = int(
-        fixture_id
-    )
-
-    key = str(
-        fixture_id
-    )
-
-    cached = (
-        match_stats_cache.get(
-            key
-        )
-    )
-
-    if (
-        cached
-        and
-        time.time()
-        -
-        cached[
-            "time"
-        ]
-        <
-        60
-    ):
-
-        return cached[
-            "data"
-        ]
-
-    data = five_get(
-        f"/v1/fixtures/{fixture_id}/statistics",
-        attempts=
-            1,
-        timeout_seconds=
-            6
-    )
-
-    payload = (
-        data.get(
-            "data"
-        )
-        or
-        {}
-    )
-
-    stats = (
-        payload.get(
-            "statistics"
-        )
-        or
-        {}
-    )
-
-    match_stats_cache[
-        key
-    ] = {
-        "time":
-            time.time(),
-
-        "data":
-            stats
-    }
-
-    return stats
-
-
-def find_team_standing(
-    table,
-    team_id,
-    team_name
-):
-
-    wanted_id = int(
-        team_id
-        or
-        0
-    )
-
-    wanted_name = normalize_team_name(
-        team_name
-    )
-
-    for row in (
-        table
-        or
-        []
-    ):
-
-        team = (
-            row.get(
-                "team"
-            )
-            or
-            {}
-        )
-
-        row_id = int(
-            team.get(
-                "id"
-            )
-            or
-            0
-        )
-
-        row_name = normalize_team_name(
-            team.get(
-                "name",
-                ""
-            )
-        )
-
-        if (
-            (
-                wanted_id
-                and
-                row_id
-                ==
-                wanted_id
-            )
-            or
-            (
-                wanted_name
-                and
-                row_name
-                ==
-                wanted_name
-            )
-        ):
-
-            return {
-                "position":
-                    row.get(
-                        "position"
-                    ),
-
-                "played":
-                    row.get(
-                        "played"
-                    ),
-
-                "win":
-                    row.get(
-                        "win"
-                    ),
-
-                "draw":
-                    row.get(
-                        "draw"
-                    ),
-
-                "lose":
-                    row.get(
-                        "lose"
-                    ),
-
-                "points":
-                    row.get(
-                        "points"
-                    ),
-
-                "goals_for":
-                    (
-                        row.get(
-                            "goals_for"
-                        )
-                        or
-                        row.get(
-                            "goalsFor"
-                        )
-                    ),
-
-                "goals_against":
-                    (
-                        row.get(
-                            "goals_against"
-                        )
-                        or
-                        row.get(
-                            "goalsAgainst"
-                        )
-                    )
-            }
-
-    return None
-
-
-def get_match_center_data(
-    fixture_id
-):
-
-    fixture_id = int(
-        fixture_id
-    )
-
-    key = str(
-        fixture_id
-    )
-
-    cached = (
-        match_center_cache.get(
-            key
-        )
-    )
-
-    if (
-        cached
-        and
-        time.time()
-        -
-        cached[
-            "time"
-        ]
-        <
-        300
-    ):
-
-        return cached[
-            "data"
-        ]
-
-    match = get_fixture(
-        fixture_id,
-        False
-    )
-
-    home_id = match.get(
-        "home_team_id"
-    )
-
-    away_id = match.get(
-        "away_team_id"
-    )
-
-    league_id = match.get(
-        "league_id"
-    )
-
-    result = {
-        "home_form":
-            [],
-
-        "away_form":
-            [],
-
-        "h2h":
-            [],
-
-        "standings":
-            {
-                "home":
-                    None,
-
-                "away":
-                    None
-            },
-
-        "statistics":
-            None,
-
-        "availability":
-            {
-                "form":
-                    False,
-
-                "standings":
-                    False,
-
-                "statistics":
-                    False
-            }
-    }
-
-    home_form_data = None
-    away_form_data = None
-    table = None
-
-    tasks = {}
-
-    with ThreadPoolExecutor(
-        max_workers=
-            3
-    ) as executor:
-
-        if home_id:
-
-            tasks[
-                executor.submit(
-                    get_team_form,
-                    home_id
-                )
-            ] = "home_form"
-
-        if away_id:
-
-            tasks[
-                executor.submit(
-                    get_team_form,
-                    away_id
-                )
-            ] = "away_form"
-
-        if league_id:
-
-            tasks[
-                executor.submit(
-                    get_league_standings,
-                    league_id
-                )
-            ] = "standings"
-
-        for future in as_completed(
-            tasks
-        ):
-
-            name = tasks[
-                future
-            ]
-
-            try:
-
-                value = future.result()
-
-                if name == "home_form":
-                    home_form_data = value
-
-                elif name == "away_form":
-                    away_form_data = value
-
-                elif name == "standings":
-                    table = value
-
-            except Exception as error:
-
-                print(
-                    "Match center section error:",
-                    name,
-                    error,
-                    flush=True
-                )
-
-    if home_form_data:
-
-        result[
-            "home_form"
-        ] = (
-            home_form_data.get(
-                "recent"
-            )
-            or
-            []
-        )
-
-        result[
-            "availability"
-        ][
-            "form"
-        ] = True
-
-        for item in (
-            home_form_data.get(
-                "all_recent"
-            )
-            or
-            []
-        ):
-
-            if (
-                int(
-                    item.get(
-                        "home_id"
-                    )
-                    or
-                    0
-                )
-                ==
-                int(
-                    away_id
-                    or
-                    0
-                )
-                or
-                int(
-                    item.get(
-                        "away_id"
-                    )
-                    or
-                    0
-                )
-                ==
-                int(
-                    away_id
-                    or
-                    0
-                )
-            ):
-
-                result[
-                    "h2h"
-                ].append(
-                    item
-                )
-
-                if len(
-                    result[
-                        "h2h"
-                    ]
-                ) >= 3:
-
-                    break
-
-    if away_form_data:
-
-        result[
-            "away_form"
-        ] = (
-            away_form_data.get(
-                "recent"
-            )
-            or
-            []
-        )
-
-        result[
-            "availability"
-        ][
-            "form"
-        ] = True
-
-    if table:
-
-        result[
-            "standings"
-        ][
-            "home"
-        ] = find_team_standing(
-            table,
-            home_id,
-            match.get(
-                "home",
-                ""
-            )
-        )
-
-        result[
-            "standings"
-        ][
-            "away"
-        ] = find_team_standing(
-            table,
-            away_id,
-            match.get(
-                "away",
-                ""
-            )
-        )
-
-        if (
-            result[
-                "standings"
-            ][
-                "home"
-            ]
-            or
-            result[
-                "standings"
-            ][
-                "away"
-            ]
-        ):
-
-            result[
-                "availability"
-            ][
-                "standings"
-            ] = True
-
-    kickoff = parse_match_datetime(
-        match.get(
-            "date"
-        )
-    )
-
-    started = (
-        kickoff
-        and
-        datetime.now(
-            timezone.utc
-        )
-        >=
-        kickoff
-    )
-
-    if started:
-
-        try:
-
-            stats = (
-                get_match_statistics(
-                    fixture_id
-                )
-            )
-
-            if stats:
-
-                result[
-                    "statistics"
-                ] = stats
-
-                result[
-                    "availability"
-                ][
-                    "statistics"
-                ] = True
-
-        except Exception as error:
-
-            print(
-                "Match statistics error:",
-                fixture_id,
-                error,
-                flush=True
-            )
-
-    match_center_cache[
-        key
-    ] = {
-        "time":
-            time.time(),
-
-        "data":
-            result
-    }
-
-    return result
 
 
 # =========================================================
@@ -14075,38 +13294,6 @@ def api_match(
         return jsonify({
             "success": False,
             "error": str(error)
-        }), 500
-
-
-
-@app.route(
-    "/api/match/<int:fixture_id>/center"
-)
-def api_match_center(
-    fixture_id
-):
-
-    try:
-
-        return jsonify({
-            "success":
-                True,
-
-            **get_match_center_data(
-                fixture_id
-            )
-        })
-
-    except Exception as error:
-
-        return jsonify({
-            "success":
-                False,
-
-            "error":
-                str(
-                    error
-                )
         }), 500
 
 

@@ -13574,50 +13574,240 @@ def api_leaderboard():
     tg_user, error = require_telegram_user()
 
     if error:
-
         return error
 
     user = get_or_create_user(
         tg_user
     )
 
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    mode = str(
+        body.get(
+            "mode",
+            "xp"
+        )
+        or
+        "xp"
+    ).strip().lower()
+
+    if mode not in {
+        "xp",
+        "coins",
+        "exact"
+    }:
+        mode = "xp"
+
+    telegram_id = int(
+        user[
+            "telegram_id"
+        ]
+    )
+
     conn = get_db()
     cur = conn.cursor()
 
-    cur.execute("""
-        SELECT
+    if mode == "exact":
+
+        cur.execute("""
+            WITH ranked AS (
+
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                                AND
+                                p.exact_win = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS exact_wins,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                                AND
+                                (
+                                    p.exact_win = TRUE
+                                    OR
+                                    p.outcome_win = TRUE
+                                )
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS successful_predictions,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS settled_predictions
+
+                FROM users u
+
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id =
+                        u.telegram_id
+
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+
+            positions AS (
+
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            exact_wins DESC,
+                            successful_predictions DESC,
+                            settled_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+
+                FROM ranked
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                exact_wins,
+                successful_predictions,
+                settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+        """, (
             telegram_id,
-            first_name,
-            balance,
-            xp
+        ))
 
-        FROM users
+    else:
 
-        ORDER BY
-            xp DESC,
-            balance DESC
+        order_sql = (
+            "balance DESC, xp DESC, telegram_id ASC"
+            if mode == "coins"
+            else
+            "xp DESC, balance DESC, telegram_id ASC"
+        )
 
-        LIMIT 50
-    """)
+        cur.execute(
+            f"""
+            WITH positions AS (
+
+                SELECT
+                    telegram_id,
+                    first_name,
+                    balance,
+                    xp,
+
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            {order_sql}
+                    ) AS rank
+
+                FROM users
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                0 AS exact_wins,
+                0 AS successful_predictions,
+                0 AS settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    rows = cur.fetchall()
 
     players = []
+    my_player = None
 
-    for rank, row in enumerate(
-        cur.fetchall(),
-        1
-    ):
+    for row in rows:
 
         player_level = calculate_level(
             row[3]
         )
 
-        players.append({
+        settled_predictions = int(
+            row[6]
+            or
+            0
+        )
+
+        successful_predictions = int(
+            row[5]
+            or
+            0
+        )
+
+        success_rate = (
+            round(
+                successful_predictions
+                /
+                settled_predictions
+                *
+                100
+            )
+            if settled_predictions > 0
+            else
+            0
+        )
+
+        player = {
 
             "rank":
-                rank,
+                int(
+                    row[7]
+                ),
 
             "telegram_id":
-                row[0],
+                int(
+                    row[0]
+                ),
 
             "first_name":
                 row[1]
@@ -13639,31 +13829,48 @@ def api_leaderboard():
                 ),
 
             "level":
-                player_level,
+                int(
+                    player_level
+                ),
 
             "league":
                 get_league(
                     player_level
+                ),
+
+            "exact_wins":
+                int(
+                    row[4]
+                    or
+                    0
+                ),
+
+            "successful_predictions":
+                successful_predictions,
+
+            "settled_predictions":
+                settled_predictions,
+
+            "success_rate":
+                int(
+                    success_rate
+                ),
+
+            "is_me":
+                int(
+                    row[0]
                 )
-        })
+                ==
+                telegram_id
+        }
 
-    my_rank = next(
-        (
-            player["rank"]
+        if player["is_me"]:
+            my_player = player
 
-            for player in players
-
-            if
-            int(
-                player["telegram_id"]
+        if player["rank"] <= 50:
+            players.append(
+                player
             )
-            ==
-            int(
-                user["telegram_id"]
-            )
-        ),
-        None
-    )
 
     cur.close()
     conn.close()
@@ -13673,11 +13880,24 @@ def api_leaderboard():
         "success":
             True,
 
+        "mode":
+            mode,
+
         "players":
             players,
 
         "my_rank":
-            my_rank
+            (
+                my_player[
+                    "rank"
+                ]
+                if my_player
+                else
+                None
+            ),
+
+        "me":
+            my_player
     })
 
 

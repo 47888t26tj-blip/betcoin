@@ -3065,6 +3065,95 @@ LIVE
 </div>
 
 
+
+<div class="card">
+
+<div
+    class="row"
+    style="
+        align-items:flex-start;
+        gap:12px
+    "
+>
+
+<div>
+
+<b>
+👥 Пригласи друга
+</b>
+
+<div
+    id="referralRewardText"
+    class="muted"
+    style="margin-top:5px"
+>
+Приглашай друзей и получай монеты
+</div>
+
+</div>
+
+<div
+    id="referralCount"
+    style="
+        font-weight:900;
+        white-space:nowrap
+    "
+>
+0 друзей
+</div>
+
+</div>
+
+<input
+    id="referralLink"
+    class="input"
+    readonly
+    placeholder="Реферальная ссылка"
+    style="
+        margin-top:12px;
+        font-size:13px
+    "
+>
+
+<div
+    class="row"
+    style="
+        margin-top:8px;
+        gap:8px
+    "
+>
+
+<button
+    class="small-btn"
+    style="flex:1"
+    onclick="copyReferralLink()"
+>
+📋 Скопировать
+</button>
+
+<button
+    class="small-btn"
+    style="flex:1"
+    onclick="shareReferralLink()"
+>
+↗️ Поделиться
+</button>
+
+</div>
+
+<div
+    class="muted"
+    style="
+        margin-top:9px;
+        font-size:12px
+    "
+>
+Награда начисляется, когда новый игрок впервые открывает BetCoin.
+</div>
+
+</div>
+
+
 <h3>
 📊 Статистика
 </h3>
@@ -3506,6 +3595,7 @@ let betTab = "single";
 let selectedBet = null;
 
 let currentUser = null;
+let referralInfo = {};
 
 let xp = 0;
 
@@ -9946,6 +10036,12 @@ async function loadSession(){
             null;
 
 
+        referralInfo =
+            data.referral
+            ||
+            {};
+
+
         bets =
             data.bets
             ||
@@ -10725,10 +10821,197 @@ function renderHome(){
 
 
 /* ===================================
+   REFERRALS
+=================================== */
+
+function renderReferral(){
+
+    const linkInput =
+        document.getElementById(
+            "referralLink"
+        );
+
+    const countBox =
+        document.getElementById(
+            "referralCount"
+        );
+
+    const rewardBox =
+        document.getElementById(
+            "referralRewardText"
+        );
+
+    if(
+        !linkInput
+        ||
+        !countBox
+        ||
+        !rewardBox
+    ){
+        return;
+    }
+
+    const link =
+        referralInfo?.link
+        ||
+        "";
+
+    const count =
+        Number(
+            referralInfo?.invited_count
+            ||
+            0
+        );
+
+    const inviterReward =
+        Number(
+            referralInfo?.inviter_reward
+            ||
+            500
+        );
+
+    const friendReward =
+        Number(
+            referralInfo?.friend_reward
+            ||
+            300
+        );
+
+    linkInput.value =
+        link;
+
+    countBox.textContent =
+        `${count} ${
+            count === 1
+            ?
+            "друг"
+            :
+            (
+                count >= 2
+                &&
+                count <= 4
+                ?
+                "друга"
+                :
+                "друзей"
+            )
+        }`;
+
+    rewardBox.textContent =
+        `Ты получаешь +${inviterReward} 🪙, друг — +${friendReward} 🪙`;
+}
+
+
+async function copyReferralLink(){
+
+    const link =
+        referralInfo?.link
+        ||
+        "";
+
+    if(!link){
+
+        tg.showAlert(
+            "Реферальная ссылка пока недоступна"
+        );
+
+        return;
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(
+            link
+        );
+
+        tg.showAlert(
+            "Ссылка скопирована ✅"
+        );
+
+    }catch(error){
+
+        const input =
+            document.getElementById(
+                "referralLink"
+            );
+
+        if(input){
+
+            input.focus();
+            input.select();
+        }
+
+        tg.showAlert(
+            "Скопируй выделенную ссылку"
+        );
+    }
+}
+
+
+function shareReferralLink(){
+
+    const link =
+        referralInfo?.link
+        ||
+        "";
+
+    if(!link){
+
+        tg.showAlert(
+            "Реферальная ссылка пока недоступна"
+        );
+
+        return;
+    }
+
+    const reward =
+        Number(
+            referralInfo?.friend_reward
+            ||
+            300
+        );
+
+    const text =
+        `Залетай в BetCoin ⚽ Получишь +${reward} монет за первый запуск!`;
+
+    const shareUrl =
+        "https://t.me/share/url?url="
+        +
+        encodeURIComponent(
+            link
+        )
+        +
+        "&text="
+        +
+        encodeURIComponent(
+            text
+        );
+
+    if(
+        tg.openTelegramLink
+    ){
+
+        tg.openTelegramLink(
+            shareUrl
+        );
+
+    }else{
+
+        window.open(
+            shareUrl,
+            "_blank"
+        );
+    }
+}
+
+
+/* ===================================
    PROFILE
 =================================== */
 
 function renderProfile(){
+
+    renderReferral();
 
     document
     .getElementById(

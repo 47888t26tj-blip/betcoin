@@ -8380,6 +8380,28 @@ function predictionDateText(
 
 function renderPredictionGame(){
 
+    if(
+        predictionGame?.loading
+    ){
+
+        const box =
+            document.getElementById(
+                "predictionGame"
+            );
+
+        if(box){
+            box.innerHTML =
+                `
+                    <div class="loader">
+                        Загружаем матч...
+                    </div>
+                `;
+        }
+
+        return;
+    }
+
+
     const box =
         document.getElementById(
             "predictionGame"
@@ -8722,6 +8744,28 @@ async function pickPrediction(
 =================================== */
 
 function renderScoreGame(){
+
+    if(
+        scoreGame?.loading
+    ){
+
+        const box =
+            document.getElementById(
+                "scoreGame"
+            );
+
+        if(box){
+            box.innerHTML =
+                `
+                    <div class="loader">
+                        Загружаем матч...
+                    </div>
+                `;
+        }
+
+        return;
+    }
+
 
     const box =
         document.getElementById(
@@ -11159,6 +11203,62 @@ function renderGames(){
 }
 
 
+async function loadGamesBackground(){
+
+    try{
+
+        const [
+            predictionData,
+            scoreData
+        ] = await Promise.allSettled([
+            post(
+                "/api/games/prediction"
+            ),
+            post(
+                "/api/games/score"
+            )
+        ]);
+
+
+        if(
+            predictionData.status
+            ===
+            "fulfilled"
+        ){
+
+            predictionGame =
+                predictionData.value.game
+                ||
+                {};
+        }
+
+
+        if(
+            scoreData.status
+            ===
+            "fulfilled"
+        ){
+
+            scoreGame =
+                scoreData.value.game
+                ||
+                {};
+        }
+
+
+        renderGames();
+        renderHome();
+
+    }catch(error){
+
+        console.error(
+            "Background games:",
+            error
+        );
+    }
+}
+
+
 /* ===================================
    SESSION
 =================================== */
@@ -11169,7 +11269,7 @@ async function loadSession(){
 
         const data =
             await post(
-                "/api/session"
+                "/api/session?fast=1"
             );
 
 
@@ -13664,18 +13764,9 @@ async function init(){
     updateParlay();
 
 
-    await Promise.all([
-        loadSession(),
-        loadLeague(
-            "top5"
-        )
-    ]);
-
-
-    await loadLive();
-
-
-    loadLeaderboard();
+    // Быстрый старт: сначала получаем только данные пользователя.
+    // Матчи, live, рейтинг и игры догружаются уже после появления интерфейса.
+    await loadSession();
 
 
     renderAll();
@@ -13685,6 +13776,40 @@ async function init(){
     setTimeout(
         showOnboardingIfNeeded,
         350
+    );
+
+
+    // Не блокируем открытие Mini App тяжёлыми футбольными запросами.
+    loadLeague(
+        "top5"
+    )
+    .catch(
+        error =>
+            console.error(
+                "Startup matches:",
+                error
+            )
+    );
+
+
+    loadLive()
+    .catch(
+        error =>
+            console.error(
+                "Startup live:",
+                error
+            )
+    );
+
+
+    loadLeaderboard();
+
+
+    // Игровые матчи могут требовать загрузки расписания,
+    // поэтому они тоже идут фоном.
+    setTimeout(
+        loadGamesBackground,
+        250
     );
 
 

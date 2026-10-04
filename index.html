@@ -4264,7 +4264,7 @@ const MATCH_CACHE_STALE_MS =
     6 * 60 * 60 * 1000;
 
 const MATCH_FETCH_TIMEOUT_MS =
-    8500;
+    12000;
 
 let bets = [];
 
@@ -5590,6 +5590,9 @@ async function loadLive(){
                 stale:
                     !!data.stale,
 
+                refreshing:
+                    !!data.refreshing,
+
                 notice:
                     data.notice
                     ||
@@ -5908,6 +5911,9 @@ function hydrateLeagueFromCache(
 
             stale:
                 !cached.fresh,
+
+            refreshing:
+                false,
 
             notice:
                 (
@@ -6260,8 +6266,11 @@ async function loadLeague(
                 stale:
                     true,
 
+                refreshing:
+                    true,
+
                 notice:
-                    "Не удалось обновить API — показаны сохранённые матчи"
+                    "Показаны сохранённые матчи • обновление продолжится в фоне"
             };
 
             renderMatches();
@@ -6761,7 +6770,15 @@ function renderMatches(){
                         class="muted"
                         style="margin-top:6px"
                     >
-                        Попробуй другой день или лигу
+                        ${
+                            matchSourceState[
+                                currentLeague
+                            ]?.refreshing
+                            ?
+                            "Расписание обновляется в фоне"
+                            :
+                            "Попробуй другой день или лигу"
+                        }
                     </div>
 
                 </div>

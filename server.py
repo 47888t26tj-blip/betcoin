@@ -990,6 +990,24 @@ def init_database():
 
 
     cur.execute("""
+        CREATE TABLE IF NOT EXISTS user_notification_settings (
+
+            telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            match_day BOOLEAN NOT NULL DEFAULT TRUE,
+            favorite_match BOOLEAN NOT NULL DEFAULT TRUE,
+            bet_result BOOLEAN NOT NULL DEFAULT TRUE,
+            prediction_result BOOLEAN NOT NULL DEFAULT TRUE,
+            referral BOOLEAN NOT NULL DEFAULT TRUE,
+
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    """)
+
+
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS wheel_spins (
 
             telegram_id BIGINT PRIMARY KEY
@@ -1937,6 +1955,226 @@ def get_user_data(telegram_id):
         "xp": row[5]
     }
 
+
+
+
+# =========================================================
+# NOTIFICATION SETTINGS
+# =========================================================
+
+def get_notification_settings(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO user_notification_settings (
+            telegram_id
+        )
+        VALUES (
+            %s
+        )
+        ON CONFLICT (telegram_id)
+        DO NOTHING
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    conn.commit()
+
+    cur.execute(
+        """
+        SELECT
+            match_day,
+            favorite_match,
+            bet_result,
+            prediction_result,
+            referral
+
+        FROM user_notification_settings
+
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+
+        return {
+            "match_day": True,
+            "favorite_match": True,
+            "bet_result": True,
+            "prediction_result": True,
+            "referral": True
+        }
+
+    return {
+        "match_day":
+            bool(
+                row[0]
+            ),
+
+        "favorite_match":
+            bool(
+                row[1]
+            ),
+
+        "bet_result":
+            bool(
+                row[2]
+            ),
+
+        "prediction_result":
+            bool(
+                row[3]
+            ),
+
+        "referral":
+            bool(
+                row[4]
+            )
+    }
+
+
+def update_notification_settings(
+    telegram_id,
+    data
+):
+
+    current = (
+        get_notification_settings(
+            telegram_id
+        )
+    )
+
+    allowed = {
+        "match_day",
+        "favorite_match",
+        "bet_result",
+        "prediction_result",
+        "referral"
+    }
+
+    for key in allowed:
+
+        if key in data:
+
+            current[
+                key
+            ] = bool(
+                data[
+                    key
+                ]
+            )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO user_notification_settings (
+            telegram_id,
+            match_day,
+            favorite_match,
+            bet_result,
+            prediction_result,
+            referral,
+            updated_at
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            NOW()
+        )
+        ON CONFLICT (telegram_id)
+        DO UPDATE SET
+            match_day =
+                EXCLUDED.match_day,
+
+            favorite_match =
+                EXCLUDED.favorite_match,
+
+            bet_result =
+                EXCLUDED.bet_result,
+
+            prediction_result =
+                EXCLUDED.prediction_result,
+
+            referral =
+                EXCLUDED.referral,
+
+            updated_at =
+                NOW()
+        """,
+        (
+            int(
+                telegram_id
+            ),
+            current[
+                "match_day"
+            ],
+            current[
+                "favorite_match"
+            ],
+            current[
+                "bet_result"
+            ],
+            current[
+                "prediction_result"
+            ],
+            current[
+                "referral"
+            ]
+        )
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return current
+
+
+def notification_enabled(
+    telegram_id,
+    key
+):
+
+    try:
+
+        return bool(
+            get_notification_settings(
+                telegram_id
+            ).get(
+                key,
+                True
+            )
+        )
+
+    except Exception:
+
+        return True
 
 
 # =========================================================
@@ -9382,6 +9620,183 @@ def get_user_parlays(
     return result
 
 
+
+def get_profile_extra(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT
+            COUNT(*)::INTEGER,
+            COUNT(*) FILTER (
+                WHERE settled = TRUE
+            )::INTEGER,
+            COUNT(*) FILTER (
+                WHERE
+                    settled = TRUE
+                    AND
+                    (
+                        exact_win = TRUE
+                        OR
+                        outcome_win = TRUE
+                    )
+            )::INTEGER,
+            COUNT(*) FILTER (
+                WHERE
+                    settled = TRUE
+                    AND
+                    exact_win = TRUE
+            )::INTEGER
+
+        FROM score_game_picks
+
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    row = (
+        cur.fetchone()
+        or
+        (
+            0,
+            0,
+            0,
+            0
+        )
+    )
+
+    cur.execute(
+        """
+        SELECT COUNT(*)::INTEGER
+        FROM predictor_league_members
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    league_count_row = (
+        cur.fetchone()
+        or
+        (
+            0,
+        )
+    )
+
+    cur.close()
+    conn.close()
+
+    total_predictions = int(
+        row[0]
+        or
+        0
+    )
+
+    settled_predictions = int(
+        row[1]
+        or
+        0
+    )
+
+    successful_predictions = int(
+        row[2]
+        or
+        0
+    )
+
+    exact_wins = int(
+        row[3]
+        or
+        0
+    )
+
+    success_rate = (
+        round(
+            successful_predictions
+            /
+            settled_predictions
+            *
+            100
+        )
+        if settled_predictions > 0
+        else
+        0
+    )
+
+    score_stats = (
+        get_score_game_stats(
+            telegram_id
+        )
+    )
+
+    if exact_wins >= 25:
+        title = "Мастер прогнозов"
+    elif exact_wins >= 10:
+        title = "Эксперт"
+    elif successful_predictions >= 10:
+        title = "Аналитик"
+    else:
+        title = "Новичок"
+
+    return {
+        "title":
+            title,
+
+        "prediction_total":
+            total_predictions,
+
+        "prediction_successful":
+            successful_predictions,
+
+        "prediction_exact":
+            exact_wins,
+
+        "prediction_success_rate":
+            int(
+                success_rate
+            ),
+
+        "current_streak":
+            int(
+                score_stats.get(
+                    "current_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "best_streak":
+            int(
+                score_stats.get(
+                    "best_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "private_leagues":
+            int(
+                league_count_row[0]
+                or
+                0
+            )
+    }
+
+
 # =========================================================
 # 📊 PROFILE STATS
 # =========================================================
@@ -12064,6 +12479,16 @@ def api_session():
                     telegram_id
                 ),
 
+            "notification_settings":
+                get_notification_settings(
+                    telegram_id
+                ),
+
+            "profile_extra":
+                get_profile_extra(
+                    telegram_id
+                ),
+
             "score_game":
                 get_score_game(
                     telegram_id
@@ -13559,6 +13984,54 @@ def api_favorite_teams_toggle():
     })
 
 
+
+# =========================================================
+# 🔔 NOTIFICATION SETTINGS API
+# =========================================================
+
+@app.route(
+    "/api/notification-settings",
+    methods=[
+        "POST"
+    ]
+)
+def api_notification_settings():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    settings = (
+        update_notification_settings(
+            user[
+                "telegram_id"
+            ],
+            body
+        )
+    )
+
+    return jsonify({
+        "success":
+            True,
+
+        "settings":
+            settings
+    })
+
+
 # =========================================================
 # 🏆 LEADERBOARD
 # =========================================================
@@ -13600,7 +14073,8 @@ def api_leaderboard():
     if mode not in {
         "xp",
         "coins",
-        "exact"
+        "exact",
+        "weekly"
     }:
         mode = "xp"
 
@@ -13613,7 +14087,109 @@ def api_leaderboard():
     conn = get_db()
     cur = conn.cursor()
 
-    if mode == "exact":
+    if mode == "weekly":
+
+        cur.execute(
+            """
+            WITH weekly AS (
+
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+
+                    (
+                        COUNT(
+                            CASE
+                                WHEN
+                                    p.settled = TRUE
+                                    AND
+                                    p.created_at >=
+                                        NOW()
+                                        -
+                                        INTERVAL '7 days'
+                                THEN 1
+                            END
+                        )
+                    )::INTEGER
+                    AS weekly_predictions,
+
+                    (
+                        COUNT(
+                            CASE
+                                WHEN
+                                    p.settled = TRUE
+                                    AND
+                                    p.created_at >=
+                                        NOW()
+                                        -
+                                        INTERVAL '7 days'
+                                    AND
+                                    (
+                                        p.exact_win = TRUE
+                                        OR
+                                        p.outcome_win = TRUE
+                                    )
+                                THEN 1
+                            END
+                        )
+                    )::INTEGER
+                    AS weekly_success
+
+                FROM users u
+
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id =
+                        u.telegram_id
+
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+
+            positions AS (
+
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            weekly_success DESC,
+                            weekly_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+
+                FROM weekly
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                0 AS exact_wins,
+                weekly_success AS successful_predictions,
+                weekly_predictions AS settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    elif mode == "exact":
 
         cur.execute("""
             WITH ranked AS (

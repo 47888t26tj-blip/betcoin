@@ -4228,6 +4228,15 @@ let matches = [];
 
 let loaded = {};
 
+const MATCH_CACHE_TTL_MS =
+    10 * 60 * 1000;
+
+const MATCH_CACHE_STALE_MS =
+    6 * 60 * 60 * 1000;
+
+const MATCH_FETCH_TIMEOUT_MS =
+    8500;
+
 let bets = [];
 
 let parlays = [];
@@ -4559,7 +4568,19 @@ function showPage(
         "games"
     ){
 
-        loadSession();
+        loadSession(
+            true
+        );
+    }
+
+
+    if(
+        name
+        ===
+        "profile"
+    ){
+
+        loadLeaderboard();
     }
 
 
@@ -4569,6 +4590,7 @@ function showPage(
         "games"
     ){
 
+        loadGamesBackground();
         loadScoreGameHistory();
     }
 
@@ -5650,6 +5672,193 @@ function renderLive(){
    MATCH LOADING
 =================================== */
 
+function leagueCacheKey(
+    key
+){
+
+    return (
+        "bcLeagueCache:"
+        +
+        key
+    );
+}
+
+
+function readLeagueCache(
+    key
+){
+
+    try{
+
+        const raw =
+            localStorage.getItem(
+                leagueCacheKey(
+                    key
+                )
+            );
+
+        if(!raw){
+            return null;
+        }
+
+        const parsed =
+            JSON.parse(
+                raw
+            );
+
+        if(
+            !parsed
+            ||
+            !Array.isArray(
+                parsed.matches
+            )
+            ||
+            !Number(
+                parsed.saved_at
+            )
+        ){
+
+            return null;
+        }
+
+        const age =
+            Date.now()
+            -
+            Number(
+                parsed.saved_at
+            );
+
+        if(
+            age
+            >
+            MATCH_CACHE_STALE_MS
+        ){
+
+            localStorage.removeItem(
+                leagueCacheKey(
+                    key
+                )
+            );
+
+            return null;
+        }
+
+        return {
+            matches:
+                parsed.matches,
+
+            saved_at:
+                Number(
+                    parsed.saved_at
+                ),
+
+            age:
+                age,
+
+            fresh:
+                age
+                <
+                MATCH_CACHE_TTL_MS
+        };
+
+    }catch(error){
+
+        return null;
+    }
+}
+
+
+function writeLeagueCache(
+    key,
+    items
+){
+
+    try{
+
+        localStorage.setItem(
+            leagueCacheKey(
+                key
+            ),
+            JSON.stringify({
+                saved_at:
+                    Date.now(),
+
+                matches:
+                    items
+            })
+        );
+
+    }catch(error){
+
+        console.warn(
+            "League cache:",
+            error
+        );
+    }
+}
+
+
+function hydrateLeagueFromCache(
+    key
+){
+
+    const cached =
+        readLeagueCache(
+            key
+        );
+
+    if(
+        !cached
+        ||
+        !cached.matches.length
+    ){
+
+        return null;
+    }
+
+    loaded[
+        key
+    ] =
+        cached.matches;
+
+    return cached;
+}
+
+
+async function fetchWithTimeout(
+    url,
+    timeoutMs =
+        MATCH_FETCH_TIMEOUT_MS
+){
+
+    const controller =
+        new AbortController();
+
+    const timer =
+        setTimeout(
+            () =>
+                controller.abort(),
+            timeoutMs
+        );
+
+    try{
+
+        return await fetch(
+            url,
+            {
+                signal:
+                    controller.signal
+            }
+        );
+
+    }finally{
+
+        clearTimeout(
+            timer
+        );
+    }
+}
+
 
 async function autoRefreshMatches(){
 
@@ -5662,12 +5871,12 @@ async function autoRefreshMatches(){
 
         // Сбрасываем только текущую лигу,
         // чтобы сервер реально проверил свежее расписание.
-        delete loaded[
-            key
-        ];
-
         await loadLeague(
-            key
+            key,
+            {
+                force:
+                    true
+            }
         );
 
     }catch(error){
@@ -5681,8 +5890,14 @@ async function autoRefreshMatches(){
 
 
 async function loadLeague(
-    key
+    key,
+    options = {}
 ){
+
+    const background =
+        options.background
+        ===
+        true;
 
     currentLeague =
         key;
@@ -5715,6 +5930,27 @@ async function loadLeague(
     }
 
 
+    let cached =
+        readLeagueCache(
+            key
+        );
+
+
+    if(
+        !loaded[
+            key
+        ]
+        &&
+        cached
+    ){
+
+        loaded[
+            key
+        ] =
+            cached.matches;
+    }
+
+
     if(
         loaded[
             key
@@ -5728,20 +5964,37 @@ async function loadLeague(
 
         renderMatches();
 
-        return;
+
+        if(
+            cached?.fresh
+            &&
+            !options.force
+        ){
+
+            return;
+        }
     }
 
 
-    document
-    .getElementById(
-        "matchesList"
-    )
-    .innerHTML =
-        `
-            <div class="loader">
-                Загружаем...
-            </div>
-        `;
+    if(
+        !loaded[
+            key
+        ]
+        &&
+        !background
+    ){
+
+        document
+        .getElementById(
+            "matchesList"
+        )
+        .innerHTML =
+            `
+                <div class="loader">
+                    Загружаем матчи...
+                </div>
+            `;
+    }
 
 
     try{
@@ -5758,7 +6011,13 @@ async function loadLeague(
 
                 ?
 
-                ""
+                (
+                    options.force
+                    ?
+                    "?refresh=1"
+                    :
+                    ""
+                )
 
                 :
 
@@ -5767,11 +6026,19 @@ async function loadLeague(
                 encodeURIComponent(
                     key
                 )
+                +
+                (
+                    options.force
+                    ?
+                    "&refresh=1"
+                    :
+                    ""
+                )
             );
 
 
         const response =
-            await fetch(
+            await fetchWithTimeout(
                 url
             );
 
@@ -5789,12 +6056,12 @@ async function loadLeague(
             throw new Error(
                 data.error
                 ||
-                "Ошибка"
+                "Ошибка загрузки матчей"
             );
         }
 
 
-        matches =
+        const leagueMatches =
             (
                 data.matches
                 ||
@@ -5815,16 +6082,102 @@ async function loadLeague(
             );
 
 
-        loaded[
+        if(
+            leagueMatches.length
+        ){
+
+            loaded[
+                key
+            ] =
+                leagueMatches;
+
+            writeLeagueCache(
+                key,
+                leagueMatches
+            );
+        }
+
+
+        if(
+            currentLeague
+            !==
             key
-        ] =
-            matches;
+        ){
+
+            return;
+        }
 
 
-        renderAll();
+        matches =
+            leagueMatches.length
+            ?
+            leagueMatches
+            :
+            (
+                loaded[
+                    key
+                ]
+                ||
+                []
+            );
+
+
+        renderMatches();
 
 
     }catch(error){
+
+        if(
+            currentLeague
+            !==
+            key
+        ){
+
+            return;
+        }
+
+
+        if(
+            loaded[
+                key
+            ]
+            &&
+            loaded[
+                key
+            ].length
+        ){
+
+            matches =
+                loaded[
+                    key
+                ];
+
+            renderMatches();
+
+            console.warn(
+                "Matches refresh failed, using cache:",
+                error
+            );
+
+            return;
+        }
+
+
+        const message =
+            (
+                error?.name
+                ===
+                "AbortError"
+            )
+            ?
+            "Сервер отвечает слишком долго. Нажми «Обновить»."
+            :
+            (
+                error?.message
+                ||
+                "Не удалось загрузить матчи"
+            );
+
 
         document
         .getElementById(
@@ -5832,8 +6185,24 @@ async function loadLeague(
         )
         .innerHTML =
             `
-                <div class="empty">
-                    ${esc(error.message)}
+                <div class="matches-empty">
+
+                    <div class="matches-empty-icon">
+                        ⏱️
+                    </div>
+
+                    <b>
+                        ${esc(message)}
+                    </b>
+
+                    <button
+                        class="btn secondary"
+                        style="margin-top:12px"
+                        onclick="loadLeague('${js(key)}',{force:true})"
+                    >
+                        Попробовать ещё раз
+                    </button>
+
                 </div>
             `;
     }
@@ -11263,12 +11632,18 @@ async function loadGamesBackground(){
    SESSION
 =================================== */
 
-async function loadSession(){
+async function loadSession(
+    full = true
+){
 
     try{
 
         const data =
             await post(
+                full
+                ?
+                "/api/session"
+                :
                 "/api/session?fast=1"
             );
 
@@ -11289,32 +11664,32 @@ async function loadSession(){
 
         referralInfo =
             data.referral
-            ||
-            {};
+            ??
+            referralInfo;
 
 
         notificationSettings =
             data.notification_settings
-            ||
-            {};
+            ??
+            notificationSettings;
 
 
         profileExtra =
             data.profile_extra
-            ||
-            {};
+            ??
+            profileExtra;
 
 
         bets =
             data.bets
-            ||
-            [];
+            ??
+            bets;
 
 
         parlays =
             data.parlays
-            ||
-            [];
+            ??
+            parlays;
 
 
         xp =
@@ -11349,20 +11724,20 @@ async function loadSession(){
 
         stats =
             data.stats
-            ||
-            {};
+            ??
+            stats;
 
 
         tasks =
             data.tasks
-            ||
-            [];
+            ??
+            tasks;
 
 
         achievements =
             data.achievements
-            ||
-            [];
+            ??
+            achievements;
 
 
         daily =
@@ -11373,26 +11748,26 @@ async function loadSession(){
 
         loginStreak =
             data.login_streak
-            ||
-            {};
+            ??
+            loginStreak;
 
 
         wheel =
             data.wheel
-            ||
-            {};
+            ??
+            wheel;
 
 
         predictionGame =
             data.prediction_game
-            ||
-            {};
+            ??
+            predictionGame;
 
 
         scoreGame =
             data.score_game
-            ||
-            {};
+            ??
+            scoreGame;
 
 
         myRank =
@@ -13764,11 +14139,22 @@ async function init(){
     updateParlay();
 
 
-    // Быстрый старт: сначала получаем только данные пользователя.
-    // Матчи, live, рейтинг и игры догружаются уже после появления интерфейса.
-    await loadSession();
+    const cachedTop5 =
+        hydrateLeagueFromCache(
+            "top5"
+        );
+
+    if(cachedTop5){
+
+        currentLeague =
+            "top5";
+
+        matches =
+            cachedTop5.matches;
+    }
 
 
+    // Первый кадр сразу — без ожидания сервера.
     renderAll();
 
     applyStartupDeepLink();
@@ -13779,37 +14165,56 @@ async function init(){
     );
 
 
-    // Не блокируем открытие Mini App тяжёлыми футбольными запросами.
-    loadLeague(
-        "top5"
+    // Минимальные данные пользователя грузятся отдельно.
+    loadSession(
+        false
+    )
+    .then(
+        () =>
+            renderAll()
     )
     .catch(
         error =>
             console.error(
-                "Startup matches:",
+                "Bootstrap:",
                 error
             )
     );
 
 
-    loadLive()
-    .catch(
-        error =>
-            console.error(
-                "Startup live:",
-                error
-            )
-    );
-
-
-    loadLeaderboard();
-
-
-    // Игровые матчи могут требовать загрузки расписания,
-    // поэтому они тоже идут фоном.
+    // Матчи: сначала кэш, затем тихое обновление.
     setTimeout(
-        loadGamesBackground,
-        250
+        () =>
+            loadLeague(
+                "top5",
+                {
+                    background:
+                        true
+                }
+            )
+            .catch(
+                error =>
+                    console.error(
+                        "Startup matches:",
+                        error
+                    )
+            ),
+        120
+    );
+
+
+    // LIVE не тормозит первый экран.
+    setTimeout(
+        () =>
+            loadLive()
+            .catch(
+                error =>
+                    console.error(
+                        "Startup live:",
+                        error
+                    )
+            ),
+        900
     );
 
 

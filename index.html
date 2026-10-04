@@ -2190,6 +2190,84 @@ button{
 }
 
 
+
+
+/* ===================================
+   ⚽ MATCHES 2.0
+=================================== */
+
+.matches-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:10px 0 12px;
+}
+
+.matches-count{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:800;
+}
+
+.matches-refresh{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:10px;
+    padding:7px 10px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.matches-date-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:17px 2px 8px;
+    font-size:13px;
+    font-weight:900;
+}
+
+.matches-date-title:first-child{
+    margin-top:2px;
+}
+
+.matches-date-count{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+}
+
+.matches-empty{
+    padding:30px 15px;
+    text-align:center;
+    color:var(--muted);
+    border:1px dashed var(--border);
+    border-radius:16px;
+    margin-top:12px;
+}
+
+.matches-empty-icon{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.match-soon{
+    display:inline-flex;
+    align-items:center;
+    margin-left:6px;
+    padding:2px 6px;
+    border-radius:7px;
+    font-size:9px;
+    font-weight:950;
+    background:rgba(245,196,72,.12);
+    color:#f5c448;
+    vertical-align:middle;
+}
+
 </style>
 
 </head>
@@ -2466,14 +2544,6 @@ LIVE
 
 <button
     class="chip date-chip active"
-    data-v="all"
-    onclick="setDateFilter('all')"
->
-Все
-</button>
-
-<button
-    class="chip date-chip"
     data-v="today"
     onclick="setDateFilter('today')"
 >
@@ -2486,6 +2556,14 @@ LIVE
     onclick="setDateFilter('tomorrow')"
 >
 Завтра
+</button>
+
+<button
+    class="chip date-chip"
+    data-v="all"
+    onclick="setDateFilter('all')"
+>
+Все
 </button>
 
 <button
@@ -2623,6 +2701,24 @@ LIVE
 
 </div>
 
+
+<div class="matches-toolbar">
+
+<div
+    id="matchesCount"
+    class="matches-count"
+>
+Загружаем...
+</div>
+
+<button
+    class="matches-refresh"
+    onclick="refreshMatchesNow()"
+>
+↻ Обновить
+</button>
+
+</div>
 
 <div id="matchesList">
 
@@ -3779,7 +3875,7 @@ let parlayStake = 0;
 
 let currentLeague = "top5";
 
-let dateFilter = "all";
+let dateFilter = "today";
 
 let searchQuery = "";
 
@@ -4853,6 +4949,33 @@ function renderMatch(
 
                     <div class="time ${matchKickoff.c}">
                         ${esc(matchKickoff.text)}
+                        ${
+                            (
+                                !matchKickoff.started
+                                &&
+                                parseDate(match.date)
+                                &&
+                                (
+                                    parseDate(match.date).getTime()
+                                    -
+                                    Date.now()
+                                )
+                                >
+                                0
+                                &&
+                                (
+                                    parseDate(match.date).getTime()
+                                    -
+                                    Date.now()
+                                )
+                                <=
+                                60 * 60 * 1000
+                            )
+                            ?
+                            `<span class="match-soon">СКОРО</span>`
+                            :
+                            ""
+                        }
                     </div>
 
                 </div>
@@ -5422,6 +5545,125 @@ function filtered(
 }
 
 
+function matchDateLabel(
+    value
+){
+
+    const date =
+        parseDate(
+            value
+        );
+
+    if(!date){
+        return "Дата уточняется";
+    }
+
+    if(isToday(value)){
+        return "Сегодня";
+    }
+
+    if(isTomorrow(value)){
+        return "Завтра";
+    }
+
+    return date.toLocaleDateString(
+        "ru-RU",
+        {
+            day:"numeric",
+            month:"long",
+            weekday:"short"
+        }
+    );
+}
+
+
+function matchDateKey(
+    value
+){
+
+    const date =
+        parseDate(
+            value
+        );
+
+    if(!date){
+        return "unknown";
+    }
+
+    return [
+        date.getFullYear(),
+        String(
+            date.getMonth() + 1
+        ).padStart(2,"0"),
+        String(
+            date.getDate()
+        ).padStart(2,"0")
+    ].join("-");
+}
+
+
+async function refreshMatchesNow(){
+
+    const button =
+        document.querySelector(
+            ".matches-refresh"
+        );
+
+    if(button){
+        button.disabled = true;
+        button.textContent = "↻ Обновляем...";
+    }
+
+    try{
+
+        const key =
+            currentLeague
+            ||
+            "top5";
+
+        if(key === "favorites"){
+
+            loaded = {};
+
+            await loadLeague(
+                "top5"
+            );
+
+            currentLeague =
+                "favorites";
+
+            renderMatches();
+
+        }else{
+
+            delete loaded[
+                key
+            ];
+
+            await loadLeague(
+                key
+            );
+        }
+
+        await loadLive();
+
+    }catch(error){
+
+        console.error(
+            "Manual matches refresh:",
+            error
+        );
+
+    }finally{
+
+        if(button){
+            button.disabled = false;
+            button.textContent = "↻ Обновить";
+        }
+    }
+}
+
+
 function allMatches(){
 
     const map = {};
@@ -5487,28 +5729,208 @@ function renderMatches(){
         );
 
 
-    document
-    .getElementById(
-        "matchesList"
-    )
-    .innerHTML =
-        list.length
+    // LIVE показываем отдельным блоком сверху,
+    // поэтому не дублируем те же матчи в общем списке.
+    const regularList =
+        list.filter(
+            match =>
+                !liveMap[
+                    Number(
+                        match.fixture_id
+                    )
+                ]?.live
+        );
 
-        ?
 
-        list
-        .map(
-            renderMatch
+    const countBox =
+        document.getElementById(
+            "matchesCount"
+        );
+
+
+    if(countBox){
+
+        const total =
+            list.length;
+
+        countBox.textContent =
+            total === 1
+            ?
+            "1 матч"
+            :
+            (
+                total >= 2
+                &&
+                total <= 4
+                ?
+                `${total} матча`
+                :
+                `${total} матчей`
+            );
+    }
+
+
+    const box =
+        document.getElementById(
+            "matchesList"
+        );
+
+
+    if(!box){
+        return;
+    }
+
+
+    if(list.length === 0){
+
+        let message =
+            "Матчи не найдены";
+
+        if(dateFilter === "today"){
+            message =
+                "Сегодня матчей пока нет";
+        }
+
+        if(dateFilter === "tomorrow"){
+            message =
+                "На завтра матчей пока нет";
+        }
+
+        if(dateFilter === "myteams"){
+            message =
+                "Матчей твоих команд сейчас нет";
+        }
+
+        if(currentLeague === "favorites"){
+            message =
+                "В избранном пока нет матчей";
+        }
+
+        box.innerHTML =
+            `
+                <div class="matches-empty">
+
+                    <div class="matches-empty-icon">
+                        ⚽
+                    </div>
+
+                    <b>
+                        ${esc(message)}
+                    </b>
+
+                    <div
+                        class="muted"
+                        style="margin-top:6px"
+                    >
+                        Попробуй другой день или лигу
+                    </div>
+
+                </div>
+            `;
+
+        renderLive();
+
+        return;
+    }
+
+
+    if(regularList.length === 0){
+
+        box.innerHTML =
+            `
+                <div class="matches-empty">
+
+                    <div class="matches-empty-icon">
+                        🔴
+                    </div>
+
+                    <b>
+                        Все выбранные матчи сейчас LIVE
+                    </b>
+
+                    <div
+                        class="muted"
+                        style="margin-top:6px"
+                    >
+                        Они показаны выше
+                    </div>
+
+                </div>
+            `;
+
+        renderLive();
+
+        return;
+    }
+
+
+    const groups = {};
+
+
+    for(
+        const match
+        of
+        regularList
+    ){
+
+        const key =
+            matchDateKey(
+                match.date
+            );
+
+        if(!groups[key]){
+            groups[key] = [];
+        }
+
+        groups[key].push(
+            match
+        );
+    }
+
+
+    const keys =
+        Object.keys(
+            groups
         )
-        .join("")
+        .sort();
 
-        :
 
-        `
-            <div class="empty">
-                Матчи не найдены
-            </div>
-        `;
+    box.innerHTML =
+        keys
+        .map(
+            key => {
+
+                const group =
+                    groups[key];
+
+                const label =
+                    matchDateLabel(
+                        group[0]?.date
+                    );
+
+                return `
+                    <div class="matches-date-title">
+
+                        <span>
+                            ${esc(label)}
+                        </span>
+
+                        <span class="matches-date-count">
+                            ${group.length}
+                        </span>
+
+                    </div>
+
+                    ${group
+                        .map(
+                            renderMatch
+                        )
+                        .join("")
+                    }
+                `;
+            }
+        )
+        .join("");
 
 
     renderLive();

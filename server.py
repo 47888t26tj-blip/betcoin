@@ -4341,6 +4341,60 @@ def fetch_league_id_fixtures(
     return result
 
 
+def schedule_league_refresh(
+    league_key
+):
+
+    with league_refresh_lock:
+
+        if league_key in league_refreshing:
+
+            return
+
+        league_refreshing.add(
+            league_key
+        )
+
+
+    def worker():
+
+        try:
+
+            load_league_fixtures(
+                league_key,
+                True
+            )
+
+        except Exception as error:
+
+            print(
+                "Background league refresh error:",
+                league_key,
+                error,
+                flush=True
+            )
+
+        finally:
+
+            with league_refresh_lock:
+
+                league_refreshing.discard(
+                    league_key
+                )
+
+
+    threading.Thread(
+        target=
+            worker,
+
+        daemon=
+            True,
+
+        name=
+            f"league-refresh-{league_key}"
+    ).start()
+
+
 def load_league_fixtures(
     league_key,
     force=False
@@ -4362,30 +4416,78 @@ def load_league_fixtures(
         not force
         and
         cached
-        and
-        time.time()
-        -
-        cached["time"]
-        <
-        FIXTURES_CACHE_SECONDS
     ):
 
-        league_source_status[
-            league_key
-        ] = {
-            "source":
-                "cache",
+        cache_age = (
+            time.time()
+            -
+            cached[
+                "time"
+            ]
+        )
 
-            "stale":
-                False,
 
-            "message":
-                None
-        }
+        if (
+            cache_age
+            <
+            FIXTURES_CACHE_SECONDS
+        ):
 
-        return cached[
-            "data"
-        ]
+            league_source_status[
+                league_key
+            ] = {
+                "source":
+                    "cache",
+
+                "stale":
+                    False,
+
+                "refreshing":
+                    False,
+
+                "message":
+                    None
+            }
+
+            return cached[
+                "data"
+            ]
+
+
+        if (
+            cache_age
+            <=
+            STALE_FIXTURES_CACHE_SECONDS
+            and
+            cached.get(
+                "data"
+            )
+            is not None
+        ):
+
+            league_source_status[
+                league_key
+            ] = {
+                "source":
+                    "cache",
+
+                "stale":
+                    True,
+
+                "refreshing":
+                    True,
+
+                "message":
+                    "Показаны сохранённые матчи • обновляем в фоне"
+            }
+
+            schedule_league_refresh(
+                league_key
+            )
+
+            return cached[
+                "data"
+            ]
 
 
     now = datetime.now(
@@ -4541,6 +4643,9 @@ def load_league_fixtures(
             "stale":
                 False,
 
+            "refreshing":
+                False,
+
             "message":
                 None
         }
@@ -4564,6 +4669,9 @@ def load_league_fixtures(
 
             "stale":
                 True,
+
+            "refreshing":
+                False,
 
             "message":
                 "Основной источник временно не дал матчи — показаны сохранённые данные"
@@ -4607,6 +4715,9 @@ def load_league_fixtures(
                     "stale":
                         False,
 
+                    "refreshing":
+                        False,
+
                     "message":
                         "Основной источник недоступен — используется резервное расписание без коэффициентов"
                 }
@@ -4648,6 +4759,9 @@ def load_league_fixtures(
             "stale":
                 False,
 
+            "refreshing":
+                False,
+
             "message":
                 None
         }
@@ -4662,6 +4776,9 @@ def load_league_fixtures(
             "error",
 
         "stale":
+            False,
+
+        "refreshing":
             False,
 
         "message":
@@ -4812,8 +4929,33 @@ def get_top5_source_status():
             "stale":
                 False,
 
+            "refreshing":
+                False,
+
             "message":
                 "Часть матчей загружена из резервного источника"
+        }
+
+    if any(
+        item.get(
+            "refreshing"
+        )
+        for item
+        in statuses
+    ):
+
+        return {
+            "source":
+                "cache",
+
+            "stale":
+                True,
+
+            "refreshing":
+                True,
+
+            "message":
+                "Показаны сохранённые матчи • обновляем в фоне"
         }
 
     if any(
@@ -4831,6 +4973,9 @@ def get_top5_source_status():
             "stale":
                 True,
 
+            "refreshing":
+                False,
+
             "message":
                 "Часть матчей показана из сохранённого кэша"
         }
@@ -4840,6 +4985,9 @@ def get_top5_source_status():
             "five-dollar",
 
         "stale":
+            False,
+
+        "refreshing":
             False,
 
         "message":
@@ -12944,6 +13092,13 @@ def api_matches():
                 bool(
                     source_status.get(
                         "stale"
+                    )
+                ),
+
+            "refreshing":
+                bool(
+                    source_status.get(
+                        "refreshing"
                     )
                 ),
 

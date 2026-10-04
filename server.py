@@ -1,13912 +1,15074 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
->
-
-<title>BetCoin</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
-
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-:root{
-    --bg:#0b0d12;
-    --card:#161922;
-    --card2:#1d222d;
-    --border:#2a303d;
-    --text:#ffffff;
-    --muted:#9298a7;
-    --accent:#2f80ff;
-    --green:#25c06d;
-    --red:#ff5252;
-    --orange:#ff9f43;
-    --gold:#ffd166;
-}
-
-html,
-body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-}
-
-body{
-    padding-bottom:90px;
-}
-
-button,
-input{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-.app{
-    max-width:700px;
-    margin:auto;
-}
-
-.page{
-    display:none;
-    padding:16px;
-}
-
-.page.active{
-    display:block;
-}
-
-.topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:15px;
-}
-
-.brand,
-.title{
-    font-size:25px;
-    font-weight:900;
-}
-
-.balance{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:9px 12px;
-    font-weight:900;
-}
-
-.card,
-.match-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:17px;
-    padding:13px;
-    margin-bottom:10px;
-}
-
-.muted{
-    color:var(--muted);
-    font-size:12px;
-}
-
-.empty,
-.loader{
-    padding:22px;
-    text-align:center;
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:17px;
-    color:var(--muted);
-}
-
-.dashboard{
-    padding:17px;
-    border:1px solid rgba(47,128,255,.35);
-    border-radius:22px;
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(47,128,255,.3),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #171c28,
-            #10131a
-        );
-
-    margin-bottom:13px;
-}
-
-.dashboard-row,
-.row,
-.match-head,
-.task-row,
-.bet-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.dashboard-name{
-    font-size:21px;
-    font-weight:900;
-}
-
-.dashboard-coins{
-    font-size:21px;
-    font-weight:900;
-}
-
-.xp-row{
-    display:flex;
-    justify-content:space-between;
-    margin-top:13px;
-    margin-bottom:5px;
-    color:var(--muted);
-    font-size:11px;
-}
-
-.xp-bar{
-    height:9px;
-    background:#0c0f15;
-    border-radius:99px;
-    overflow:hidden;
-}
-
-.xp-fill{
-    height:100%;
-    background:var(--accent);
-}
-
-
-/* ===================================
-   ⭐ МАТЧ ДНЯ
-=================================== */
-
-.match-day-card{
-    margin-bottom:13px;
-    padding:16px;
-    border-radius:21px;
-    border:1px solid rgba(47,128,255,.38);
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(47,128,255,.22),
-            transparent 43%
-        ),
-        linear-gradient(
-            145deg,
-            #171d29,
-            #11151c
-        );
-}
-
-.match-day-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.match-day-title{
-    font-size:18px;
-    font-weight:900;
-}
-
-.match-day-badge{
-    padding:5px 9px;
-    border-radius:999px;
-    background:rgba(47,128,255,.15);
-    color:#7fb0ff;
-    font-size:10px;
-    font-weight:900;
-}
-
-.match-day-league{
-    margin-top:12px;
-    color:var(--muted);
-    text-align:center;
-    font-size:11px;
-}
-
-.match-day-teams{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
-    gap:10px;
-    margin-top:8px;
-}
-
-.match-day-team{
-    font-size:17px;
-    font-weight:900;
-}
-
-.match-day-team.away{
-    text-align:right;
-}
-
-.match-day-vs{
-    color:var(--muted);
-    font-weight:900;
-}
-
-.match-day-time{
-    margin-top:8px;
-    text-align:center;
-    font-size:12px;
-    color:var(--orange);
-    font-weight:800;
-}
-
-.match-day-stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:7px;
-    margin-top:13px;
-}
-
-.match-day-stat{
-    padding:10px 5px;
-    text-align:center;
-    border-radius:12px;
-    background:rgba(255,255,255,.045);
-    border:1px solid rgba(255,255,255,.055);
-}
-
-.match-day-stat b{
-    display:block;
-    font-size:16px;
-}
-
-.match-day-stat small{
-    color:var(--muted);
-    font-size:9px;
-}
-
-.match-day-pick{
-    margin-top:12px;
-    padding:11px;
-    text-align:center;
-    border-radius:13px;
-    background:rgba(37,192,109,.09);
-    border:1px solid rgba(37,192,109,.22);
-    font-size:12px;
-}
-
-.match-day-pick b{
-    font-size:20px;
-}
-
-.match-day-result{
-    margin-top:12px;
-    padding:11px;
-    text-align:center;
-    border-radius:13px;
-    font-size:12px;
-}
-
-.match-day-result.win{
-    background:rgba(37,192,109,.1);
-    border:1px solid rgba(37,192,109,.24);
-    color:var(--green);
-}
-
-.match-day-result.loss{
-    background:rgba(255,82,82,.09);
-    border:1px solid rgba(255,82,82,.22);
-    color:#ff7777;
-}
-
-.match-day-result.wait{
-    background:rgba(255,159,67,.09);
-    border:1px solid rgba(255,159,67,.22);
-    color:var(--orange);
-}
-
-.match-day-action{
-    margin-top:12px;
-}
-
-
-/* ===================================
-   🎁 НАГРАДЫ НА ГЛАВНОЙ
-=================================== */
-
-.home-rewards{
-    display:none;
-    margin-bottom:13px;
-}
-
-.home-rewards.show{
-    display:block;
-}
-
-.reward-alert{
-    padding:14px;
-    margin-bottom:8px;
-    border-radius:17px;
-
-    border:
-        1px solid
-        rgba(255,159,67,.35);
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255,159,67,.18),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #1d1814,
-            #151820
-        );
-}
-
-.reward-alert.wheel{
-    border-color:
-        rgba(47,128,255,.4);
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(47,128,255,.2),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #151b27,
-            #151820
-        );
-}
-
-.reward-alert-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.reward-alert-icon{
-    width:46px;
-    height:46px;
-    flex:0 0 46px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border-radius:14px;
-    background:rgba(255,255,255,.06);
-    font-size:25px;
-}
-
-.reward-alert-content{
-    flex:1;
-    min-width:0;
-}
-
-.reward-alert-title{
-    font-size:15px;
-    font-weight:900;
-}
-
-.reward-alert-text{
-    margin-top:3px;
-    color:var(--muted);
-    font-size:11px;
-}
-
-.reward-alert-btn{
-    min-width:75px;
-    border:0;
-    padding:9px 11px;
-    border-radius:11px;
-    background:var(--orange);
-    color:#fff;
-    font-weight:900;
-}
-
-.reward-alert.wheel .reward-alert-btn{
-    background:var(--accent);
-}
-
-
-/* ===================================
-   QUICK
-=================================== */
-
-.quick-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:7px;
-    margin:14px 0;
-}
-
-.quick{
-    min-height:68px;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:#fff;
-    border-radius:15px;
-    font-weight:800;
-}
-
-.quick b{
-    display:block;
-    font-size:21px;
-    margin-bottom:4px;
-}
-
-.section-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin:18px 0 9px;
-}
-
-.section-head h2{
-    margin:0;
-    font-size:18px;
-}
-
-.link{
-    border:0;
-    background:transparent;
-    color:var(--accent);
-    font-weight:800;
-}
-
-.search,
-.input{
-    width:100%;
-    padding:12px;
-    background:#0e1117;
-    border:1px solid var(--border);
-    border-radius:13px;
-    color:#fff;
-    outline:none;
-}
-
-.filters,
-.leagues{
-    display:flex;
-    gap:7px;
-    overflow-x:auto;
-    margin:10px 0;
-    scrollbar-width:none;
-}
-
-.filters::-webkit-scrollbar,
-.leagues::-webkit-scrollbar{
-    display:none;
-}
-
-.chip{
-    flex:0 0 auto;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--muted);
-    padding:8px 12px;
-    border-radius:999px;
-    font-weight:800;
-    font-size:12px;
-}
-
-.chip.active{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#fff;
-}
-
-
-/* ===================================
-   LIVE / MATCH
-=================================== */
-
-.live-title{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    font-size:18px;
-    font-weight:900;
-    margin:16px 0 9px;
-}
-
-.live-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:var(--red);
-    box-shadow:0 0 0 4px rgba(255,82,82,.12);
-}
-
-.badge{
-    display:inline-block;
-    padding:3px 7px;
-    border-radius:999px;
-    font-size:9px;
-    font-weight:900;
-}
-
-.badge.live{
-    background:rgba(255,82,82,.15);
-    color:#ff7777;
-}
-
-.badge.ft{
-    background:rgba(146,152,167,.15);
-    color:#bcc1cc;
-}
-
-.match-meta{
-    min-width:0;
-}
-
-.league{
-    color:var(--muted);
-    font-size:10px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.time{
-    font-size:12px;
-    font-weight:900;
-    margin-top:3px;
-}
-
-.time.live{
-    color:#ff7777;
-}
-
-.time.soon{
-    color:var(--orange);
-}
-
-.time.started{
-    color:var(--green);
-}
-
-.star{
-    width:33px;
-    height:33px;
-    border:1px solid var(--border);
-    background:var(--card2);
-    color:var(--muted);
-    border-radius:10px;
-    font-size:18px;
-}
-
-.star.on{
-    color:var(--gold);
-}
-
-.team-row{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    min-height:37px;
-}
-
-.team-row + .team-row{
-    margin-top:5px;
-}
-
-.logo{
-    width:31px;
-    height:31px;
-    flex:0 0 31px;
-    background:#fff;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-}
-
-.logo img{
-    max-width:25px;
-    max-height:25px;
-}
-
-.team-name{
-    flex:1;
-    min-width:0;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    font-weight:800;
-}
-
-.score{
-    font-size:17px;
-    font-weight:900;
-}
-
-.score.live{
-    color:var(--green);
-}
-
-.team-star{
-    border:0;
-    background:transparent;
-    color:#555d6d;
-    font-size:17px;
-}
-
-.team-star.on{
-    color:var(--gold);
-}
-
-.odds{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:6px;
-    margin-top:10px;
-}
-
-.odd{
-    min-height:44px;
-    border:1px solid var(--border);
-    background:var(--card2);
-    color:#fff;
-    border-radius:11px;
-    font-weight:900;
-}
-
-.odd small{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-}
-
-.odd.selected{
-    border-color:var(--accent);
-    background:rgba(47,128,255,.18);
-}
-
-.odd.disabled{
-    opacity:.4;
-    pointer-events:none;
-}
-
-.market-title{
-    margin:18px 0 8px;
-    font-size:17px;
-    font-weight:900;
-}
-
-.market-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-}
-
-.market-grid.three{
-    grid-template-columns:repeat(3,1fr);
-}
-
-
-/* ===================================
-   BUTTONS / BETS
-=================================== */
-
-.tabs{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    background:var(--card);
-    padding:4px;
-    border-radius:13px;
-    margin-bottom:10px;
-}
-
-.tab{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    padding:9px;
-    border-radius:10px;
-}
-
-.tab.active{
-    background:var(--card2);
-    color:#fff;
-}
-
-.status{
-    display:inline-block;
-    padding:4px 7px;
-    border-radius:999px;
-    font-size:10px;
-    font-weight:900;
-}
-
-.status.active{
-    color:var(--orange);
-    background:rgba(255,159,67,.12);
-}
-
-.status.win{
-    color:var(--green);
-    background:rgba(37,192,109,.12);
-}
-
-.status.loss{
-    color:var(--red);
-    background:rgba(255,82,82,.12);
-}
-
-.status.refund{
-    color:var(--muted);
-    background:rgba(146,152,167,.12);
-}
-
-.btn{
-    width:100%;
-    min-height:44px;
-    border:0;
-    border-radius:12px;
-    background:var(--accent);
-    color:#fff;
-    font-weight:900;
-    margin-top:9px;
-}
-
-.btn.secondary{
-    background:var(--card2);
-}
-
-.btn.danger{
-    background:rgba(255,82,82,.15);
-    color:var(--red);
-}
-
-.btn:disabled{
-    opacity:.45;
-}
-
-.small-btn{
-    border:0;
-    background:var(--accent);
-    color:#fff;
-    border-radius:9px;
-    padding:7px 9px;
-    font-weight:800;
-}
-
-.stat-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-}
-
-.stat{
-    padding:11px;
-    border-radius:14px;
-    background:var(--card);
-    border:1px solid var(--border);
-}
-
-.stat b{
-    display:block;
-    font-size:20px;
-}
-
-
-/* ===================================
-   🔥 STREAK
-=================================== */
-
-.streak-card{
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255,159,67,.2),
-            transparent 43%
-        ),
-        linear-gradient(
-            145deg,
-            #1c1815,
-            #151820
-        );
-
-    border:1px solid rgba(255,159,67,.3);
-    border-radius:20px;
-    padding:15px;
-    margin-bottom:12px;
-}
-
-.streak-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.streak-title{
-    font-size:18px;
-    font-weight:900;
-}
-
-.streak-count{
-    background:rgba(255,159,67,.14);
-    border:1px solid rgba(255,159,67,.25);
-    color:var(--orange);
-    padding:6px 10px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:900;
-}
-
-.streak-days{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:5px;
-    margin-top:14px;
-}
-
-.streak-day{
-    min-height:76px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    border-radius:12px;
-    background:#10131a;
-    border:1px solid var(--border);
-    color:var(--muted);
-}
-
-.streak-day b{
-    font-size:12px;
-    color:#fff;
-}
-
-.streak-day span{
-    font-size:17px;
-}
-
-.streak-day small{
-    font-size:8px;
-    text-align:center;
-}
-
-.streak-day.completed{
-    border-color:rgba(37,192,109,.4);
-    background:rgba(37,192,109,.1);
-    color:var(--green);
-}
-
-.streak-day.current{
-    border-color:rgba(255,159,67,.65);
-    background:rgba(255,159,67,.12);
-}
-
-.streak-day.final{
-    background:rgba(255,209,102,.08);
-    border-color:rgba(255,209,102,.3);
-}
-
-.streak-message{
-    margin-top:10px;
-    text-align:center;
-    font-size:12px;
-    color:var(--muted);
-}
-
-.streak-reward{
-    margin-top:10px;
-    font-size:14px;
-    font-weight:900;
-    text-align:center;
-    color:var(--gold);
-}
-
-
-/* ===================================
-   🎮 GAMES
-=================================== */
-
-.game-card{
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(47,128,255,.16),
-            transparent 45%
-        ),
-        var(--card);
-
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:16px;
-    margin-bottom:14px;
-}
-
-.game-title{
-    font-size:20px;
-    font-weight:900;
-}
-
-.game-reward{
-    margin-top:6px;
-    color:var(--gold);
-    font-size:13px;
-    font-weight:800;
-}
-
-.prediction-match{
-    margin-top:14px;
-    padding:14px;
-    background:#10141c;
-    border:1px solid var(--border);
-    border-radius:15px;
-}
-
-.prediction-league{
-    color:var(--muted);
-    font-size:11px;
-    text-align:center;
-}
-
-.prediction-teams{
-    font-size:19px;
-    font-weight:900;
-    text-align:center;
-    margin-top:8px;
-}
-
-.prediction-time{
-    color:var(--muted);
-    font-size:12px;
-    text-align:center;
-    margin-top:5px;
-}
-
-.prediction-buttons{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-top:14px;
-}
-
-.prediction-btn{
-    min-height:55px;
-    border:1px solid var(--border);
-    background:var(--card2);
-    color:#fff;
-    border-radius:13px;
-    font-weight:900;
-    font-size:15px;
-}
-
-.prediction-btn small{
-    display:block;
-    color:var(--muted);
-    margin-top:3px;
-}
-
-.prediction-btn.selected{
-    border-color:var(--accent);
-    background:rgba(47,128,255,.2);
-}
-
-.prediction-btn:disabled{
-    opacity:.55;
-}
-
-.prediction-result{
-    padding:13px;
-    border-radius:14px;
-    margin-top:12px;
-    text-align:center;
-    font-weight:800;
-}
-
-.prediction-result.wait{
-    background:rgba(255,159,67,.12);
-    color:var(--orange);
-}
-
-.prediction-result.win{
-    background:rgba(37,192,109,.12);
-    color:var(--green);
-}
-
-.prediction-result.loss{
-    background:rgba(255,82,82,.12);
-    color:#ff7474;
-}
-
-
-/* ===================================
-   ⚽ SCORE GAME
-=================================== */
-
-.score-game{
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(37,192,109,.15),
-            transparent 45%
-        ),
-        var(--card);
-}
-
-.score-team{
-    text-align:center;
-    font-weight:900;
-    font-size:15px;
-    flex:1;
-}
-
-.score-picker{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:12px;
-    margin-top:16px;
-}
-
-.score-input{
-    width:72px;
-    height:62px;
-    text-align:center;
-    font-size:28px;
-    font-weight:900;
-
-    color:#fff;
-    background:#0d1118;
-
-    border:1px solid var(--border);
-    border-radius:14px;
-
-    outline:none;
-}
-
-.score-colon{
-    font-size:28px;
-    font-weight:900;
-}
-
-.score-teams-row{
-    display:flex;
-    justify-content:space-between;
-    gap:15px;
-    margin-top:10px;
-}
-
-.score-help{
-    text-align:center;
-    color:var(--muted);
-    font-size:11px;
-    margin-top:10px;
-}
-
-.score-saved{
-    margin-top:13px;
-    padding:13px;
-    text-align:center;
-    border-radius:14px;
-    background:rgba(47,128,255,.1);
-    border:1px solid rgba(47,128,255,.25);
-}
-
-.score-big{
-    font-size:27px;
-    font-weight:900;
-    margin:6px 0;
-}
-
-
-
-.score-game-tabs{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    margin-top:13px;
-    padding:4px;
-    border-radius:13px;
-    background:#10141c;
-    border:1px solid var(--border);
-}
-
-.score-game-tab{
-    border:0;
-    min-height:40px;
-    border-radius:10px;
-    background:transparent;
-    color:var(--muted);
-    font-weight:900;
-}
-
-.score-game-tab.active{
-    background:var(--card2);
-    color:#fff;
-}
-
-.score-history-summary{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    margin-top:12px;
-}
-
-.score-history-stat{
-    min-width:0;
-    padding:10px 5px;
-    border-radius:13px;
-    text-align:center;
-    background:#10141c;
-    border:1px solid var(--border);
-}
-
-.score-history-stat span{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.score-history-stat b{
-    display:block;
-    margin-top:4px;
-    font-size:20px;
-}
-
-.score-history-stat.exact b{
-    color:var(--gold);
-}
-
-.score-history-stat.outcome b{
-    color:var(--green);
-}
-
-.score-history-stat.lost b{
-    color:var(--red);
-}
-
-.score-history-rate{
-    margin-top:8px;
-    padding:11px;
-    border-radius:14px;
-    background:#10141c;
-    border:1px solid var(--border);
-}
-
-.score-history-rate > div:first-child{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    font-size:12px;
-}
-
-.score-history-rate > div:first-child span{
-    color:var(--muted);
-}
-
-.score-history-rate > div:first-child b{
-    color:var(--green);
-    font-size:16px;
-}
-
-.score-history-rate-bar{
-    height:7px;
-    margin-top:8px;
-    overflow:hidden;
-    border-radius:999px;
-    background:#0b0f15;
-}
-
-.score-history-rate-fill{
-    height:100%;
-    border-radius:999px;
-    background:var(--green);
-    transition:width .25s ease;
-}
-
-.score-history-rate small{
-    display:block;
-    margin-top:7px;
-    color:var(--muted);
-    font-size:10px;
-}
-
-.score-streak-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-    margin:8px 0 10px;
-}
-
-.score-streak-card{
-    padding:13px;
-    border-radius:15px;
-    background:var(--card);
-    border:1px solid var(--border);
-    text-align:center;
-}
-
-.score-streak-card.current{
-    border-color:rgba(255,159,67,.35);
-    background:rgba(255,159,67,.08);
-}
-
-.score-streak-card.best{
-    border-color:rgba(255,209,102,.35);
-    background:rgba(255,209,102,.07);
-}
-
-.score-streak-card span{
-    display:block;
-    color:var(--muted);
-    font-size:10px;
-    font-weight:800;
-}
-
-.score-streak-card b{
-    display:block;
-    margin-top:4px;
-    font-size:23px;
-}
-
-.score-streak-card small{
-    display:block;
-    margin-top:3px;
-    color:var(--muted);
-    font-size:9px;
-}
-
-.score-achievements{
-    margin:12px 0 10px;
-}
-
-.score-achievements-title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:8px;
-    font-size:15px;
-    font-weight:900;
-}
-
-.score-achievements-title small{
-    color:var(--muted);
-    font-size:10px;
-    font-weight:800;
-}
-
-.score-achievements-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-}
-
-.score-achievement{
-    min-height:118px;
-    padding:12px;
-    border-radius:15px;
-    border:1px solid var(--border);
-    background:var(--card);
-    opacity:.62;
-}
-
-.score-achievement.unlocked{
-    opacity:1;
-    border-color:rgba(255,209,102,.38);
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255,209,102,.12),
-            transparent 48%
-        ),
-        var(--card);
-}
-
-.score-achievement-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-}
-
-.score-achievement-icon{
-    font-size:24px;
-}
-
-.score-achievement-state{
-    color:var(--muted);
-    font-size:9px;
-    font-weight:900;
-}
-
-.score-achievement.unlocked .score-achievement-state{
-    color:var(--gold);
-}
-
-.score-achievement b{
-    display:block;
-    margin-top:7px;
-    font-size:13px;
-}
-
-.score-achievement p{
-    margin:4px 0 8px;
-    color:var(--muted);
-    font-size:10px;
-    line-height:1.3;
-}
-
-.score-achievement-progress{
-    height:6px;
-    border-radius:999px;
-    overflow:hidden;
-    background:#0c0f15;
-}
-
-.score-achievement-progress > div{
-    height:100%;
-    border-radius:999px;
-    background:var(--accent);
-}
-
-.score-achievement.unlocked .score-achievement-progress > div{
-    background:var(--gold);
-}
-
-.score-achievement-numbers{
-    margin-top:5px;
-    color:var(--muted);
-    font-size:9px;
-    text-align:right;
-}
-
-.score-history-filters{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-    margin:10px 0;
-    scrollbar-width:none;
-}
-
-.score-history-filters::-webkit-scrollbar{
-    display:none;
-}
-
-.score-history-chip{
-    flex:0 0 auto;
-    border:1px solid var(--border);
-    background:var(--card2);
-    color:var(--muted);
-    padding:7px 10px;
-    border-radius:999px;
-    font-size:11px;
-    font-weight:900;
-}
-
-.score-history-chip.active{
-    border-color:var(--accent);
-    background:rgba(47,128,255,.18);
-    color:#fff;
-}
-
-.score-history-list{
-    display:grid;
-    gap:8px;
-}
-
-.score-history-card{
-    padding:13px;
-    border-radius:15px;
-    background:#10141c;
-    border:1px solid var(--border);
-}
-
-.score-history-head{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    align-items:flex-start;
-}
-
-.score-history-teams{
-    min-width:0;
-    font-size:14px;
-    font-weight:900;
-}
-
-.score-history-league{
-    margin-top:3px;
-    color:var(--muted);
-    font-size:10px;
-}
-
-.score-history-status{
-    flex:0 0 auto;
-    padding:5px 8px;
-    border-radius:999px;
-    font-size:10px;
-    font-weight:900;
-}
-
-.score-history-status.pending{
-    color:var(--orange);
-    background:rgba(255,159,67,.12);
-}
-
-.score-history-status.exact,
-.score-history-status.outcome{
-    color:var(--green);
-    background:rgba(37,192,109,.12);
-}
-
-.score-history-status.lost{
-    color:var(--red);
-    background:rgba(255,82,82,.12);
-}
-
-.score-history-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-    margin-top:10px;
-}
-
-.score-history-score{
-    padding:10px;
-    border-radius:12px;
-    text-align:center;
-    background:var(--card2);
-}
-
-.score-history-score small{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-    margin-bottom:4px;
-}
-
-.score-history-score b{
-    font-size:20px;
-}
-
-.score-history-meta{
-    margin-top:8px;
-    color:var(--muted);
-    font-size:10px;
-}
-
-.score-history-reward{
-    margin-top:7px;
-    color:var(--gold);
-    font-size:11px;
-    font-weight:900;
-}
-
-
-.score-predictor-me{
-    margin:12px 0 9px;
-    padding:13px;
-    border-radius:15px;
-    border:1px solid rgba(47,128,255,.35);
-    background:rgba(47,128,255,.09);
-}
-
-.score-predictor-me-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.score-predictor-me-top span{
-    color:var(--muted);
-    font-size:11px;
-    font-weight:800;
-}
-
-.score-predictor-me-top b{
-    color:var(--accent);
-    font-size:19px;
-}
-
-.score-predictor-me-stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    margin-top:9px;
-}
-
-.score-predictor-me-stat{
-    padding:8px 4px;
-    border-radius:10px;
-    background:rgba(255,255,255,.04);
-    text-align:center;
-}
-
-.score-predictor-me-stat b{
-    display:block;
-    font-size:14px;
-}
-
-.score-predictor-me-stat small{
-    display:block;
-    margin-top:2px;
-    color:var(--muted);
-    font-size:8px;
-}
-
-.score-predictor-list{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    margin-top:9px;
-}
-
-.score-predictor-row{
-    display:grid;
-    grid-template-columns:38px minmax(0,1fr) auto;
-    align-items:center;
-    gap:9px;
-    padding:11px;
-    border-radius:14px;
-    border:1px solid var(--border);
-    background:#10141c;
-}
-
-.score-predictor-row.me{
-    border-color:rgba(47,128,255,.45);
-    background:rgba(47,128,255,.08);
-}
-
-.score-predictor-row.top1{
-    border-color:rgba(255,209,102,.4);
-}
-
-.score-predictor-rank{
-    text-align:center;
-    font-size:17px;
-    font-weight:900;
-}
-
-.score-predictor-main{
-    min-width:0;
-}
-
-.score-predictor-name{
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    font-size:13px;
-    font-weight:900;
-}
-
-.score-predictor-sub{
-    margin-top:3px;
-    color:var(--muted);
-    font-size:9px;
-}
-
-.score-predictor-right{
-    text-align:right;
-}
-
-.score-predictor-right b{
-    display:block;
-    color:var(--gold);
-    font-size:14px;
-}
-
-.score-predictor-right small{
-    display:block;
-    margin-top:2px;
-    color:var(--muted);
-    font-size:8px;
-}
-
-.score-predictor-title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-top:12px;
-    font-size:15px;
-    font-weight:900;
-}
-
-.score-predictor-title small{
-    color:var(--muted);
-    font-size:9px;
-    font-weight:700;
-}
-
-
-/* ===================================
-   👥 PRIVATE PREDICTOR LEAGUES
-=================================== */
-
-.predictor-league-actions{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:10px;
-}
-
-.predictor-league-box{
-    margin-top:10px;
-    padding:12px;
-    border-radius:15px;
-    border:1px solid var(--border);
-    background:#10141c;
-}
-
-.predictor-league-box h3{
-    margin:0;
-    font-size:14px;
-}
-
-.predictor-league-input-row{
-    display:grid;
-    grid-template-columns:1fr auto;
-    gap:7px;
-    margin-top:8px;
-}
-
-.predictor-league-input{
-    width:100%;
-    min-width:0;
-    border:1px solid var(--border);
-    background:#0d1118;
-    color:#fff;
-    border-radius:11px;
-    padding:10px 11px;
-    outline:none;
-}
-
-.predictor-league-code{
-    margin-top:5px;
-    color:var(--gold);
-    font-size:12px;
-    font-weight:900;
-    letter-spacing:1px;
-}
-
-.predictor-league-list{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-top:12px;
-}
-
-.predictor-league-card{
-    padding:12px;
-    border-radius:14px;
-    border:1px solid var(--border);
-    background:#10141c;
-}
-
-.predictor-league-head{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:9px;
-}
-
-.predictor-league-name{
-    font-weight:900;
-    font-size:14px;
-}
-
-.predictor-league-meta{
-    margin-top:4px;
-    color:var(--muted);
-    font-size:10px;
-}
-
-.predictor-league-card-actions{
-    display:flex;
-    gap:6px;
-    margin-top:10px;
-}
-
-.predictor-league-card-actions button{
-    flex:1;
-    margin-top:0;
-}
-
-.predictor-league-board{
-    margin-top:12px;
-}
-
-.predictor-league-board-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    margin-bottom:8px;
-}
-
-.predictor-league-board-title{
-    font-size:15px;
-    font-weight:900;
-}
-
-.predictor-league-back{
-    border:0;
-    background:transparent;
-    color:var(--accent);
-    font-weight:900;
-}
-
-
-/* ===================================
-   🎡 WHEEL
-=================================== */
-
-.wheel-card{
-    text-align:center;
-    overflow:hidden;
-}
-
-.wheel-disc{
-    width:190px;
-    height:190px;
-    margin:14px auto 10px;
-
-    border-radius:50%;
-    border:7px solid #252b37;
-
-    box-shadow:
-        0 12px 32px rgba(0,0,0,.35),
-        inset 0 0 0 5px rgba(255,255,255,.04);
-
-    background:
-        conic-gradient(
-            #2f80ff 0deg 60deg,
-            #25c06d 60deg 120deg,
-            #ff9f43 120deg 180deg,
-            #8e6cff 180deg 240deg,
-            #ff5252 240deg 300deg,
-            #ffd166 300deg 360deg
-        );
-
-    position:relative;
-
-    transition:
-        transform
-        2.3s
-        cubic-bezier(.12,.72,.14,1);
-}
-
-.wheel-disc::after{
-    content:"🎁";
-    position:absolute;
-    left:50%;
-    top:50%;
-
-    transform:
-        translate(
-            -50%,
-            -50%
-        );
-
-    width:66px;
-    height:66px;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#11151d;
-    border:5px solid #fff;
-
-    font-size:27px;
-    z-index:5;
-}
-
-.wheel-label{
-    position:absolute;
-    z-index:3;
-    color:#fff;
-    font-size:13px;
-    font-weight:900;
-    text-shadow:0 2px 3px rgba(0,0,0,.9);
-    line-height:1;
-    white-space:nowrap;
-}
-
-.wheel-label-1{
-    top:23px;
-    right:36px;
-    transform:rotate(30deg);
-}
-
-.wheel-label-2{
-    top:77px;
-    right:9px;
-    transform:rotate(90deg);
-}
-
-.wheel-label-3{
-    right:30px;
-    bottom:28px;
-    transform:rotate(150deg);
-}
-
-.wheel-label-4{
-    left:35px;
-    bottom:23px;
-    transform:rotate(210deg);
-}
-
-.wheel-label-5{
-    top:77px;
-    left:5px;
-    transform:rotate(270deg);
-}
-
-.wheel-label-6{
-    top:27px;
-    left:18px;
-    transform:rotate(330deg);
-    font-size:11px;
-}
-
-.wheel-pointer{
-    width:0;
-    height:0;
-    margin:0 auto -16px;
-
-    border-left:13px solid transparent;
-    border-right:13px solid transparent;
-    border-top:24px solid #fff;
-
-    position:relative;
-    z-index:6;
-}
-
-.wheel-result{
-    font-size:18px;
-    font-weight:900;
-    margin-top:10px;
-    min-height:24px;
-}
-
-.wheel-disc.spinning{
-    transform:rotate(2160deg);
-}
-
-
-/* ===================================
-   MODALS
-=================================== */
-
-.overlay{
-    display:none;
-    position:fixed;
-    z-index:100;
-    inset:0;
-    background:rgba(0,0,0,.72);
-    align-items:flex-end;
-}
-
-.overlay.show{
-    display:flex;
-}
-
-.modal{
-    width:100%;
-    max-width:700px;
-    max-height:90vh;
-    overflow:auto;
-
-    margin:auto;
-
-    background:#151820;
-
-    border:1px solid var(--border);
-    border-radius:23px 23px 0 0;
-
-    padding:18px;
-}
-
-.mini{
-    display:none;
-    position:fixed;
-    z-index:70;
-
-    left:50%;
-    transform:translateX(-50%);
-    bottom:80px;
-
-    width:calc(100% - 20px);
-    max-width:680px;
-
-    background:#181c26;
-
-    border:1px solid rgba(47,128,255,.55);
-    border-radius:16px;
-
-    padding:10px;
-
-    box-shadow:0 8px 35px rgba(0,0,0,.45);
-}
-
-.mini.show{
-    display:block;
-}
-
-.mini-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.mini-bottom{
-    display:grid;
-    grid-template-columns:90px 1fr auto;
-    gap:7px;
-    margin-top:8px;
-}
-
-
-/* ===================================
-   NAV
-=================================== */
-
-.nav{
-    position:fixed;
-    z-index:50;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-
-    min-height:72px;
-
-    background:#12151d;
-    border-top:1px solid var(--border);
-}
-
-.nav button{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    padding:5px 2px;
-}
-
-.nav button.active{
-    color:#fff;
-}
-
-.nav span{
-    display:block;
-    font-size:19px;
-}
-
-.nav small{
-    font-size:9px;
-}
-
-.back{
-    border:0;
-    background:transparent;
-    color:var(--accent);
-    padding:0;
-    margin-bottom:13px;
-    font-size:16px;
-}
-
-
-
-/* ===================================
-   🏆 LEADERS 2.0
-=================================== */
-
-.leaders-tabs{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-    margin-bottom:12px;
-}
-
-.leaders-tab{
-    flex:1;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--muted);
-    border-radius:12px;
-    padding:10px 6px;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
-}
-
-.leaders-tab.active{
-    color:var(--text);
-    border-color:rgba(92,225,145,.42);
-    background:rgba(92,225,145,.08);
-}
-
-.leaders-me{
-    padding:14px;
-    margin-bottom:14px;
-    border:1px solid rgba(92,225,145,.35);
-    background:linear-gradient(
-        135deg,
-        rgba(92,225,145,.10),
-        rgba(92,225,145,.025)
-    );
-    border-radius:16px;
-}
-
-.leaders-me-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.leaders-me-rank{
-    font-size:22px;
-    font-weight:950;
-}
-
-.leaders-me-value{
-    margin-top:6px;
-    font-size:13px;
-    color:var(--muted);
-}
-
-.leaders-podium{
-    display:grid;
-    grid-template-columns:1fr 1.08fr 1fr;
-    gap:7px;
-    align-items:end;
-    margin:8px 0 16px;
-}
-
-.podium-card{
-    text-align:center;
-    border:1px solid var(--border);
-    background:var(--card);
-    border-radius:16px;
-    padding:12px 6px;
-    min-width:0;
-}
-
-.podium-card.first{
-    padding-top:18px;
-    padding-bottom:18px;
-    border-color:rgba(245,196,72,.45);
-}
-
-.podium-medal{
-    font-size:28px;
-    line-height:1;
-    margin-bottom:7px;
-}
-
-.podium-name{
-    font-weight:900;
-    font-size:13px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.podium-value{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:5px;
-}
-
-.leaders-list{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-}
-
-.leader-row{
-    display:grid;
-    grid-template-columns:42px minmax(0,1fr) auto;
-    align-items:center;
-    gap:9px;
-    padding:11px 12px;
-    border-radius:14px;
-    border:1px solid var(--border);
-    background:var(--card);
-}
-
-.leader-row.me{
-    border-color:rgba(92,225,145,.38);
-    background:rgba(92,225,145,.06);
-}
-
-.leader-position{
-    font-weight:950;
-    font-size:14px;
-    text-align:center;
-}
-
-.leader-name{
-    font-weight:850;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-.leader-sub{
-    color:var(--muted);
-    font-size:11px;
-    margin-top:3px;
-}
-
-.leader-value{
-    text-align:right;
-    font-size:13px;
-    font-weight:900;
-    white-space:nowrap;
-}
-
-.leader-empty{
-    padding:24px 14px;
-    text-align:center;
-    color:var(--muted);
-}
-
-
-
-
-/* ===================================
-   ⚽ MATCHES 2.0
-=================================== */
-
-.matches-toolbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin:10px 0 12px;
-}
-
-.matches-count{
-    color:var(--muted);
-    font-size:13px;
-    font-weight:800;
-}
-
-.matches-refresh{
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:10px;
-    padding:7px 10px;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
-}
-
-.matches-date-title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin:17px 2px 8px;
-    font-size:13px;
-    font-weight:900;
-}
-
-.matches-date-title:first-child{
-    margin-top:2px;
-}
-
-.matches-date-count{
-    color:var(--muted);
-    font-size:11px;
-    font-weight:700;
-}
-
-.matches-empty{
-    padding:30px 15px;
-    text-align:center;
-    color:var(--muted);
-    border:1px dashed var(--border);
-    border-radius:16px;
-    margin-top:12px;
-}
-
-.matches-empty-icon{
-    font-size:30px;
-    margin-bottom:8px;
-}
-
-.match-soon{
-    display:inline-flex;
-    align-items:center;
-    margin-left:6px;
-    padding:2px 6px;
-    border-radius:7px;
-    font-size:9px;
-    font-weight:950;
-    background:rgba(245,196,72,.12);
-    color:#f5c448;
-    vertical-align:middle;
-}
-
-
-
-/* ===================================
-   🧾 PARLAY MINI SAFE AREA
-=================================== */
-
-body.parlay-mini-open .page{
-    padding-bottom:170px;
-}
-
-body.parlay-mini-open #page-match{
-    padding-bottom:190px;
-}
-
-body.parlay-mini-open #page-matches{
-    padding-bottom:175px;
-}
-
-@media (max-width: 420px){
-    body.parlay-mini-open .page{
-        padding-bottom:185px;
-    }
-
-    body.parlay-mini-open #page-match{
-        padding-bottom:205px;
+import os
+import re
+import time
+import json
+import hmac
+import hashlib
+import secrets
+import threading
+import unicodedata
+
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from difflib import SequenceMatcher
+from urllib.parse import parse_qsl
+from datetime import datetime, timedelta, timezone
+
+import requests
+import psycopg2
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+
+
+app = Flask(__name__)
+CORS(app)
+
+
+# =========================================================
+# ENV
+# =========================================================
+
+FIVE_DOLLAR_FOOTBALL_API_KEY = os.environ.get(
+    "FIVE_DOLLAR_FOOTBALL_API_KEY",
+    ""
+).strip()
+
+FOOTBALL_TOKEN = os.environ.get(
+    "FOOTBALL_DATA_TOKEN",
+    ""
+).strip()
+
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    ""
+).strip()
+
+TELEGRAM_BOT_TOKEN = os.environ.get(
+    "TELEGRAM_BOT_TOKEN",
+    ""
+).strip()
+
+
+BETCOIN_WEBAPP_URL = os.environ.get(
+    "BETCOIN_WEBAPP_URL",
+    ""
+).strip()
+
+TELEGRAM_WEBHOOK_URL = os.environ.get(
+    "TELEGRAM_WEBHOOK_URL",
+    ""
+).strip()
+
+BETCOIN_START_IMAGE_URL = os.environ.get(
+    "BETCOIN_START_IMAGE_URL",
+    ""
+).strip()
+
+
+BETCOIN_BOT_USERNAME = os.environ.get(
+    "BETCOIN_BOT_USERNAME",
+    ""
+).strip().lstrip("@")
+
+REFERRAL_INVITER_REWARD = 500
+REFERRAL_FRIEND_REWARD = 300
+
+RENDER_EXTERNAL_URL = os.environ.get(
+    "RENDER_EXTERNAL_URL",
+    ""
+).strip()
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get(
+    "RENDER_EXTERNAL_HOSTNAME",
+    ""
+).strip()
+
+
+FIVE_API_URL = "https://api.5dollarfootballapi.com"
+FOOTBALL_DATA_URL = "https://api.football-data.org/v4"
+
+
+# =========================================================
+# ЛИГИ
+# =========================================================
+
+LEAGUES = {
+
+    "premier_league": {
+        "ids": [4160026622],
+        "name": "Premier League",
+        "short_name": "АПЛ",
+        "country": "England",
+        "flag": "🏴",
+        "football_data_code": "PL"
+    },
+
+    "la_liga": {
+        "ids": [4212821298],
+        "name": "La Liga",
+        "short_name": "Ла Лига",
+        "country": "Spain",
+        "flag": "🇪🇸",
+        "football_data_code": "PD"
+    },
+
+    "serie_a": {
+        "ids": [3405541143],
+        "name": "Serie A",
+        "short_name": "Серия А",
+        "country": "Italy",
+        "flag": "🇮🇹",
+        "football_data_code": "SA"
+    },
+
+    "bundesliga": {
+        "ids": [686337048],
+        "name": "Bundesliga",
+        "short_name": "Бундеслига",
+        "country": "Germany",
+        "flag": "🇩🇪",
+        "football_data_code": "BL1"
+    },
+
+    "ligue_1": {
+        "ids": [3614399544],
+        "name": "Ligue 1",
+        "short_name": "Лига 1",
+        "country": "France",
+        "flag": "🇫🇷",
+        "football_data_code": "FL1"
+    },
+
+    "champions_league": {
+        "ids": [
+            2187079931,
+            1318331555
+        ],
+        "name": "UEFA Champions League",
+        "short_name": "Лига чемпионов",
+        "country": "Europe",
+        "flag": "🏆",
+        "football_data_code": "CL"
+    },
+
+    "europa_league": {
+        "ids": [
+            2629778952,
+            2515803737
+        ],
+        "name": "UEFA Europa League",
+        "short_name": "Лига Европы",
+        "country": "Europe",
+        "flag": "🟠",
+        "football_data_code": "EL"
+    },
+
+    "conference_league": {
+        "ids": [
+            51996766,
+            2009834352
+        ],
+        "name": "UEFA Conference League",
+        "short_name": "Лига конференций",
+        "country": "Europe",
+        "flag": "🟢",
+        "football_data_code": None
+    },
+
+    "nations_league": {
+        "ids": [
+            2020098592,
+            80636319,
+            2272692175,
+            997232971,
+            2095840468
+        ],
+        "name": "UEFA Nations League",
+        "short_name": "Лига наций",
+        "country": "Europe",
+        "flag": "🌍",
+        "football_data_code": None
+    },
+
+    "championship": {
+        "ids": [1161691669],
+        "name": "Championship",
+        "short_name": "Чемпионшип",
+        "country": "England",
+        "flag": "🏴",
+        "football_data_code": "ELC"
+    },
+
+    "eredivisie": {
+        "ids": [137325260],
+        "name": "Eredivisie",
+        "short_name": "Эредивизи",
+        "country": "Netherlands",
+        "flag": "🇳🇱",
+        "football_data_code": "DED"
+    },
+
+    "primeira_liga": {
+        "ids": [650171110],
+        "name": "Primeira Liga",
+        "short_name": "Португалия",
+        "country": "Portugal",
+        "flag": "🇵🇹",
+        "football_data_code": "PPL"
+    },
+
+    "mls": {
+        "ids": [2221499861],
+        "name": "Major League Soccer",
+        "short_name": "MLS",
+        "country": "USA",
+        "flag": "🇺🇸",
+        "football_data_code": None
+    },
+
+    "saudi_pro_league": {
+        "ids": [1796782054],
+        "name": "Saudi Pro League",
+        "short_name": "Саудовская лига",
+        "country": "Saudi Arabia",
+        "flag": "🇸🇦",
+        "football_data_code": None
     }
 }
 
 
+DEFAULT_LEAGUES = [
+    "premier_league",
+    "la_liga",
+    "serie_a",
+    "bundesliga",
+    "ligue_1"
+]
 
-/* ===================================
-   👤 PROFILE 2.0 / ONBOARDING
-=================================== */
 
-.profile-hero{
-    padding:16px;
-    border-radius:18px;
-    border:1px solid rgba(92,225,145,.22);
-    background:linear-gradient(
-        135deg,
-        rgba(92,225,145,.10),
-        rgba(47,128,255,.05)
-    );
-    margin-bottom:12px;
+LEAGUE_ID_TO_KEY = {}
+
+for league_key, league_data in LEAGUES.items():
+
+    for league_id in league_data["ids"]:
+
+        LEAGUE_ID_TO_KEY[int(league_id)] = league_key
+
+
+# =========================================================
+# НАСТРОЙКИ
+# =========================================================
+
+FIXTURES_CACHE_SECONDS = 1800
+AUTO_FIXTURES_REFRESH_SECONDS = 3600
+AUTO_FIXTURES_START_DELAY_SECONDS = 45
+ODDS_CACHE_SECONDS = 21600
+RESULT_CACHE_SECONDS = 300
+
+SETTLEMENT_CHECK_SECONDS = 300
+SETTLEMENT_AFTER_KICKOFF_MINUTES = 100
+
+LIVE_REFRESH_SECONDS = 60
+LIVE_PREMATCH_MINUTES = 15
+LIVE_POSTMATCH_HOURS = 3
+LIVE_MAX_MATCHES_PER_CYCLE = 3
+
+MAX_FIXTURE_DAYS = 14
+
+FIVE_RATE_LIMIT_REQUESTS = 8
+FIVE_RATE_LIMIT_WINDOW_SECONDS = 60
+FIVE_RATE_LIMIT_RETRY_SECONDS = 61
+
+TOTAL_POINTS = [
+    1.5,
+    2.5,
+    3.5,
+    4.5
+]
+
+WHEEL_COOLDOWN_HOURS = 24
+
+PREDICTION_REWARD_COINS = 200
+PREDICTION_REWARD_XP = 25
+PREDICTION_LOOKAHEAD_DAYS = 7
+
+
+# =========================================================
+# ⚽ УГАДАЙ СЧЁТ
+# =========================================================
+
+SCORE_GAME_EXACT_COINS = 1000
+SCORE_GAME_EXACT_XP = 150
+
+SCORE_GAME_OUTCOME_COINS = 150
+SCORE_GAME_OUTCOME_XP = 0
+
+SCORE_GAME_LOOKAHEAD_DAYS = 7
+
+SCORE_GAME_MAX_SCORE = 10
+
+SCORE_GAME_REMINDER_FROM_MINUTES = 45
+SCORE_GAME_REMINDER_TO_MINUTES = 75
+
+
+WHEEL_REWARDS = [
+
+    {
+        "type": "coins",
+        "value": 50,
+        "weight": 3000,
+        "label": "+50 🪙"
+    },
+
+    {
+        "type": "coins",
+        "value": 100,
+        "weight": 2800,
+        "label": "+100 🪙"
+    },
+
+    {
+        "type": "coins",
+        "value": 200,
+        "weight": 2200,
+        "label": "+200 🪙"
+    },
+
+    {
+        "type": "coins",
+        "value": 500,
+        "weight": 1200,
+        "label": "+500 🪙"
+    },
+
+    {
+        "type": "coins",
+        "value": 1000,
+        "weight": 500,
+        "label": "+1000 🪙"
+    },
+
+    {
+        "type": "xp",
+        "value": 100,
+        "weight": 300,
+        "label": "+100 XP"
+    }
+]
+
+
+LOGIN_STREAK_REWARDS = {
+
+    1: {
+        "coins": 100,
+        "xp": 0
+    },
+
+    2: {
+        "coins": 150,
+        "xp": 0
+    },
+
+    3: {
+        "coins": 200,
+        "xp": 0
+    },
+
+    4: {
+        "coins": 250,
+        "xp": 0
+    },
+
+    5: {
+        "coins": 300,
+        "xp": 0
+    },
+
+    6: {
+        "coins": 400,
+        "xp": 0
+    },
+
+    7: {
+        "coins": 700,
+        "xp": 100
+    }
 }
 
-.profile-title-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:5px;
-    padding:5px 8px;
-    border-radius:999px;
-    background:rgba(255,209,102,.10);
-    color:var(--gold);
-    font-size:11px;
-    font-weight:900;
-    margin-top:6px;
-}
 
-.profile-extra-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-    margin-top:12px;
-}
+ACHIEVEMENTS = [
 
-.profile-extra-card{
-    padding:11px;
-    border-radius:14px;
-    background:var(--card);
-    border:1px solid var(--border);
-}
+    {
+        "key": "bets_10",
+        "title": "Начало положено",
+        "description": "Сделать 10 ставок",
+        "target": 10,
+        "reward": 200
+    },
 
-.profile-extra-card b{
-    display:block;
-    font-size:20px;
-}
+    {
+        "key": "wins_5",
+        "title": "На победной волне",
+        "description": "Выиграть 5 ставок",
+        "target": 5,
+        "reward": 300
+    },
 
-.notify-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:11px 0;
-    border-bottom:1px solid var(--border);
-}
+    {
+        "key": "level_5",
+        "title": "Опытный игрок",
+        "description": "Достичь 5 уровня",
+        "target": 5,
+        "reward": 500
+    },
 
-.notify-row:last-child{
-    border-bottom:0;
-}
+    {
+        "key": "xp_500",
+        "title": "500 XP",
+        "description": "Набрать 500 XP",
+        "target": 500,
+        "reward": 400
+    },
 
-.switch{
-    position:relative;
-    width:44px;
-    height:24px;
-    flex:0 0 44px;
-}
-
-.switch input{
-    display:none;
-}
-
-.switch span{
-    position:absolute;
-    inset:0;
-    border-radius:999px;
-    background:#2a303d;
-    transition:.2s;
-}
-
-.switch span:after{
-    content:"";
-    position:absolute;
-    width:18px;
-    height:18px;
-    top:3px;
-    left:3px;
-    border-radius:50%;
-    background:#fff;
-    transition:.2s;
-}
-
-.switch input:checked + span{
-    background:var(--accent);
-}
-
-.switch input:checked + span:after{
-    transform:translateX(20px);
-}
+    {
+        "key": "high_odd_win",
+        "title": "Риск оправдан",
+        "description": "Выиграть ставку с коэффициентом 3.00+",
+        "target": 1,
+        "reward": 350
+    }
+]
 
 
-.onboarding{
-    position:fixed;
-    z-index:300;
-    inset:0;
-    background:rgba(0,0,0,.76);
-    display:none;
-    align-items:flex-end;
-}
+# =========================================================
+# КЭШ
+# =========================================================
 
-.onboarding.show{
-    display:flex;
-}
+league_fixture_cache = {}
+fixture_detail_cache = {}
+odds_cache = {}
+result_cache = {}
+live_match_cache = {}
+global_logo_cache = {}
 
-.onboarding-card{
-    width:100%;
-    max-width:700px;
-    margin:0 auto;
-    background:#151820;
-    border:1px solid var(--border);
-    border-radius:24px 24px 0 0;
-    padding:22px 18px 24px;
-}
 
-.onboarding-icon{
-    font-size:42px;
-    margin-bottom:10px;
-}
+# =========================================================
+# RUNTIME / LOCKS
+# =========================================================
 
-.onboarding-title{
-    font-size:24px;
-    font-weight:950;
-}
+database_ready = False
+database_initializing = False
 
-.onboarding-text{
-    color:var(--muted);
-    line-height:1.45;
-    margin-top:8px;
-}
+workers_started = False
+runtime_ready = False
 
-.onboarding-dots{
-    display:flex;
-    gap:6px;
-    justify-content:center;
-    margin:18px 0 8px;
-}
+workers_lock = threading.Lock()
+database_lock = threading.Lock()
+runtime_lock = threading.Lock()
 
-.onboarding-dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:#333a49;
-}
+five_rate_lock = threading.Lock()
+five_rate_timestamps = deque()
 
-.onboarding-dot.active{
-    background:var(--accent);
+
+# =========================================================
+# КОМАНДЫ
+# =========================================================
+
+TEAM_NAME_ALIASES = {
+
+    "cologne": "1 fc koln",
+    "koln": "1 fc koln",
+    "fc koln": "1 fc koln",
+
+    "rennes": "stade rennais",
+
+    "benfica": "sl benfica",
+
+    "sporting lisbon": "sporting cp",
+
+    "porto": "fc porto",
+
+    "braga": "sc braga",
+
+    "salzburg": "red bull salzburg",
+    "rb salzburg": "red bull salzburg",
+
+    "sparta prague": "sparta praha",
+
+    "lech": "lech poznan",
+
+    "omonia": "omonia nicosia",
+
+    "celje": "nk celje",
+
+    "hapoel": "hapoel beer sheva",
+
+    "aek": "aek athens",
+
+    "inter milan": "inter",
+    "internazionale": "inter",
+
+    "ac milan": "milan",
+
+    "fc barcelona": "barcelona",
+
+    "real madrid cf": "real madrid",
+
+    "atletico de madrid": "atletico madrid"
 }
 
 
+# =========================================================
+# DATABASE
+# =========================================================
 
-/* ===================================
-   🧾 WORKING COLLAPSIBLE PARLAY
-=================================== */
+def get_db():
 
-.mini-top{
-    gap:8px;
-}
-
-.mini-summary{
-    min-width:0;
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:0;
-    border:0;
-    background:transparent;
-    color:var(--text);
-    text-align:left;
-}
-
-.mini-summary #miniOdd{
-    white-space:nowrap;
-}
-
-.mini-collapse{
-    flex:0 0 36px;
-    width:36px;
-    height:36px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:var(--card2);
-    color:var(--text);
-    font-size:22px;
-    font-weight:900;
-    line-height:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:transform .18s ease;
-}
+    if not DATABASE_URL:
 
-.mini.collapsed .mini-bottom{
-    display:none;
-}
+        raise RuntimeError(
+            "DATABASE_URL not found"
+        )
 
-.mini.collapsed{
-    padding-bottom:10px;
-}
+    return psycopg2.connect(
+        DATABASE_URL,
+        connect_timeout=10,
+        options="-c statement_timeout=15000"
+    )
 
-.mini.collapsed .mini-collapse{
-    transform:rotate(180deg);
-}
 
-body.parlay-mini-collapsed .page{
-    padding-bottom:115px;
-}
+def init_database():
 
-body.parlay-mini-collapsed #page-match{
-    padding-bottom:130px;
-}
+    global database_ready
 
-</style>
+    if database_ready:
+        return
 
-</head>
+    conn = get_db()
+    cur = conn.cursor()
 
-<body>
 
-<div class="app">
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
 
+            telegram_id BIGINT PRIMARY KEY,
 
-<!-- ===================================
-     🏠 HOME
-=================================== -->
+            first_name TEXT,
 
-<section
-    id="page-home"
-    class="page active"
->
+            username TEXT,
 
-<div class="topbar">
+            balance INTEGER
+                NOT NULL
+                DEFAULT 1000,
 
-<div class="brand">
-⚽ BetCoin
-</div>
+            created_at TIMESTAMPTZ
+                NOT NULL
+                DEFAULT NOW(),
 
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
+            updated_at TIMESTAMPTZ
+                NOT NULL
+                DEFAULT NOW(),
 
-</div>
+            last_daily_claim TIMESTAMPTZ,
 
-
-<div class="dashboard">
-
-<div class="dashboard-row">
+            xp INTEGER
+                NOT NULL
+                DEFAULT 0
+        )
+    """)
 
-<div>
 
-<div
-    id="homeName"
-    class="dashboard-name"
->
-Игрок
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS referral_pending (
 
-<div
-    id="homeLeague"
-    class="muted"
->
-🥉 Бронза • Уровень 1
-</div>
+            telegram_id BIGINT PRIMARY KEY,
 
-</div>
+            inviter_telegram_id BIGINT NOT NULL,
 
-<div
-    id="homeCoins"
-    class="dashboard-coins"
->
-0 🪙
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-</div>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS referrals (
 
-<div class="xp-row">
+            referred_telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<span>
-Прогресс уровня
-</span>
+            inviter_telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<span id="homeXp">
-0 / 100 XP
-</span>
+            inviter_reward INTEGER NOT NULL
+                DEFAULT 500,
 
-</div>
+            friend_reward INTEGER NOT NULL
+                DEFAULT 300,
 
-<div class="xp-bar">
+            activated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-<div
-    id="homeXpFill"
-    class="xp-fill"
-    style="width:0"
-></div>
 
-</div>
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_referrals_inviter
+        ON referrals(inviter_telegram_id)
+    """)
 
-</div>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS bets (
 
-<div
-    id="homeRewards"
-    class="home-rewards"
-></div>
+            id SERIAL PRIMARY KEY,
 
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div
-    id="homeMatchDay"
-></div>
+            fixture_id BIGINT NOT NULL,
 
+            match_name TEXT NOT NULL,
 
-<div class="quick-grid">
+            selection TEXT NOT NULL,
 
-<button
-    class="quick"
-    onclick="quick('today')"
->
-<b>📅</b>
-Сегодня
-</button>
+            odd DOUBLE PRECISION NOT NULL,
 
-<button
-    class="quick"
-    onclick="quick('top5')"
->
-<b>⭐</b>
-Топ-5
-</button>
+            amount INTEGER NOT NULL,
 
-<button
-    class="quick"
-    onclick="quick('champions_league')"
->
-<b>🏆</b>
-Еврокубки
-</button>
+            possible INTEGER NOT NULL,
 
-<button
-    class="quick"
-    onclick="showPage('games')"
->
-<b>🎮</b>
-Игры
-</button>
+            status TEXT NOT NULL
+                DEFAULT 'Активна',
 
-</div>
+            settled BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
+            score TEXT,
 
-<div
-    id="homeLiveWrap"
-    style="display:none"
->
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div class="live-title">
+            provider TEXT NOT NULL
+                DEFAULT 'five-dollar',
 
-<span class="live-dot"></span>
+            result_notified BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-LIVE
+            result_notified_at TIMESTAMPTZ,
 
-</div>
+            kickoff_at TIMESTAMPTZ
+        )
+    """)
 
-<div id="homeLive"></div>
 
-</div>
+    cur.execute("""
+        ALTER TABLE bets
+        ADD COLUMN IF NOT EXISTS
+        provider TEXT
+        NOT NULL
+        DEFAULT 'five-dollar'
+    """)
 
+    cur.execute("""
+        ALTER TABLE bets
+        ADD COLUMN IF NOT EXISTS
+        result_notified BOOLEAN
+        NOT NULL
+        DEFAULT FALSE
+    """)
 
-<div class="section-head">
+    cur.execute("""
+        ALTER TABLE bets
+        ADD COLUMN IF NOT EXISTS
+        result_notified_at TIMESTAMPTZ
+    """)
 
-<h2>
-🔥 Популярные
-</h2>
+    cur.execute("""
+        ALTER TABLE bets
+        ADD COLUMN IF NOT EXISTS
+        kickoff_at TIMESTAMPTZ
+    """)
 
-<button
-    class="link"
-    onclick="quick('top5')"
->
-Все
-</button>
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS parlays (
 
-<div id="homePopular"></div>
+            id SERIAL PRIMARY KEY,
 
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="section-head">
+            amount INTEGER NOT NULL,
 
-<h2>
-⚡ Активные ставки
-</h2>
+            total_odd DOUBLE PRECISION NOT NULL,
 
-<button
-    class="link"
-    onclick="showPage('bets')"
->
-Открыть
-</button>
+            possible INTEGER NOT NULL,
 
-</div>
+            status TEXT NOT NULL
+                DEFAULT 'Активна',
 
-<div id="homeBets"></div>
+            settled BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div class="section-head">
+            settled_at TIMESTAMPTZ,
 
-<h2>
-⚽ Ближайшие
-</h2>
+            result_notified BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<button
-    class="link"
-    onclick="showPage('matches')"
->
-Все
-</button>
+            result_notified_at TIMESTAMPTZ
+        )
+    """)
 
-</div>
 
-<div id="homeUpcoming"></div>
+    cur.execute("""
+        ALTER TABLE parlays
+        ADD COLUMN IF NOT EXISTS
+        result_notified BOOLEAN
+        NOT NULL
+        DEFAULT FALSE
+    """)
 
-</section>
+    cur.execute("""
+        ALTER TABLE parlays
+        ADD COLUMN IF NOT EXISTS
+        result_notified_at TIMESTAMPTZ
+    """)
 
 
-<!-- ===================================
-     ⚽ MATCHES
-=================================== -->
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS parlay_legs (
 
-<section
-    id="page-matches"
-    class="page"
->
+            id SERIAL PRIMARY KEY,
 
-<div class="topbar">
+            parlay_id INTEGER NOT NULL
+                REFERENCES parlays(id)
+                ON DELETE CASCADE,
 
-<div class="title">
-Матчи
-</div>
+            fixture_id BIGINT NOT NULL,
 
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
+            match_name TEXT NOT NULL,
 
-</div>
+            selection TEXT NOT NULL,
 
+            odd DOUBLE PRECISION NOT NULL,
 
-<input
-    id="search"
-    class="search"
-    placeholder="🔎 Найти команду..."
+            status TEXT NOT NULL
+                DEFAULT 'Активна',
 
-    oninput="
-        searchQuery=
-            this.value
-            .toLowerCase()
-            .trim();
+            score TEXT,
 
-        renderMatches()
-    "
->
+            provider TEXT NOT NULL
+                DEFAULT 'five-dollar',
 
+            kickoff_at TIMESTAMPTZ
+        )
+    """)
 
-<div
-    id="liveWrap"
-    style="display:none"
->
 
-<div class="live-title">
+    cur.execute("""
+        ALTER TABLE parlay_legs
+        ADD COLUMN IF NOT EXISTS
+        provider TEXT
+        NOT NULL
+        DEFAULT 'five-dollar'
+    """)
 
-<span class="live-dot"></span>
+    cur.execute("""
+        ALTER TABLE parlay_legs
+        ADD COLUMN IF NOT EXISTS
+        kickoff_at TIMESTAMPTZ
+    """)
 
-LIVE
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS daily_tasks (
 
-<div id="liveList"></div>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-</div>
+            task_date DATE NOT NULL,
 
+            login_done BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<div class="filters">
+            bets_count INTEGER NOT NULL
+                DEFAULT 0,
 
-<button
-    class="chip date-chip active"
-    data-v="today"
-    onclick="setDateFilter('today')"
->
-Сегодня
-</button>
+            wins_count INTEGER NOT NULL
+                DEFAULT 0,
 
-<button
-    class="chip date-chip"
-    data-v="tomorrow"
-    onclick="setDateFilter('tomorrow')"
->
-Завтра
-</button>
+            login_claimed BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<button
-    class="chip date-chip"
-    data-v="all"
-    onclick="setDateFilter('all')"
->
-Все
-</button>
+            bets_claimed BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<button
-    class="chip date-chip"
-    data-v="myteams"
-    onclick="setDateFilter('myteams')"
->
-⭐ Мои команды
-</button>
+            win_claimed BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
+            PRIMARY KEY (
+                telegram_id,
+                task_date
+            )
+        )
+    """)
 
-<div class="leagues">
 
-<button
-    class="chip league-chip active"
-    data-v="top5"
-    onclick="loadLeague('top5')"
->
-Топ-5
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="premier_league"
-    onclick="loadLeague('premier_league')"
->
-🏴 АПЛ
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="la_liga"
-    onclick="loadLeague('la_liga')"
->
-🇪🇸 Ла Лига
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="serie_a"
-    onclick="loadLeague('serie_a')"
->
-🇮🇹 Серия А
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="bundesliga"
-    onclick="loadLeague('bundesliga')"
->
-🇩🇪 Бундеслига
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="ligue_1"
-    onclick="loadLeague('ligue_1')"
->
-🇫🇷 Лига 1
-</button>
-
-<button
-    class="chip league-chip"
-    data-v="champions_league"
-    onclick="loadLeague('champions_league')"
->
-🏆 ЛЧ
-</button>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS achievement_claims (
 
-<button
-    class="chip league-chip"
-    data-v="europa_league"
-    onclick="loadLeague('europa_league')"
->
-🟠 ЛЕ
-</button>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<button
-    class="chip league-chip"
-    data-v="conference_league"
-    onclick="loadLeague('conference_league')"
->
-🟢 ЛК
-</button>
+            achievement_key TEXT NOT NULL,
 
-<button
-    class="chip league-chip"
-    data-v="championship"
-    onclick="loadLeague('championship')"
->
-Чемпионшип
-</button>
+            claimed_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<button
-    class="chip league-chip"
-    data-v="eredivisie"
-    onclick="loadLeague('eredivisie')"
->
-🇳🇱 Эредивизи
-</button>
+            PRIMARY KEY (
+                telegram_id,
+                achievement_key
+            )
+        )
+    """)
 
-<button
-    class="chip league-chip"
-    data-v="primeira_liga"
-    onclick="loadLeague('primeira_liga')"
->
-🇵🇹 Португалия
-</button>
 
-<button
-    class="chip league-chip"
-    data-v="mls"
-    onclick="loadLeague('mls')"
->
-🇺🇸 MLS
-</button>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS match_favorites (
 
-<button
-    class="chip league-chip"
-    data-v="saudi_pro_league"
-    onclick="loadLeague('saudi_pro_league')"
->
-🇸🇦 Саудовская
-</button>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<button
-    class="chip league-chip"
-    data-v="favorites"
-    onclick="loadLeague('favorites')"
->
-⭐ Избранное
-</button>
+            fixture_id BIGINT NOT NULL,
 
-</div>
+            match_name TEXT NOT NULL,
 
+            kickoff_at TIMESTAMPTZ NOT NULL,
 
-<div class="matches-toolbar">
+            notifications_enabled BOOLEAN NOT NULL
+                DEFAULT TRUE,
 
-<div
-    id="matchesCount"
-    class="matches-count"
->
-Загружаем...
-</div>
+            notification_sent BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<button
-    class="matches-refresh"
-    onclick="refreshMatchesNow()"
->
-↻ Обновить
-</button>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-</div>
+            updated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div id="matchesList">
-
-<div class="loader">
-Загружаем матчи...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ===================================
-     MATCH DETAIL
-=================================== -->
-
-<section
-    id="page-match"
-    class="page"
->
-
-<button
-    class="back"
-    onclick="showPage('matches',false)"
->
-← Назад
-</button>
+            PRIMARY KEY (
+                telegram_id,
+                fixture_id
+            )
+        )
+    """)
 
-<div id="matchDetail" style="padding-bottom:8px"></div>
 
-</section>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS favorite_teams (
 
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<!-- ===================================
-     🎟 BETS
-=================================== -->
+            team_name TEXT NOT NULL,
 
-<section
-    id="page-bets"
-    class="page"
->
+            normalized_name TEXT NOT NULL,
 
-<div class="topbar">
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div class="title">
-🎟 Ставки
-</div>
+            PRIMARY KEY (
+                telegram_id,
+                normalized_name
+            )
+        )
+    """)
 
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS favorite_team_notifications (
 
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="tabs">
+            fixture_id BIGINT NOT NULL,
 
-<button
-    id="tabSingle"
-    class="tab active"
-    onclick="switchBets('single')"
->
-Ординары
-</button>
+            team_name TEXT,
 
-<button
-    id="tabParlay"
-    class="tab"
-    onclick="switchBets('parlay')"
->
-Экспрессы
-</button>
+            sent_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-</div>
+            PRIMARY KEY (
+                telegram_id,
+                fixture_id
+            )
+        )
+    """)
 
 
-<div class="filters">
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS team_logos (
 
-<button
-    class="chip bet-chip active"
-    data-v="all"
-    onclick="setBetFilter('all')"
->
-Все
-</button>
+            league_key TEXT NOT NULL,
 
-<button
-    class="chip bet-chip"
-    data-v="active"
-    onclick="setBetFilter('active')"
->
-Активные
-</button>
+            normalized_name TEXT NOT NULL,
 
-<button
-    class="chip bet-chip"
-    data-v="win"
-    onclick="setBetFilter('win')"
->
-Выигранные
-</button>
+            team_name TEXT NOT NULL,
 
-<button
-    class="chip bet-chip"
-    data-v="loss"
-    onclick="setBetFilter('loss')"
->
-Проигранные
-</button>
+            logo_url TEXT NOT NULL,
 
-</div>
+            source TEXT NOT NULL
+                DEFAULT 'football-data',
 
-<div id="singleBets"></div>
+            updated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div
-    id="parlayBets"
-    style="display:none"
-></div>
+            PRIMARY KEY (
+                league_key,
+                normalized_name
+            )
+        )
+    """)
 
-</section>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS promo_codes (
 
-<!-- ===================================
-     🎮 GAMES
-=================================== -->
+            code TEXT PRIMARY KEY,
 
-<section
-    id="page-games"
-    class="page"
->
+            reward_coins INTEGER NOT NULL
+                DEFAULT 0,
 
-<div class="topbar">
+            reward_xp INTEGER NOT NULL
+                DEFAULT 0,
 
-<div class="title">
-🎮 Игры
-</div>
+            max_uses INTEGER,
 
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
+            uses_count INTEGER NOT NULL
+                DEFAULT 0,
 
-</div>
+            active BOOLEAN NOT NULL
+                DEFAULT TRUE,
 
+            expires_at TIMESTAMPTZ,
 
-<!-- 🎯 УГАДАЙ ИСХОД -->
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-<div class="game-card">
 
-<div class="game-title">
-🎯 Угадай исход
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS promo_redemptions (
 
-<div class="muted">
-Один бесплатный прогноз в день
-</div>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="game-reward">
-Правильный прогноз: +200 🪙 +25 XP
-</div>
+            code TEXT NOT NULL
+                REFERENCES promo_codes(code)
+                ON DELETE CASCADE,
 
-<div
-    id="predictionGame"
-    style="margin-top:12px"
->
+            reward_coins INTEGER NOT NULL
+                DEFAULT 0,
 
-<div class="loader">
-Загружаем игру...
-</div>
+            reward_xp INTEGER NOT NULL
+                DEFAULT 0,
 
-</div>
+            redeemed_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-</div>
+            PRIMARY KEY (
+                telegram_id,
+                code
+            )
+        )
+    """)
 
 
-<!-- ⚽ УГАДАЙ СЧЁТ -->
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS user_notification_settings (
 
-<div class="game-card score-game">
+            telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="game-title">
-⚽ Угадай счёт
-</div>
+            match_day BOOLEAN NOT NULL DEFAULT TRUE,
+            favorite_match BOOLEAN NOT NULL DEFAULT TRUE,
+            bet_result BOOLEAN NOT NULL DEFAULT TRUE,
+            prediction_result BOOLEAN NOT NULL DEFAULT TRUE,
+            referral BOOLEAN NOT NULL DEFAULT TRUE,
 
-<div class="muted">
-Укажи точный счёт до начала матча
-</div>
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    """)
 
-<div class="game-reward">
-🎯 Точный счёт: +1000 🪙 +150 XP
-</div>
 
-<div class="muted">
-Угадан только исход: +150 🪙
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS wheel_spins (
 
-<div class="score-game-tabs">
+            telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<button
-    id="scoreGamePlayTab"
-    class="score-game-tab active"
-    onclick="setScoreGameView('play')"
->
-⚽ Играть
-</button>
+            last_spin_at TIMESTAMPTZ,
 
-<button
-    id="scoreGameHistoryTab"
-    class="score-game-tab"
-    onclick="setScoreGameView('history')"
->
-📋 Мои прогнозы
-</button>
+            last_reward_type TEXT,
 
-<button
-    id="scoreGameLeaderboardTab"
-    class="score-game-tab"
-    onclick="setScoreGameView('leaderboard')"
->
-🏆 Рейтинг
-</button>
+            last_reward_value INTEGER,
 
-<button
-    id="scoreGameLeaguesTab"
-    class="score-game-tab"
-    onclick="setScoreGameView('leagues')"
->
-👥 Лиги
-</button>
+            updated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-</div>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS wheel_spin_history (
 
-<div
-    id="scoreGamePlayView"
->
+            id SERIAL PRIMARY KEY,
 
-<div
-    id="scoreGame"
-    style="margin-top:12px"
->
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="loader">
-Загружаем игру...
-</div>
+            reward_type TEXT NOT NULL,
 
-</div>
+            reward_value INTEGER NOT NULL,
 
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
 
-<div
-    id="scoreGameHistoryView"
-    style="display:none"
->
+    # =====================================================
+    # 🎯 УГАДАЙ ИСХОД
+    # =====================================================
 
-<div
-    id="scoreGameHistory"
-    style="margin-top:12px"
->
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS prediction_game_rounds (
 
-<div class="loader">
-Загружаем прогнозы...
-</div>
+            game_date DATE PRIMARY KEY,
 
-</div>
+            fixture_id BIGINT NOT NULL,
 
-</div>
+            match_name TEXT NOT NULL,
 
+            home_team TEXT NOT NULL,
 
-<div
-    id="scoreGameLeaderboardView"
-    style="display:none"
->
+            away_team TEXT NOT NULL,
 
-<div
-    id="scoreGameLeaderboard"
-    style="margin-top:12px"
->
+            league_name TEXT,
 
-<div class="loader">
-Загружаем рейтинг...
-</div>
+            kickoff_at TIMESTAMPTZ NOT NULL,
 
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-</div>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS prediction_game_picks (
 
-<div
-    id="scoreGameLeaguesView"
-    style="display:none"
->
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div
-    id="scoreGameLeagues"
-    style="margin-top:12px"
->
+            game_date DATE NOT NULL,
 
-<div class="loader">
-Загружаем лиги...
-</div>
+            fixture_id BIGINT NOT NULL,
 
-</div>
+            prediction TEXT NOT NULL,
 
-</div>
+            settled BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-</div>
+            won BOOLEAN,
 
+            final_score TEXT,
 
-<!-- 🎡 WHEEL -->
+            actual_result TEXT,
 
-<div class="game-card wheel-card">
+            reward_coins INTEGER NOT NULL
+                DEFAULT 0,
 
-<div class="game-title">
-🎡 Колесо удачи
-</div>
+            reward_xp INTEGER NOT NULL
+                DEFAULT 0,
 
-<div
-    class="muted"
-    style="margin-top:5px"
->
-1 бесплатное вращение раз в 24 часа
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div class="wheel-pointer"></div>
+            settled_at TIMESTAMPTZ,
 
+            PRIMARY KEY (
+                telegram_id,
+                game_date
+            )
+        )
+    """)
 
-<div
-    id="wheelDisc"
-    class="wheel-disc"
->
 
-<span class="wheel-label wheel-label-1">
-50
-</span>
+    # =====================================================
+    # ⚽ УГАДАЙ СЧЁТ
+    # =====================================================
 
-<span class="wheel-label wheel-label-2">
-100
-</span>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS score_game_rounds (
 
-<span class="wheel-label wheel-label-3">
-200
-</span>
+            game_date DATE PRIMARY KEY,
 
-<span class="wheel-label wheel-label-4">
-500
-</span>
+            fixture_id BIGINT NOT NULL,
 
-<span class="wheel-label wheel-label-5">
-1000
-</span>
+            match_name TEXT NOT NULL,
 
-<span class="wheel-label wheel-label-6">
-100 XP
-</span>
+            home_team TEXT NOT NULL,
 
-</div>
+            away_team TEXT NOT NULL,
 
+            league_name TEXT,
 
-<button
-    id="wheelBtn"
-    class="btn"
-    onclick="spinLuckyWheel()"
->
-Крутить бесплатно
-</button>
+            kickoff_at TIMESTAMPTZ NOT NULL,
 
-<div
-    id="wheelInfo"
-    class="muted"
-    style="margin-top:8px"
-></div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-<div
-    id="wheelResult"
-    class="wheel-result"
-></div>
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS score_game_picks (
 
-</section>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
+            game_date DATE NOT NULL,
 
-<!-- ===================================
-     🏆 LEADERBOARD
-=================================== -->
+            fixture_id BIGINT NOT NULL,
 
-<section
-    id="page-leaderboard"
-    class="page"
->
+            predicted_home INTEGER NOT NULL,
 
-<div
-    class="title"
-    style="margin-bottom:5px"
->
-🏆 Лидеры
-</div>
+            predicted_away INTEGER NOT NULL,
 
-<div
-    class="muted"
-    style="margin-bottom:12px"
->
-Соревнуйся с игроками BetCoin
-</div>
+            settled BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<div class="leaders-tabs">
+            exact_win BOOLEAN,
 
-<button
-    id="leadersTabXp"
-    class="leaders-tab active"
-    onclick="setLeaderboardMode('xp')"
->
-⭐ XP
-</button>
+            outcome_win BOOLEAN,
 
-<button
-    id="leadersTabCoins"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('coins')"
->
-🪙 Монеты
-</button>
+            final_home INTEGER,
 
-<button
-    id="leadersTabExact"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('exact')"
->
-🎯 Точный счёт
-</button>
+            final_away INTEGER,
 
+            reward_coins INTEGER NOT NULL
+                DEFAULT 0,
 
-<button
-    id="leadersTabWeekly"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('weekly')"
->
-📅 Неделя
-</button>
+            reward_xp INTEGER NOT NULL
+                DEFAULT 0,
 
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div id="leaderboardMe"></div>
+            settled_at TIMESTAMPTZ,
 
-<div id="leaderboard"></div>
+            PRIMARY KEY (
+                telegram_id,
+                game_date
+            )
+        )
+    """)
 
-</section>
 
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_score_game_picks_due
 
-<!-- ===================================
-     👤 PROFILE
-=================================== -->
+        ON score_game_picks (
+            settled,
+            fixture_id
+        )
+    """)
 
-<section
-    id="page-profile"
-    class="page"
->
 
-<div class="topbar">
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_score_game_picks_user
 
-<div class="title">
-👤 Профиль
-</div>
+        ON score_game_picks (
+            telegram_id,
+            game_date DESC
+        )
+    """)
 
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS score_game_notifications (
 
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="profile-hero">
+            game_date DATE NOT NULL,
 
-<div
-    id="profileName"
-    style="
-        font-size:21px;
-        font-weight:900
-    "
->
-Игрок
-</div>
+            reminder_sent BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<div
-    id="profileLeague"
-    class="muted"
-></div>
+            reminder_sent_at TIMESTAMPTZ,
 
-<div
-    class="row"
-    style="margin-top:12px"
->
+            result_sent BOOLEAN NOT NULL
+                DEFAULT FALSE,
 
-<span id="profileLevel"></span>
+            result_sent_at TIMESTAMPTZ,
 
-<span id="profileXp"></span>
+            PRIMARY KEY (
+                telegram_id,
+                game_date
+            )
+        )
+    """)
 
-</div>
 
-<div class="xp-bar">
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_score_game_notifications_result
 
-<div
-    id="profileXpFill"
-    class="xp-fill"
-></div>
+        ON score_game_notifications (
+            game_date,
+            result_sent
+        )
+    """)
 
-</div>
 
-<div
-    id="profileRank"
-    class="muted"
-    style="margin-top:7px"
-></div>
+    # =====================================================
+    # 👥 ПРИВАТНЫЕ ЛИГИ ПРОГНОЗИСТОВ
+    # =====================================================
 
-<div
-    id="profileTitleBadge"
-    class="profile-title-badge"
->
-🏅 Новичок
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS predictor_leagues (
 
-<div class="profile-extra-grid">
+            id SERIAL PRIMARY KEY,
 
-<div class="profile-extra-card">
-<b id="profilePredSuccess">0%</b>
-<span class="muted">успешность</span>
-</div>
+            owner_telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="profile-extra-card">
-<b id="profileExactWins">0</b>
-<span class="muted">точных счетов</span>
-</div>
+            name TEXT NOT NULL,
 
-<div class="profile-extra-card">
-<b id="profileBestStreak">0</b>
-<span class="muted">лучший стрик</span>
-</div>
+            invite_code TEXT NOT NULL UNIQUE,
 
-<div class="profile-extra-card">
-<b id="profilePrivateLeagues">0</b>
-<span class="muted">приватных лиг</span>
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-</div>
 
-</div>
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS predictor_league_members (
 
+            league_id INTEGER NOT NULL
+                REFERENCES predictor_leagues(id)
+                ON DELETE CASCADE,
 
-<div class="streak-card">
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-<div class="streak-head">
+            joined_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<div>
+            PRIMARY KEY (
+                league_id,
+                telegram_id
+            )
+        )
+    """)
 
-<div class="streak-title">
-🔥 Серия входов
-</div>
 
-<div class="muted">
-Заходи каждый день и забирай награды
-</div>
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_predictor_league_members_user
 
-</div>
+        ON predictor_league_members (
+            telegram_id,
+            joined_at DESC
+        )
+    """)
 
-<div
-    id="streakCount"
-    class="streak-count"
->
-День 1
-</div>
 
-</div>
+    # =====================================================
+    # 🔥 СЕРИЯ ВХОДОВ
+    # =====================================================
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS login_streaks (
 
-<div
-    id="streakDays"
-    class="streak-days"
-></div>
+            telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
+            streak_day INTEGER NOT NULL
+                DEFAULT 0,
 
-<div
-    id="streakReward"
-    class="streak-reward"
-></div>
+            last_claim_date DATE,
 
+            updated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
 
-<button
-    id="streakBtn"
-    class="btn"
-    onclick="claimLoginStreak()"
->
-Забрать награду
-</button>
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS login_streak_claims (
 
-<div
-    id="streakMessage"
-    class="streak-message"
-></div>
+            telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
 
-</div>
+            claim_date DATE NOT NULL,
 
+            streak_day INTEGER NOT NULL,
 
-<div class="card">
+            reward_coins INTEGER NOT NULL
+                DEFAULT 0,
 
-<b>
-🎁 Ежедневный бонус
-</b>
+            reward_xp INTEGER NOT NULL
+                DEFAULT 0,
 
-<div class="muted">
-+300 монет каждые 24 часа
-</div>
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW(),
 
-<button
-    id="dailyBtn"
-    class="btn"
-    onclick="claimDaily()"
->
-Получить +300
-</button>
+            PRIMARY KEY (
+                telegram_id,
+                claim_date
+            )
+        )
+    """)
 
-<div
-    id="dailyInfo"
-    class="muted"
-    style="margin-top:7px"
-></div>
 
-</div>
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_bets_user
+        ON bets(telegram_id)
+    """)
 
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_parlays_user
+        ON parlays(telegram_id)
+    """)
 
-<div class="card">
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_wheel_history_user
+        ON wheel_spin_history(
+            telegram_id,
+            created_at DESC
+        )
+    """)
 
-<b>
-🎟 Промокод
-</b>
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_login_streak_claims_user
+        ON login_streak_claims(
+            telegram_id,
+            claim_date DESC
+        )
+    """)
 
-<div
-    class="muted"
-    style="margin:5px 0 10px"
->
-Введи код и получи виртуальные монеты или XP
-</div>
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_prediction_game_picks_due
+        ON prediction_game_picks(
+            settled,
+            fixture_id
+        )
+    """)
 
-<input
-    id="promoInput"
-    class="input"
-    maxlength="32"
-    placeholder="Например START500"
-    style="text-transform:uppercase"
->
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_prediction_game_picks_user
+        ON prediction_game_picks(
+            telegram_id,
+            game_date DESC
+        )
+    """)
 
-<button
-    id="promoBtn"
-    class="btn"
-    onclick="redeemPromo()"
->
-Активировать
-</button>
 
-<div
-    id="promoResult"
-    class="muted"
-    style="margin-top:8px"
-></div>
+    cur.execute("""
+        INSERT INTO promo_codes (
+            code,
+            reward_coins,
+            reward_xp,
+            max_uses
+        )
+        VALUES (
+            'START500',
+            500,
+            0,
+            1000
+        )
+        ON CONFLICT (code)
+        DO NOTHING
+    """)
 
-</div>
 
+    cur.execute("""
+        INSERT INTO promo_codes (
+            code,
+            reward_coins,
+            reward_xp,
+            max_uses
+        )
+        VALUES (
+            'BETCOIN',
+            300,
+            50,
+            500
+        )
+        ON CONFLICT (code)
+        DO NOTHING
+    """)
 
 
-<div class="card">
+    conn.commit()
 
-<div
-    class="row"
-    style="
-        align-items:flex-start;
-        gap:12px
-    "
->
+    cur.close()
+    conn.close()
 
-<div>
+    database_ready = True
 
-<b>
-👥 Пригласи друга
-</b>
 
-<div
-    id="referralRewardText"
-    class="muted"
-    style="margin-top:5px"
->
-Приглашай друзей и получай монеты
-</div>
+# =========================================================
+# НОРМАЛИЗАЦИЯ
+# =========================================================
 
-</div>
+def normalize_club_name(name):
 
-<div
-    id="referralCount"
-    style="
-        font-weight:900;
-        white-space:nowrap
-    "
->
-0 друзей
-</div>
+    value = str(
+        name or ""
+    ).strip().lower()
 
-</div>
+    value = unicodedata.normalize(
+        "NFKD",
+        value
+    )
 
-<input
-    id="referralLink"
-    class="input"
-    readonly
-    placeholder="Реферальная ссылка"
-    style="
-        margin-top:12px;
-        font-size:13px
-    "
->
+    value = "".join(
+        char
+        for char in value
+        if not unicodedata.combining(char)
+    )
 
-<div
-    class="row"
-    style="
-        margin-top:8px;
-        gap:8px
-    "
->
+    value = value.replace(
+        "ß",
+        "ss"
+    )
 
-<button
-    class="small-btn"
-    style="flex:1"
-    onclick="copyReferralLink()"
->
-📋 Скопировать
-</button>
+    value = re.sub(
+        r"[^a-z0-9\s]",
+        " ",
+        value
+    )
 
-<button
-    class="small-btn"
-    style="flex:1"
-    onclick="shareReferralLink()"
->
-↗️ Поделиться
-</button>
+    return re.sub(
+        r"\s+",
+        " ",
+        value
+    ).strip()
 
-</div>
 
-<div
-    class="muted"
-    style="
-        margin-top:9px;
-        font-size:12px
-    "
->
-Награда начисляется, когда новый игрок впервые открывает BetCoin.
-</div>
+def simplified_club_name(name):
 
-</div>
+    ignored = {
+        "fc",
+        "cf",
+        "afc",
+        "ac",
+        "sc",
+        "ssc",
+        "rc",
+        "cd",
+        "fk",
+        "sk",
+        "club",
+        "football",
+        "futbol",
+        "calcio",
+        "de",
+        "the"
+    }
 
+    return " ".join(
+        word
+        for word in normalize_club_name(name).split()
+        if word not in ignored
+    )
 
 
-<div class="card">
+def alias_club_name(name):
 
-<b>
-🔔 Уведомления
-</b>
+    normalized = normalize_club_name(
+        name
+    )
 
-<div class="muted" style="margin-top:4px">
-Выбери, какие сообщения присылать в Telegram
-</div>
+    simplified = simplified_club_name(
+        name
+    )
 
-<div class="notify-row">
-<div>
-<b>⭐ Матч дня</b>
-<div class="muted">Напоминание перед матчем</div>
-</div>
-<label class="switch">
-<input id="notifyMatchDay" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
+    return (
+        TEAM_NAME_ALIASES.get(normalized)
+        or
+        TEAM_NAME_ALIASES.get(simplified)
+        or
+        normalized
+    )
 
-<div class="notify-row">
-<div>
-<b>⭐ Избранные матчи</b>
-<div class="muted">Напоминания по избранному</div>
-</div>
-<label class="switch">
-<input id="notifyFavorite" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
 
-<div class="notify-row">
-<div>
-<b>🎟 Результаты ставок</b>
-<div class="muted">Итог ординаров и экспрессов</div>
-</div>
-<label class="switch">
-<input id="notifyBets" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
+def favorite_team_key(name):
 
-<div class="notify-row">
-<div>
-<b>🎯 Результаты прогнозов</b>
-<div class="muted">Точный счёт и угадай исход</div>
-</div>
-<label class="switch">
-<input id="notifyPredictions" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
+    return (
+        simplified_club_name(
+            alias_club_name(name)
+        )
+        or
+        normalize_club_name(name)
+    )
 
-<div class="notify-row">
-<div>
-<b>👥 Рефералы</b>
-<div class="muted">Когда приходит новый друг</div>
-</div>
-<label class="switch">
-<input id="notifyReferral" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
 
-</div>
+# =========================================================
+# LOGOS
+# =========================================================
 
+def rebuild_global_logo_cache():
 
-<h3>
-📊 Статистика
-</h3>
+    global global_logo_cache
 
-<div
-    id="stats"
-    class="stat-grid"
-></div>
+    result = {}
 
+    try:
 
-<h3>
-✅ Задания
-</h3>
+        conn = get_db()
+        cur = conn.cursor()
 
-<div id="tasks"></div>
+        cur.execute("""
+            SELECT
+                normalized_name,
+                team_name,
+                logo_url
 
+            FROM team_logos
+        """)
 
-<h3>
-🏅 Достижения
-</h3>
+        for row in cur.fetchall():
 
-<div id="achievements"></div>
+            result[row[0]] = {
+                "name": row[1],
+                "logo": row[2]
+            }
 
-</section>
+        cur.close()
+        conn.close()
 
-</div>
+    except Exception as error:
 
+        print(
+            "Logo cache error:",
+            error,
+            flush=True
+        )
 
-<!-- ===================================
-     MINI PARLAY
-=================================== -->
+    global_logo_cache = result
 
-<div
-    id="miniParlay"
-    class="mini"
->
 
-<div class="mini-top">
+def find_logo_fast(team_name):
 
-<button
-    class="mini-summary"
-    type="button"
-    onclick="openParlay()"
->
+    if not global_logo_cache:
+        return ""
 
-<div>
+    attempts = [
+        normalize_club_name(team_name),
+        simplified_club_name(team_name),
+        alias_club_name(team_name),
+        simplified_club_name(
+            alias_club_name(team_name)
+        )
+    ]
 
-<b>
-🧾 Экспресс
-</b>
+    for attempt in attempts:
 
-<div
-    id="miniMeta"
-    class="muted"
->
-0 событий
-</div>
+        if (
+            attempt
+            and
+            attempt in global_logo_cache
+        ):
 
-</div>
+            return global_logo_cache[
+                attempt
+            ].get(
+                "logo",
+                ""
+            )
 
-<b id="miniOdd">
-x1.00
-</b>
+    best_score = 0
+    best_logo = ""
 
-</button>
+    for key, value in global_logo_cache.items():
 
-<button
-    id="miniCollapseBtn"
-    class="mini-collapse"
-    type="button"
-    aria-label="Свернуть экспресс"
-    onclick="toggleMiniParlay()"
->
-⌄
-</button>
+        key_simple = simplified_club_name(
+            key
+        )
 
-</div>
+        if len(key_simple) < 5:
+            continue
 
+        for attempt in attempts:
 
-<div class="mini-bottom">
+            attempt_simple = simplified_club_name(
+                attempt
+            )
 
-<input
-    id="miniStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
+            if len(attempt_simple) < 5:
+                continue
 
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(this.value)
-                    ||
-                    0
+            score = SequenceMatcher(
+                None,
+                attempt_simple,
+                key_simple
+            ).ratio()
+
+            if score > best_score:
+
+                best_score = score
+
+                best_logo = value.get(
+                    "logo",
+                    ""
                 )
-            );
 
-        document.getElementById(
-            'parlayStake'
-        ).value=
-            this.value;
+    if best_score >= 0.86:
+        return best_logo
 
-        updateParlay()
-    "
->
+    return ""
 
 
-<div class="muted">
+# =========================================================
+# LAZY STARTUP
+# =========================================================
 
-Выигрыш
-<br>
+def ensure_database_ready():
 
-<b id="miniWin">
-—
-</b>
+    global database_ready
+    global database_initializing
 
-</div>
+    if database_ready:
+        return
 
+    with database_lock:
 
-<button
-    class="small-btn"
-    onclick="openParlay()"
->
-Открыть
-</button>
+        if database_ready:
+            return
 
-</div>
+        database_initializing = True
 
-</div>
+        try:
 
+            init_database()
 
-<!-- ===================================
-     NAV
-=================================== -->
+            rebuild_global_logo_cache()
 
-<nav class="nav">
+            database_ready = True
 
-<button
-    id="nav-home"
-    class="active"
-    onclick="showPage('home')"
->
-<span>🏠</span>
-<small>Главная</small>
-</button>
+            print(
+                "Database initialized successfully",
+                flush=True
+            )
 
-<button
-    id="nav-matches"
-    onclick="showPage('matches')"
->
-<span>⚽</span>
-<small>Матчи</small>
-</button>
+        finally:
 
-<button
-    id="nav-bets"
-    onclick="showPage('bets')"
->
-<span>🎟</span>
-<small>Ставки</small>
-</button>
-
-<button
-    id="nav-games"
-    onclick="showPage('games')"
->
-<span>🎮</span>
-<small>Игры</small>
-</button>
-
-<button
-    id="nav-leaderboard"
-    onclick="showPage('leaderboard')"
->
-<span>🏆</span>
-<small>Лидеры</small>
-</button>
-
-<button
-    id="nav-profile"
-    onclick="showPage('profile')"
->
-<span>👤</span>
-<small>Профиль</small>
-</button>
-
-</nav>
+            database_initializing = False
 
 
-<!-- ===================================
-     BET CHOICE
-=================================== -->
+# =========================================================
+# TELEGRAM AUTH
+# =========================================================
 
-<div
-    id="choiceOverlay"
-    class="overlay"
->
+def verify_telegram_init_data(init_data):
 
-<div class="modal">
+    if (
+        not TELEGRAM_BOT_TOKEN
+        or
+        not init_data
+    ):
+        return None
 
-<h2>
-Выбери тип ставки
-</h2>
+    try:
 
-<div
-    id="choiceInfo"
-    class="card"
-></div>
+        data = dict(
+            parse_qsl(
+                init_data,
+                keep_blank_values=True
+            )
+        )
 
-<button
-    class="btn"
-    onclick="openSingle()"
->
-Ординар
-</button>
+        received_hash = data.pop(
+            "hash",
+            None
+        )
 
-<button
-    id="parlayChoiceBtn"
-    class="btn secondary"
-    onclick="toggleParlayChoice()"
->
-+ Экспресс
-</button>
+        if not received_hash:
+            return None
 
-<button
-    class="btn danger"
-    onclick="closeOverlay('choiceOverlay')"
->
-Закрыть
-</button>
+        check_string = "\n".join(
+            f"{key}={value}"
+            for key, value
+            in sorted(data.items())
+        )
 
-</div>
+        secret = hmac.new(
+            b"WebAppData",
+            TELEGRAM_BOT_TOKEN.encode(),
+            hashlib.sha256
+        ).digest()
 
-</div>
+        calculated = hmac.new(
+            secret,
+            check_string.encode(),
+            hashlib.sha256
+        ).hexdigest()
 
+        if not hmac.compare_digest(
+            calculated,
+            received_hash
+        ):
+            return None
 
-<!-- ===================================
-     SINGLE
-=================================== -->
+        auth_date = int(
+            data.get(
+                "auth_date",
+                "0"
+            )
+        )
 
-<div
-    id="singleOverlay"
-    class="overlay"
->
+        if (
+            auth_date <= 0
+            or
+            int(time.time())
+            -
+            auth_date
+            >
+            86400
+        ):
+            return None
 
-<div class="modal">
+        user = json.loads(
+            data.get(
+                "user",
+                "{}"
+            )
+        )
 
-<h2>
-Ординар
-</h2>
+        if not user.get("id"):
+            return None
 
-<div
-    id="singleInfo"
-    class="card"
-></div>
+        return user
 
-<input
-    id="singleStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
-    oninput="updateSingleWin()"
->
-
-<div
-    id="singleWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-<button
-    id="singleBtn"
-    class="btn"
-    onclick="confirmSingle()"
->
-Поставить
-</button>
-
-<button
-    class="btn danger"
-    onclick="closeOverlay('singleOverlay')"
->
-Закрыть
-</button>
-
-</div>
-
-</div>
+    except Exception:
+        return None
 
 
-<!-- ===================================
-     PARLAY
-=================================== -->
+def require_telegram_user():
 
-<div
-    id="parlayOverlay"
-    class="overlay"
->
+    init_data = request.headers.get(
+        "X-Telegram-Init-Data",
+        ""
+    )
 
-<div class="modal">
+    if not init_data:
 
-<h2>
-🧾 Экспресс
-</h2>
+        body = request.get_json(
+            silent=True
+        ) or {}
 
-<div id="parlayList"></div>
+        init_data = body.get(
+            "initData",
+            ""
+        )
 
-<div class="card">
+    user = verify_telegram_init_data(
+        init_data
+    )
 
-Событий:
+    if not user:
 
-<b id="parlayCount">
-0
-</b>
+        return None, (
+            jsonify({
+                "success": False,
+                "error": "Telegram authentication failed"
+            }),
+            401
+        )
 
-<br>
-
-Общий кэф:
-
-<b id="parlayOdd">
-1.00
-</b>
-
-</div>
+    return user, None
 
 
-<input
-    id="parlayStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
+# =========================================================
+# USER
+# =========================================================
 
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(this.value)
-                    ||
-                    0
+def get_or_create_user(tg_user):
+
+    ensure_runtime_ready()
+
+    telegram_id = int(
+        tg_user["id"]
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT 1
+        FROM users
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    was_existing = (
+        cur.fetchone()
+        is not None
+    )
+
+    cur.execute("""
+        INSERT INTO users (
+            telegram_id,
+            first_name,
+            username
+        )
+        VALUES (
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (telegram_id)
+        DO UPDATE SET
+            first_name =
+                EXCLUDED.first_name,
+
+            username =
+                EXCLUDED.username,
+
+            updated_at =
+                NOW()
+    """, (
+        telegram_id,
+        tg_user.get(
+            "first_name",
+            ""
+        ),
+        tg_user.get(
+            "username",
+            ""
+        )
+    ))
+
+    conn.commit()
+
+    cur.execute("""
+        SELECT
+            telegram_id,
+            first_name,
+            username,
+            balance,
+            last_daily_claim,
+            xp
+
+        FROM users
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return {
+        "telegram_id": row[0],
+        "first_name": row[1],
+        "username": row[2],
+        "balance": row[3],
+        "last_daily_claim": row[4],
+        "xp": row[5],
+        "is_new": (
+            not was_existing
+        )
+    }
+
+
+def get_user_data(telegram_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            telegram_id,
+            first_name,
+            username,
+            balance,
+            last_daily_claim,
+            xp
+
+        FROM users
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+        return None
+
+    return {
+        "telegram_id": row[0],
+        "first_name": row[1],
+        "username": row[2],
+        "balance": row[3],
+        "last_daily_claim": row[4],
+        "xp": row[5]
+    }
+
+
+
+
+# =========================================================
+# NOTIFICATION SETTINGS
+# =========================================================
+
+def get_notification_settings(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO user_notification_settings (
+            telegram_id
+        )
+        VALUES (
+            %s
+        )
+        ON CONFLICT (telegram_id)
+        DO NOTHING
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    conn.commit()
+
+    cur.execute(
+        """
+        SELECT
+            match_day,
+            favorite_match,
+            bet_result,
+            prediction_result,
+            referral
+
+        FROM user_notification_settings
+
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+
+        return {
+            "match_day": True,
+            "favorite_match": True,
+            "bet_result": True,
+            "prediction_result": True,
+            "referral": True
+        }
+
+    return {
+        "match_day":
+            bool(
+                row[0]
+            ),
+
+        "favorite_match":
+            bool(
+                row[1]
+            ),
+
+        "bet_result":
+            bool(
+                row[2]
+            ),
+
+        "prediction_result":
+            bool(
+                row[3]
+            ),
+
+        "referral":
+            bool(
+                row[4]
+            )
+    }
+
+
+def update_notification_settings(
+    telegram_id,
+    data
+):
+
+    current = (
+        get_notification_settings(
+            telegram_id
+        )
+    )
+
+    allowed = {
+        "match_day",
+        "favorite_match",
+        "bet_result",
+        "prediction_result",
+        "referral"
+    }
+
+    for key in allowed:
+
+        if key in data:
+
+            current[
+                key
+            ] = bool(
+                data[
+                    key
+                ]
+            )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO user_notification_settings (
+            telegram_id,
+            match_day,
+            favorite_match,
+            bet_result,
+            prediction_result,
+            referral,
+            updated_at
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            NOW()
+        )
+        ON CONFLICT (telegram_id)
+        DO UPDATE SET
+            match_day =
+                EXCLUDED.match_day,
+
+            favorite_match =
+                EXCLUDED.favorite_match,
+
+            bet_result =
+                EXCLUDED.bet_result,
+
+            prediction_result =
+                EXCLUDED.prediction_result,
+
+            referral =
+                EXCLUDED.referral,
+
+            updated_at =
+                NOW()
+        """,
+        (
+            int(
+                telegram_id
+            ),
+            current[
+                "match_day"
+            ],
+            current[
+                "favorite_match"
+            ],
+            current[
+                "bet_result"
+            ],
+            current[
+                "prediction_result"
+            ],
+            current[
+                "referral"
+            ]
+        )
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return current
+
+
+def notification_enabled(
+    telegram_id,
+    key
+):
+
+    try:
+
+        return bool(
+            get_notification_settings(
+                telegram_id
+            ).get(
+                key,
+                True
+            )
+        )
+
+    except Exception:
+
+        return True
+
+
+# =========================================================
+# REFERRALS
+# =========================================================
+
+_bot_username_cache = {
+    "value": None,
+    "checked_at": 0
+}
+
+
+def get_betcoin_bot_username():
+
+    if BETCOIN_BOT_USERNAME:
+        return BETCOIN_BOT_USERNAME
+
+    now_ts = time.time()
+
+    cached = (
+        _bot_username_cache.get(
+            "value"
+        )
+    )
+
+    checked_at = float(
+        _bot_username_cache.get(
+            "checked_at",
+            0
+        )
+        or
+        0
+    )
+
+    if (
+        cached
+        and
+        now_ts - checked_at < 3600
+    ):
+        return cached
+
+    result = telegram_api_call(
+        "getMe"
+    )
+
+    username = ""
+
+    if result.get("ok"):
+
+        username = str(
+            (
+                result.get(
+                    "result"
                 )
-            );
-
-        document.getElementById(
-            'miniStake'
-        ).value=
-            this.value;
-
-        updateParlay()
-    "
->
-
-
-<div
-    id="parlayWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-
-<button
-    id="parlayBtn"
-    class="btn"
-    onclick="confirmParlay()"
->
-Поставить экспресс
-</button>
-
-
-<button
-    class="btn danger"
-    onclick="clearParlay()"
->
-Очистить
-</button>
-
-</div>
-
-</div>
-
-
-<script>
-
-const SERVER_URL =
-    "https://betcoin-gu5c.onrender.com";
-
-
-const tg =
-    window.Telegram.WebApp;
-
-
-tg.ready();
-
-tg.expand();
-
-
-const initData =
-    tg.initData
-    ||
-    "";
-
-
-let balance = 0;
-
-let matches = [];
-
-let loaded = {};
-
-let bets = [];
-
-let parlays = [];
-
-let liveMap = {};
-
-
-let favoriteMatches =
-    JSON.parse(
-        localStorage.getItem(
-            "bcFavMatches"
-        )
-        ||
-        "[]"
-    );
-
-
-let favoriteTeams =
-    JSON.parse(
-        localStorage.getItem(
-            "bcFavTeams"
-        )
-        ||
-        "[]"
-    );
-
-
-let parlaySlip = [];
-
-let parlayStake = 0;
-let miniParlayCollapsed = false;
-
-let currentLeague = "top5";
-
-let dateFilter = "today";
-
-let searchQuery = "";
-
-let betFilter = "all";
-
-let betTab = "single";
-
-let selectedBet = null;
-
-let currentUser = null;
-let referralInfo = {};
-let notificationSettings = {};
-let profileExtra = {};
-let onboardingStep = 0;
-
-let xp = 0;
-
-let level = 1;
-
-let leagueInfo = {};
-
-let levelXp = 0;
-
-let stats = {};
-
-let tasks = [];
-
-let achievements = [];
-
-let daily = {};
-
-let wheel = {};
-
-let predictionGame = {};
-
-let scoreGame = {};
-
-let scoreGameHistory = [];
-
-let scoreGameStats = {};
-
-let scoreGameLeaderboard = [];
-
-let scoreGameLeaderboardMe = null;
-
-let scoreGameLeaderboardRank = null;
-
-let predictorLeagues = [];
-
-let predictorLeagueCurrent = null;
-
-let predictorLeaguePlayers = [];
-
-let scoreGameView = "play";
-
-let scoreHistoryFilter = "all";
-
-let loginStreak = {};
-
-let myRank = null;
-let leaderboardMode = "xp";
-let leaderboardPlayers = [];
-let leaderboardMe = null;
-
-
-
-const esc =
-    value =>
-        String(
-            value
-            ??
+                or
+                {}
+            ).get(
+                "username"
+            )
+            or
             ""
-        )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+        ).strip().lstrip("@")
+
+    _bot_username_cache[
+        "value"
+    ] = username
+
+    _bot_username_cache[
+        "checked_at"
+    ] = now_ts
+
+    return username
 
 
-const js =
-    value =>
-        String(
-            value
-            ??
-            ""
+def save_pending_referral(
+    referred_telegram_id,
+    inviter_telegram_id
+):
+
+    referred_telegram_id = int(
+        referred_telegram_id
+    )
+
+    inviter_telegram_id = int(
+        inviter_telegram_id
+    )
+
+    if (
+        referred_telegram_id
+        ==
+        inviter_telegram_id
+    ):
+        return False
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT 1
+        FROM users
+        WHERE telegram_id = %s
+        """,
+        (
+            inviter_telegram_id,
         )
-        .replaceAll(
-            "\\",
-            "\\\\"
+    )
+
+    inviter_exists = (
+        cur.fetchone()
+        is not None
+    )
+
+    if not inviter_exists:
+
+        cur.close()
+        conn.close()
+        return False
+
+    cur.execute(
+        """
+        SELECT 1
+        FROM referrals
+        WHERE referred_telegram_id = %s
+        """,
+        (
+            referred_telegram_id,
         )
-        .replaceAll(
-            "'",
-            "\\'"
+    )
+
+    already_referred = (
+        cur.fetchone()
+        is not None
+    )
+
+    if already_referred:
+
+        cur.close()
+        conn.close()
+        return False
+
+    cur.execute(
+        """
+        INSERT INTO referral_pending (
+            telegram_id,
+            inviter_telegram_id
         )
-        .replaceAll(
-            "\n",
-            " "
-        );
-
-
-const tkey =
-    value =>
-        String(
-            value
-            ||
-            ""
+        VALUES (
+            %s,
+            %s
         )
-        .trim()
-        .toLowerCase();
+        ON CONFLICT (telegram_id)
+        DO NOTHING
+        """,
+        (
+            referred_telegram_id,
+            inviter_telegram_id
+        )
+    )
+
+    conn.commit()
+
+    saved = (
+        cur.rowcount
+        >
+        0
+    )
+
+    cur.close()
+    conn.close()
+
+    return saved
 
 
-async function post(
-    path,
-    body={}
-){
+def activate_pending_referral(
+    telegram_id,
+    is_new_user
+):
 
-    const response =
-        await fetch(
-            SERVER_URL
+    telegram_id = int(
+        telegram_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT inviter_telegram_id
+        FROM referral_pending
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    row = cur.fetchone()
+
+    if not row:
+
+        cur.close()
+        conn.close()
+
+        return {
+            "activated": False
+        }
+
+    inviter_id = int(
+        row[0]
+    )
+
+    if (
+        not is_new_user
+        or
+        inviter_id == telegram_id
+    ):
+
+        cur.execute(
+            """
+            DELETE FROM referral_pending
+            WHERE telegram_id = %s
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return {
+            "activated": False
+        }
+
+    cur.execute(
+        """
+        INSERT INTO referrals (
+            referred_telegram_id,
+            inviter_telegram_id,
+            inviter_reward,
+            friend_reward
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (referred_telegram_id)
+        DO NOTHING
+        """,
+        (
+            telegram_id,
+            inviter_id,
+            REFERRAL_INVITER_REWARD,
+            REFERRAL_FRIEND_REWARD
+        )
+    )
+
+    inserted = (
+        cur.rowcount
+        >
+        0
+    )
+
+    if inserted:
+
+        cur.execute(
+            """
+            UPDATE users
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+            """,
+            (
+                REFERRAL_INVITER_REWARD,
+                inviter_id
+            )
+        )
+
+        cur.execute(
+            """
+            UPDATE users
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+            """,
+            (
+                REFERRAL_FRIEND_REWARD,
+                telegram_id
+            )
+        )
+
+    cur.execute(
+        """
+        DELETE FROM referral_pending
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if inserted:
+
+        try:
+
+            send_telegram_message(
+                inviter_id,
+                (
+                    "🎁 Новый друг в BetCoin!\n\n"
+                    f"+{REFERRAL_INVITER_REWARD} 🪙 за приглашение."
+                )
+            )
+
+        except Exception as error:
+
+            print(
+                "Referral notification error:",
+                error,
+                flush=True
+            )
+
+    return {
+        "activated":
+            inserted,
+
+        "inviter_id":
+            inviter_id
+    }
+
+
+def get_referral_info(
+    telegram_id
+):
+
+    telegram_id = int(
+        telegram_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT COUNT(*)
+        FROM referrals
+        WHERE inviter_telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    invited_count = int(
+        (
+            cur.fetchone()
+            or
+            [0]
+        )[0]
+        or
+        0
+    )
+
+    cur.close()
+    conn.close()
+
+    username = (
+        get_betcoin_bot_username()
+    )
+
+    referral_link = (
+        (
+            "https://t.me/"
             +
-            path,
+            username
+            +
+            "?start=ref_"
+            +
+            str(
+                telegram_id
+            )
+        )
+        if username
+        else
+        ""
+    )
+
+    return {
+        "link":
+            referral_link,
+
+        "invited_count":
+            invited_count,
+
+        "inviter_reward":
+            REFERRAL_INVITER_REWARD,
+
+        "friend_reward":
+            REFERRAL_FRIEND_REWARD
+    }
+
+
+# =========================================================
+# XP
+# =========================================================
+
+def calculate_level(xp):
+
+    return (
+        int(xp or 0)
+        //
+        100
+        +
+        1
+    )
+
+
+def get_league(level):
+
+    if level >= 30:
+
+        return {
+            "key": "master",
+            "name": "Мастер",
+            "icon": "👑",
+            "min_level": 30,
+            "next_level": None
+        }
+
+    if level >= 20:
+
+        return {
+            "key": "diamond",
+            "name": "Алмаз",
+            "icon": "💎",
+            "min_level": 20,
+            "next_level": 30
+        }
+
+    if level >= 10:
+
+        return {
+            "key": "gold",
+            "name": "Золото",
+            "icon": "🥇",
+            "min_level": 10,
+            "next_level": 20
+        }
+
+    if level >= 5:
+
+        return {
+            "key": "silver",
+            "name": "Серебро",
+            "icon": "🥈",
+            "min_level": 5,
+            "next_level": 10
+        }
+
+    return {
+        "key": "bronze",
+        "name": "Бронза",
+        "icon": "🥉",
+        "min_level": 1,
+        "next_level": 5
+    }
+
+
+def xp_info(xp):
+
+    xp = int(
+        xp or 0
+    )
+
+    level = calculate_level(
+        xp
+    )
+
+    current = (
+        xp
+        %
+        100
+    )
+
+    return {
+        "xp": xp,
+        "level": level,
+        "league": get_league(level),
+        "current_level_xp": current,
+        "xp_to_next_level": 100 - current
+    }
+
+
+def add_xp(
+    telegram_id,
+    amount,
+    cursor=None
+):
+
+    own_connection = (
+        cursor is None
+    )
+
+    conn = (
+        get_db()
+        if own_connection
+        else None
+    )
+
+    if own_connection:
+        cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT xp
+
+        FROM users
+
+        WHERE telegram_id = %s
+
+        FOR UPDATE
+    """, (
+        telegram_id,
+    ))
+
+    row = cursor.fetchone()
+
+    old_xp = int(
+        row[0]
+        if row
+        else
+        0
+    )
+
+    old_level = calculate_level(
+        old_xp
+    )
+
+    new_xp = (
+        old_xp
+        +
+        int(amount)
+    )
+
+    new_level = calculate_level(
+        new_xp
+    )
+
+    cursor.execute("""
+        UPDATE users
+
+        SET
+            xp = %s,
+            updated_at = NOW()
+
+        WHERE telegram_id = %s
+    """, (
+        new_xp,
+        telegram_id
+    ))
+
+    reward = 0
+
+    for level_number in range(
+        old_level + 1,
+        new_level + 1
+    ):
+
+        level_reward = 100
+
+        if (
+            level_number
+            %
+            5
+            ==
+            0
+        ):
+            level_reward += 500
+
+        reward += level_reward
+
+    if reward > 0:
+
+        cursor.execute("""
+            UPDATE users
+
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            reward,
+            telegram_id
+        ))
+
+    if own_connection:
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    result = xp_info(
+        new_xp
+    )
+
+    result["level_reward"] = reward
+
+    return result
+
+
+# =========================================================
+# DAILY TASKS
+# =========================================================
+
+def task_date():
+
+    return datetime.now(
+        timezone.utc
+    ).date()
+
+
+def ensure_daily_tasks(
+    telegram_id,
+    cursor=None,
+    mark_login=False
+):
+
+    own = (
+        cursor is None
+    )
+
+    conn = (
+        get_db()
+        if own
+        else None
+    )
+
+    if own:
+        cursor = conn.cursor()
+
+    today = task_date()
+
+    cursor.execute("""
+        INSERT INTO daily_tasks (
+            telegram_id,
+            task_date
+        )
+        VALUES (
+            %s,
+            %s
+        )
+        ON CONFLICT (
+            telegram_id,
+            task_date
+        )
+        DO NOTHING
+    """, (
+        telegram_id,
+        today
+    ))
+
+    if mark_login:
+
+        cursor.execute("""
+            UPDATE daily_tasks
+
+            SET login_done = TRUE
+
+            WHERE
+                telegram_id = %s
+                AND
+                task_date = %s
+        """, (
+            telegram_id,
+            today
+        ))
+
+    if own:
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def increment_daily_bet(
+    telegram_id,
+    cursor
+):
+
+    ensure_daily_tasks(
+        telegram_id,
+        cursor,
+        True
+    )
+
+    cursor.execute("""
+        UPDATE daily_tasks
+
+        SET
+            bets_count =
+                bets_count
+                +
+                1
+
+        WHERE
+            telegram_id = %s
+            AND
+            task_date = %s
+    """, (
+        telegram_id,
+        task_date()
+    ))
+
+
+def increment_daily_win(
+    telegram_id,
+    cursor
+):
+
+    ensure_daily_tasks(
+        telegram_id,
+        cursor,
+        True
+    )
+
+    cursor.execute("""
+        UPDATE daily_tasks
+
+        SET
+            wins_count =
+                wins_count
+                +
+                1
+
+        WHERE
+            telegram_id = %s
+            AND
+            task_date = %s
+    """, (
+        telegram_id,
+        task_date()
+    ))
+
+
+def get_daily_tasks(
+    telegram_id,
+    mark_login=True
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    ensure_daily_tasks(
+        telegram_id,
+        cur,
+        mark_login
+    )
+
+    cur.execute("""
+        SELECT
+            login_done,
+            bets_count,
+            wins_count,
+            login_claimed,
+            bets_claimed,
+            win_claimed
+
+        FROM daily_tasks
+
+        WHERE
+            telegram_id = %s
+            AND
+            task_date = %s
+    """, (
+        telegram_id,
+        task_date()
+    ))
+
+    row = cur.fetchone()
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+        return []
+
+    return [
+
+        {
+            "key": "login",
+            "title": "Зайти в приложение",
+            "description": "Открой BetCoin сегодня",
+            "progress": 1 if row[0] else 0,
+            "target": 1,
+            "completed": bool(row[0]),
+            "claimed": bool(row[3]),
+            "reward_type": "xp",
+            "reward": 50
+        },
+
+        {
+            "key": "bets_3",
+            "title": "Сделать 3 ставки",
+            "description": "Сделай 3 ставки за сегодня",
+            "progress": min(
+                int(row[1] or 0),
+                3
+            ),
+            "target": 3,
+            "completed": int(row[1] or 0) >= 3,
+            "claimed": bool(row[4]),
+            "reward_type": "coins",
+            "reward": 100
+        },
+
+        {
+            "key": "win_1",
+            "title": "Выиграть 1 ставку",
+            "description": "Получи один выигрыш сегодня",
+            "progress": min(
+                int(row[2] or 0),
+                1
+            ),
+            "target": 1,
+            "completed": int(row[2] or 0) >= 1,
+            "claimed": bool(row[5]),
+            "reward_type": "coins",
+            "reward": 150
+        }
+    ]
+
+
+# =========================================================
+# 5 DOLLAR API
+# =========================================================
+
+def five_headers():
+
+    return {
+        "Authorization":
+            "Bearer "
+            +
+            FIVE_DOLLAR_FOOTBALL_API_KEY,
+
+        "Accept":
+            "application/json"
+    }
+
+
+def wait_for_five_rate_slot():
+
+    while True:
+
+        wait_seconds = 0
+
+        with five_rate_lock:
+
+            now = time.monotonic()
+
+            while (
+                five_rate_timestamps
+                and
+                now
+                -
+                five_rate_timestamps[0]
+                >=
+                FIVE_RATE_LIMIT_WINDOW_SECONDS
+            ):
+                five_rate_timestamps.popleft()
+
+            if (
+                len(five_rate_timestamps)
+                <
+                FIVE_RATE_LIMIT_REQUESTS
+            ):
+
+                five_rate_timestamps.append(
+                    now
+                )
+
+                return
+
+            wait_seconds = max(
+                0.25,
+
+                FIVE_RATE_LIMIT_WINDOW_SECONDS
+                -
+                (
+                    now
+                    -
+                    five_rate_timestamps[0]
+                )
+                +
+                0.15
+            )
+
+        time.sleep(
+            wait_seconds
+        )
+
+
+def reset_five_rate_window_after_429():
+
+    with five_rate_lock:
+
+        five_rate_timestamps.clear()
+
+        now = time.monotonic()
+
+        for _ in range(
+            FIVE_RATE_LIMIT_REQUESTS
+        ):
+
+            five_rate_timestamps.append(
+                now
+            )
+
+
+def five_get(
+    path,
+    params=None,
+    attempts=2
+):
+
+    if not FIVE_DOLLAR_FOOTBALL_API_KEY:
+
+        raise RuntimeError(
+            "FIVE_DOLLAR_FOOTBALL_API_KEY not found"
+        )
+
+    last_error = None
+
+    for attempt in range(
+        attempts
+    ):
+
+        wait_for_five_rate_slot()
+
+        try:
+
+            response = requests.get(
+                FIVE_API_URL + path,
+                headers=five_headers(),
+                params=params or {},
+                timeout=20
+            )
+
+        except requests.RequestException as error:
+
+            last_error = str(
+                error
+            )
+
+            if attempt < attempts - 1:
+
+                time.sleep(
+                    2
+                )
+
+                continue
+
+            raise
+
+        if response.status_code == 429:
+
+            last_error = (
+                "5DollarFootballAPI rate limit"
+            )
+
+            reset_five_rate_window_after_429()
+
+            if attempt < attempts - 1:
+
+                retry_after = response.headers.get(
+                    "Retry-After"
+                )
+
+                try:
+
+                    retry_after = float(
+                        retry_after
+                    )
+
+                except Exception:
+
+                    retry_after = (
+                        FIVE_RATE_LIMIT_RETRY_SECONDS
+                    )
+
+                time.sleep(
+                    max(
+                        FIVE_RATE_LIMIT_RETRY_SECONDS,
+                        retry_after
+                    )
+                )
+
+                continue
+
+        if response.status_code != 200:
+
+            try:
+
+                payload = response.json()
+
+            except Exception:
+
+                payload = response.text[:300]
+
+            raise RuntimeError(
+                "5DollarFootballAPI HTTP "
+                +
+                str(response.status_code)
+                +
+                ": "
+                +
+                str(payload)
+            )
+
+        return response.json()
+
+    raise RuntimeError(
+        last_error
+        or
+        "5DollarFootballAPI request failed"
+    )
+
+
+# =========================================================
+# FOOTBALL PARSING
+# =========================================================
+
+def parse_match_datetime(value):
+
+    if not value:
+        return None
+
+    if isinstance(
+        value,
+        datetime
+    ):
+
+        result = value
+
+    else:
+
+        raw = str(
+            value
+        ).strip()
+
+        if raw.endswith("Z"):
+
+            raw = (
+                raw[:-1]
+                +
+                "+00:00"
+            )
+
+        try:
+
+            result = datetime.fromisoformat(
+                raw
+            )
+
+        except Exception:
+
+            return None
+
+    if result.tzinfo is None:
+
+        result = result.replace(
+            tzinfo=timezone.utc
+        )
+
+    return result.astimezone(
+        timezone.utc
+    )
+
+
+def first_snapshot(market):
+
+    if not isinstance(
+        market,
+        dict
+    ):
+
+        return None
+
+    return (
+        market.get("closing")
+        or
+        market.get("opening")
+        or
+        market.get("inplay")
+    )
+
+
+def extract_bookmakers(payload):
+
+    if not payload:
+
+        return []
+
+    if isinstance(
+        payload,
+        list
+    ):
+
+        return payload
+
+    if not isinstance(
+        payload,
+        dict
+    ):
+
+        return []
+
+    if isinstance(
+        payload.get("bookmakers"),
+        list
+    ):
+
+        return payload["bookmakers"]
+
+    data = payload.get(
+        "data"
+    )
+
+    if (
+        isinstance(data, dict)
+        and
+        isinstance(
+            data.get("bookmakers"),
+            list
+        )
+    ):
+
+        return data["bookmakers"]
+
+    if {
+        "1x2",
+        "asian_handicap",
+        "goal_line",
+        "goal_line_fixed",
+        "btts"
+    } & set(payload.keys()):
+
+        return [
             {
-                method:
-                    "POST",
+                "name": "Bet 365",
+                "slug": "bet365",
+                "odds": payload
+            }
+        ]
 
-                headers:{
-                    "Content-Type":
-                        "application/json",
+    return []
 
-                    "X-Telegram-Init-Data":
-                        initData
+
+def parse_odds_response(payload):
+
+    result = {
+        "odds": None,
+        "totals": {},
+        "btts": None,
+        "handicaps": None,
+        "bookmaker": None,
+        "available_markets": []
+    }
+
+    bookmakers = extract_bookmakers(
+        payload
+    )
+
+    if not bookmakers:
+
+        return result
+
+    bookmaker = next(
+        (
+            item
+            for item in bookmakers
+            if str(
+                item.get(
+                    "slug",
+                    ""
+                )
+            ).lower()
+            ==
+            "bet365"
+        ),
+        bookmakers[0]
+    )
+
+    result["bookmaker"] = (
+        bookmaker.get("name")
+        or
+        "Bet 365"
+    )
+
+    odds = (
+        bookmaker.get("odds")
+        or
+        {}
+    )
+
+    if not isinstance(
+        odds,
+        dict
+    ):
+
+        return result
+
+    result["available_markets"] = list(
+        odds.keys()
+    )
+
+    snapshot = first_snapshot(
+        odds.get("1x2")
+    )
+
+    if isinstance(
+        snapshot,
+        dict
+    ):
+
+        result["odds"] = {
+            "home": snapshot.get("home"),
+            "draw": snapshot.get("draw"),
+            "away": snapshot.get("away")
+        }
+
+    snapshot = first_snapshot(
+        odds.get("btts")
+    )
+
+    if isinstance(
+        snapshot,
+        dict
+    ):
+
+        result["btts"] = {
+            "yes": snapshot.get("yes"),
+            "no": snapshot.get("no")
+        }
+
+    fixed_lines = (
+        odds.get("goal_line_fixed")
+        or
+        odds.get("goalline_fixed")
+        or
+        []
+    )
+
+    if isinstance(
+        fixed_lines,
+        dict
+    ):
+
+        fixed_lines = (
+            fixed_lines.get("lines")
+            or
+            []
+        )
+
+    if isinstance(
+        fixed_lines,
+        list
+    ):
+
+        for item in fixed_lines:
+
+            try:
+
+                line = float(
+                    item.get("line")
+                )
+
+            except Exception:
+
+                continue
+
+            if line not in TOTAL_POINTS:
+
+                continue
+
+            snapshot = first_snapshot(
+                item
+            )
+
+            if not isinstance(
+                snapshot,
+                dict
+            ):
+
+                continue
+
+            result["totals"][str(line)] = {
+                "over": snapshot.get("over"),
+                "under": snapshot.get("under")
+            }
+
+    snapshot = first_snapshot(
+        odds.get("goal_line")
+    )
+
+    if isinstance(
+        snapshot,
+        dict
+    ):
+
+        try:
+
+            line = float(
+                snapshot.get("line")
+            )
+
+        except Exception:
+
+            line = None
+
+        if (
+            line in TOTAL_POINTS
+            and
+            str(line)
+            not in
+            result["totals"]
+        ):
+
+            result["totals"][str(line)] = {
+                "over": snapshot.get("over"),
+                "under": snapshot.get("under")
+            }
+
+    snapshot = first_snapshot(
+        odds.get("asian_handicap")
+    )
+
+    if isinstance(
+        snapshot,
+        dict
+    ):
+
+        try:
+
+            home_line = float(
+                snapshot.get("line")
+            )
+
+        except Exception:
+
+            home_line = None
+
+        if home_line is not None:
+
+            away_line = -home_line
+
+            home_key = (
+                str(home_line)
+                .rstrip("0")
+                .rstrip(".")
+            )
+
+            away_key = (
+                str(away_line)
+                .rstrip("0")
+                .rstrip(".")
+            )
+
+            result["handicaps"] = {
+
+                "home": {
+                    home_key:
+                        snapshot.get("home")
                 },
 
-                body:
-                    JSON.stringify({
-                        ...body,
-                        initData
-                    })
+                "away": {
+                    away_key:
+                        snapshot.get("away")
+                },
+
+                "main_home_line":
+                    home_line,
+
+                "main_away_line":
+                    away_line
             }
-        );
+
+    return result
 
 
-    const data =
-        await response.json();
+def get_league_key_by_id(league_id):
 
+    try:
 
-    if(
-        !response.ok
-        ||
-        data.success
-        ===
-        false
-    ){
-
-        throw new Error(
-            data.error
-            ||
-            "Ошибка сервера"
-        );
-    }
-
-
-    return data;
-}
-
-
-function setBalances(){
-
-    document
-    .querySelectorAll(
-        "[data-balance]"
-    )
-    .forEach(
-        element =>
-            element.textContent =
-                balance
-    );
-
-
-    document.getElementById(
-        "homeCoins"
-    ).textContent =
-        `${balance} 🪙`;
-}
-
-
-function closeOverlay(
-    id
-){
-
-    document
-    .getElementById(
-        id
-    )
-    ?.classList.remove(
-        "show"
-    );
-}
-
-
-function showPage(
-    name,
-    nav=true
-){
-
-    document
-    .querySelectorAll(
-        ".page"
-    )
-    .forEach(
-        page =>
-            page.classList.remove(
-                "active"
-            )
-    );
-
-
-    document
-    .getElementById(
-        "page-"
-        +
-        name
-    )
-    ?.classList.add(
-        "active"
-    );
-
-
-    if(nav){
-
-        document
-        .querySelectorAll(
-            ".nav button"
+        return LEAGUE_ID_TO_KEY.get(
+            int(league_id)
         )
-        .forEach(
-            button =>
-                button
-                .classList
-                .remove(
-                    "active"
+
+    except Exception:
+
+        return None
+
+
+def make_match_from_item(
+    item,
+    fallback_league_key=None
+):
+
+    teams = (
+        item.get("teams")
+        or
+        {}
+    )
+
+    home = (
+        teams.get("home")
+        or
+        {}
+    )
+
+    away = (
+        teams.get("away")
+        or
+        {}
+    )
+
+    league = (
+        item.get("league")
+        or
+        {}
+    )
+
+    league_id = league.get(
+        "id"
+    )
+
+    league_key = (
+        get_league_key_by_id(
+            league_id
+        )
+        or
+        fallback_league_key
+    )
+
+    league_config = (
+        LEAGUES.get(league_key)
+        or
+        {}
+    )
+
+    home_name = home.get(
+        "name",
+        "Unknown"
+    )
+
+    away_name = away.get(
+        "name",
+        "Unknown"
+    )
+
+    goals = (
+        item.get("goals")
+        or
+        {}
+    )
+
+    parsed = parse_odds_response(
+        item.get("odds")
+    )
+
+    match = {
+
+        "fixture_id":
+            item.get("id"),
+
+        "date":
+            item.get("kickoff_utc"),
+
+        "status":
+            item.get("status"),
+
+        "status_code":
+            item.get("status_code"),
+
+        "league":
+            (
+                league.get("name")
+                or
+                league_config.get("name")
+                or
+                "Football"
+            ),
+
+        "league_id":
+            league_id,
+
+        "league_key":
+            league_key,
+
+        "country":
+            league_config.get(
+                "country",
+                ""
+            ),
+
+        "league_short_name":
+            league_config.get(
+                "short_name",
+                ""
+            ),
+
+        "league_flag":
+            league_config.get(
+                "flag",
+                ""
+            ),
+
+        "home":
+            home_name,
+
+        "away":
+            away_name,
+
+        "home_team_id":
+            home.get("id"),
+
+        "away_team_id":
+            away.get("id"),
+
+        "home_logo":
+            (
+                home.get("logo")
+                or
+                find_logo_fast(
+                    home_name
                 )
-        );
+            ),
 
+        "away_logo":
+            (
+                away.get("logo")
+                or
+                find_logo_fast(
+                    away_name
+                )
+            ),
 
-        document
-        .getElementById(
-            "nav-"
+        "home_score":
+            goals.get("home"),
+
+        "away_score":
+            goals.get("away"),
+
+        "odds":
+            parsed.get("odds"),
+
+        "btts":
+            parsed.get("btts"),
+
+        "handicaps":
+            parsed.get("handicaps"),
+
+        "bookmaker":
+            parsed.get("bookmaker"),
+
+        "available_extra_markets":
+            parsed.get(
+                "available_markets",
+                []
+            )
+    }
+
+    totals = (
+        parsed.get("totals")
+        or
+        {}
+    )
+
+    for line in TOTAL_POINTS:
+
+        field = (
+            "total_"
             +
-            name
+            str(line).replace(
+                ".",
+                "_"
+            )
         )
-        ?.classList.add(
-            "active"
-        );
+
+        value = totals.get(
+            str(line),
+            {}
+        )
+
+        if (
+            value.get("over")
+            is not None
+            or
+            value.get("under")
+            is not None
+        ):
+
+            match[field] = {
+                "point": line,
+                "over": value.get("over"),
+                "under": value.get("under")
+            }
+
+        else:
+
+            match[field] = None
+
+    return match
+
+
+def fetch_league_id_fixtures(
+    league_key,
+    league_id,
+    start_ts,
+    end_ts
+):
+
+    data = five_get(
+        f"/v1/leagues/{league_id}/fixtures",
+        {
+            "status": "scheduled",
+            "start_time": start_ts,
+            "end_time": end_ts,
+            "include": "odds",
+            "order": "asc",
+            "page": 1,
+            "per_page": 50
+        }
+    )
+
+    result = []
+
+    for item in (
+        data.get("data")
+        or
+        []
+    ):
+
+        try:
+
+            match = make_match_from_item(
+                item,
+                league_key
+            )
+
+            if match.get(
+                "fixture_id"
+            ):
+
+                result.append(
+                    match
+                )
+
+        except Exception as error:
+
+            print(
+                "Fixture parse error:",
+                error,
+                flush=True
+            )
+
+    return result
+
+
+def load_league_fixtures(
+    league_key,
+    force=False
+):
+
+    if league_key not in LEAGUES:
+
+        raise ValueError(
+            "Неизвестная лига"
+        )
+
+    cached = league_fixture_cache.get(
+        league_key
+    )
+
+    if (
+        not force
+        and
+        cached
+        and
+        time.time()
+        -
+        cached["time"]
+        <
+        FIXTURES_CACHE_SECONDS
+    ):
+
+        return cached["data"]
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    start_ts = int(
+        now.timestamp()
+    )
+
+    end_ts = int(
+        (
+            now
+            +
+            timedelta(
+                days=MAX_FIXTURE_DAYS
+            )
+        ).timestamp()
+    )
+
+    result = []
+    request_errors = []
+    successful = 0
+
+    ids = LEAGUES[
+        league_key
+    ]["ids"]
+
+    with ThreadPoolExecutor(
+        max_workers=max(
+            1,
+            min(
+                2,
+                len(ids)
+            )
+        )
+    ) as executor:
+
+        futures = [
+
+            executor.submit(
+                fetch_league_id_fixtures,
+                league_key,
+                league_id,
+                start_ts,
+                end_ts
+            )
+
+            for league_id in ids
+        ]
+
+        for future in as_completed(
+            futures
+        ):
+
+            try:
+
+                loaded_matches = (
+                    future.result()
+                )
+
+                successful += 1
+
+                result.extend(
+                    loaded_matches
+                )
+
+            except Exception as error:
+
+                request_errors.append(
+                    str(error)
+                )
+
+                print(
+                    "League load error:",
+                    league_key,
+                    error,
+                    flush=True
+                )
+
+    if successful == 0:
+
+        if (
+            cached
+            and
+            cached.get("data")
+            is not None
+        ):
+
+            return cached["data"]
+
+        raise RuntimeError(
+            "Не удалось загрузить "
+            +
+            LEAGUES[
+                league_key
+            ].get(
+                "name",
+                league_key
+            )
+            +
+            (
+                ": "
+                +
+                request_errors[0]
+                if request_errors
+                else
+                ""
+            )
+        )
+
+    unique = {}
+
+    for match in result:
+
+        fixture_id = int(
+            match["fixture_id"]
+        )
+
+        unique[fixture_id] = match
+
+        fixture_detail_cache[
+            str(fixture_id)
+        ] = {
+            "time": time.time(),
+            "data": match
+        }
+
+    result = list(
+        unique.values()
+    )
+
+    result.sort(
+        key=
+            lambda match:
+                match.get("date")
+                or
+                ""
+    )
+
+    league_fixture_cache[
+        league_key
+    ] = {
+        "time": time.time(),
+        "data": result
+    }
+
+    return result
+
+
+def load_default_fixtures(
+    force=False
+):
+
+    result = []
+
+    with ThreadPoolExecutor(
+        max_workers=2
+    ) as executor:
+
+        future_map = {
+
+            executor.submit(
+                load_league_fixtures,
+                league_key,
+                force
+            ):
+                league_key
+
+            for league_key in DEFAULT_LEAGUES
+        }
+
+        for future in as_completed(
+            future_map
+        ):
+
+            league_key = future_map[
+                future
+            ]
+
+            try:
+
+                result.extend(
+                    future.result()
+                )
+
+            except Exception as error:
+
+                print(
+                    "Top5 load error:",
+                    league_key,
+                    error,
+                    flush=True
+                )
+
+    unique = {}
+
+    for match in result:
+
+        unique[
+            int(
+                match["fixture_id"]
+            )
+        ] = match
+
+    result = list(
+        unique.values()
+    )
+
+    result.sort(
+        key=
+            lambda match:
+                match.get("date")
+                or
+                ""
+    )
+
+    return result
+
+
+def get_all_cached_matches():
+
+    unique = {}
+
+    for cache in league_fixture_cache.values():
+
+        for match in (
+            cache.get("data")
+            or
+            []
+        ):
+
+            fixture_id = match.get(
+                "fixture_id"
+            )
+
+            if fixture_id:
+
+                unique[
+                    int(fixture_id)
+                ] = match
+
+    return list(
+        unique.values()
+    )
+
+
+def find_cached_fixture(
+    fixture_id
+):
+
+    key = str(
+        int(fixture_id)
+    )
+
+    cached = fixture_detail_cache.get(
+        key
+    )
+
+    if (
+        cached
+        and
+        time.time()
+        -
+        cached["time"]
+        <
+        FIXTURES_CACHE_SECONDS
+    ):
+
+        return cached["data"]
+
+    return None
+
+
+def fetch_fixture_odds(
+    fixture_id,
+    force=False
+):
+
+    key = str(
+        int(fixture_id)
+    )
+
+    cached = odds_cache.get(
+        key
+    )
+
+    if (
+        not force
+        and
+        cached
+        and
+        time.time()
+        -
+        cached["time"]
+        <
+        ODDS_CACHE_SECONDS
+    ):
+
+        return cached["data"]
+
+    data = five_get(
+        f"/v1/fixtures/{int(fixture_id)}/odds"
+    )
+
+    parsed = parse_odds_response(
+        data
+    )
+
+    odds_cache[key] = {
+        "time": time.time(),
+        "data": parsed
+    }
+
+    return parsed
+
+
+def apply_parsed_odds_to_match(
+    match,
+    parsed
+):
+
+    match["odds"] = parsed.get(
+        "odds"
+    )
+
+    match["btts"] = parsed.get(
+        "btts"
+    )
+
+    match["handicaps"] = parsed.get(
+        "handicaps"
+    )
+
+    match["bookmaker"] = parsed.get(
+        "bookmaker"
+    )
+
+    totals = (
+        parsed.get("totals")
+        or
+        {}
+    )
+
+    for line in TOTAL_POINTS:
+
+        field = (
+            "total_"
+            +
+            str(line).replace(
+                ".",
+                "_"
+            )
+        )
+
+        value = totals.get(
+            str(line),
+            {}
+        )
+
+        if (
+            value.get("over")
+            is not None
+            or
+            value.get("under")
+            is not None
+        ):
+
+            match[field] = {
+                "point": line,
+                "over": value.get("over"),
+                "under": value.get("under")
+            }
+
+        else:
+
+            match[field] = None
+
+    return match
+
+
+def get_fixture(
+    fixture_id,
+    with_odds=True,
+    force=False
+):
+
+    if not force:
+
+        cached = find_cached_fixture(
+            fixture_id
+        )
+
+        if cached:
+
+            match = dict(
+                cached
+            )
+
+            if (
+                with_odds
+                and
+                not match.get("odds")
+            ):
+
+                try:
+
+                    parsed = fetch_fixture_odds(
+                        fixture_id
+                    )
+
+                    apply_parsed_odds_to_match(
+                        match,
+                        parsed
+                    )
+
+                except Exception:
+
+                    pass
+
+            return match
+
+    data = five_get(
+        f"/v1/fixtures/{int(fixture_id)}"
+    )
+
+    item = (
+        data.get("data")
+        or
+        {}
+    )
+
+    match = make_match_from_item(
+        item
+    )
+
+    if (
+        with_odds
+        and
+        not match.get("odds")
+    ):
+
+        try:
+
+            parsed = fetch_fixture_odds(
+                fixture_id
+            )
+
+            apply_parsed_odds_to_match(
+                match,
+                parsed
+            )
+
+        except Exception:
+
+            pass
+
+    fixture_detail_cache[
+        str(
+            int(fixture_id)
+        )
+    ] = {
+        "time": time.time(),
+        "data": match
+    }
+
+    return match
+
+
+# =========================================================
+# BET MARKETS
+# =========================================================
+
+def normalize_line_key(line):
+
+    return (
+        str(
+            float(line)
+        )
+        .rstrip("0")
+        .rstrip(".")
+    )
+
+
+def match_market_odd(
+    match,
+    selection
+):
+
+    selection = re.sub(
+        r"\s+",
+        " ",
+        str(
+            selection or ""
+        ).strip()
+    )
+
+    odds = (
+        match.get("odds")
+        or
+        {}
+    )
+
+    if selection == "П1":
+        return odds.get("home"), "П1"
+
+    if selection == "X":
+        return odds.get("draw"), "X"
+
+    if selection == "П2":
+        return odds.get("away"), "П2"
+
+    btts = (
+        match.get("btts")
+        or
+        {}
+    )
+
+    if selection == "ОЗ Да":
+        return btts.get("yes"), "ОЗ Да"
+
+    if selection == "ОЗ Нет":
+        return btts.get("no"), "ОЗ Нет"
+
+    total_match = re.fullmatch(
+        r"Т([БМ])\s*([0-9.]+)",
+        selection
+    )
+
+    if total_match:
+
+        line = float(
+            total_match.group(2)
+        )
+
+        field = (
+            "total_"
+            +
+            str(line).replace(
+                ".",
+                "_"
+            )
+        )
+
+        market = (
+            match.get(field)
+            or
+            {}
+        )
+
+        side = (
+            "over"
+            if
+            total_match.group(1)
+            ==
+            "Б"
+            else
+            "under"
+        )
+
+        return (
+            market.get(side),
+            f"Т{total_match.group(1)} {line}"
+        )
+
+    handicap_match = re.fullmatch(
+        r"Ф([12])\(([-+]?[0-9.]+)\)",
+        selection
+    )
+
+    if handicap_match:
+
+        team_number = int(
+            handicap_match.group(1)
+        )
+
+        line = float(
+            handicap_match.group(2)
+        )
+
+        side = (
+            "home"
+            if team_number == 1
+            else
+            "away"
+        )
+
+        line_key = normalize_line_key(
+            line
+        )
+
+        odd = (
+            (
+                match.get("handicaps")
+                or
+                {}
+            )
+            .get(
+                side,
+                {}
+            )
+            .get(
+                line_key
+            )
+        )
+
+        signed = (
+            f"+{line_key}"
+            if line > 0
+            else
+            line_key
+        )
+
+        return (
+            odd,
+            f"Ф{team_number}({signed})"
+        )
+
+    return None, selection
+
+
+def resolve_canonical_bet(
+    fixture_id,
+    selection
+):
+
+    match = get_fixture(
+        fixture_id,
+        True
+    )
+
+    kickoff = parse_match_datetime(
+        match.get("date")
+    )
+
+    if (
+        kickoff
+        and
+        datetime.now(timezone.utc)
+        >=
+        kickoff
+    ):
+
+        raise ValueError(
+            "Матч уже начался. Ставки закрыты"
+        )
+
+    odd, canonical = match_market_odd(
+        match,
+        selection
+    )
+
+    if odd is None:
+
+        parsed = fetch_fixture_odds(
+            fixture_id,
+            True
+        )
+
+        temp = dict(
+            match
+        )
+
+        apply_parsed_odds_to_match(
+            temp,
+            parsed
+        )
+
+        odd, canonical = match_market_odd(
+            temp,
+            selection
+        )
+
+    if odd is None:
+
+        raise ValueError(
+            "Этот исход сейчас недоступен"
+        )
+
+    odd = round(
+        float(odd),
+        4
+    )
+
+    return {
+        "fixture_id": int(fixture_id),
+        "match": f"{match['home']} — {match['away']}",
+        "selection": canonical,
+        "odd": odd,
+        "provider": "five-dollar",
+        "kickoff_at": kickoff
     }
 
 
-    if(
-        name
-        ===
-        "leaderboard"
-    ){
+def calculate_bet_result(
+    selection,
+    home_score,
+    away_score
+):
 
-        loadLeaderboard();
+    total = (
+        home_score
+        +
+        away_score
+    )
+
+    if selection == "П1":
+
+        return (
+            "win"
+            if home_score > away_score
+            else
+            "loss"
+        )
+
+    if selection == "X":
+
+        return (
+            "win"
+            if home_score == away_score
+            else
+            "loss"
+        )
+
+    if selection == "П2":
+
+        return (
+            "win"
+            if away_score > home_score
+            else
+            "loss"
+        )
+
+    if selection == "ОЗ Да":
+
+        return (
+            "win"
+            if
+            home_score > 0
+            and
+            away_score > 0
+            else
+            "loss"
+        )
+
+    if selection == "ОЗ Нет":
+
+        return (
+            "win"
+            if
+            home_score == 0
+            or
+            away_score == 0
+            else
+            "loss"
+        )
+
+    total_match = re.fullmatch(
+        r"Т([БМ])\s*([0-9.]+)",
+        selection
+    )
+
+    if total_match:
+
+        line = float(
+            total_match.group(2)
+        )
+
+        if total_match.group(1) == "Б":
+
+            if total > line:
+                return "win"
+
+            if total < line:
+                return "loss"
+
+            return "refund"
+
+        if total < line:
+            return "win"
+
+        if total > line:
+            return "loss"
+
+        return "refund"
+
+    handicap_match = re.fullmatch(
+        r"Ф([12])\(([-+]?[0-9.]+)\)",
+        selection
+    )
+
+    if handicap_match:
+
+        team = int(
+            handicap_match.group(1)
+        )
+
+        handicap = float(
+            handicap_match.group(2)
+        )
+
+        if team == 1:
+
+            value = (
+                home_score
+                +
+                handicap
+                -
+                away_score
+            )
+
+        else:
+
+            value = (
+                away_score
+                +
+                handicap
+                -
+                home_score
+            )
+
+        if value > 0:
+            return "win"
+
+        if value < 0:
+            return "loss"
+
+        return "refund"
+
+    return None
+
+
+# =========================================================
+# LIVE / RESULTS
+# =========================================================
+
+def is_finished_status(status):
+
+    value = (
+        str(
+            status or ""
+        )
+        .strip()
+        .lower()
+        .replace(
+            "-",
+            "_"
+        )
+        .replace(
+            " ",
+            "_"
+        )
+    )
+
+    return value in {
+        "finished",
+        "ft",
+        "ended",
+        "full_time",
+        "fulltime"
     }
 
 
-    if(
-        name
-        ===
-        "profile"
-        ||
-        name
-        ===
-        "bets"
-        ||
-        name
-        ===
-        "games"
-    ){
+def live_status_flags(
+    status,
+    status_code=None
+):
 
-        loadSession();
-    }
+    value = str(
+        status or ""
+    ).strip().lower()
 
+    code = str(
+        status_code or ""
+    ).strip().lower()
 
-    if(
-        name
-        ===
-        "games"
-    ){
-
-        loadScoreGameHistory();
-    }
-
-
-    window.scrollTo(
-        0,
-        0
-    );
-}
-
-
-function quick(
-    value
-){
-
-    showPage(
-        "matches"
-    );
-
-
-    if(
-        value
-        ===
-        "today"
-    ){
-
-        setDateFilter(
-            "today"
-        );
-
-        loadLeague(
-            "top5"
-        );
-
-    }else if(
-        value
-        ===
-        "myteams"
-    ){
-
-        setDateFilter(
-            "myteams"
-        );
-
-        loadLeague(
-            "top5"
-        );
-
-    }else{
-
-        setDateFilter(
-            "all"
-        );
-
-        loadLeague(
+    finished = (
+        is_finished_status(
             value
-        );
+        )
+        or
+        code in {
+            "ft",
+            "finished",
+            "ended"
+        }
+    )
+
+    live = (
+        not finished
+        and
+        (
+            value in {
+                "live",
+                "inplay",
+                "in_play",
+                "first_half",
+                "second_half",
+                "halftime",
+                "half_time"
+            }
+            or
+            code in {
+                "1h",
+                "2h",
+                "ht",
+                "live"
+            }
+        )
+    )
+
+    return live, finished
+
+
+def get_result(fixture_id):
+
+    key = str(
+        int(fixture_id)
+    )
+
+    cached = result_cache.get(
+        key
+    )
+
+    if (
+        cached
+        and
+        time.time()
+        -
+        cached["time"]
+        <
+        RESULT_CACHE_SECONDS
+    ):
+
+        return cached["data"]
+
+    try:
+
+        data = get_fixture(
+            fixture_id,
+            False,
+            True
+        )
+
+        result_cache[key] = {
+            "time": time.time(),
+            "data": data
+        }
+
+        return data
+
+    except Exception as error:
+
+        print(
+            "Result fetch error:",
+            fixture_id,
+            error,
+            flush=True
+        )
+
+        return None
+
+
+# =========================================================
+# 🔥 LOGIN STREAK
+# =========================================================
+
+def get_login_streak_status(
+    telegram_id
+):
+
+    today = datetime.now(
+        timezone.utc
+    ).date()
+
+    yesterday = (
+        today
+        -
+        timedelta(days=1)
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO login_streaks (
+            telegram_id
+        )
+        VALUES (
+            %s
+        )
+        ON CONFLICT (
+            telegram_id
+        )
+        DO NOTHING
+    """, (
+        telegram_id,
+    ))
+
+    conn.commit()
+
+    cur.execute("""
+        SELECT
+            streak_day,
+            last_claim_date
+
+        FROM login_streaks
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    current_day = int(
+        row[0] or 0
+    )
+
+    last_claim_date = (
+        row[1]
+        if row
+        else
+        None
+    )
+
+    claimed_today = (
+        last_claim_date
+        ==
+        today
+    )
+
+    if claimed_today:
+
+        next_day = (
+            1
+            if current_day >= 7
+            else
+            current_day + 1
+        )
+
+        available = False
+        streak_broken = False
+
+    elif last_claim_date == yesterday:
+
+        next_day = (
+            1
+            if current_day >= 7
+            else
+            current_day + 1
+        )
+
+        available = True
+        streak_broken = False
+
+    else:
+
+        next_day = 1
+        available = True
+
+        streak_broken = (
+            last_claim_date
+            is not None
+        )
+
+    rewards = []
+
+    for day in range(
+        1,
+        8
+    ):
+
+        reward = LOGIN_STREAK_REWARDS[
+            day
+        ]
+
+        rewards.append({
+
+            "day":
+                day,
+
+            "coins":
+                int(
+                    reward["coins"]
+                ),
+
+            "xp":
+                int(
+                    reward["xp"]
+                ),
+
+            "completed":
+                (
+                    claimed_today
+                    and
+                    day <= current_day
+                ),
+
+            "current":
+                (
+                    not claimed_today
+                    and
+                    day == next_day
+                )
+        })
+
+    return {
+
+        "available":
+            available,
+
+        "claimed_today":
+            claimed_today,
+
+        "current_day":
+            current_day,
+
+        "next_day":
+            next_day,
+
+        "streak_broken":
+            streak_broken,
+
+        "last_claim_date":
+            (
+                last_claim_date.isoformat()
+                if last_claim_date
+                else
+                None
+            ),
+
+        "next_reward": {
+            "coins":
+                int(
+                    LOGIN_STREAK_REWARDS[
+                        next_day
+                    ]["coins"]
+                ),
+
+            "xp":
+                int(
+                    LOGIN_STREAK_REWARDS[
+                        next_day
+                    ]["xp"]
+                )
+        },
+
+        "rewards":
+            rewards
     }
+
+
+def claim_login_streak(
+    telegram_id
+):
+
+    today = datetime.now(
+        timezone.utc
+    ).date()
+
+    yesterday = (
+        today
+        -
+        timedelta(days=1)
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO login_streaks (
+                telegram_id
+            )
+            VALUES (
+                %s
+            )
+            ON CONFLICT (
+                telegram_id
+            )
+            DO NOTHING
+        """, (
+            telegram_id,
+        ))
+
+        cur.execute("""
+            SELECT
+                streak_day,
+                last_claim_date
+
+            FROM login_streaks
+
+            WHERE telegram_id = %s
+
+            FOR UPDATE
+        """, (
+            telegram_id,
+        ))
+
+        row = cur.fetchone()
+
+        current_day = int(
+            row[0] or 0
+        )
+
+        last_claim_date = (
+            row[1]
+            if row
+            else
+            None
+        )
+
+        if last_claim_date == today:
+
+            raise ValueError(
+                "Награда за сегодня уже получена"
+            )
+
+        if last_claim_date == yesterday:
+
+            new_day = (
+                1
+                if current_day >= 7
+                else
+                current_day + 1
+            )
+
+        else:
+
+            new_day = 1
+
+        reward = LOGIN_STREAK_REWARDS[
+            new_day
+        ]
+
+        reward_coins = int(
+            reward["coins"]
+        )
+
+        reward_xp = int(
+            reward["xp"]
+        )
+
+        cur.execute("""
+            INSERT INTO login_streak_claims (
+                telegram_id,
+                claim_date,
+                streak_day,
+                reward_coins,
+                reward_xp
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            ON CONFLICT (
+                telegram_id,
+                claim_date
+            )
+            DO NOTHING
+
+            RETURNING streak_day
+        """, (
+            telegram_id,
+            today,
+            new_day,
+            reward_coins,
+            reward_xp
+        ))
+
+        inserted = cur.fetchone()
+
+        if not inserted:
+
+            raise ValueError(
+                "Награда за сегодня уже получена"
+            )
+
+        if reward_coins > 0:
+
+            cur.execute("""
+                UPDATE users
+
+                SET
+                    balance =
+                        balance
+                        +
+                        %s,
+
+                    updated_at =
+                        NOW()
+
+                WHERE telegram_id = %s
+            """, (
+                reward_coins,
+                telegram_id
+            ))
+
+        if reward_xp > 0:
+
+            add_xp(
+                telegram_id,
+                reward_xp,
+                cur
+            )
+
+        cur.execute("""
+            UPDATE login_streaks
+
+            SET
+                streak_day = %s,
+                last_claim_date = %s,
+                updated_at = NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            new_day,
+            today,
+            telegram_id
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    fresh = get_user_data(
+        telegram_id
+    )
+
+    return {
+
+        "claimed_day":
+            new_day,
+
+        "reward_coins":
+            reward_coins,
+
+        "reward_xp":
+            reward_xp,
+
+        "balance":
+            int(
+                fresh["balance"]
+            ),
+
+        **xp_info(
+            fresh["xp"]
+        ),
+
+        "login_streak":
+            get_login_streak_status(
+                telegram_id
+            )
+    }
+
+
+# =========================================================
+# 🎯 УГАДАЙ ИСХОД
+# =========================================================
+
+def prediction_game_date():
+
+    return datetime.now(
+        timezone.utc
+    ).date()
+
+
+def prediction_actual_result(
+    home_score,
+    away_score
+):
+
+    if home_score > away_score:
+        return "П1"
+
+    if home_score < away_score:
+        return "П2"
+
+    return "X"
+
+
+def choose_prediction_match():
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    matches_list = get_all_cached_matches()
+
+    if not matches_list:
+
+        matches_list = load_default_fixtures(
+            False
+        )
+
+    candidates = []
+
+    for match in matches_list:
+
+        kickoff = parse_match_datetime(
+            match.get("date")
+        )
+
+        if not kickoff:
+            continue
+
+        if (
+            kickoff
+            <=
+            now
+            +
+            timedelta(minutes=15)
+        ):
+            continue
+
+        # Игра "Угадай исход" работает только
+        # с матчами, которые начинаются сегодня.
+        if (
+            kickoff.astimezone(
+                timezone.utc
+            ).date()
+            !=
+            prediction_game_date()
+        ):
+            continue
+
+        candidates.append(
+            match
+        )
+
+    if not candidates:
+        return None
+
+    candidates.sort(
+        key=
+            lambda item:
+                item.get("date")
+                or
+                ""
+    )
+
+    today = str(
+        prediction_game_date()
+    )
+
+    digest = hashlib.sha256(
+        today.encode("utf-8")
+    ).hexdigest()
+
+    index = (
+        int(
+            digest[:8],
+            16
+        )
+        %
+        len(candidates)
+    )
+
+    return candidates[index]
+
+
+def ensure_prediction_round():
+
+    today = prediction_game_date()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM prediction_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    row = cur.fetchone()
+
+    if row:
+
+        saved_kickoff = row[6]
+
+        # Старые версии могли записать на сегодняшний
+        # игровой день матч из будущего. Такой раунд
+        # больше не считаем доступным.
+        if (
+            saved_kickoff
+            and
+            saved_kickoff.astimezone(
+                timezone.utc
+            ).date()
+            ==
+            today
+        ):
+
+            cur.close()
+            conn.close()
+
+            return {
+                "game_date": row[0],
+                "fixture_id": int(row[1]),
+                "match_name": row[2],
+                "home_team": row[3],
+                "away_team": row[4],
+                "league_name": row[5],
+                "kickoff_at": row[6]
+            }
+
+        cur.close()
+        conn.close()
+
+        return None
+
+    cur.close()
+    conn.close()
+
+    match = choose_prediction_match()
+
+    if not match:
+        return None
+
+    kickoff = parse_match_datetime(
+        match.get("date")
+    )
+
+    match_name = (
+        f"{match.get('home')} — "
+        f"{match.get('away')}"
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO prediction_game_rounds (
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (
+            game_date
+        )
+        DO NOTHING
+    """, (
+        today,
+        int(match["fixture_id"]),
+        match_name,
+        match.get("home"),
+        match.get("away"),
+        match.get("league"),
+        kickoff
+    ))
+
+    conn.commit()
+
+    cur.execute("""
+        SELECT
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM prediction_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+        return None
+
+    return {
+        "game_date": row[0],
+        "fixture_id": int(row[1]),
+        "match_name": row[2],
+        "home_team": row[3],
+        "away_team": row[4],
+        "league_name": row[5],
+        "kickoff_at": row[6]
+    }
+
+
+def settle_prediction_picks(
+    limit=30
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.telegram_id,
+            p.game_date,
+            p.fixture_id,
+            p.prediction
+
+        FROM prediction_game_picks p
+
+        JOIN prediction_game_rounds r
+            ON r.game_date =
+                p.game_date
+
+        WHERE
+            p.settled = FALSE
+            AND
+            r.kickoff_at <=
+                NOW()
+                -
+                (%s * INTERVAL '1 minute')
+
+        ORDER BY
+            r.kickoff_at ASC
+
+        LIMIT %s
+    """, (
+        SETTLEMENT_AFTER_KICKOFF_MINUTES,
+        int(limit)
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    for row in rows:
+
+        (
+            telegram_id,
+            game_date,
+            fixture_id,
+            prediction
+        ) = row
+
+        match = get_result(
+            fixture_id
+        )
+
+        if not match:
+            continue
+
+        if not is_finished_status(
+            match.get("status")
+        ):
+            continue
+
+        home_score = match.get(
+            "home_score"
+        )
+
+        away_score = match.get(
+            "away_score"
+        )
+
+        if (
+            home_score is None
+            or
+            away_score is None
+        ):
+            continue
+
+        home_score = int(
+            home_score
+        )
+
+        away_score = int(
+            away_score
+        )
+
+        actual_result = prediction_actual_result(
+            home_score,
+            away_score
+        )
+
+        won = (
+            prediction
+            ==
+            actual_result
+        )
+
+        reward_coins = (
+            PREDICTION_REWARD_COINS
+            if won
+            else
+            0
+        )
+
+        reward_xp = (
+            PREDICTION_REWARD_XP
+            if won
+            else
+            0
+        )
+
+        score = (
+            f"{home_score}:"
+            f"{away_score}"
+        )
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                UPDATE prediction_game_picks
+
+                SET
+                    settled = TRUE,
+                    won = %s,
+                    final_score = %s,
+                    actual_result = %s,
+                    reward_coins = %s,
+                    reward_xp = %s,
+                    settled_at = NOW()
+
+                WHERE
+                    telegram_id = %s
+                    AND
+                    game_date = %s
+                    AND
+                    settled = FALSE
+            """, (
+                won,
+                score,
+                actual_result,
+                reward_coins,
+                reward_xp,
+                telegram_id,
+                game_date
+            ))
+
+            if cur.rowcount != 1:
+
+                conn.rollback()
+                continue
+
+            if reward_coins > 0:
+
+                cur.execute("""
+                    UPDATE users
+
+                    SET
+                        balance =
+                            balance
+                            +
+                            %s,
+
+                        updated_at =
+                            NOW()
+
+                    WHERE telegram_id = %s
+                """, (
+                    reward_coins,
+                    telegram_id
+                ))
+
+            if reward_xp > 0:
+
+                add_xp(
+                    telegram_id,
+                    reward_xp,
+                    cur
+                )
+
+            conn.commit()
+
+        except Exception:
+
+            conn.rollback()
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+
+def get_prediction_game(
+    telegram_id
+):
+
+    settle_prediction_picks(
+        10
+    )
+
+    game = ensure_prediction_round()
+
+    if not game:
+
+        return {
+            "available": False,
+            "message": "Сегодня матчей нет — возвращайся завтра ⚽",
+            "reward_coins": PREDICTION_REWARD_COINS,
+            "reward_xp": PREDICTION_REWARD_XP
+        }
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            prediction,
+            settled,
+            won,
+            final_score,
+            actual_result,
+            reward_coins,
+            reward_xp,
+            created_at
+
+        FROM prediction_game_picks
+
+        WHERE
+            telegram_id = %s
+            AND
+            game_date = %s
+    """, (
+        telegram_id,
+        game["game_date"]
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    kickoff = game[
+        "kickoff_at"
+    ]
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    can_pick = (
+        row is None
+        and
+        kickoff
+        and
+        now < kickoff
+    )
+
+    result = {
+
+        "available": True,
+
+        "game_date":
+            game["game_date"].isoformat(),
+
+        "fixture_id":
+            game["fixture_id"],
+
+        "match_name":
+            game["match_name"],
+
+        "home_team":
+            game["home_team"],
+
+        "away_team":
+            game["away_team"],
+
+        "league":
+            game["league_name"],
+
+        "kickoff_at":
+            (
+                kickoff.isoformat()
+                if kickoff
+                else
+                None
+            ),
+
+        "can_pick":
+            can_pick,
+
+        "reward_coins":
+            PREDICTION_REWARD_COINS,
+
+        "reward_xp":
+            PREDICTION_REWARD_XP,
+
+        "pick":
+            None,
+
+        "settled":
+            False,
+
+        "won":
+            None,
+
+        "final_score":
+            None,
+
+        "actual_result":
+            None
+    }
+
+    if row:
+
+        result.update({
+
+            "pick":
+                row[0],
+
+            "settled":
+                bool(row[1]),
+
+            "won":
+                row[2],
+
+            "final_score":
+                row[3],
+
+            "actual_result":
+                row[4],
+
+            "reward_coins":
+                (
+                    int(row[5] or 0)
+                    if row[1]
+                    else
+                    PREDICTION_REWARD_COINS
+                ),
+
+            "reward_xp":
+                (
+                    int(row[6] or 0)
+                    if row[1]
+                    else
+                    PREDICTION_REWARD_XP
+                ),
+
+            "picked_at":
+                (
+                    row[7].isoformat()
+                    if row[7]
+                    else
+                    None
+                )
+        })
+
+    return result
+
+
+def make_prediction_pick(
+    telegram_id,
+    prediction
+):
+
+    prediction = str(
+        prediction or ""
+    ).strip().upper()
+
+    if prediction not in {
+        "П1",
+        "X",
+        "П2"
+    }:
+
+        raise ValueError(
+            "Выбери П1, X или П2"
+        )
+
+    game = ensure_prediction_round()
+
+    if not game:
+
+        raise ValueError(
+            "Сейчас нет доступного матча"
+        )
+
+    kickoff = game[
+        "kickoff_at"
+    ]
+
+    if (
+        not kickoff
+        or
+        datetime.now(timezone.utc)
+        >=
+        kickoff
+    ):
+
+        raise ValueError(
+            "Матч уже начался"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO prediction_game_picks (
+                telegram_id,
+                game_date,
+                fixture_id,
+                prediction
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            ON CONFLICT (
+                telegram_id,
+                game_date
+            )
+            DO NOTHING
+
+            RETURNING prediction
+        """, (
+            telegram_id,
+            game["game_date"],
+            game["fixture_id"],
+            prediction
+        ))
+
+        inserted = cur.fetchone()
+
+        if not inserted:
+
+            raise ValueError(
+                "Ты уже выбрал исход на сегодня"
+            )
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return get_prediction_game(
+        telegram_id
+    )
+
+
+# =========================================================
+# ⚽ УГАДАЙ СЧЁТ
+# =========================================================
+
+def score_game_date():
+
+    return datetime.now(
+        timezone.utc
+    ).date()
+
+
+def score_result_type(
+    home_score,
+    away_score
+):
+
+    if home_score > away_score:
+        return "П1"
+
+    if home_score < away_score:
+        return "П2"
+
+    return "X"
+
+
+def choose_score_game_match():
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    matches_list = get_all_cached_matches()
+
+    if not matches_list:
+
+        matches_list = load_default_fixtures(
+            False
+        )
+
+    candidates = []
+
+    for match in matches_list:
+
+        kickoff = parse_match_datetime(
+            match.get("date")
+        )
+
+        if not kickoff:
+            continue
+
+        if (
+            kickoff
+            <=
+            now
+            +
+            timedelta(
+                minutes=15
+            )
+        ):
+            continue
+
+        # Игра "Точный счёт" работает только
+        # с матчами, которые начинаются сегодня.
+        if (
+            kickoff.astimezone(
+                timezone.utc
+            ).date()
+            !=
+            score_game_date()
+        ):
+            continue
+
+        candidates.append(
+            match
+        )
+
+    if not candidates:
+
+        return None
+
+    candidates.sort(
+        key=
+            lambda item:
+                item.get("date")
+                or
+                ""
+    )
+
+    today_key = (
+        "score-game-"
+        +
+        str(
+            score_game_date()
+        )
+    )
+
+    digest = hashlib.sha256(
+        today_key.encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+    index = (
+        int(
+            digest[:8],
+            16
+        )
+        %
+        len(candidates)
+    )
+
+    chosen = candidates[
+        index
+    ]
+
+    if (
+        len(candidates) > 1
+    ):
+
+        prediction_round = None
+
+        try:
+
+            prediction_round = (
+                ensure_prediction_round()
+            )
+
+        except Exception:
+
+            prediction_round = None
+
+        if (
+            prediction_round
+            and
+            int(
+                prediction_round[
+                    "fixture_id"
+                ]
+            )
+            ==
+            int(
+                chosen[
+                    "fixture_id"
+                ]
+            )
+        ):
+
+            chosen = candidates[
+                (
+                    index
+                    +
+                    1
+                )
+                %
+                len(
+                    candidates
+                )
+            ]
+
+    return chosen
+
+
+def ensure_score_game_round():
+
+    today = score_game_date()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM score_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    row = cur.fetchone()
+
+    if row:
+
+        saved_kickoff = row[6]
+
+        # Не показываем сохранённый раунд, если сам матч
+        # фактически проходит не сегодня.
+        if (
+            saved_kickoff
+            and
+            saved_kickoff.astimezone(
+                timezone.utc
+            ).date()
+            ==
+            today
+        ):
+
+            cur.close()
+            conn.close()
+
+            return {
+
+                "game_date":
+                    row[0],
+
+                "fixture_id":
+                    int(
+                        row[1]
+                    ),
+
+                "match_name":
+                    row[2],
+
+                "home_team":
+                    row[3],
+
+                "away_team":
+                    row[4],
+
+                "league_name":
+                    row[5],
+
+                "kickoff_at":
+                    row[6]
+            }
+
+        cur.close()
+        conn.close()
+
+        return None
+
+    cur.close()
+    conn.close()
+
+    match = choose_score_game_match()
+
+    if not match:
+
+        return None
+
+    kickoff = parse_match_datetime(
+        match.get(
+            "date"
+        )
+    )
+
+    match_name = (
+        f"{match.get('home')} — "
+        f"{match.get('away')}"
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO score_game_rounds (
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (
+            game_date
+        )
+        DO NOTHING
+    """, (
+        today,
+        int(
+            match[
+                "fixture_id"
+            ]
+        ),
+        match_name,
+        match.get(
+            "home"
+        ),
+        match.get(
+            "away"
+        ),
+        match.get(
+            "league"
+        ),
+        kickoff
+    ))
+
+    conn.commit()
+
+    cur.execute("""
+        SELECT
+            game_date,
+            fixture_id,
+            match_name,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM score_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not row:
+
+        return None
+
+    return {
+
+        "game_date":
+            row[0],
+
+        "fixture_id":
+            int(
+                row[1]
+            ),
+
+        "match_name":
+            row[2],
+
+        "home_team":
+            row[3],
+
+        "away_team":
+            row[4],
+
+        "league_name":
+            row[5],
+
+        "kickoff_at":
+            row[6]
+    }
+
+
+def settle_score_game_picks(
+    limit=30
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.telegram_id,
+            p.game_date,
+            p.fixture_id,
+            p.predicted_home,
+            p.predicted_away
+
+        FROM score_game_picks p
+
+        JOIN score_game_rounds r
+            ON r.game_date =
+                p.game_date
+
+        WHERE
+            p.settled = FALSE
+            AND
+            r.kickoff_at <=
+                NOW()
+                -
+                (%s * INTERVAL '1 minute')
+
+        ORDER BY
+            r.kickoff_at ASC
+
+        LIMIT %s
+    """, (
+        SETTLEMENT_AFTER_KICKOFF_MINUTES,
+        int(
+            limit
+        )
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    for row in rows:
+
+        (
+            telegram_id,
+            game_date,
+            fixture_id,
+            predicted_home,
+            predicted_away
+        ) = row
+
+        match = get_result(
+            fixture_id
+        )
+
+        if not match:
+
+            continue
+
+        if not is_finished_status(
+            match.get(
+                "status"
+            )
+        ):
+
+            continue
+
+        final_home = match.get(
+            "home_score"
+        )
+
+        final_away = match.get(
+            "away_score"
+        )
+
+        if (
+            final_home is None
+            or
+            final_away is None
+        ):
+
+            continue
+
+        final_home = int(
+            final_home
+        )
+
+        final_away = int(
+            final_away
+        )
+
+        predicted_home = int(
+            predicted_home
+        )
+
+        predicted_away = int(
+            predicted_away
+        )
+
+        exact_win = (
+            predicted_home
+            ==
+            final_home
+            and
+            predicted_away
+            ==
+            final_away
+        )
+
+        predicted_result = (
+            score_result_type(
+                predicted_home,
+                predicted_away
+            )
+        )
+
+        actual_result = (
+            score_result_type(
+                final_home,
+                final_away
+            )
+        )
+
+        outcome_win = (
+            not exact_win
+            and
+            predicted_result
+            ==
+            actual_result
+        )
+
+        if exact_win:
+
+            reward_coins = (
+                SCORE_GAME_EXACT_COINS
+            )
+
+            reward_xp = (
+                SCORE_GAME_EXACT_XP
+            )
+
+        elif outcome_win:
+
+            reward_coins = (
+                SCORE_GAME_OUTCOME_COINS
+            )
+
+            reward_xp = (
+                SCORE_GAME_OUTCOME_XP
+            )
+
+        else:
+
+            reward_coins = 0
+            reward_xp = 0
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                UPDATE score_game_picks
+
+                SET
+                    settled = TRUE,
+
+                    exact_win = %s,
+
+                    outcome_win = %s,
+
+                    final_home = %s,
+
+                    final_away = %s,
+
+                    reward_coins = %s,
+
+                    reward_xp = %s,
+
+                    settled_at = NOW()
+
+                WHERE
+                    telegram_id = %s
+                    AND
+                    game_date = %s
+                    AND
+                    settled = FALSE
+            """, (
+                exact_win,
+                outcome_win,
+                final_home,
+                final_away,
+                reward_coins,
+                reward_xp,
+                telegram_id,
+                game_date
+            ))
+
+            if cur.rowcount != 1:
+
+                conn.rollback()
+
+                continue
+
+            if reward_coins > 0:
+
+                cur.execute("""
+                    UPDATE users
+
+                    SET
+                        balance =
+                            balance
+                            +
+                            %s,
+
+                        updated_at =
+                            NOW()
+
+                    WHERE telegram_id = %s
+                """, (
+                    reward_coins,
+                    telegram_id
+                ))
+
+            if reward_xp > 0:
+
+                add_xp(
+                    telegram_id,
+                    reward_xp,
+                    cur
+                )
+
+            conn.commit()
+
+        except Exception:
+
+            conn.rollback()
+
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+
+def get_score_game(
+    telegram_id
+):
+
+    settle_score_game_picks(
+        10
+    )
+
+    game = ensure_score_game_round()
+
+    if not game:
+
+        return {
+
+            "available":
+                False,
+
+            "message":
+                "Сегодня матчей нет — возвращайся завтра ⚽",
+
+            "exact_reward_coins":
+                SCORE_GAME_EXACT_COINS,
+
+            "exact_reward_xp":
+                SCORE_GAME_EXACT_XP,
+
+            "outcome_reward_coins":
+                SCORE_GAME_OUTCOME_COINS
+        }
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            predicted_home,
+            predicted_away,
+            settled,
+            exact_win,
+            outcome_win,
+            final_home,
+            final_away,
+            reward_coins,
+            reward_xp,
+            created_at
+
+        FROM score_game_picks
+
+        WHERE
+            telegram_id = %s
+            AND
+            game_date = %s
+    """, (
+        telegram_id,
+        game[
+            "game_date"
+        ]
+    ))
+
+    row = cur.fetchone()
+
+    cur.execute("""
+        SELECT
+            COUNT(*)::INTEGER
+        FROM score_game_picks
+        WHERE game_date = %s
+    """, (
+        game[
+            "game_date"
+        ],
+    ))
+
+    predictions_count_row = (
+        cur.fetchone()
+    )
+
+    predictions_count = int(
+        predictions_count_row[0]
+        or
+        0
+    )
+
+    cur.close()
+    conn.close()
+
+    score_stats = (
+        get_score_game_stats(
+            telegram_id
+        )
+    )
+
+    kickoff = game[
+        "kickoff_at"
+    ]
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    can_pick = (
+        row is None
+        and
+        kickoff
+        and
+        now < kickoff
+    )
+
+    result = {
+
+        "available":
+            True,
+
+        "game_date":
+            game[
+                "game_date"
+            ].isoformat(),
+
+        "fixture_id":
+            game[
+                "fixture_id"
+            ],
+
+        "match_name":
+            game[
+                "match_name"
+            ],
+
+        "home_team":
+            game[
+                "home_team"
+            ],
+
+        "away_team":
+            game[
+                "away_team"
+            ],
+
+        "league":
+            game[
+                "league_name"
+            ],
+
+        "kickoff_at":
+            (
+                kickoff.isoformat()
+                if kickoff
+                else
+                None
+            ),
+
+        "can_pick":
+            can_pick,
+
+        "predicted_home":
+            None,
+
+        "predicted_away":
+            None,
+
+        "settled":
+            False,
+
+        "exact_win":
+            None,
+
+        "outcome_win":
+            None,
+
+        "final_home":
+            None,
+
+        "final_away":
+            None,
+
+        "reward_coins":
+            0,
+
+        "reward_xp":
+            0,
+
+        "exact_reward_coins":
+            SCORE_GAME_EXACT_COINS,
+
+        "exact_reward_xp":
+            SCORE_GAME_EXACT_XP,
+
+        "outcome_reward_coins":
+            SCORE_GAME_OUTCOME_COINS,
+
+        "predictions_count":
+            predictions_count,
+
+        "current_streak":
+            int(
+                score_stats.get(
+                    "current_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "best_streak":
+            int(
+                score_stats.get(
+                    "best_streak",
+                    0
+                )
+                or
+                0
+            )
+    }
+
+    if row:
+
+        result.update({
+
+            "predicted_home":
+                int(
+                    row[0]
+                ),
+
+            "predicted_away":
+                int(
+                    row[1]
+                ),
+
+            "settled":
+                bool(
+                    row[2]
+                ),
+
+            "exact_win":
+                row[3],
+
+            "outcome_win":
+                row[4],
+
+            "final_home":
+                (
+                    int(
+                        row[5]
+                    )
+                    if row[5] is not None
+                    else
+                    None
+                ),
+
+            "final_away":
+                (
+                    int(
+                        row[6]
+                    )
+                    if row[6] is not None
+                    else
+                    None
+                ),
+
+            "reward_coins":
+                int(
+                    row[7]
+                    or
+                    0
+                ),
+
+            "reward_xp":
+                int(
+                    row[8]
+                    or
+                    0
+                ),
+
+            "picked_at":
+                (
+                    row[9].isoformat()
+                    if row[9]
+                    else
+                    None
+                )
+        })
+
+    return result
+
+
+
+def get_score_game_history(
+    telegram_id,
+    limit=50
+):
+
+    settle_score_game_picks(
+        30
+    )
+
+    try:
+
+        limit = int(
+            limit
+        )
+
+    except Exception:
+
+        limit = 50
+
+    limit = max(
+        1,
+        min(
+            limit,
+            100
+        )
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.game_date,
+            p.fixture_id,
+
+            r.match_name,
+            r.home_team,
+            r.away_team,
+            r.league_name,
+            r.kickoff_at,
+
+            p.predicted_home,
+            p.predicted_away,
+
+            p.settled,
+            p.exact_win,
+            p.outcome_win,
+
+            p.final_home,
+            p.final_away,
+
+            p.reward_coins,
+            p.reward_xp,
+
+            p.created_at,
+            p.settled_at
+
+        FROM score_game_picks p
+
+        LEFT JOIN score_game_rounds r
+            ON
+                r.game_date =
+                    p.game_date
+                AND
+                r.fixture_id =
+                    p.fixture_id
+
+        WHERE
+            p.telegram_id = %s
+
+        ORDER BY
+            p.game_date DESC,
+            p.created_at DESC
+
+        LIMIT %s
+    """, (
+        telegram_id,
+        limit
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    history = []
+
+    for row in rows:
+
+        settled = bool(
+            row[9]
+        )
+
+        exact_win = row[10]
+        outcome_win = row[11]
+
+        if not settled:
+
+            status = "pending"
+            status_text = "Ожидает"
+
+        elif exact_win is True:
+
+            status = "exact"
+            status_text = "Точный счёт"
+
+        elif outcome_win is True:
+
+            status = "outcome"
+            status_text = "Исход угадан"
+
+        else:
+
+            status = "lost"
+            status_text = "Не угадано"
+
+        history.append({
+
+            "game_date":
+                (
+                    row[0].isoformat()
+                    if row[0]
+                    else
+                    None
+                ),
+
+            "fixture_id":
+                int(
+                    row[1]
+                ),
+
+            "match_name":
+                row[2],
+
+            "home_team":
+                row[3],
+
+            "away_team":
+                row[4],
+
+            "league":
+                row[5],
+
+            "kickoff_at":
+                (
+                    row[6].isoformat()
+                    if row[6]
+                    else
+                    None
+                ),
+
+            "predicted_home":
+                int(
+                    row[7]
+                ),
+
+            "predicted_away":
+                int(
+                    row[8]
+                ),
+
+            "settled":
+                settled,
+
+            "exact_win":
+                exact_win,
+
+            "outcome_win":
+                outcome_win,
+
+            "final_home":
+                (
+                    int(
+                        row[12]
+                    )
+                    if row[12] is not None
+                    else
+                    None
+                ),
+
+            "final_away":
+                (
+                    int(
+                        row[13]
+                    )
+                    if row[13] is not None
+                    else
+                    None
+                ),
+
+            "reward_coins":
+                int(
+                    row[14]
+                    or
+                    0
+                ),
+
+            "reward_xp":
+                int(
+                    row[15]
+                    or
+                    0
+                ),
+
+            "picked_at":
+                (
+                    row[16].isoformat()
+                    if row[16]
+                    else
+                    None
+                ),
+
+            "settled_at":
+                (
+                    row[17].isoformat()
+                    if row[17]
+                    else
+                    None
+                ),
+
+            "status":
+                status,
+
+            "status_text":
+                status_text
+        })
+
+    return history
+
+
+def get_score_game_stats(telegram_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE settled = FALSE) AS pending,
+            COUNT(*) FILTER (WHERE settled = TRUE) AS settled,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win = TRUE) AS exact_wins,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win IS NOT TRUE AND outcome_win = TRUE) AS outcome_wins,
+            COUNT(*) FILTER (WHERE settled = TRUE AND exact_win IS NOT TRUE AND outcome_win IS NOT TRUE) AS losses
+        FROM score_game_picks
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.execute("""
+        SELECT DISTINCT game_date
+        FROM score_game_picks
+        WHERE telegram_id = %s
+        ORDER BY game_date ASC
+    """, (
+        telegram_id,
+    ))
+
+    prediction_dates = [
+        item[0]
+        for item in cur.fetchall()
+        if item[0] is not None
+    ]
+
+    cur.close()
+    conn.close()
+
+    total = int(row[0] or 0)
+    pending = int(row[1] or 0)
+    settled = int(row[2] or 0)
+    exact_wins = int(row[3] or 0)
+    outcome_wins = int(row[4] or 0)
+    losses = int(row[5] or 0)
+
+    successful = exact_wins + outcome_wins
+
+    success_rate = (
+        round(
+            successful * 100 / settled,
+            1
+        )
+        if settled > 0
+        else 0
+    )
+
+    exact_rate = (
+        round(
+            exact_wins * 100 / settled,
+            1
+        )
+        if settled > 0
+        else 0
+    )
+
+    best_streak = 0
+    running_streak = 0
+    previous_date = None
+
+    for prediction_date in prediction_dates:
+
+        if (
+            previous_date is not None
+            and
+            prediction_date
+            ==
+            previous_date
+            +
+            timedelta(days=1)
+        ):
+
+            running_streak += 1
+
+        else:
+
+            running_streak = 1
+
+        best_streak = max(
+            best_streak,
+            running_streak
+        )
+
+        previous_date = prediction_date
+
+    current_streak = 0
+
+    if prediction_dates:
+
+        today = score_game_date()
+        latest_date = prediction_dates[-1]
+
+        if latest_date in (
+            today,
+            today - timedelta(days=1)
+        ):
+
+            current_streak = 1
+            expected_date = latest_date - timedelta(days=1)
+
+            for prediction_date in reversed(
+                prediction_dates[:-1]
+            ):
+
+                if prediction_date == expected_date:
+
+                    current_streak += 1
+                    expected_date -= timedelta(days=1)
+
+                elif prediction_date < expected_date:
+
+                    break
+
+    achievements = [
+        {
+            "key": "first_exact",
+            "icon": "🎯",
+            "title": "В яблочко",
+            "description": "Угадать первый точный счёт",
+            "progress": min(exact_wins, 1),
+            "target": 1,
+            "unlocked": exact_wins >= 1
+        },
+        {
+            "key": "exact_3",
+            "icon": "🏹",
+            "title": "Снайпер",
+            "description": "Угадать 3 точных счёта",
+            "progress": min(exact_wins, 3),
+            "target": 3,
+            "unlocked": exact_wins >= 3
+        },
+        {
+            "key": "predictions_10",
+            "icon": "📋",
+            "title": "Прогнозист",
+            "description": "Сделать 10 прогнозов",
+            "progress": min(total, 10),
+            "target": 10,
+            "unlocked": total >= 10
+        },
+        {
+            "key": "predictions_50",
+            "icon": "🧠",
+            "title": "Эксперт",
+            "description": "Сделать 50 прогнозов",
+            "progress": min(total, 50),
+            "target": 50,
+            "unlocked": total >= 50
+        },
+        {
+            "key": "streak_5",
+            "icon": "🔥",
+            "title": "На серии",
+            "description": "Делать прогнозы 5 дней подряд",
+            "progress": min(best_streak, 5),
+            "target": 5,
+            "unlocked": best_streak >= 5
+        },
+        {
+            "key": "successful_5",
+            "icon": "✅",
+            "title": "Чую результат",
+            "description": "Угадать исход или точный счёт 5 раз",
+            "progress": min(successful, 5),
+            "target": 5,
+            "unlocked": successful >= 5
+        }
+    ]
+
+    return {
+        "total": total,
+        "pending": pending,
+        "settled": settled,
+        "exact_wins": exact_wins,
+        "outcome_wins": outcome_wins,
+        "losses": losses,
+        "successful": successful,
+        "success_rate": success_rate,
+        "exact_rate": exact_rate,
+        "current_streak": current_streak,
+        "best_streak": best_streak,
+        "achievements": achievements
+    }
+
+
+def get_score_game_leaderboard(
+    telegram_id,
+    limit=50
+):
+
+    try:
+        limit = int(limit)
+    except Exception:
+        limit = 50
+
+    limit = max(
+        1,
+        min(
+            limit,
+            100
+        )
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        WITH distinct_dates AS (
+            SELECT DISTINCT
+                telegram_id,
+                game_date
+            FROM score_game_picks
+        ),
+
+        numbered_dates AS (
+            SELECT
+                telegram_id,
+                game_date,
+                game_date
+                -
+                (
+                    ROW_NUMBER() OVER (
+                        PARTITION BY telegram_id
+                        ORDER BY game_date
+                    )
+                )::INTEGER
+                AS streak_group
+            FROM distinct_dates
+        ),
+
+        streaks AS (
+            SELECT
+                telegram_id,
+                COUNT(*)::INTEGER AS streak_length
+            FROM numbered_dates
+            GROUP BY
+                telegram_id,
+                streak_group
+        ),
+
+        best_streaks AS (
+            SELECT
+                telegram_id,
+                MAX(streak_length)::INTEGER AS best_streak
+            FROM streaks
+            GROUP BY telegram_id
+        ),
+
+        aggregated AS (
+            SELECT
+                u.telegram_id,
+                COALESCE(
+                    NULLIF(u.first_name, ''),
+                    NULLIF(u.username, ''),
+                    'Игрок'
+                ) AS display_name,
+                COALESCE(u.xp, 0)::INTEGER AS xp,
+
+                COUNT(p.*)::INTEGER AS total,
+
+                COUNT(*) FILTER (
+                    WHERE p.settled = TRUE
+                )::INTEGER AS settled,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win = TRUE
+                )::INTEGER AS exact_wins,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win IS NOT TRUE
+                        AND
+                        p.outcome_win = TRUE
+                )::INTEGER AS outcome_wins
+
+            FROM users u
+
+            JOIN score_game_picks p
+                ON p.telegram_id = u.telegram_id
+
+            GROUP BY
+                u.telegram_id,
+                u.first_name,
+                u.username,
+                u.xp
+        ),
+
+        metrics AS (
+            SELECT
+                a.*,
+
+                (
+                    a.exact_wins
+                    +
+                    a.outcome_wins
+                )::INTEGER AS successful,
+
+                CASE
+                    WHEN a.settled > 0
+                    THEN ROUND(
+                        (
+                            a.exact_wins
+                            +
+                            a.outcome_wins
+                        )
+                        *
+                        100.0
+                        /
+                        a.settled,
+                        1
+                    )
+                    ELSE 0
+                END AS success_rate,
+
+                COALESCE(
+                    bs.best_streak,
+                    0
+                )::INTEGER AS best_streak
+
+            FROM aggregated a
+
+            LEFT JOIN best_streaks bs
+                ON bs.telegram_id = a.telegram_id
+        ),
+
+        ranked AS (
+            SELECT
+                *,
+
+                ROW_NUMBER() OVER (
+                    ORDER BY
+                        exact_wins DESC,
+                        successful DESC,
+                        success_rate DESC,
+                        best_streak DESC,
+                        settled DESC,
+                        total DESC,
+                        xp DESC,
+                        telegram_id ASC
+                )::INTEGER AS leaderboard_rank
+
+            FROM metrics
+        )
+
+        SELECT
+            leaderboard_rank,
+            telegram_id,
+            display_name,
+            total,
+            settled,
+            exact_wins,
+            outcome_wins,
+            successful,
+            success_rate,
+            best_streak
+
+        FROM ranked
+
+        WHERE
+            leaderboard_rank <= %s
+            OR
+            telegram_id = %s
+
+        ORDER BY leaderboard_rank ASC
+    """, (
+        limit,
+        telegram_id
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    players = []
+    my_entry = None
+
+    for row in rows:
+
+        item = {
+            "rank": int(row[0]),
+            "telegram_id": int(row[1]),
+            "first_name": row[2] or "Игрок",
+            "total": int(row[3] or 0),
+            "settled": int(row[4] or 0),
+            "exact_wins": int(row[5] or 0),
+            "outcome_wins": int(row[6] or 0),
+            "successful": int(row[7] or 0),
+            "success_rate": float(row[8] or 0),
+            "best_streak": int(row[9] or 0)
+        }
+
+        if item["rank"] <= limit:
+            players.append(item)
+
+        if int(item["telegram_id"]) == int(telegram_id):
+            my_entry = item
+
+    return {
+        "players": players,
+        "my_rank": (
+            my_entry["rank"]
+            if my_entry
+            else None
+        ),
+        "me": my_entry
+    }
+
+
+
+def _predictor_league_code():
+
+    alphabet = (
+        "ABCDEFGHJKLMNPQRSTUVWXYZ"
+        "23456789"
+    )
+
+    for _ in range(30):
+
+        code = "".join(
+            secrets.choice(
+                alphabet
+            )
+            for _ in range(6)
+        )
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT 1
+            FROM predictor_leagues
+            WHERE invite_code = %s
+        """, (
+            code,
+        ))
+
+        exists = cur.fetchone()
+
+        cur.close()
+        conn.close()
+
+        if not exists:
+            return code
+
+    raise RuntimeError(
+        "Не удалось создать код лиги"
+    )
+
+
+def get_predictor_leagues(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id,
+            l.created_at,
+            COUNT(m2.telegram_id)::INTEGER AS members_count
+
+        FROM predictor_leagues l
+
+        JOIN predictor_league_members mine
+            ON mine.league_id = l.id
+            AND mine.telegram_id = %s
+
+        LEFT JOIN predictor_league_members m2
+            ON m2.league_id = l.id
+
+        GROUP BY
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id,
+            l.created_at
+
+        ORDER BY
+            l.created_at DESC
+    """, (
+        telegram_id,
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [
+        {
+            "id": int(row[0]),
+            "name": row[1],
+            "invite_code": row[2],
+            "owner_telegram_id": int(row[3]),
+            "is_owner": (
+                int(row[3])
+                ==
+                int(telegram_id)
+            ),
+            "created_at": (
+                row[4].isoformat()
+                if row[4]
+                else None
+            ),
+            "members_count": int(
+                row[5]
+                or
+                0
+            )
+        }
+        for row in rows
+    ]
+
+
+def create_predictor_league(
+    telegram_id,
+    name
+):
+
+    name = str(
+        name
+        or
+        ""
+    ).strip()
+
+    if len(name) < 2:
+        raise ValueError(
+            "Название лиги слишком короткое"
+        )
+
+    if len(name) > 32:
+        raise ValueError(
+            "Название лиги — максимум 32 символа"
+        )
+
+    code = _predictor_league_code()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO predictor_leagues (
+                owner_telegram_id,
+                name,
+                invite_code
+            )
+            VALUES (
+                %s,
+                %s,
+                %s
+            )
+            RETURNING id
+        """, (
+            telegram_id,
+            name,
+            code
+        ))
+
+        league_id = int(
+            cur.fetchone()[0]
+        )
+
+        cur.execute("""
+            INSERT INTO predictor_league_members (
+                league_id,
+                telegram_id
+            )
+            VALUES (
+                %s,
+                %s
+            )
+            ON CONFLICT DO NOTHING
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return {
+        "league_id": league_id,
+        "invite_code": code
+    }
+
+
+def join_predictor_league(
+    telegram_id,
+    invite_code
+):
+
+    code = str(
+        invite_code
+        or
+        ""
+    ).strip().upper()
+
+    if not code:
+        raise ValueError(
+            "Введи код приглашения"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                id,
+                name
+            FROM predictor_leagues
+            WHERE invite_code = %s
+        """, (
+            code,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига с таким кодом не найдена"
+            )
+
+        league_id = int(
+            row[0]
+        )
+
+        cur.execute("""
+            INSERT INTO predictor_league_members (
+                league_id,
+                telegram_id
+            )
+            VALUES (
+                %s,
+                %s
+            )
+            ON CONFLICT DO NOTHING
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        joined = (
+            cur.rowcount
+            ==
+            1
+        )
+
+        conn.commit()
+
+        return {
+            "league_id": league_id,
+            "name": row[1],
+            "joined": joined
+        }
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+def leave_predictor_league(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                owner_telegram_id
+            FROM predictor_leagues
+            WHERE id = %s
+        """, (
+            league_id,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига не найдена"
+            )
+
+        if (
+            int(row[0])
+            ==
+            int(telegram_id)
+        ):
+            raise ValueError(
+                "Создатель не может выйти из лиги"
+            )
+
+        cur.execute("""
+            DELETE FROM predictor_league_members
+            WHERE
+                league_id = %s
+                AND
+                telegram_id = %s
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+
+def delete_predictor_league(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                owner_telegram_id
+            FROM predictor_leagues
+            WHERE id = %s
+        """, (
+            league_id,
+        ))
+
+        row = cur.fetchone()
+
+        if not row:
+            raise ValueError(
+                "Лига не найдена"
+            )
+
+        if (
+            int(row[0])
+            !=
+            int(telegram_id)
+        ):
+            raise ValueError(
+                "Удалить лигу может только её создатель"
+            )
+
+        cur.execute("""
+            DELETE FROM predictor_leagues
+            WHERE
+                id = %s
+                AND
+                owner_telegram_id = %s
+        """, (
+            league_id,
+            telegram_id
+        ))
+
+        if cur.rowcount != 1:
+            raise ValueError(
+                "Не удалось удалить лигу"
+            )
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+
+def get_predictor_league_leaderboard(
+    telegram_id,
+    league_id
+):
+
+    league_id = int(
+        league_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.invite_code,
+            l.owner_telegram_id
+        FROM predictor_leagues l
+
+        JOIN predictor_league_members m
+            ON m.league_id = l.id
+
+        WHERE
+            l.id = %s
+            AND
+            m.telegram_id = %s
+    """, (
+        league_id,
+        telegram_id
+    ))
+
+    league_row = cur.fetchone()
+
+    if not league_row:
+
+        cur.close()
+        conn.close()
+
+        raise ValueError(
+            "Ты не состоишь в этой лиге"
+        )
+
+    cur.execute("""
+        WITH distinct_dates AS (
+            SELECT DISTINCT
+                p.telegram_id,
+                p.game_date
+            FROM score_game_picks p
+
+            JOIN predictor_league_members lm
+                ON lm.telegram_id = p.telegram_id
+                AND lm.league_id = %s
+        ),
+
+        numbered_dates AS (
+            SELECT
+                telegram_id,
+                game_date,
+                game_date
+                -
+                (
+                    ROW_NUMBER() OVER (
+                        PARTITION BY telegram_id
+                        ORDER BY game_date
+                    )
+                )::INTEGER AS streak_group
+            FROM distinct_dates
+        ),
+
+        streaks AS (
+            SELECT
+                telegram_id,
+                COUNT(*)::INTEGER AS streak_length
+            FROM numbered_dates
+            GROUP BY
+                telegram_id,
+                streak_group
+        ),
+
+        best_streaks AS (
+            SELECT
+                telegram_id,
+                MAX(streak_length)::INTEGER AS best_streak
+            FROM streaks
+            GROUP BY telegram_id
+        ),
+
+        aggregated AS (
+            SELECT
+                u.telegram_id,
+
+                COALESCE(
+                    NULLIF(u.first_name, ''),
+                    NULLIF(u.username, ''),
+                    'Игрок'
+                ) AS display_name,
+
+                COUNT(p.*)::INTEGER AS total,
+
+                COUNT(*) FILTER (
+                    WHERE p.settled = TRUE
+                )::INTEGER AS settled,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win = TRUE
+                )::INTEGER AS exact_wins,
+
+                COUNT(*) FILTER (
+                    WHERE
+                        p.settled = TRUE
+                        AND
+                        p.exact_win IS NOT TRUE
+                        AND
+                        p.outcome_win = TRUE
+                )::INTEGER AS outcome_wins
+
+            FROM predictor_league_members lm
+
+            JOIN users u
+                ON u.telegram_id = lm.telegram_id
+
+            LEFT JOIN score_game_picks p
+                ON p.telegram_id = u.telegram_id
+
+            WHERE lm.league_id = %s
+
+            GROUP BY
+                u.telegram_id,
+                u.first_name,
+                u.username
+        ),
+
+        metrics AS (
+            SELECT
+                a.*,
+
+                (
+                    a.exact_wins
+                    +
+                    a.outcome_wins
+                )::INTEGER AS successful,
+
+                CASE
+                    WHEN a.settled > 0
+                    THEN ROUND(
+                        (
+                            a.exact_wins
+                            +
+                            a.outcome_wins
+                        )
+                        *
+                        100.0
+                        /
+                        a.settled,
+                        1
+                    )
+                    ELSE 0
+                END AS success_rate,
+
+                COALESCE(
+                    bs.best_streak,
+                    0
+                )::INTEGER AS best_streak
+
+            FROM aggregated a
+
+            LEFT JOIN best_streaks bs
+                ON bs.telegram_id = a.telegram_id
+        )
+
+        SELECT
+            telegram_id,
+            display_name,
+            total,
+            settled,
+            exact_wins,
+            outcome_wins,
+            successful,
+            success_rate,
+            best_streak
+
+        FROM metrics
+
+        ORDER BY
+            exact_wins DESC,
+            successful DESC,
+            success_rate DESC,
+            best_streak DESC,
+            settled DESC,
+            total DESC,
+            telegram_id ASC
+    """, (
+        league_id,
+        league_id
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    players = []
+
+    for index, row in enumerate(
+        rows,
+        start=1
+    ):
+
+        players.append({
+            "rank": index,
+            "telegram_id": int(row[0]),
+            "first_name": row[1] or "Игрок",
+            "total": int(row[2] or 0),
+            "settled": int(row[3] or 0),
+            "exact_wins": int(row[4] or 0),
+            "outcome_wins": int(row[5] or 0),
+            "successful": int(row[6] or 0),
+            "success_rate": float(row[7] or 0),
+            "best_streak": int(row[8] or 0)
+        })
+
+    return {
+        "league": {
+            "id": int(league_row[0]),
+            "name": league_row[1],
+            "invite_code": league_row[2],
+            "owner_telegram_id": int(league_row[3]),
+            "is_owner": (
+                int(league_row[3])
+                ==
+                int(telegram_id)
+            )
+        },
+        "players": players
+    }
+
+
+
+def make_score_game_pick(
+    telegram_id,
+    predicted_home,
+    predicted_away
+):
+
+    try:
+
+        predicted_home = int(
+            predicted_home
+        )
+
+        predicted_away = int(
+            predicted_away
+        )
+
+    except Exception:
+
+        raise ValueError(
+            "Укажи правильный счёт"
+        )
+
+    if (
+        predicted_home < 0
+        or
+        predicted_away < 0
+    ):
+
+        raise ValueError(
+            "Счёт не может быть отрицательным"
+        )
+
+    if (
+        predicted_home
+        >
+        SCORE_GAME_MAX_SCORE
+        or
+        predicted_away
+        >
+        SCORE_GAME_MAX_SCORE
+    ):
+
+        raise ValueError(
+            "Максимум 10 голов у одной команды"
+        )
+
+    game = ensure_score_game_round()
+
+    if not game:
+
+        raise ValueError(
+            "Сейчас нет доступного матча"
+        )
+
+    kickoff = game[
+        "kickoff_at"
+    ]
+
+    if (
+        not kickoff
+        or
+        datetime.now(
+            timezone.utc
+        )
+        >=
+        kickoff
+    ):
+
+        raise ValueError(
+            "Матч уже начался"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO score_game_picks (
+                telegram_id,
+                game_date,
+                fixture_id,
+                predicted_home,
+                predicted_away
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            ON CONFLICT (
+                telegram_id,
+                game_date
+            )
+            DO NOTHING
+
+            RETURNING
+                predicted_home,
+                predicted_away
+        """, (
+            telegram_id,
+            game[
+                "game_date"
+            ],
+            game[
+                "fixture_id"
+            ],
+            predicted_home,
+            predicted_away
+        ))
+
+        inserted = cur.fetchone()
+
+        if not inserted:
+
+            raise ValueError(
+                "Ты уже указал счёт на сегодня"
+            )
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return get_score_game(
+        telegram_id
+    )
+# =========================================================
+# 🎡 WHEEL
+# =========================================================
+
+def get_wheel_status(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO wheel_spins (
+            telegram_id
+        )
+        VALUES (
+            %s
+        )
+        ON CONFLICT (
+            telegram_id
+        )
+        DO NOTHING
+    """, (
+        telegram_id,
+    ))
+
+    conn.commit()
+
+    cur.execute("""
+        SELECT
+            last_spin_at,
+            last_reward_type,
+            last_reward_value
+
+        FROM wheel_spins
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    last_spin_at = (
+        row[0]
+        if row
+        else
+        None
+    )
+
+    last_reward_type = (
+        row[1]
+        if row
+        else
+        None
+    )
+
+    last_reward_value = (
+        int(
+            row[2]
+            or
+            0
+        )
+        if row
+        else
+        0
+    )
+
+    available = True
+    seconds_left = 0
+    next_spin_at = None
+
+    if last_spin_at:
+
+        next_spin_at = (
+            last_spin_at
+            +
+            timedelta(
+                hours=
+                    WHEEL_COOLDOWN_HOURS
+            )
+        )
+
+        now = datetime.now(
+            timezone.utc
+        )
+
+        if now < next_spin_at:
+
+            available = False
+
+            seconds_left = max(
+                0,
+                int(
+                    (
+                        next_spin_at
+                        -
+                        now
+                    ).total_seconds()
+                )
+            )
+
+    return {
+
+        "available":
+            available,
+
+        "seconds_left":
+            seconds_left,
+
+        "next_spin_at":
+            (
+                next_spin_at.isoformat()
+                if next_spin_at
+                else
+                None
+            ),
+
+        "last_spin_at":
+            (
+                last_spin_at.isoformat()
+                if last_spin_at
+                else
+                None
+            ),
+
+        "last_reward_type":
+            last_reward_type,
+
+        "last_reward_value":
+            last_reward_value
+    }
+
+
+def choose_wheel_reward():
+
+    total_weight = sum(
+        int(
+            item["weight"]
+        )
+        for item in WHEEL_REWARDS
+    )
+
+    ticket = secrets.randbelow(
+        total_weight
+    )
+
+    cursor = 0
+
+    for item in WHEEL_REWARDS:
+
+        cursor += int(
+            item["weight"]
+        )
+
+        if ticket < cursor:
+
+            return dict(
+                item
+            )
+
+    return dict(
+        WHEEL_REWARDS[0]
+    )
+
+
+def spin_wheel(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO wheel_spins (
+                telegram_id
+            )
+            VALUES (
+                %s
+            )
+            ON CONFLICT (
+                telegram_id
+            )
+            DO NOTHING
+        """, (
+            telegram_id,
+        ))
+
+        cur.execute("""
+            SELECT
+                last_spin_at
+
+            FROM wheel_spins
+
+            WHERE telegram_id = %s
+
+            FOR UPDATE
+        """, (
+            telegram_id,
+        ))
+
+        row = cur.fetchone()
+
+        last_spin_at = (
+            row[0]
+            if row
+            else
+            None
+        )
+
+        now = datetime.now(
+            timezone.utc
+        )
+
+        if last_spin_at:
+
+            next_spin_at = (
+                last_spin_at
+                +
+                timedelta(
+                    hours=
+                        WHEEL_COOLDOWN_HOURS
+                )
+            )
+
+            if now < next_spin_at:
+
+                raise ValueError(
+                    "Колесо уже использовано"
+                )
+
+        reward = choose_wheel_reward()
+
+        reward_type = str(
+            reward["type"]
+        )
+
+        reward_value = int(
+            reward["value"]
+        )
+
+        if reward_type == "coins":
+
+            cur.execute("""
+                UPDATE users
+
+                SET
+                    balance =
+                        balance
+                        +
+                        %s,
+
+                    updated_at =
+                        NOW()
+
+                WHERE telegram_id = %s
+            """, (
+                reward_value,
+                telegram_id
+            ))
+
+        elif reward_type == "xp":
+
+            add_xp(
+                telegram_id,
+                reward_value,
+                cur
+            )
+
+        cur.execute("""
+            UPDATE wheel_spins
+
+            SET
+                last_spin_at = %s,
+                last_reward_type = %s,
+                last_reward_value = %s,
+                updated_at = NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            now,
+            reward_type,
+            reward_value,
+            telegram_id
+        ))
+
+        cur.execute("""
+            INSERT INTO wheel_spin_history (
+                telegram_id,
+                reward_type,
+                reward_value
+            )
+            VALUES (
+                %s,
+                %s,
+                %s
+            )
+        """, (
+            telegram_id,
+            reward_type,
+            reward_value
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    fresh = get_user_data(
+        telegram_id
+    )
+
+    return {
+
+        "reward_type":
+            reward_type,
+
+        "reward_value":
+            reward_value,
+
+        "reward_label":
+            reward["label"],
+
+        "balance":
+            int(
+                fresh["balance"]
+            ),
+
+        **xp_info(
+            fresh["xp"]
+        ),
+
+        "wheel":
+            get_wheel_status(
+                telegram_id
+            )
+    }
+
+
+# =========================================================
+# 🎟 PROMO
+# =========================================================
+
+def redeem_promo_code(
+    telegram_id,
+    raw_code
+):
+
+    code = str(
+        raw_code
+        or
+        ""
+    ).strip().upper()
+
+    if not code:
+
+        raise ValueError(
+            "Введите промокод"
+        )
+
+    if (
+        len(code)
+        >
+        32
+        or
+        not re.fullmatch(
+            r"[A-Z0-9_-]+",
+            code
+        )
+    ):
+
+        raise ValueError(
+            "Неверный формат промокода"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            SELECT
+                reward_coins,
+                reward_xp,
+                max_uses,
+                uses_count,
+                active,
+                expires_at
+
+            FROM promo_codes
+
+            WHERE code = %s
+
+            FOR UPDATE
+        """, (
+            code,
+        ))
+
+        promo = cur.fetchone()
+
+        if not promo:
+
+            raise ValueError(
+                "Такого промокода нет"
+            )
+
+        (
+            reward_coins,
+            reward_xp,
+            max_uses,
+            uses_count,
+            active,
+            expires_at
+        ) = promo
+
+        if not active:
+
+            raise ValueError(
+                "Промокод больше не действует"
+            )
+
+        if (
+            expires_at
+            and
+            datetime.now(
+                timezone.utc
+            )
+            >=
+            expires_at
+        ):
+
+            raise ValueError(
+                "Срок промокода закончился"
+            )
+
+        if (
+            max_uses is not None
+            and
+            int(
+                uses_count
+                or
+                0
+            )
+            >=
+            int(
+                max_uses
+            )
+        ):
+
+            raise ValueError(
+                "Лимит активаций закончился"
+            )
+
+        reward_coins = int(
+            reward_coins
+            or
+            0
+        )
+
+        reward_xp = int(
+            reward_xp
+            or
+            0
+        )
+
+        cur.execute("""
+            INSERT INTO promo_redemptions (
+                telegram_id,
+                code,
+                reward_coins,
+                reward_xp
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            ON CONFLICT (
+                telegram_id,
+                code
+            )
+            DO NOTHING
+
+            RETURNING code
+        """, (
+            telegram_id,
+            code,
+            reward_coins,
+            reward_xp
+        ))
+
+        if not cur.fetchone():
+
+            raise ValueError(
+                "Ты уже использовал этот промокод"
+            )
+
+        if reward_coins > 0:
+
+            cur.execute("""
+                UPDATE users
+
+                SET
+                    balance =
+                        balance
+                        +
+                        %s,
+
+                    updated_at =
+                        NOW()
+
+                WHERE telegram_id = %s
+            """, (
+                reward_coins,
+                telegram_id
+            ))
+
+        if reward_xp > 0:
+
+            add_xp(
+                telegram_id,
+                reward_xp,
+                cur
+            )
+
+        cur.execute("""
+            UPDATE promo_codes
+
+            SET
+                uses_count =
+                    uses_count
+                    +
+                    1
+
+            WHERE code = %s
+        """, (
+            code,
+        ))
+
+        conn.commit()
+
+    except Exception:
+
+        conn.rollback()
+        raise
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    user = get_user_data(
+        telegram_id
+    )
+
+    return {
+
+        "code":
+            code,
+
+        "reward_coins":
+            reward_coins,
+
+        "reward_xp":
+            reward_xp,
+
+        "balance":
+            int(
+                user["balance"]
+            ),
+
+        "xp":
+            int(
+                user["xp"]
+                or
+                0
+            )
+    }
+
+
+# =========================================================
+# СТАВКИ — РАСЧЁТ
+# =========================================================
+
+def settle_user_bets(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            fixture_id,
+            selection,
+            amount,
+            possible
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Активна'
+            AND
+            settled = FALSE
+            AND
+            (
+                kickoff_at IS NULL
+                OR
+                kickoff_at <=
+                    NOW()
+                    -
+                    (%s * INTERVAL '1 minute')
+            )
+    """, (
+        telegram_id,
+        SETTLEMENT_AFTER_KICKOFF_MINUTES
+    ))
+
+    rows = cur.fetchall()
+
+    for row in rows:
+
+        (
+            bet_id,
+            fixture_id,
+            selection,
+            amount,
+            possible
+        ) = row
+
+        match = get_result(
+            fixture_id
+        )
+
+        if (
+            not match
+            or
+            not is_finished_status(
+                match.get("status")
+            )
+        ):
+
+            continue
+
+        home_score = match.get(
+            "home_score"
+        )
+
+        away_score = match.get(
+            "away_score"
+        )
+
+        if (
+            home_score is None
+            or
+            away_score is None
+        ):
+
+            continue
+
+        result = calculate_bet_result(
+            selection,
+            int(
+                home_score
+            ),
+            int(
+                away_score
+            )
+        )
+
+        if result == "win":
+
+            status = "Выиграла"
+
+            payout = int(
+                possible
+            )
+
+        elif result == "refund":
+
+            status = "Возврат"
+
+            payout = int(
+                amount
+            )
+
+        elif result == "loss":
+
+            status = "Проиграла"
+
+            payout = 0
+
+        else:
+
+            continue
+
+        score = (
+            f"{int(home_score)}:"
+            f"{int(away_score)}"
+        )
+
+        cur.execute("""
+            UPDATE bets
+
+            SET
+                status = %s,
+                settled = TRUE,
+                score = %s
+
+            WHERE
+                id = %s
+                AND
+                settled = FALSE
+        """, (
+            status,
+            score,
+            bet_id
+        ))
+
+        if cur.rowcount == 1:
+
+            if payout > 0:
+
+                cur.execute("""
+                    UPDATE users
+
+                    SET
+                        balance =
+                            balance
+                            +
+                            %s,
+
+                        updated_at =
+                            NOW()
+
+                    WHERE telegram_id = %s
+                """, (
+                    payout,
+                    telegram_id
+                ))
+
+            if result == "win":
+
+                add_xp(
+                    telegram_id,
+                    25,
+                    cur
+                )
+
+                increment_daily_win(
+                    telegram_id,
+                    cur
+                )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+def settle_user_parlays(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            amount
+
+        FROM parlays
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Активна'
+            AND
+            settled = FALSE
+    """, (
+        telegram_id,
+    ))
+
+    parlays_rows = cur.fetchall()
+
+    for (
+        parlay_id,
+        amount
+    ) in parlays_rows:
+
+        cur.execute("""
+            SELECT
+                id,
+                fixture_id,
+                selection,
+                odd,
+                status,
+                kickoff_at
+
+            FROM parlay_legs
+
+            WHERE parlay_id = %s
+
+            ORDER BY id ASC
+        """, (
+            parlay_id,
+        ))
+
+        legs = cur.fetchall()
+
+        any_loss = False
+        all_resolved = True
+        effective_odd = 1.0
+
+        for leg in legs:
+
+            (
+                leg_id,
+                fixture_id,
+                selection,
+                odd,
+                leg_status,
+                kickoff_at
+            ) = leg
+
+            if leg_status == "Проиграла":
+
+                any_loss = True
+                continue
+
+            if leg_status == "Выиграла":
+
+                effective_odd *= float(
+                    odd
+                )
+
+                continue
+
+            if leg_status == "Возврат":
+
+                continue
+
+            if kickoff_at:
+
+                if (
+                    datetime.now(
+                        timezone.utc
+                    )
+                    <
+                    kickoff_at
+                    +
+                    timedelta(
+                        minutes=
+                            SETTLEMENT_AFTER_KICKOFF_MINUTES
+                    )
+                ):
+
+                    all_resolved = False
+                    continue
+
+            match = get_result(
+                fixture_id
+            )
+
+            if (
+                not match
+                or
+                not is_finished_status(
+                    match.get("status")
+                )
+            ):
+
+                all_resolved = False
+                continue
+
+            home_score = match.get(
+                "home_score"
+            )
+
+            away_score = match.get(
+                "away_score"
+            )
+
+            if (
+                home_score is None
+                or
+                away_score is None
+            ):
+
+                all_resolved = False
+                continue
+
+            result = calculate_bet_result(
+                selection,
+                int(
+                    home_score
+                ),
+                int(
+                    away_score
+                )
+            )
+
+            if result == "win":
+
+                new_status = "Выиграла"
+
+                effective_odd *= float(
+                    odd
+                )
+
+            elif result == "refund":
+
+                new_status = "Возврат"
+
+            elif result == "loss":
+
+                new_status = "Проиграла"
+
+                any_loss = True
+
+            else:
+
+                all_resolved = False
+                continue
+
+            score = (
+                f"{int(home_score)}:"
+                f"{int(away_score)}"
+            )
+
+            cur.execute("""
+                UPDATE parlay_legs
+
+                SET
+                    status = %s,
+                    score = %s
+
+                WHERE id = %s
+            """, (
+                new_status,
+                score,
+                leg_id
+            ))
+
+        if any_loss:
+
+            cur.execute("""
+                UPDATE parlays
+
+                SET
+                    status =
+                        'Проиграла',
+
+                    settled =
+                        TRUE,
+
+                    settled_at =
+                        NOW()
+
+                WHERE
+                    id = %s
+                    AND
+                    settled = FALSE
+            """, (
+                parlay_id,
+            ))
+
+            continue
+
+        if not all_resolved:
+
+            continue
+
+        if (
+            effective_odd
+            <=
+            1.000001
+        ):
+
+            final_status = "Возврат"
+
+            payout = int(
+                amount
+            )
+
+        else:
+
+            final_status = "Выиграла"
+
+            payout = int(
+                float(
+                    amount
+                )
+                *
+                effective_odd
+                +
+                0.5
+            )
+
+        cur.execute("""
+            UPDATE parlays
+
+            SET
+                status = %s,
+                settled = TRUE,
+                settled_at = NOW()
+
+            WHERE
+                id = %s
+                AND
+                settled = FALSE
+        """, (
+            final_status,
+            parlay_id
+        ))
+
+        if (
+            cur.rowcount == 1
+            and
+            payout > 0
+        ):
+
+            cur.execute("""
+                UPDATE users
+
+                SET
+                    balance =
+                        balance
+                        +
+                        %s,
+
+                    updated_at =
+                        NOW()
+
+                WHERE telegram_id = %s
+            """, (
+                payout,
+                telegram_id
+            ))
+
+            if (
+                final_status
+                ==
+                "Выиграла"
+            ):
+
+                add_xp(
+                    telegram_id,
+                    40,
+                    cur
+                )
+
+                increment_daily_win(
+                    telegram_id,
+                    cur
+                )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+# =========================================================
+# ИСТОРИЯ СТАВОК
+# =========================================================
+
+def get_user_bets(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            fixture_id,
+            match_name,
+            selection,
+            odd,
+            amount,
+            possible,
+            status,
+            settled,
+            score,
+            created_at
+
+        FROM bets
+
+        WHERE telegram_id = %s
+
+        ORDER BY id DESC
+    """, (
+        telegram_id,
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [
+
+        {
+            "id":
+                row[0],
+
+            "fixture_id":
+                row[1],
+
+            "match":
+                row[2],
+
+            "selection":
+                row[3],
+
+            "odd":
+                row[4],
+
+            "amount":
+                row[5],
+
+            "possible":
+                row[6],
+
+            "status":
+                row[7],
+
+            "settled":
+                row[8],
+
+            "score":
+                row[9],
+
+            "created_at":
+                (
+                    row[10].isoformat()
+                    if row[10]
+                    else
+                    None
+                )
+        }
+
+        for row in rows
+    ]
+
+
+def get_user_parlays(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            amount,
+            total_odd,
+            possible,
+            status,
+            settled,
+            created_at,
+            settled_at
+
+        FROM parlays
+
+        WHERE telegram_id = %s
+
+        ORDER BY id DESC
+    """, (
+        telegram_id,
+    ))
+
+    rows = cur.fetchall()
+
+    result = []
+
+    for row in rows:
+
+        parlay_id = row[0]
+
+        cur.execute("""
+            SELECT
+                id,
+                fixture_id,
+                match_name,
+                selection,
+                odd,
+                status,
+                score
+
+            FROM parlay_legs
+
+            WHERE parlay_id = %s
+
+            ORDER BY id ASC
+        """, (
+            parlay_id,
+        ))
+
+        legs = [
+
+            {
+                "id":
+                    leg[0],
+
+                "fixture_id":
+                    leg[1],
+
+                "match":
+                    leg[2],
+
+                "selection":
+                    leg[3],
+
+                "odd":
+                    leg[4],
+
+                "status":
+                    leg[5],
+
+                "score":
+                    leg[6]
+            }
+
+            for leg in cur.fetchall()
+        ]
+
+        result.append({
+
+            "id":
+                row[0],
+
+            "amount":
+                row[1],
+
+            "total_odd":
+                row[2],
+
+            "possible":
+                row[3],
+
+            "status":
+                row[4],
+
+            "settled":
+                row[5],
+
+            "created_at":
+                (
+                    row[6].isoformat()
+                    if row[6]
+                    else
+                    None
+                ),
+
+            "settled_at":
+                (
+                    row[7].isoformat()
+                    if row[7]
+                    else
+                    None
+                ),
+
+            "legs":
+                legs
+        })
+
+    cur.close()
+    conn.close()
+
+    return result
+
+
+
+def get_profile_extra(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT
+            COUNT(*)::INTEGER,
+            COUNT(*) FILTER (
+                WHERE settled = TRUE
+            )::INTEGER,
+            COUNT(*) FILTER (
+                WHERE
+                    settled = TRUE
+                    AND
+                    (
+                        exact_win = TRUE
+                        OR
+                        outcome_win = TRUE
+                    )
+            )::INTEGER,
+            COUNT(*) FILTER (
+                WHERE
+                    settled = TRUE
+                    AND
+                    exact_win = TRUE
+            )::INTEGER
+
+        FROM score_game_picks
+
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    row = (
+        cur.fetchone()
+        or
+        (
+            0,
+            0,
+            0,
+            0
+        )
+    )
+
+    cur.execute(
+        """
+        SELECT COUNT(*)::INTEGER
+        FROM predictor_league_members
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    league_count_row = (
+        cur.fetchone()
+        or
+        (
+            0,
+        )
+    )
+
+    cur.close()
+    conn.close()
+
+    total_predictions = int(
+        row[0]
+        or
+        0
+    )
+
+    settled_predictions = int(
+        row[1]
+        or
+        0
+    )
+
+    successful_predictions = int(
+        row[2]
+        or
+        0
+    )
+
+    exact_wins = int(
+        row[3]
+        or
+        0
+    )
+
+    success_rate = (
+        round(
+            successful_predictions
+            /
+            settled_predictions
+            *
+            100
+        )
+        if settled_predictions > 0
+        else
+        0
+    )
+
+    score_stats = (
+        get_score_game_stats(
+            telegram_id
+        )
+    )
+
+    if exact_wins >= 25:
+        title = "Мастер прогнозов"
+    elif exact_wins >= 10:
+        title = "Эксперт"
+    elif successful_predictions >= 10:
+        title = "Аналитик"
+    else:
+        title = "Новичок"
+
+    return {
+        "title":
+            title,
+
+        "prediction_total":
+            total_predictions,
+
+        "prediction_successful":
+            successful_predictions,
+
+        "prediction_exact":
+            exact_wins,
+
+        "prediction_success_rate":
+            int(
+                success_rate
+            ),
+
+        "current_streak":
+            int(
+                score_stats.get(
+                    "current_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "best_streak":
+            int(
+                score_stats.get(
+                    "best_streak",
+                    0
+                )
+                or
+                0
+            ),
+
+        "private_leagues":
+            int(
+                league_count_row[0]
+                or
+                0
+            )
+    }
+
+
+# =========================================================
+# 📊 PROFILE STATS
+# =========================================================
+
+def get_profile_stats(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Активна'
+            ),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Выиграла'
+            ),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Проиграла'
+            ),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Возврат'
+            )
+
+        FROM bets
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    row = cur.fetchone()
+
+    total = int(
+        row[0]
+        or
+        0
+    )
+
+    active = int(
+        row[1]
+        or
+        0
+    )
+
+    wins = int(
+        row[2]
+        or
+        0
+    )
+
+    losses = int(
+        row[3]
+        or
+        0
+    )
+
+    refunds = int(
+        row[4]
+        or
+        0
+    )
+
+    win_rate = (
+        round(
+            wins
+            /
+            (
+                wins
+                +
+                losses
+            )
+            *
+            100,
+            1
+        )
+        if
+        wins
+        +
+        losses
+        >
+        0
+        else
+        0
+    )
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Выиграла'
+            ),
+
+            COUNT(*) FILTER (
+                WHERE status = 'Проиграла'
+            )
+
+        FROM parlays
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    parlay = cur.fetchone()
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+
+            COUNT(*) FILTER (
+                WHERE won = TRUE
+            )
+
+        FROM prediction_game_picks
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    prediction = cur.fetchone()
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+
+            COUNT(*) FILTER (
+                WHERE exact_win = TRUE
+            ),
+
+            COUNT(*) FILTER (
+                WHERE outcome_win = TRUE
+            )
+
+        FROM score_game_picks
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    score_game = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return {
+
+        "total_bets":
+            total,
+
+        "active_bets":
+            active,
+
+        "wins":
+            wins,
+
+        "losses":
+            losses,
+
+        "refunds":
+            refunds,
+
+        "win_rate":
+            win_rate,
+
+        "total_parlays":
+            int(
+                parlay[0]
+                or
+                0
+            ),
+
+        "parlay_wins":
+            int(
+                parlay[1]
+                or
+                0
+            ),
+
+        "parlay_losses":
+            int(
+                parlay[2]
+                or
+                0
+            ),
+
+        "prediction_games":
+            int(
+                prediction[0]
+                or
+                0
+            ),
+
+        "prediction_wins":
+            int(
+                prediction[1]
+                or
+                0
+            ),
+
+        "score_games":
+            int(
+                score_game[0]
+                or
+                0
+            ),
+
+        "score_exact_wins":
+            int(
+                score_game[1]
+                or
+                0
+            ),
+
+        "score_outcome_wins":
+            int(
+                score_game[2]
+                or
+                0
+            )
+    }
+
+
+# =========================================================
+# 🏅 ACHIEVEMENTS
+# =========================================================
+
+def get_achievements(
+    telegram_id
+):
+
+    user = get_user_data(
+        telegram_id
+    )
+
+    if not user:
+
+        return []
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    bets_count = int(
+        cur.fetchone()[0]
+    )
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM parlays
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    parlay_count = int(
+        cur.fetchone()[0]
+    )
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Выиграла'
+    """, (
+        telegram_id,
+    ))
+
+    wins = int(
+        cur.fetchone()[0]
+    )
+
+    cur.execute("""
+        SELECT COUNT(*)
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Выиграла'
+            AND
+            odd >= 3.0
+    """, (
+        telegram_id,
+    ))
+
+    high_odd_win = int(
+        cur.fetchone()[0]
+    )
+
+    cur.execute("""
+        SELECT achievement_key
+
+        FROM achievement_claims
+
+        WHERE telegram_id = %s
+    """, (
+        telegram_id,
+    ))
+
+    claimed = {
+        row[0]
+        for row in cur.fetchall()
+    }
+
+    cur.close()
+    conn.close()
+
+    values = {
+
+        "bets_10":
+            bets_count
+            +
+            parlay_count,
+
+        "wins_5":
+            wins,
+
+        "level_5":
+            calculate_level(
+                user["xp"]
+            ),
+
+        "xp_500":
+            int(
+                user["xp"]
+                or
+                0
+            ),
+
+        "high_odd_win":
+            high_odd_win
+    }
+
+    result = []
+
+    for achievement in ACHIEVEMENTS:
+
+        progress = values.get(
+            achievement["key"],
+            0
+        )
+
+        result.append({
+
+            **achievement,
+
+            "progress":
+                min(
+                    progress,
+                    achievement["target"]
+                ),
+
+            "completed":
+                progress
+                >=
+                achievement["target"],
+
+            "claimed":
+                achievement["key"]
+                in
+                claimed
+        })
+
+    return result
+
+
+# =========================================================
+# ⭐ FAVORITES
+# =========================================================
+
+def get_user_favorites(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            fixture_id,
+            match_name,
+            kickoff_at,
+            notifications_enabled,
+            notification_sent
+
+        FROM match_favorites
+
+        WHERE
+            telegram_id = %s
+            AND
+            kickoff_at > NOW()
+
+        ORDER BY kickoff_at ASC
+    """, (
+        telegram_id,
+    ))
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [
+
+        {
+            "fixture_id":
+                int(
+                    row[0]
+                ),
+
+            "match":
+                row[1],
+
+            "date":
+                (
+                    row[2].isoformat()
+                    if row[2]
+                    else
+                    None
+                ),
+
+            "notifications_enabled":
+                bool(
+                    row[3]
+                ),
+
+            "notification_sent":
+                bool(
+                    row[4]
+                )
+        }
+
+        for row in rows
+    ]
+
+
+def add_favorite_match(
+    telegram_id,
+    fixture_id
+):
+
+    match = get_fixture(
+        fixture_id,
+        False
+    )
+
+    kickoff = parse_match_datetime(
+        match.get("date")
+    )
+
+    if not kickoff:
+
+        raise ValueError(
+            "Не удалось определить время матча"
+        )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO match_favorites (
+            telegram_id,
+            fixture_id,
+            match_name,
+            kickoff_at
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (
+            telegram_id,
+            fixture_id
+        )
+        DO UPDATE SET
+            match_name =
+                EXCLUDED.match_name,
+
+            kickoff_at =
+                EXCLUDED.kickoff_at,
+
+            notifications_enabled =
+                TRUE,
+
+            updated_at =
+                NOW()
+    """, (
+        telegram_id,
+        fixture_id,
+        f"{match['home']} — {match['away']}",
+        kickoff
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+def remove_favorite_match(
+    telegram_id,
+    fixture_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM match_favorites
+
+        WHERE
+            telegram_id = %s
+            AND
+            fixture_id = %s
+    """, (
+        telegram_id,
+        fixture_id
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+def get_user_favorite_teams(
+    telegram_id
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT team_name
+
+        FROM favorite_teams
+
+        WHERE telegram_id = %s
+
+        ORDER BY created_at ASC
+    """, (
+        telegram_id,
+    ))
+
+    result = [
+        row[0]
+        for row in cur.fetchall()
+    ]
+
+    cur.close()
+    conn.close()
+
+    return result
+
+
+def add_favorite_team(
+    telegram_id,
+    team_name
+):
+
+    key = favorite_team_key(
+        team_name
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO favorite_teams (
+            telegram_id,
+            team_name,
+            normalized_name
+        )
+        VALUES (
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (
+            telegram_id,
+            normalized_name
+        )
+        DO UPDATE SET
+            team_name =
+                EXCLUDED.team_name
+    """, (
+        telegram_id,
+        team_name,
+        key
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+def remove_favorite_team(
+    telegram_id,
+    team_name
+):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM favorite_teams
+
+        WHERE
+            telegram_id = %s
+            AND
+            normalized_name = %s
+    """, (
+        telegram_id,
+        favorite_team_key(
+            team_name
+        )
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+# =========================================================
+# 🔴 LIVE
+# =========================================================
+
+def refresh_live_matches_once():
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    candidates = []
+
+    for match in get_all_cached_matches():
+
+        kickoff = parse_match_datetime(
+            match.get("date")
+        )
+
+        if not kickoff:
+
+            continue
+
+        if (
+            kickoff
+            <=
+            now
+            +
+            timedelta(
+                minutes=
+                    LIVE_PREMATCH_MINUTES
+            )
+            and
+            kickoff
+            >=
+            now
+            -
+            timedelta(
+                hours=
+                    LIVE_POSTMATCH_HOURS
+            )
+        ):
+
+            candidates.append(
+                match
+            )
+
+    candidates.sort(
+        key=
+            lambda item:
+                item.get("date")
+                or
+                ""
+    )
+
+    candidates = candidates[
+        :LIVE_MAX_MATCHES_PER_CYCLE
+    ]
+
+    for match in candidates:
+
+        try:
+
+            fresh = get_fixture(
+                match["fixture_id"],
+                False,
+                True
+            )
+
+            live, finished = (
+                live_status_flags(
+                    fresh.get("status"),
+                    fresh.get("status_code")
+                )
+            )
+
+            live_match_cache[
+                str(
+                    int(
+                        match["fixture_id"]
+                    )
+                )
+            ] = {
+
+                **fresh,
+
+                "live":
+                    live,
+
+                "finished":
+                    finished,
+
+                "updated_at":
+                    datetime.now(
+                        timezone.utc
+                    ).isoformat()
+            }
+
+        except Exception as error:
+
+            print(
+                "Live error:",
+                error,
+                flush=True
+            )
+
+
+
+# =========================================================
+# 🔔 TELEGRAM УВЕДОМЛЕНИЯ МАТЧА ДНЯ
+# =========================================================
+
+_bot_webapp_url_cache = {
+    "value": None,
+    "checked_at": 0
 }
 
 
-function logo(
-    url
-){
+def telegram_api_call(
+    method,
+    payload=None,
+    timeout=12
+):
+
+    if not TELEGRAM_BOT_TOKEN:
+        return {
+            "ok": False
+        }
+
+    try:
+
+        response = requests.post(
+            (
+                "https://api.telegram.org/bot"
+                + TELEGRAM_BOT_TOKEN
+                + "/"
+                + method
+            ),
+            json=(
+                payload
+                or
+                {}
+            ),
+            timeout=timeout
+        )
+
+        data = response.json()
+
+        if not response.ok:
+
+            print(
+                "Telegram API error:",
+                method,
+                response.status_code,
+                str(data)[:500],
+                flush=True
+            )
+
+        return data
+
+    except Exception as error:
+
+        print(
+            "Telegram API exception:",
+            method,
+            error,
+            flush=True
+        )
+
+        return {
+            "ok": False
+        }
+
+
+def get_bot_webapp_url():
+
+    if BETCOIN_WEBAPP_URL:
+        return BETCOIN_WEBAPP_URL
+
+    now_ts = time.time()
+
+    cached_value = (
+        _bot_webapp_url_cache.get(
+            "value"
+        )
+    )
+
+    checked_at = float(
+        _bot_webapp_url_cache.get(
+            "checked_at",
+            0
+        )
+        or
+        0
+    )
+
+    if (
+        cached_value
+        and
+        now_ts - checked_at < 3600
+    ):
+        return cached_value
+
+    data = telegram_api_call(
+        "getChatMenuButton"
+    )
+
+    url = ""
+
+    if data.get("ok"):
+
+        menu_button = (
+            data.get("result")
+            or
+            {}
+        )
+
+        if (
+            menu_button.get("type")
+            ==
+            "web_app"
+        ):
+
+            url = str(
+                (
+                    menu_button.get(
+                        "web_app"
+                    )
+                    or
+                    {}
+                ).get(
+                    "url"
+                )
+                or
+                ""
+            ).strip()
+
+    _bot_webapp_url_cache[
+        "value"
+    ] = url
+
+    _bot_webapp_url_cache[
+        "checked_at"
+    ] = now_ts
 
     return url
 
-    ?
 
-    `
-        <div class="logo">
+def webapp_url_with_params(
+    page=None,
+    score_view=None
+):
 
-            <img
-                src="${esc(url)}"
+    base = get_bot_webapp_url()
 
-                onerror="
-                    this.parentElement.innerHTML='⚽'
-                "
-            >
+    if not base:
+        return ""
 
-        </div>
-    `
+    params = []
 
-    :
+    if page:
+        params.append(
+            "page="
+            +
+            str(page)
+        )
 
-    `
-        <div class="logo">
-            ⚽
-        </div>
-    `;
-}
+    if score_view:
+        params.append(
+            "score_view="
+            +
+            str(score_view)
+        )
 
+    if not params:
+        return base
 
-function parseDate(
-    value
-){
-
-    const date =
-        new Date(
-            value
-        );
-
-
-    return Number.isFinite(
-        date.getTime()
+    separator = (
+        "&"
+        if "?" in base
+        else
+        "?"
     )
-
-    ?
-
-    date
-
-    :
-
-    null;
-}
-function isToday(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    const now =
-        new Date();
-
 
     return (
-        !!date
-        &&
-        date.toDateString()
-        ===
-        now.toDateString()
-    );
-}
-
-
-function isTomorrow(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    const tomorrow =
-        new Date();
-
-
-    tomorrow.setDate(
-        tomorrow.getDate()
+        base
         +
-        1
-    );
-
-
-    return (
-        !!date
-        &&
-        date.toDateString()
-        ===
-        tomorrow.toDateString()
-    );
-}
-
-
-function isFavTeam(
-    name
-){
-
-    return favoriteTeams.some(
-        team =>
-            tkey(
-                team
-            )
-            ===
-            tkey(
-                name
-            )
-    );
-}
-
-
-function hasFavTeam(
-    match
-){
-
-    return (
-        isFavTeam(
-            match.home
-        )
-        ||
-        isFavTeam(
-            match.away
-        )
-    );
-}
-
-
-function findMatch(
-    id
-){
-
-    id =
-        Number(
-            id
-        );
-
-
-    for(
-        const list
-        of
-        Object.values(
-            loaded
-        )
-    ){
-
-        for(
-            const match
-            of
-            list
-            ||
-            []
-        ){
-
-            if(
-                Number(
-                    match.fixture_id
-                )
-                ===
-                id
-            ){
-
-                return match;
-            }
-        }
-    }
-
-
-    return null;
-}
-
-
-function kickoff(
-    match
-){
-
-    const live =
-        liveMap[
-            Number(
-                match.fixture_id
-            )
-        ];
-
-
-    if(live){
-
-        const score =
-            (
-                live.home_score
-                !=
-                null
-                &&
-                live.away_score
-                !=
-                null
-            )
-
-            ?
-
-            `${live.home_score}:${live.away_score}`
-
-            :
-
-            "";
-
-
-        if(
-            live.finished
-        ){
-
-            return{
-                started:true,
-                text:
-                    score
-                    ?
-                    `FT • ${score}`
-                    :
-                    "FT",
-                c:"started"
-            };
-        }
-
-
-        if(
-            live.live
-        ){
-
-            return{
-                started:true,
-                text:
-                    score
-                    ?
-                    `● LIVE • ${score}`
-                    :
-                    "● LIVE",
-                c:"live"
-            };
-        }
-    }
-
-
-    const date =
-        parseDate(
-            match.date
-        );
-
-
-    if(!date){
-
-        return{
-            started:false,
-            text:"Время уточняется",
-            c:""
-        };
-    }
-
-
-    const ms =
-        date
-        -
-        Date.now();
-
-
-    if(
-        ms <= 0
-    ){
-
-        return{
-            started:true,
-            text:"● Начался",
-            c:"started"
-        };
-    }
-
-
-    const minutes =
-        Math.floor(
-            ms
-            /
-            60000
-        );
-
-
-    if(
-        minutes < 60
-    ){
-
-        return{
-            started:false,
-            text:
-                `Через ${Math.max(
-                    1,
-                    minutes
-                )} мин`,
-            c:"soon"
-        };
-    }
-
-
-    const hours =
-        Math.floor(
-            minutes
-            /
-            60
-        );
-
-
-    if(
-        hours < 24
-    ){
-
-        return{
-            started:false,
-            text:
-                `Через ${hours} ч ${minutes % 60} мин`,
-            c:""
-        };
-    }
-
-
-    return{
-        started:false,
-        text:
-            date.toLocaleString(
-                "ru-RU",
-                {
-                    day:"2-digit",
-                    month:"2-digit",
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            ),
-        c:""
-    };
-}
-
-
-/* ===================================
-   🎁 HOME REWARDS
-=================================== */
-
-function renderHomeRewards(){
-
-    const box =
-        document.getElementById(
-            "homeRewards"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    const cards = [];
-
-
-    if(
-        loginStreak
-        &&
-        loginStreak.available
-        ===
-        true
-    ){
-
-        const reward =
-            loginStreak.next_reward
-            ||
-            {
-                coins:100,
-                xp:0
-            };
-
-
-        const rewardText =
-            Number(
-                reward.xp
-                ||
-                0
-            )
-            >
-            0
-
-            ?
-
-            `+${reward.coins} 🪙 +${reward.xp} XP`
-
-            :
-
-            `+${reward.coins} 🪙`;
-
-
-        cards.push(
-            `
-                <div class="reward-alert">
-
-                    <div class="reward-alert-row">
-
-                        <div class="reward-alert-icon">
-                            🔥
-                        </div>
-
-                        <div class="reward-alert-content">
-
-                            <div class="reward-alert-title">
-                                Награда дня доступна
-                            </div>
-
-                            <div class="reward-alert-text">
-                                День ${loginStreak.next_day || 1}
-                                •
-                                ${rewardText}
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="reward-alert-btn"
-                            onclick="showPage('profile')"
-                        >
-                            Забрать
-                        </button>
-
-                    </div>
-
-                </div>
-            `
-        );
-    }
-
-
-    if(
-        wheel
-        &&
-        wheel.available
-        ===
-        true
-    ){
-
-        cards.push(
-            `
-                <div class="reward-alert wheel">
-
-                    <div class="reward-alert-row">
-
-                        <div class="reward-alert-icon">
-                            🎡
-                        </div>
-
-                        <div class="reward-alert-content">
-
-                            <div class="reward-alert-title">
-                                Бесплатное вращение
-                            </div>
-
-                            <div class="reward-alert-text">
-                                Колесо удачи снова доступно
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="reward-alert-btn"
-                            onclick="showPage('games')"
-                        >
-                            Крутить
-                        </button>
-
-                    </div>
-
-                </div>
-            `
-        );
-    }
-
-
-    box.innerHTML =
-        cards.join(
-            ""
-        );
-
-
-    box.classList.toggle(
-        "show",
-        cards.length
-        >
-        0
-    );
-}
-
-
-/* ===================================
-   MATCH CARDS
-=================================== */
-
-function selectedInParlay(
-    id,
-    selection
-){
-
-    return parlaySlip.some(
-        item =>
-            Number(
-                item.fixture_id
-            )
-            ===
-            Number(
-                id
-            )
-            &&
-            item.selection
-            ===
-            selection
-    );
-}
-
-
-function oddBtn(
-    match,
-    selection,
-    odd,
-    label
-){
-
-    const number =
-        Number(
-            odd
-        );
-
-
-    const matchKickoff =
-        kickoff(
-            match
-        );
-
-
-    const selected =
-        selectedInParlay(
-            match.fixture_id,
-            selection
-        );
-
-
-    if(
-        matchKickoff.started
-        ||
-        !Number.isFinite(
-            number
-        )
-        ||
-        number <= 1
-    ){
-
-        return `
-            <button class="odd disabled">
-
-                <small>
-                    ${esc(label)}
-                </small>
-
-                ${
-                    matchKickoff.started
-                    ?
-                    "Закрыто"
-                    :
-                    "—"
-                }
-
-            </button>
-        `;
-    }
-
-
-    return `
-        <button
-            class="odd ${selected ? "selected" : ""}"
-
-            onclick="
-                event.stopPropagation();
-
-                selectBet(
-                    ${Number(match.fixture_id)},
-                    '${js(match.home)}',
-                    '${js(match.away)}',
-                    '${js(selection)}',
-                    ${number},
-                    '${js(match.date)}'
-                )
-            "
-        >
-
-            <small>
-                ${selected ? "✓ " : ""}
-                ${esc(label)}
-            </small>
-
-            ${number.toFixed(2)}
-
-        </button>
-    `;
-}
-
-
-function renderMatch(
-    match
-){
-
-    if(!match){
-
-        return "";
-    }
-
-
-    const matchKickoff =
-        kickoff(
-            match
-        );
-
-
-    const live =
-        liveMap[
-            Number(
-                match.fixture_id
-            )
-        ];
-
-
-    const hasScore =
-        live
-        &&
-        live.home_score
-        !=
-        null
-        &&
-        live.away_score
-        !=
-        null;
-
-
-    const favorite =
-        favoriteMatches.includes(
-            Number(
-                match.fixture_id
-            )
-        );
-
-
-    const odds =
-        match.odds
-        ||
-        {};
-
-
-    return `
-        <div
-            class="match-card"
-
-            onclick="
-                openMatch(
-                    ${Number(match.fixture_id)}
-                )
-            "
-        >
-
-            <div class="match-head">
-
-                <div class="match-meta">
-
-                    <div class="league">
-
-                        ${
-                            live?.live
-                            ?
-                            `<span class="badge live">LIVE</span>`
-                            :
-                            ""
-                        }
-
-                        ${
-                            live?.finished
-                            ?
-                            `<span class="badge ft">FT</span>`
-                            :
-                            ""
-                        }
-
-                        ${esc(
-                            match.league
-                            ||
-                            "Футбол"
-                        )}
-
-                    </div>
-
-                    <div class="time ${matchKickoff.c}">
-                        ${esc(matchKickoff.text)}
-                        ${
-                            (
-                                !matchKickoff.started
-                                &&
-                                parseDate(match.date)
-                                &&
-                                (
-                                    parseDate(match.date).getTime()
-                                    -
-                                    Date.now()
-                                )
-                                >
-                                0
-                                &&
-                                (
-                                    parseDate(match.date).getTime()
-                                    -
-                                    Date.now()
-                                )
-                                <=
-                                60 * 60 * 1000
-                            )
-                            ?
-                            `<span class="match-soon">СКОРО</span>`
-                            :
-                            ""
-                        }
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="star ${favorite ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteMatch(
-                            ${Number(match.fixture_id)}
-                        )
-                    "
-                >
-                    ${favorite ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="team-row">
-
-                ${logo(
-                    match.home_logo
-                )}
-
-                <div class="team-name">
-                    ${esc(match.home)}
-                </div>
-
-                ${
-                    hasScore
-                    ?
-                    `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
-                            ${live.home_score}
-                        </div>
-                    `
-                    :
-                    ""
-                }
-
-                <button
-                    class="team-star ${isFavTeam(match.home) ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.home)}'
-                        )
-                    "
-                >
-                    ${isFavTeam(match.home) ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="team-row">
-
-                ${logo(
-                    match.away_logo
-                )}
-
-                <div class="team-name">
-                    ${esc(match.away)}
-                </div>
-
-                ${
-                    hasScore
-                    ?
-                    `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
-                            ${live.away_score}
-                        </div>
-                    `
-                    :
-                    ""
-                }
-
-                <button
-                    class="team-star ${isFavTeam(match.away) ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.away)}'
-                        )
-                    "
-                >
-                    ${isFavTeam(match.away) ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="odds">
-
-                ${oddBtn(
-                    match,
-                    "П1",
-                    odds.home,
-                    "П1"
-                )}
-
-                ${oddBtn(
-                    match,
-                    "X",
-                    odds.draw,
-                    "X"
-                )}
-
-                ${oddBtn(
-                    match,
-                    "П2",
-                    odds.away,
-                    "П2"
-                )}
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-/* ===================================
-   LIVE
-=================================== */
-
-async function loadLive(){
-
-    try{
-
-        const response =
-            await fetch(
-                SERVER_URL
-                +
-                "/api/live"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok
-            ||
-            !data.success
-        ){
-
-            return;
-        }
-
-
-        liveMap = {};
-
-
-        for(
-            const match
-            of
-            data.matches
-            ||
-            []
-        ){
-
-            liveMap[
-                Number(
-                    match.fixture_id
-                )
-            ] =
-                match;
-        }
-
-
-        renderLive();
-
-        renderMatches();
-
-        renderHome();
-
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-    }
-}
-
-
-function renderLive(){
-
-    const live =
-        Object.values(
-            liveMap
-        )
-        .filter(
-            item =>
-                item.live
-        );
-
-
-    for(
-        const [
-            wrap,
-            list
-        ]
-        of
-        [
-            [
-                "homeLiveWrap",
-                "homeLive"
-            ],
-            [
-                "liveWrap",
-                "liveList"
-            ]
-        ]
-    ){
-
-        const wrapper =
-            document.getElementById(
-                wrap
-            );
-
-
-        if(!wrapper){
-
-            continue;
-        }
-
-
-        if(
-            live.length
-        ){
-
-            wrapper.style.display =
-                "block";
-
-
-            document
-            .getElementById(
-                list
-            )
-            .innerHTML =
-                live
-                .map(
-                    item =>
-                        renderMatch({
-                            ...(
-                                findMatch(
-                                    item.fixture_id
-                                )
-                                ||
-                                {}
-                            ),
-                            ...item
-                        })
-                )
-                .join("");
-
-        }else{
-
-            wrapper.style.display =
-                "none";
-        }
-    }
-}
-
-
-/* ===================================
-   MATCH LOADING
-=================================== */
-
-
-async function autoRefreshMatches(){
-
-    try{
-
-        const key =
-            currentLeague
-            ||
-            "top5";
-
-        // Сбрасываем только текущую лигу,
-        // чтобы сервер реально проверил свежее расписание.
-        delete loaded[
-            key
-        ];
-
-        await loadLeague(
-            key
-        );
-
-    }catch(error){
-
-        console.error(
-            "Auto matches refresh:",
-            error
-        );
-    }
-}
-
-
-async function loadLeague(
-    key
-){
-
-    currentLeague =
-        key;
-
-
-    document
-    .querySelectorAll(
-        ".league-chip"
-    )
-    .forEach(
-        button =>
-            button.classList.toggle(
-                "active",
-                button.dataset.v
-                ===
-                key
-            )
-    );
-
-
-    if(
-        key
-        ===
-        "favorites"
-    ){
-
-        renderMatches();
-
-        return;
-    }
-
-
-    if(
-        loaded[
-            key
-        ]
-    ){
-
-        matches =
-            loaded[
-                key
-            ];
-
-        renderMatches();
-
-        return;
-    }
-
-
-    document
-    .getElementById(
-        "matchesList"
-    )
-    .innerHTML =
-        `
-            <div class="loader">
-                Загружаем...
-            </div>
-        `;
-
-
-    try{
-
-        const url =
-            SERVER_URL
-            +
-            "/api/matches"
-            +
-            (
-                key
-                ===
-                "top5"
-
-                ?
-
-                ""
-
-                :
-
-                "?league="
-                +
-                encodeURIComponent(
-                    key
-                )
-            );
-
-
-        const response =
-            await fetch(
-                url
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok
-            ||
-            !data.success
-        ){
-
-            throw new Error(
-                data.error
-                ||
-                "Ошибка"
-            );
-        }
-
-
-        matches =
-            (
-                data.matches
-                ||
-                []
-            )
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    new Date(
-                        a.date
-                    )
-                    -
-                    new Date(
-                        b.date
-                    )
-            );
-
-
-        loaded[
-            key
-        ] =
-            matches;
-
-
-        renderAll();
-
-
-    }catch(error){
-
-        document
-        .getElementById(
-            "matchesList"
-        )
-        .innerHTML =
-            `
-                <div class="empty">
-                    ${esc(error.message)}
-                </div>
-            `;
-    }
-}
-
-
-function setDateFilter(
-    value
-){
-
-    dateFilter =
-        value;
-
-
-    document
-    .querySelectorAll(
-        ".date-chip"
-    )
-    .forEach(
-        button =>
-            button.classList.toggle(
-                "active",
-                button.dataset.v
-                ===
-                value
-            )
-    );
-
-
-    renderMatches();
-}
-
-
-function filtered(
-    list
-){
-
-    return list.filter(
-        match =>
-
-            (
-                dateFilter
-                ===
-                "all"
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "today"
-                    &&
-                    isToday(
-                        match.date
-                    )
-                )
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "tomorrow"
-                    &&
-                    isTomorrow(
-                        match.date
-                    )
-                )
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "myteams"
-                    &&
-                    hasFavTeam(
-                        match
-                    )
-                )
-            )
-
-            &&
-
-            (
-                !searchQuery
-
-                ||
-
-                (
-                    `${match.home} ${match.away} ${match.league}`
-                )
-                .toLowerCase()
-                .includes(
-                    searchQuery
-                )
-            )
-    );
-}
-
-
-function matchDateLabel(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    if(!date){
-        return "Дата уточняется";
-    }
-
-    if(isToday(value)){
-        return "Сегодня";
-    }
-
-    if(isTomorrow(value)){
-        return "Завтра";
-    }
-
-    return date.toLocaleDateString(
-        "ru-RU",
-        {
-            day:"numeric",
-            month:"long",
-            weekday:"short"
-        }
-    );
-}
-
-
-function matchDateKey(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    if(!date){
-        return "unknown";
-    }
-
-    return [
-        date.getFullYear(),
-        String(
-            date.getMonth() + 1
-        ).padStart(2,"0"),
-        String(
-            date.getDate()
-        ).padStart(2,"0")
-    ].join("-");
-}
-
-
-async function refreshMatchesNow(){
-
-    const button =
-        document.querySelector(
-            ".matches-refresh"
-        );
-
-    if(button){
-        button.disabled = true;
-        button.textContent = "↻ Обновляем...";
-    }
-
-    try{
-
-        const key =
-            currentLeague
-            ||
-            "top5";
-
-        if(key === "favorites"){
-
-            loaded = {};
-
-            await loadLeague(
-                "top5"
-            );
-
-            currentLeague =
-                "favorites";
-
-            renderMatches();
-
-        }else{
-
-            delete loaded[
-                key
-            ];
-
-            await loadLeague(
-                key
-            );
-        }
-
-        await loadLive();
-
-    }catch(error){
-
-        console.error(
-            "Manual matches refresh:",
-            error
-        );
-
-    }finally{
-
-        if(button){
-            button.disabled = false;
-            button.textContent = "↻ Обновить";
-        }
-    }
-}
-
-
-function allMatches(){
-
-    const map = {};
-
-
-    for(
-        const list
-        of
-        Object.values(
-            loaded
-        )
-    ){
-
-        for(
-            const match
-            of
-            list
-            ||
-            []
-        ){
-
-            map[
-                match.fixture_id
-            ] =
-                match;
-        }
-    }
-
-
-    return Object.values(
-        map
-    );
-}
-
-
-function renderMatches(){
-
-    let list =
-        currentLeague
-        ===
-        "favorites"
-
-        ?
-
-        allMatches()
-        .filter(
-            match =>
-                favoriteMatches.includes(
-                    Number(
-                        match.fixture_id
-                    )
-                )
-        )
-
-        :
-
-        matches;
-
-
-    list =
-        filtered(
-            list
-        );
-
-
-    // LIVE показываем отдельным блоком сверху,
-    // поэтому не дублируем те же матчи в общем списке.
-    const regularList =
-        list.filter(
-            match =>
-                !liveMap[
-                    Number(
-                        match.fixture_id
-                    )
-                ]?.live
-        );
-
-
-    const countBox =
-        document.getElementById(
-            "matchesCount"
-        );
-
-
-    if(countBox){
-
-        const total =
-            list.length;
-
-        countBox.textContent =
-            total === 1
-            ?
-            "1 матч"
-            :
-            (
-                total >= 2
-                &&
-                total <= 4
-                ?
-                `${total} матча`
-                :
-                `${total} матчей`
-            );
-    }
-
-
-    const box =
-        document.getElementById(
-            "matchesList"
-        );
-
-
-    if(!box){
-        return;
-    }
-
-
-    if(list.length === 0){
-
-        let message =
-            "Матчи не найдены";
-
-        if(dateFilter === "today"){
-            message =
-                "Сегодня матчей пока нет";
-        }
-
-        if(dateFilter === "tomorrow"){
-            message =
-                "На завтра матчей пока нет";
-        }
-
-        if(dateFilter === "myteams"){
-            message =
-                "Матчей твоих команд сейчас нет";
-        }
-
-        if(currentLeague === "favorites"){
-            message =
-                "В избранном пока нет матчей";
-        }
-
-        box.innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        ⚽
-                    </div>
-
-                    <b>
-                        ${esc(message)}
-                    </b>
-
-                    <div
-                        class="muted"
-                        style="margin-top:6px"
-                    >
-                        Попробуй другой день или лигу
-                    </div>
-
-                </div>
-            `;
-
-        renderLive();
-
-        return;
-    }
-
-
-    if(regularList.length === 0){
-
-        box.innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        🔴
-                    </div>
-
-                    <b>
-                        Все выбранные матчи сейчас LIVE
-                    </b>
-
-                    <div
-                        class="muted"
-                        style="margin-top:6px"
-                    >
-                        Они показаны выше
-                    </div>
-
-                </div>
-            `;
-
-        renderLive();
-
-        return;
-    }
-
-
-    const groups = {};
-
-
-    for(
-        const match
-        of
-        regularList
-    ){
-
-        const key =
-            matchDateKey(
-                match.date
-            );
-
-        if(!groups[key]){
-            groups[key] = [];
-        }
-
-        groups[key].push(
-            match
-        );
-    }
-
-
-    const keys =
-        Object.keys(
-            groups
-        )
-        .sort();
-
-
-    box.innerHTML =
-        keys
-        .map(
-            key => {
-
-                const group =
-                    groups[key];
-
-                const label =
-                    matchDateLabel(
-                        group[0]?.date
-                    );
-
-                return `
-                    <div class="matches-date-title">
-
-                        <span>
-                            ${esc(label)}
-                        </span>
-
-                        <span class="matches-date-count">
-                            ${group.length}
-                        </span>
-
-                    </div>
-
-                    ${group
-                        .map(
-                            renderMatch
-                        )
-                        .join("")
-                    }
-                `;
-            }
-        )
-        .join("");
-
-
-    renderLive();
-}
-
-
-/* ===================================
-   FAVORITES
-=================================== */
-
-async function toggleFavoriteMatch(
-    id
-){
-
-    id =
-        Number(
-            id
-        );
-
-
-    const old =
-        favoriteMatches.includes(
-            id
-        );
-
-
-    favoriteMatches =
-        old
-
-        ?
-
-        favoriteMatches.filter(
-            value =>
-                value
-                !==
-                id
-        )
-
-        :
-
-        [
-            ...favoriteMatches,
-            id
-        ];
-
-
-    localStorage.setItem(
-        "bcFavMatches",
-        JSON.stringify(
-            favoriteMatches
-        )
-    );
-
-
-    renderAll();
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/favorites/toggle",
-                {
-                    fixture_id:
-                        id,
-
-                    favorite:
-                        !old
-                }
-            );
-
-
-        favoriteMatches =
-            (
-                data.favorites
-                ||
-                []
-            )
-            .map(
-                item =>
-                    Number(
-                        item.fixture_id
-                        ??
-                        item
-                    )
-            );
-
-
-        localStorage.setItem(
-            "bcFavMatches",
-            JSON.stringify(
-                favoriteMatches
-            )
-        );
-
-
-        renderAll();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function toggleFavoriteTeam(
-    name
-){
-
-    const old =
-        isFavTeam(
-            name
-        );
-
-
-    favoriteTeams =
-        old
-
-        ?
-
-        favoriteTeams.filter(
-            team =>
-                tkey(
-                    team
-                )
-                !==
-                tkey(
-                    name
-                )
-        )
-
-        :
-
-        [
-            ...favoriteTeams,
-            name
-        ];
-
-
-    localStorage.setItem(
-        "bcFavTeams",
-        JSON.stringify(
-            favoriteTeams
-        )
-    );
-
-
-    renderAll();
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/favorite-teams/toggle",
-                {
-                    team_name:
-                        name,
-
-                    favorite:
-                        !old
-                }
-            );
-
-
-        favoriteTeams =
-            data.favorite_teams
-            ||
-            favoriteTeams;
-
-
-        localStorage.setItem(
-            "bcFavTeams",
-            JSON.stringify(
-                favoriteTeams
-            )
-        );
-
-
-        renderAll();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-/* ===================================
-   MATCH DETAIL
-=================================== */
-
-async function openMatch(
-    id
-){
-
-    showPage(
-        "match",
-        false
-    );
-
-
-    const box =
-        document.getElementById(
-            "matchDetail"
-        );
-
-
-    box.innerHTML =
-        `
-            <div class="loader">
-                Загрузка...
-            </div>
-        `;
-
-
-    try{
-
-        const response =
-            await fetch(
-                SERVER_URL
-                +
-                "/api/match/"
-                +
-                id
-            );
-
-
-        const match =
-            await response.json();
-
-
-        if(
-            !response.ok
-            ||
-            match.success
-            ===
-            false
-        ){
-
-            throw new Error(
-                match.error
-                ||
-                "Ошибка"
-            );
-        }
-
-
-        let html =
-            renderMatch(
-                match
-            );
-
-
-        html +=
-            `
-                <div class="market-title">
-                    Исход матча
-                </div>
-
-                <div class="market-grid three">
-
-                    ${oddBtn(
-                        match,
-                        "П1",
-                        match.odds?.home,
-                        "П1"
-                    )}
-
-                    ${oddBtn(
-                        match,
-                        "X",
-                        match.odds?.draw,
-                        "X"
-                    )}
-
-                    ${oddBtn(
-                        match,
-                        "П2",
-                        match.odds?.away,
-                        "П2"
-                    )}
-
-                </div>
-            `;
-
-
-        for(
-            const line
-            of
-            [
-                1.5,
-                2.5,
-                3.5,
-                4.5
-            ]
-        ){
-
-            const market =
-                match[
-                    "total_"
-                    +
-                    String(
-                        line
-                    )
-                    .replace(
-                        ".",
-                        "_"
-                    )
-                ];
-
-
-            if(
-                market
-            ){
-
-                html +=
-                    `
-                        <div class="market-title">
-                            Тотал ${line}
-                        </div>
-
-                        <div class="market-grid">
-
-                            ${oddBtn(
-                                match,
-                                `ТБ ${line}`,
-                                market.over,
-                                `ТБ ${line}`
-                            )}
-
-                            ${oddBtn(
-                                match,
-                                `ТМ ${line}`,
-                                market.under,
-                                `ТМ ${line}`
-                            )}
-
-                        </div>
-                    `;
-            }
-        }
-
-
-        if(
-            match.btts
-        ){
-
-            html +=
-                `
-                    <div class="market-title">
-                        Обе забьют
-                    </div>
-
-                    <div class="market-grid">
-
-                        ${oddBtn(
-                            match,
-                            "ОЗ Да",
-                            match.btts.yes,
-                            "Да"
-                        )}
-
-                        ${oddBtn(
-                            match,
-                            "ОЗ Нет",
-                            match.btts.no,
-                            "Нет"
-                        )}
-
-                    </div>
-                `;
-        }
-
-
-        if(
-            match.handicaps
-        ){
-
-            const home =
-                Object.entries(
-                    match.handicaps.home
-                    ||
-                    {}
-                )[0];
-
-
-            const away =
-                Object.entries(
-                    match.handicaps.away
-                    ||
-                    {}
-                )[0];
-
-
-            if(
-                home
-                &&
-                away
-            ){
-
-                html +=
-                    `
-                        <div class="market-title">
-                            Фора
-                        </div>
-
-                        <div class="market-grid">
-
-                            ${oddBtn(
-                                match,
-                                `Ф1(${home[0]})`,
-                                home[1],
-                                `Ф1 (${home[0]})`
-                            )}
-
-                            ${oddBtn(
-                                match,
-                                `Ф2(${away[0]})`,
-                                away[1],
-                                `Ф2 (${away[0]})`
-                            )}
-
-                        </div>
-                    `;
-            }
-        }
-
-
-        box.innerHTML =
-            html;
-
-
-    }catch(error){
-
-        box.innerHTML =
-            `
-                <div class="empty">
-                    ${esc(error.message)}
-                </div>
-            `;
-    }
-}
-
-
-/* ===================================
-   SINGLE BET
-=================================== */
-
-function selectBet(
-    id,
-    home,
-    away,
-    selection,
-    odd,
-    date
-){
-
-    if(
-        new Date(
-            date
-        )
-        <=
-        new Date()
-    ){
-
-        tg.showAlert(
-            "Матч уже начался"
-        );
-
-        return;
-    }
-
-
-    selectedBet = {
-
-        fixture_id:
-            Number(
-                id
-            ),
-
-        match:
-            `${home} — ${away}`,
-
-        selection:
-            selection,
-
-        odd:
-            Number(
-                odd
-            )
-    };
-
-
-    document
-    .getElementById(
-        "choiceInfo"
-    )
-    .innerHTML =
-        `
-            <b>
-                ${esc(selectedBet.match)}
-            </b>
-
-            <div class="muted">
-                ${esc(selection)}
-                •
-                ${Number(odd).toFixed(2)}
-            </div>
-        `;
-
-
-    const exactInParlay =
-        selectedInParlay(
-            id,
-            selection
-        );
-
-    const anotherFromSameMatch =
-        parlaySlip.some(
-            item =>
-                Number(
-                    item.fixture_id
-                )
-                ===
-                Number(
-                    id
-                )
-                &&
-                item.selection
-                !==
-                selection
-        );
-
-
-    document
-    .getElementById(
-        "parlayChoiceBtn"
-    )
-    .textContent =
-        exactInParlay
-
-        ?
-
-        "✓ Убрать"
-
-        :
-
-        (
-            anotherFromSameMatch
-            ?
-            "↻ Заменить в экспрессе"
-            :
-            "+ Экспресс"
-        );
-
-
-    document
-    .getElementById(
-        "choiceOverlay"
-    )
-    .classList.add(
-        "show"
-    );
-}
-
-
-function openSingle(){
-
-    closeOverlay(
-        "choiceOverlay"
-    );
-
-
-    document
-    .getElementById(
-        "singleInfo"
-    )
-    .innerHTML =
-        `
-            <b>
-                ${esc(selectedBet.match)}
-            </b>
-
-            <div class="muted">
-                ${esc(selectedBet.selection)}
-                •
-                ${selectedBet.odd.toFixed(2)}
-            </div>
-        `;
-
-
-    document
-    .getElementById(
-        "singleStake"
-    )
-    .value =
-        "";
-
-
-    updateSingleWin();
-
-
-    document
-    .getElementById(
-        "singleOverlay"
-    )
-    .classList.add(
-        "show"
-    );
-}
-
-
-function updateSingleWin(){
-
-    const amount =
-        Number(
-            document
-            .getElementById(
-                "singleStake"
-            )
-            .value
-        );
-
-
-    document
-    .getElementById(
-        "singleWin"
-    )
-    .textContent =
-        amount > 0
-        &&
-        selectedBet
-
-        ?
-
-        `Возможный выигрыш: ${Math.round(
-            amount
-            *
-            selectedBet.odd
-        )} 🪙`
-
-        :
-
-        "";
-}
-
-
-async function confirmSingle(){
-
-    const amount =
-        Math.floor(
-            Number(
-                document
-                .getElementById(
-                    "singleStake"
-                )
-                .value
-            )
-            ||
-            0
-        );
-
-
-    if(
-        !selectedBet
-        ||
-        amount < 100
-    ){
-
-        tg.showAlert(
-            "Минимальная ставка — 100 монет"
-        );
-
-        return;
-    }
-
-
-    const button =
-        document.getElementById(
-            "singleBtn"
-        );
-
-
-    button.disabled =
-        true;
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/bets",
-                {
-                    fixture_id:
-                        selectedBet.fixture_id,
-
-                    selection:
-                        selectedBet.selection,
-
-                    amount:
-                        amount
-                }
-            );
-
-
-        balance =
-            Number(
-                data.balance
-                ??
-                balance
-            );
-
-
-        bets =
-            data.bets
-            ||
-            bets;
-
-
-        setBalances();
-
-        renderBets();
-
-
-        closeOverlay(
-            "singleOverlay"
-        );
-
-
-        tg.showAlert(
-            "Ставка принята ✅"
-        );
-
-
-        await loadSession();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-
-
-    }finally{
-
-        button.disabled =
-            false;
-    }
-}
-
-
-/* ===================================
-   PARLAY
-=================================== */
-
-function toggleParlayChoice(){
-
-    const index =
-        parlaySlip.findIndex(
-            item =>
-                Number(
-                    item.fixture_id
-                )
-                ===
-                selectedBet.fixture_id
-                &&
-                item.selection
-                ===
-                selectedBet.selection
-        );
-
-
-    if(
-        index >= 0
-    ){
-
-        parlaySlip.splice(
-            index,
-            1
-        );
-
-    }else{
-
-        const sameMatchIndex =
-            parlaySlip.findIndex(
-                item =>
-                    Number(
-                        item.fixture_id
-                    )
-                    ===
-                    selectedBet.fixture_id
-            );
-
-
-        if(
-            sameMatchIndex
-            >=
-            0
-        ){
-
-            // В одном экспрессе оставляем только один рынок
-            // на матч, но при выборе нового рынка просто
-            // заменяем старый — так можно быстро перейти
-            // с П1/П2 на фору, тотал и т.д.
-            parlaySlip[
-                sameMatchIndex
-            ] = {
-                ...selectedBet
-            };
-
-            tg.showAlert(
-                "Ставка на этот матч заменена ✅"
-            );
-
-        }else{
-
-            if(
-                parlaySlip.length
-                >=
-                15
-            ){
-
-                tg.showAlert(
-                    "Максимум 15 событий"
-                );
-
-                return;
-            }
-
-
-            parlaySlip.push({
-                ...selectedBet
-            });
-        }
-    }
-
-
-    closeOverlay(
-        "choiceOverlay"
-    );
-
-
-    updateParlay();
-}
-
-
-function toggleMiniParlay(){
-
-    const mini =
-        document.getElementById(
-            "miniParlay"
-        );
-
-    if(!mini){
-        return;
-    }
-
-    miniParlayCollapsed =
-        !miniParlayCollapsed;
-
-    mini.classList.toggle(
-        "collapsed",
-        miniParlayCollapsed
-    );
-
-    document.body.classList.toggle(
-        "parlay-mini-collapsed",
-        miniParlayCollapsed
-        &&
-        parlaySlip.length > 0
-    );
-
-    document.body.classList.toggle(
-        "parlay-mini-open",
-        !miniParlayCollapsed
-        &&
-        parlaySlip.length > 0
-    );
-}
-
-
-function parlayOdd(){
-
-    return parlaySlip.reduce(
-        (
-            total,
-            item
-        ) =>
-            total
-            *
-            Number(
-                item.odd
-            ),
-        1
-    );
-}
-
-
-function updateParlay(){
-
-    const count =
-        parlaySlip.length;
-
-
-    const odd =
-        parlayOdd();
-
-
-    const win =
-        parlayStake > 0
-
-        ?
-
-        Math.round(
-            parlayStake
-            *
-            odd
-        )
-
-        :
-
-        0;
-
-
-    const miniParlay =
-        document.getElementById(
-            "miniParlay"
-        );
-
-    miniParlay.classList.toggle(
-        "show",
-        count > 0
-    );
-
-    miniParlay.classList.toggle(
-        "collapsed",
-        count > 0
-        &&
-        miniParlayCollapsed
-    );
-
-    document.body.classList.toggle(
-        "parlay-mini-open",
-        count > 0
-        &&
-        !miniParlayCollapsed
-    );
-
-    document.body.classList.toggle(
-        "parlay-mini-collapsed",
-        count > 0
-        &&
-        miniParlayCollapsed
-    );
-
-    if(count === 0){
-
-        miniParlayCollapsed =
-            false;
-
-        miniParlay.classList.remove(
-            "collapsed"
-        );
-    }
-
-
-    document
-    .getElementById(
-        "miniMeta"
-    )
-    .textContent =
-        `${count} событий`;
-
-
-    document
-    .getElementById(
-        "miniOdd"
-    )
-    .textContent =
-        `x${odd.toFixed(2)}`;
-
-
-    document
-    .getElementById(
-        "miniWin"
-    )
-    .textContent =
-        win
-        ?
-        `${win} 🪙`
-        :
-        "—";
-
-
-    document
-    .getElementById(
-        "parlayCount"
-    )
-    .textContent =
-        count;
-
-
-    document
-    .getElementById(
-        "parlayOdd"
-    )
-    .textContent =
-        odd.toFixed(2);
-
-
-    document
-    .getElementById(
-        "parlayWin"
-    )
-    .textContent =
-        win
-        ?
-        `Возможный выигрыш: ${win} 🪙`
-        :
-        "";
-
-
-    renderParlayList();
-
-    renderMatches();
-}
-
-
-function renderParlayList(){
-
-    document
-    .getElementById(
-        "parlayList"
-    )
-    .innerHTML =
-        parlaySlip.length
-
-        ?
-
-        parlaySlip
-        .map(
-            (
-                item,
-                index
-            ) =>
-                `
-                    <div class="card">
-
-                        <b>
-                            ${index + 1}.
-                            ${esc(item.match)}
-                        </b>
-
-                        <div class="muted">
-                            ${esc(item.selection)}
-                            •
-                            ${Number(item.odd).toFixed(2)}
-                        </div>
-
-                        <button
-                            class="small-btn"
-                            style="margin-top:7px"
-
-                            onclick="
-                                parlaySlip.splice(
-                                    ${index},
-                                    1
-                                );
-
-                                updateParlay()
-                            "
-                        >
-                            Удалить
-                        </button>
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Экспресс пуст
-            </div>
-        `;
-}
-
-
-function openParlay(){
-
-    updateParlay();
-
-
-    document
-    .getElementById(
-        "parlayOverlay"
-    )
-    .classList.add(
-        "show"
-    );
-}
-
-
-function clearParlay(){
-
-    parlaySlip = [];
-
-    parlayStake = 0;
-
-    miniParlayCollapsed = false;
-
-
-    document
-    .getElementById(
-        "miniStake"
-    )
-    .value =
-        "";
-
-
-    document
-    .getElementById(
-        "parlayStake"
-    )
-    .value =
-        "";
-
-
-    updateParlay();
-
-
-    closeOverlay(
-        "parlayOverlay"
-    );
-}
-
-
-async function confirmParlay(){
-
-    if(
-        parlaySlip.length
-        <
-        2
-    ){
-
-        tg.showAlert(
-            "Нужно минимум 2 события"
-        );
-
-        return;
-    }
-
-
-    if(
-        parlayStake < 100
-    ){
-
-        tg.showAlert(
-            "Минимальная ставка — 100 монет"
-        );
-
-        return;
-    }
-
-
-    const button =
-        document.getElementById(
-            "parlayBtn"
-        );
-
-
-    button.disabled =
-        true;
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/parlays",
-                {
-                    amount:
-                        parlayStake,
-
-                    legs:
-                        parlaySlip.map(
-                            item => ({
-                                fixture_id:
-                                    item.fixture_id,
-
-                                selection:
-                                    item.selection
-                            })
-                        )
-                }
-            );
-
-
-        balance =
-            Number(
-                data.balance
-                ??
-                balance
-            );
-
-
-        parlays =
-            data.parlays
-            ||
-            parlays;
-
-
-        clearParlay();
-
-        setBalances();
-
-        renderBets();
-
-
-        showPage(
-            "bets"
-        );
-
-
-        switchBets(
-            "parlay"
-        );
-
-
-        tg.showAlert(
-            "Экспресс принят ✅"
-        );
-
-
-        await loadSession();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-
-
-    }finally{
-
-        button.disabled =
-            false;
-    }
-}
-
-
-/* ===================================
-   BET HISTORY
-=================================== */
-
-function stClass(
-    status
-){
-
-    return status
-    ===
-    "Выиграла"
-
-    ?
-
-    "win"
-
-    :
-
-    status
-    ===
-    "Проиграла"
-
-    ?
-
-    "loss"
-
-    :
-
-    status
-    ===
-    "Возврат"
-
-    ?
-
-    "refund"
-
-    :
-
-    "active";
-}
-
-
-function passFilter(
-    item
-){
-
-    return (
-        betFilter
-        ===
-        "all"
-
-        ||
-
-        (
-            betFilter
-            ===
-            "active"
-            &&
-            item.status
-            ===
-            "Активна"
-        )
-
-        ||
-
-        (
-            betFilter
-            ===
-            "win"
-            &&
-            item.status
-            ===
-            "Выиграла"
-        )
-
-        ||
-
-        (
-            betFilter
-            ===
-            "loss"
-            &&
-            item.status
-            ===
-            "Проиграла"
-        )
-    );
-}
-
-
-function setBetFilter(
-    value
-){
-
-    betFilter =
-        value;
-
-
-    document
-    .querySelectorAll(
-        ".bet-chip"
-    )
-    .forEach(
-        button =>
-            button.classList.toggle(
-                "active",
-                button.dataset.v
-                ===
-                value
-            )
-    );
-
-
-    renderBets();
-}
-
-
-function switchBets(
-    value
-){
-
-    betTab =
-        value;
-
-
-    document
-    .getElementById(
-        "tabSingle"
-    )
-    .classList.toggle(
-        "active",
-        value
-        ===
-        "single"
-    );
-
-
-    document
-    .getElementById(
-        "tabParlay"
-    )
-    .classList.toggle(
-        "active",
-        value
-        ===
-        "parlay"
-    );
-
-
-    document
-    .getElementById(
-        "singleBets"
-    )
-    .style.display =
-        value
-        ===
-        "single"
-
-        ?
-
-        "block"
-
-        :
-
-        "none";
-
-
-    document
-    .getElementById(
-        "parlayBets"
-    )
-    .style.display =
-        value
-        ===
-        "parlay"
-
-        ?
-
-        "block"
-
-        :
-
-        "none";
-}
-
-
-function renderBets(){
-
-    const singles =
-        bets.filter(
-            passFilter
-        );
-
-
-    const express =
-        parlays.filter(
-            passFilter
-        );
-
-
-    document
-    .getElementById(
-        "singleBets"
-    )
-    .innerHTML =
-        singles.length
-
-        ?
-
-        singles
-        .map(
-            item =>
-                `
-                    <div class="card">
-
-                        <span
-                            class="status ${stClass(item.status)}"
-                        >
-                            ${esc(item.status)}
-                        </span>
-
-                        <h3>
-                            ${esc(item.match)}
-                        </h3>
-
-                        <div>
-                            ${esc(item.selection)}
-                            •
-                            ${Number(item.odd).toFixed(2)}
-                        </div>
-
-                        ${
-                            item.score
-                            ?
-                            `
-                                <div class="muted">
-                                    Счёт:
-                                    ${esc(item.score)}
-                                </div>
-                            `
-                            :
-                            ""
-                        }
-
-                        <div class="bet-row">
-                            <span>Ставка</span>
-                            <b>${item.amount} 🪙</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Выигрыш</span>
-                            <b>${item.possible} 🪙</b>
-                        </div>
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Нет ставок
-            </div>
-        `;
-
-
-    document
-    .getElementById(
-        "parlayBets"
-    )
-    .innerHTML =
-        express.length
-
-        ?
-
-        express
-        .map(
-            item =>
-                `
-                    <div class="card">
-
-                        <span
-                            class="status ${stClass(item.status)}"
-                        >
-                            ${esc(item.status)}
-                        </span>
-
-                        <h3>
-                            🧾 Экспресс #${item.id}
-                        </h3>
-
-                        <div class="bet-row">
-                            <span>Кэф</span>
-                            <b>${Number(item.total_odd).toFixed(2)}</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Ставка</span>
-                            <b>${item.amount} 🪙</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Выигрыш</span>
-                            <b>${item.possible} 🪙</b>
-                        </div>
-
-                        ${
-                            (
-                                item.legs
-                                ||
-                                []
-                            )
-                            .map(
-                                (
-                                    leg,
-                                    index
-                                ) =>
-                                    `
-                                        <div class="card">
-
-                                            <b>
-                                                ${index + 1}.
-                                                ${esc(leg.match)}
-                                            </b>
-
-                                            <div class="muted">
-                                                ${esc(leg.selection)}
-                                                •
-                                                ${Number(leg.odd).toFixed(2)}
-                                            </div>
-
-                                            <span
-                                                class="status ${stClass(leg.status)}"
-                                            >
-                                                ${esc(
-                                                    leg.status
-                                                    ||
-                                                    "Активна"
-                                                )}
-                                            </span>
-
-                                        </div>
-                                    `
-                            )
-                            .join("")
-                        }
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Нет экспрессов
-            </div>
-        `;
-
-
-    renderHome();
-}
-
-
-/* ===================================
-   🔥 LOGIN STREAK
-=================================== */
-
-function renderLoginStreak(){
-
-    const daysBox =
-        document.getElementById(
-            "streakDays"
-        );
-
-
-    const countBox =
-        document.getElementById(
-            "streakCount"
-        );
-
-
-    const rewardBox =
-        document.getElementById(
-            "streakReward"
-        );
-
-
-    const messageBox =
-        document.getElementById(
-            "streakMessage"
-        );
-
-
-    const button =
-        document.getElementById(
-            "streakBtn"
-        );
-
-
-    if(
-        !daysBox
-        ||
-        !countBox
-        ||
-        !rewardBox
-        ||
-        !messageBox
-        ||
-        !button
-    ){
-
-        return;
-    }
-
-
-    const rewards =
-        loginStreak.rewards
-        ||
-        [];
-
-
-    daysBox.innerHTML =
-        rewards
-        .map(
-            item => {
-
-                let icon =
-                    "🔒";
-
-
-                let classes =
-                    "streak-day";
-
-
-                if(
-                    item.completed
-                ){
-
-                    icon =
-                        "✅";
-
-                    classes +=
-                        " completed";
-                }
-
-
-                if(
-                    item.current
-                ){
-
-                    icon =
-                        "🔥";
-
-                    classes +=
-                        " current";
-                }
-
-
-                if(
-                    Number(
-                        item.day
-                    )
-                    ===
-                    7
-                ){
-
-                    classes +=
-                        " final";
-                }
-
-
-                const rewardText =
-                    Number(
-                        item.xp
-                        ||
-                        0
-                    )
-                    >
-                    0
-
-                    ?
-
-                    `${item.coins}🪙 +${item.xp}XP`
-
-                    :
-
-                    `${item.coins}🪙`;
-
-
-                return `
-                    <div class="${classes}">
-
-                        <b>
-                            ${item.day}
-                        </b>
-
-                        <span>
-                            ${icon}
-                        </span>
-
-                        <small>
-                            ${rewardText}
-                        </small>
-
-                    </div>
-                `;
-            }
-        )
-        .join("");
-
-
-    const nextDay =
-        Number(
-            loginStreak.next_day
-            ||
-            1
-        );
-
-
-    const currentDay =
-        Number(
-            loginStreak.current_day
-            ||
-            0
-        );
-
-
-    countBox.textContent =
-        loginStreak.claimed_today
-
-        ?
-
-        `Серия: ${currentDay} 🔥`
-
-        :
-
-        `День ${nextDay}`;
-
-
-    const reward =
-        loginStreak.next_reward
-        ||
-        {
-            coins:100,
-            xp:0
-        };
-
-
-    rewardBox.textContent =
-        Number(
-            reward.xp
-            ||
-            0
-        )
-        >
-        0
-
-        ?
-
-        `Сегодня: +${reward.coins} 🪙 +${reward.xp} XP`
-
-        :
-
-        `Сегодня: +${reward.coins} 🪙`;
-
-
-    button.disabled =
-        loginStreak.available
-        !==
-        true;
-
-
-    button.textContent =
-        loginStreak.available
-        ===
-        true
-
-        ?
-
-        "Забрать награду"
-
-        :
-
-        "Награда получена ✅";
-
-
-    if(
-        loginStreak.claimed_today
-    ){
-
-        messageBox.textContent =
-            "Возвращайся завтра, чтобы продолжить серию 🔥";
-
-    }else if(
-        loginStreak.streak_broken
-    ){
-
-        messageBox.textContent =
-            "Серия была прервана. Начинаем снова с 1-го дня.";
-
-    }else if(
-        currentDay > 0
-    ){
-
-        messageBox.textContent =
-            `Продолжай серию — следующий день ${nextDay}.`;
-
-    }else{
-
-        messageBox.textContent =
-            "Начни серию прямо сегодня.";
-    }
-
-
-    renderHomeRewards();
-}
-
-
-async function claimLoginStreak(){
-
-    const button =
-        document.getElementById(
-            "streakBtn"
-        );
-
-
-    if(
-        !button
-        ||
-        button.disabled
-    ){
-
-        return;
-    }
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Получаем...";
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/login-streak/claim"
-            );
-
-
-        balance =
-            Number(
-                data.balance
-                ??
-                balance
-            );
-
-
-        xp =
-            Number(
-                data.xp
-                ??
-                xp
-            );
-
-
-        level =
-            Number(
-                data.level
-                ??
-                level
-            );
-
-
-        leagueInfo =
-            data.league
-            ||
-            leagueInfo;
-
-
-        levelXp =
-            Number(
-                data.current_level_xp
-                ??
-                levelXp
-            );
-
-
-        loginStreak =
-            data.login_streak
-            ||
-            loginStreak;
-
-
-        setBalances();
-
-        renderLoginStreak();
-
-        renderProfile();
-
-        renderHome();
-
-        renderHomeRewards();
-
-
-        const rewards = [];
-
-
-        if(
-            Number(
-                data.reward_coins
-            )
-            >
-            0
-        ){
-
-            rewards.push(
-                `+${data.reward_coins} 🪙`
-            );
-        }
-
-
-        if(
-            Number(
-                data.reward_xp
-            )
-            >
-            0
-        ){
-
-            rewards.push(
-                `+${data.reward_xp} XP`
-            );
-        }
-
-
-        tg.showAlert(
-            `🔥 День ${data.claimed_day}: ${rewards.join(" • ")}`
-        );
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-
-
-    }finally{
-
-        renderLoginStreak();
-
-        renderHomeRewards();
-    }
-}
-
-
-/* ===================================
-   🎯 УГАДАЙ ИСХОД
-=================================== */
-
-function predictionDateText(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-
-    if(!date){
-
-        return "Время уточняется";
-    }
-
-
-    return date.toLocaleString(
-        "ru-RU",
-        {
-            day:"2-digit",
-            month:"2-digit",
-            hour:"2-digit",
-            minute:"2-digit"
-        }
-    );
-}
-
-
-function renderPredictionGame(){
-
-    const box =
-        document.getElementById(
-            "predictionGame"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    if(
-        !predictionGame
-        ||
-        predictionGame.available
-        ===
-        false
-    ){
-
-        box.innerHTML =
-            `
-                <div class="empty">
-                    ${esc(
-                        predictionGame?.message
-                        ||
-                        "Сегодня матчей нет — возвращайся завтра ⚽"
-                    )}
-                </div>
-            `;
-
-        return;
-    }
-
-
-    const pick =
-        predictionGame.pick;
-
-
-    const settled =
-        predictionGame.settled
-        ===
-        true;
-
-
-    const canPick =
-        predictionGame.can_pick
-        ===
-        true;
-
-
-    let statusHtml =
-        "";
-
-
-    if(
-        pick
-        &&
-        !settled
-    ){
-
-        statusHtml =
-            `
-                <div class="prediction-result wait">
-                    ✅ Твой прогноз:
-                    <b>${esc(pick)}</b>
-                    <br>
-                    Ждём окончания матча
-                </div>
-            `;
-    }
-
-
-    if(
-        settled
-        &&
-        predictionGame.won
-        ===
-        true
-    ){
-
-        statusHtml =
-            `
-                <div class="prediction-result win">
-
-                    🎉 Ты угадал!
-
-                    <br>
-
-                    Счёт:
-                    ${esc(
-                        predictionGame.final_score
-                        ||
-                        ""
-                    )}
-
-                    <br>
-
-                    +${predictionGame.reward_coins || 200} 🪙
-                    +
-                    ${predictionGame.reward_xp || 25} XP
-
-                </div>
-            `;
-    }
-
-
-    if(
-        settled
-        &&
-        predictionGame.won
-        ===
-        false
-    ){
-
-        statusHtml =
-            `
-                <div class="prediction-result loss">
-
-                    ❌ Не угадал
-
-                    <br>
-
-                    Счёт:
-                    ${esc(
-                        predictionGame.final_score
-                        ||
-                        ""
-                    )}
-
-                    <br>
-
-                    Правильный исход:
-                    <b>
-                        ${esc(
-                            predictionGame.actual_result
-                            ||
-                            ""
-                        )}
-                    </b>
-
-                </div>
-            `;
-    }
-
-
-    box.innerHTML =
-        `
-            <div class="prediction-match">
-
-                <div class="prediction-league">
-                    ${esc(
-                        predictionGame.league
-                        ||
-                        "Футбол"
-                    )}
-                </div>
-
-
-                <div class="prediction-teams">
-
-                    ${esc(
-                        predictionGame.home_team
-                    )}
-
-                    <br>
-
-                    <span
-                        style="
-                            color:var(--muted);
-                            font-size:13px
-                        "
-                    >
-                        против
-                    </span>
-
-                    <br>
-
-                    ${esc(
-                        predictionGame.away_team
-                    )}
-
-                </div>
-
-
-                <div class="prediction-time">
-
-                    🕒
-                    ${predictionDateText(
-                        predictionGame.kickoff_at
-                    )}
-
-                </div>
-
-
-                <div class="prediction-buttons">
-
-                    <button
-                        class="
-                            prediction-btn
-                            ${pick === "П1" ? "selected" : ""}
-                        "
-
-                        ${!canPick ? "disabled" : ""}
-
-                        onclick="pickPrediction('П1')"
-                    >
-
-                        П1
-
-                        <small>
-                            ${esc(
-                                predictionGame.home_team
-                            )}
-                        </small>
-
-                    </button>
-
-
-                    <button
-                        class="
-                            prediction-btn
-                            ${pick === "X" ? "selected" : ""}
-                        "
-
-                        ${!canPick ? "disabled" : ""}
-
-                        onclick="pickPrediction('X')"
-                    >
-
-                        X
-
-                        <small>
-                            Ничья
-                        </small>
-
-                    </button>
-
-
-                    <button
-                        class="
-                            prediction-btn
-                            ${pick === "П2" ? "selected" : ""}
-                        "
-
-                        ${!canPick ? "disabled" : ""}
-
-                        onclick="pickPrediction('П2')"
-                    >
-
-                        П2
-
-                        <small>
-                            ${esc(
-                                predictionGame.away_team
-                            )}
-                        </small>
-
-                    </button>
-
-                </div>
-
-
-                ${statusHtml}
-
-            </div>
-        `;
-}
-
-
-async function pickPrediction(
-    prediction
-){
-
-    if(
-        !predictionGame
-        ||
-        predictionGame.can_pick
-        !==
-        true
-    ){
-
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            "Подтвердить прогноз "
-            +
-            prediction
-            +
-            "?\n\nИзменить его потом нельзя."
-        );
-
-
-    if(!confirmed){
-
-        return;
-    }
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/prediction/pick",
-                {
-                    prediction:
-                        prediction
-                }
-            );
-
-
-        predictionGame =
-            data.game
-            ||
-            {};
-
-
-        renderPredictionGame();
-
-
-        tg.showAlert(
-            "Прогноз сохранён ✅"
-        );
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-/* ===================================
-   ⚽ УГАДАЙ СЧЁТ
-=================================== */
-
-function renderScoreGame(){
-
-    const box =
-        document.getElementById(
-            "scoreGame"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    if(
-        !scoreGame
-        ||
-        scoreGame.available
-        ===
-        false
-    ){
-
-        box.innerHTML =
-            `
-                <div class="empty">
-                    ${esc(
-                        scoreGame?.message
-                        ||
-                        "Сегодня матчей нет — возвращайся завтра ⚽"
-                    )}
-                </div>
-            `;
-
-        return;
-    }
-
-
-    const canPick =
-        scoreGame.can_pick
-        ===
-        true;
-
-
-    const hasPick =
-        scoreGame.predicted_home
-        !=
-        null
-        &&
-        scoreGame.predicted_away
-        !=
-        null;
-
-
-    let gameStatus =
-        "";
-
-
-    if(
-        hasPick
-        &&
-        !scoreGame.settled
-    ){
-
-        gameStatus =
-            `
-                <div class="score-saved">
-
-                    ✅ Твой прогноз
-
-                    <div class="score-big">
-                        ${scoreGame.predicted_home}
-                        :
-                        ${scoreGame.predicted_away}
-                    </div>
-
-                    Ждём окончания матча
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        ===
-        true
-    ){
-
-        gameStatus =
-            `
-                <div class="prediction-result win">
-
-                    🎯 ТОЧНЫЙ СЧЁТ!
-
-                    <div class="score-big">
-                        ${scoreGame.final_home}
-                        :
-                        ${scoreGame.final_away}
-                    </div>
-
-                    +${scoreGame.reward_coins} 🪙
-                    +
-                    ${scoreGame.reward_xp} XP
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        !==
-        true
-        &&
-        scoreGame.outcome_win
-        ===
-        true
-    ){
-
-        gameStatus =
-            `
-                <div class="prediction-result win">
-
-                    ✅ Исход угадан
-
-                    <br><br>
-
-                    Твой прогноз:
-                    <b>
-                        ${scoreGame.predicted_home}
-                        :
-                        ${scoreGame.predicted_away}
-                    </b>
-
-                    <br>
-
-                    Итог:
-                    <b>
-                        ${scoreGame.final_home}
-                        :
-                        ${scoreGame.final_away}
-                    </b>
-
-                    <br><br>
-
-                    +${scoreGame.reward_coins} 🪙
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        !==
-        true
-        &&
-        scoreGame.outcome_win
-        !==
-        true
-    ){
-
-        gameStatus =
-            `
-                <div class="prediction-result loss">
-
-                    ❌ Не угадал
-
-                    <br><br>
-
-                    Твой прогноз:
-                    <b>
-                        ${scoreGame.predicted_home}
-                        :
-                        ${scoreGame.predicted_away}
-                    </b>
-
-                    <br>
-
-                    Итоговый счёт:
-                    <b>
-                        ${scoreGame.final_home}
-                        :
-                        ${scoreGame.final_away}
-                    </b>
-
-                </div>
-            `;
-    }
-
-
-    box.innerHTML =
-        `
-            <div class="prediction-match">
-
-                <div class="prediction-league">
-                    ${esc(
-                        scoreGame.league
-                        ||
-                        "Футбол"
-                    )}
-                </div>
-
-
-                <div class="prediction-teams">
-
-                    ${esc(
-                        scoreGame.home_team
-                    )}
-
-                    <br>
-
-                    <span
-                        style="
-                            color:var(--muted);
-                            font-size:13px
-                        "
-                    >
-                        против
-                    </span>
-
-                    <br>
-
-                    ${esc(
-                        scoreGame.away_team
-                    )}
-
-                </div>
-
-
-                <div class="prediction-time">
-
-                    🕒
-                    ${predictionDateText(
-                        scoreGame.kickoff_at
-                    )}
-
-                </div>
-
-
-                ${
-                    canPick
-
-                    ?
-
-                    `
-                        <div class="score-teams-row">
-
-                            <div class="score-team">
-                                ${esc(scoreGame.home_team)}
-                            </div>
-
-                            <div class="score-team">
-                                ${esc(scoreGame.away_team)}
-                            </div>
-
-                        </div>
-
-
-                        <div class="score-picker">
-
-                            <input
-                                id="scoreHomeInput"
-                                class="score-input"
-                                type="number"
-                                inputmode="numeric"
-                                min="0"
-                                max="10"
-                                value="0"
-                            >
-
-                            <div class="score-colon">
-                                :
-                            </div>
-
-                            <input
-                                id="scoreAwayInput"
-                                class="score-input"
-                                type="number"
-                                inputmode="numeric"
-                                min="0"
-                                max="10"
-                                value="0"
-                            >
-
-                        </div>
-
-
-                        <div class="score-help">
-                            От 0 до 10 голов каждой команде
-                        </div>
-
-
-                        <button
-                            id="scoreGameBtn"
-                            class="btn"
-                            onclick="pickExactScore()"
-                        >
-                            Подтвердить счёт
-                        </button>
-                    `
-
-                    :
-
-                    ""
-                }
-
-
-                ${gameStatus}
-
-            </div>
-        `;
-}
-
-
-
-function setScoreGameView(
-    view
-){
-
-    scoreGameView =
-        [
-            "play",
-            "history",
-            "leaderboard",
-            "leagues"
-        ].includes(
-            view
-        )
-        ?
-        view
-        :
-        "play";
-
-
-    const playView =
-        document.getElementById(
-            "scoreGamePlayView"
-        );
-
-    const historyView =
-        document.getElementById(
-            "scoreGameHistoryView"
-        );
-
-    const leaderboardView =
-        document.getElementById(
-            "scoreGameLeaderboardView"
-        );
-
-    const leaguesView =
-        document.getElementById(
-            "scoreGameLeaguesView"
-        );
-
-    const playTab =
-        document.getElementById(
-            "scoreGamePlayTab"
-        );
-
-    const historyTab =
-        document.getElementById(
-            "scoreGameHistoryTab"
-        );
-
-    const leaderboardTab =
-        document.getElementById(
-            "scoreGameLeaderboardTab"
-        );
-
-    const leaguesTab =
-        document.getElementById(
-            "scoreGameLeaguesTab"
-        );
-
-
-    if(playView){
-
-        playView.style.display =
-            scoreGameView === "play"
-            ?
-            "block"
-            :
-            "none";
-    }
-
-
-    if(historyView){
-
-        historyView.style.display =
-            scoreGameView === "history"
-            ?
-            "block"
-            :
-            "none";
-    }
-
-
-    if(leaderboardView){
-
-        leaderboardView.style.display =
-            scoreGameView === "leaderboard"
-            ?
-            "block"
-            :
-            "none";
-    }
-
-
-    if(leaguesView){
-
-        leaguesView.style.display =
-            scoreGameView === "leagues"
-            ?
-            "block"
-            :
-            "none";
-    }
-
-
-    playTab?.classList.toggle(
-        "active",
-        scoreGameView === "play"
-    );
-
-    historyTab?.classList.toggle(
-        "active",
-        scoreGameView === "history"
-    );
-
-    leaderboardTab?.classList.toggle(
-        "active",
-        scoreGameView === "leaderboard"
-    );
-
-
-    leaguesTab?.classList.toggle(
-        "active",
-        scoreGameView === "leagues"
-    );
-
-
-    if(
-        scoreGameView ===
-        "history"
-    ){
-
-        loadScoreGameHistory();
-    }
-
-
-    if(
-        scoreGameView ===
-        "leaderboard"
-    ){
-
-        loadScoreGameLeaderboard();
-    }
-
-
-    if(
-        scoreGameView ===
-        "leagues"
-    ){
-
-        loadPredictorLeagues();
-    }
-}
-
-function setScoreHistoryFilter(
-    filter
-){
-
-    scoreHistoryFilter =
-        filter
-        ||
-        "all";
-
-    renderScoreGameHistory();
-}
-
-
-async function loadScoreGameHistory(){
-
-    const box =
-        document.getElementById(
-            "scoreGameHistory"
-        );
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/history",
-                {
-                    limit:50
-                }
-            );
-
-
-        scoreGameHistory =
-            data.history
-            ||
-            [];
-
-
-        scoreGameStats =
-            data.stats
-            ||
-            {};
-
-
-        renderScoreGameHistory();
-
-
-    }catch(error){
-
-        console.error(
-            "Score game history:",
-            error
-        );
-
-
-        if(box){
-
-            box.innerHTML =
-                `
-                    <div class="empty">
-                        Не удалось загрузить прогнозы
-                    </div>
-                `;
-        }
-    }
-}
-
-
-async function loadScoreGameLeaderboard(){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeaderboard"
-        );
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leaderboard",
-                {
-                    limit:50
-                }
-            );
-
-
-        scoreGameLeaderboard =
-            data.players
-            ||
-            [];
-
-        scoreGameLeaderboardMe =
-            data.me
-            ||
-            null;
-
-        scoreGameLeaderboardRank =
-            data.my_rank
-            ??
-            null;
-
-
-        renderScoreGameLeaderboard();
-
-
-    }catch(error){
-
-        console.error(
-            "Score game leaderboard:",
-            error
-        );
-
-
-        if(box){
-
-            box.innerHTML =
-                `
-                    <div class="empty">
-                        Не удалось загрузить рейтинг
-                    </div>
-                `;
-        }
-    }
-}
-
-
-function scoreLeaderboardMedal(
-    rank
-){
-
-    if(Number(rank) === 1){
-        return "🥇";
-    }
-
-    if(Number(rank) === 2){
-        return "🥈";
-    }
-
-    if(Number(rank) === 3){
-        return "🥉";
-    }
-
-    return `#${rank}`;
-}
-
-
-function renderScoreGameLeaderboard(){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeaderboard"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    const me =
-        scoreGameLeaderboardMe;
-
-
-    const myCard =
-        me
-        ?
-        `
-            <div class="score-predictor-me">
-
-                <div class="score-predictor-me-top">
-                    <span>Твоё место в рейтинге</span>
-                    <b>#${me.rank}</b>
-                </div>
-
-                <div class="score-predictor-me-stats">
-
-                    <div class="score-predictor-me-stat">
-                        <b>${me.exact_wins}</b>
-                        <small>точных</small>
-                    </div>
-
-                    <div class="score-predictor-me-stat">
-                        <b>${me.successful}</b>
-                        <small>успешных</small>
-                    </div>
-
-                    <div class="score-predictor-me-stat">
-                        <b>${Number(me.success_rate || 0).toFixed(1)}%</b>
-                        <small>успех</small>
-                    </div>
-
-                    <div class="score-predictor-me-stat">
-                        <b>${me.best_streak}</b>
-                        <small>рекорд серии</small>
-                    </div>
-
-                </div>
-
-            </div>
-        `
-        :
-        `
-            <div class="score-predictor-me">
-                <div class="muted" style="text-align:center">
-                    Сделай первый прогноз на счёт, чтобы попасть в рейтинг
-                </div>
-            </div>
-        `;
-
-
-    const title =
-        `
-            <div class="score-predictor-title">
-                <span>🏆 Топ прогнозистов</span>
-                <small>Точный счёт → успех → % → серия</small>
-            </div>
-        `;
-
-
-    if(
-        !scoreGameLeaderboard.length
-    ){
-
-        box.innerHTML =
-            myCard
-            +
-            title
-            +
-            `
-                <div class="empty" style="margin-top:9px">
-                    Рейтинг пока пуст
-                </div>
-            `;
-
-        return;
-    }
-
-
-    const rows =
-        scoreGameLeaderboard
-        .map(
-            player => {
-
-                const isMe =
-                    currentUser
-                    &&
-                    Number(
-                        player.telegram_id
-                    )
-                    ===
-                    Number(
-                        currentUser.telegram_id
-                    );
-
-                return `
-                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(player.rank) === 1 ? "top1" : ""}">
-
-                        <div class="score-predictor-rank">
-                            ${scoreLeaderboardMedal(player.rank)}
-                        </div>
-
-                        <div class="score-predictor-main">
-
-                            <div class="score-predictor-name">
-                                ${esc(player.first_name || "Игрок")}
-                                ${isMe ? " • ты" : ""}
-                            </div>
-
-                            <div class="score-predictor-sub">
-                                ✅ ${player.successful} успешных
-                                •
-                                ${Number(player.success_rate || 0).toFixed(1)}%
-                                •
-                                🔥 ${player.best_streak}
-                            </div>
-
-                        </div>
-
-                        <div class="score-predictor-right">
-                            <b>🎯 ${player.exact_wins}</b>
-                            <small>${player.total} прогнозов</small>
-                        </div>
-
-                    </div>
-                `;
-            }
-        )
-        .join("");
-
-
-    box.innerHTML =
-        myCard
+        separator
         +
-        title
-        +
-        `
-            <div class="score-predictor-list">
-                ${rows}
-            </div>
-        `;
-}
-
-
-
-async function loadPredictorLeagues(){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeagues"
-        );
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues"
-            );
-
-        predictorLeagues =
-            data.leagues
-            ||
-            [];
-
-        predictorLeagueCurrent =
-            null;
-
-        predictorLeaguePlayers =
-            [];
-
-        renderPredictorLeagues();
-
-    }catch(error){
-
-        console.error(
-            "Predictor leagues:",
-            error
-        );
-
-        if(box){
-
-            box.innerHTML =
-                `
-                    <div class="empty">
-                        Не удалось загрузить лиги
-                    </div>
-                `;
-        }
-    }
-}
-
-
-function renderPredictorLeagues(){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeagues"
-        );
-
-    if(!box){
-        return;
-    }
-
-
-    if(
-        predictorLeagueCurrent
-    ){
-
-        renderPredictorLeagueBoard();
-        return;
-    }
-
-
-    const leaguesHtml =
-        predictorLeagues.length
-        ?
-        predictorLeagues
-        .map(
-            league => `
-                <div class="predictor-league-card">
-
-                    <div class="predictor-league-head">
-
-                        <div>
-                            <div class="predictor-league-name">
-                                ${esc(league.name)}
-                            </div>
-
-                            <div class="predictor-league-meta">
-                                👥 ${league.members_count} участников
-                                ${league.is_owner ? " • 👑 твоя лига" : ""}
-                            </div>
-                        </div>
-
-                        <div class="predictor-league-code">
-                            ${esc(league.invite_code)}
-                        </div>
-
-                    </div>
-
-                    <div class="predictor-league-card-actions">
-
-                        <button
-                            class="btn secondary"
-                            onclick="copyPredictorLeagueCode('${js(league.invite_code)}')"
-                        >
-                            📋 Код
-                        </button>
-
-                        <button
-                            class="btn"
-                            onclick="openPredictorLeague(${Number(league.id)})"
-                        >
-                            🏆 Открыть
-                        </button>
-
-                        ${
-                            league.is_owner
-                            ?
-                            `
-                                <button
-                                    class="btn danger"
-                                    onclick="deletePredictorLeague(${Number(league.id)}, '${js(league.name)}')"
-                                >
-                                    Удалить
-                                </button>
-                            `
-                            :
-                            `
-                                <button
-                                    class="btn danger"
-                                    onclick="leavePredictorLeague(${Number(league.id)})"
-                                >
-                                    Выйти
-                                </button>
-                            `
-                        }
-
-                    </div>
-
-                </div>
-            `
+        "&".join(
+            params
         )
-        .join("")
-        :
-        `
-            <div class="empty">
-                Ты пока не состоишь ни в одной приватной лиге
-            </div>
-        `;
-
-
-    box.innerHTML =
-        `
-            <div class="score-predictor-title">
-                <span>👥 Приватные лиги</span>
-                <small>Соревнуйся с друзьями</small>
-            </div>
-
-            <div class="predictor-league-box">
-
-                <h3>Создать свою лигу</h3>
-
-                <div class="predictor-league-input-row">
-
-                    <input
-                        id="predictorLeagueName"
-                        class="predictor-league-input"
-                        maxlength="32"
-                        placeholder="Например: Друзья"
-                    >
-
-                    <button
-                        class="small-btn"
-                        onclick="createPredictorLeague()"
-                    >
-                        Создать
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="predictor-league-box">
-
-                <h3>Вступить по коду</h3>
-
-                <div class="predictor-league-input-row">
-
-                    <input
-                        id="predictorLeagueCode"
-                        class="predictor-league-input"
-                        maxlength="8"
-                        placeholder="ABC123"
-                        style="text-transform:uppercase"
-                    >
-
-                    <button
-                        class="small-btn"
-                        onclick="joinPredictorLeague()"
-                    >
-                        Вступить
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="predictor-league-list">
-                ${leaguesHtml}
-            </div>
-        `;
-}
-
-
-async function createPredictorLeague(){
-
-    const input =
-        document.getElementById(
-            "predictorLeagueName"
-        );
-
-    const name =
-        String(
-            input?.value
-            ||
-            ""
-        ).trim();
-
-    if(name.length < 2){
-
-        tg.showAlert(
-            "Введи название лиги"
-        );
-
-        return;
-    }
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues/create",
-                {
-                    name
-                }
-            );
-
-        predictorLeagues =
-            data.leagues
-            ||
-            [];
-
-        renderPredictorLeagues();
-
-        tg.showAlert(
-            `Лига создана ✅\nКод: ${data.invite_code}`
-        );
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function joinPredictorLeague(){
-
-    const input =
-        document.getElementById(
-            "predictorLeagueCode"
-        );
-
-    const code =
-        String(
-            input?.value
-            ||
-            ""
-        )
-        .trim()
-        .toUpperCase();
-
-    if(!code){
-
-        tg.showAlert(
-            "Введи код приглашения"
-        );
-
-        return;
-    }
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues/join",
-                {
-                    code
-                }
-            );
-
-        predictorLeagues =
-            data.leagues
-            ||
-            [];
-
-        renderPredictorLeagues();
-
-        tg.showAlert(
-            data.joined
-            ?
-            `Ты вступил в лигу «${data.name}» ✅`
-            :
-            `Ты уже состоишь в лиге «${data.name}»`
-        );
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function copyPredictorLeagueCode(
-    code
-){
-
-    try{
-
-        await navigator.clipboard.writeText(
-            code
-        );
-
-        tg.showAlert(
-            `Код ${code} скопирован`
-        );
-
-    }catch(error){
-
-        tg.showAlert(
-            `Код лиги: ${code}`
-        );
-    }
-}
-
-
-async function openPredictorLeague(
-    leagueId
-){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeagues"
-        );
-
-    if(box){
-
-        box.innerHTML =
-            `
-                <div class="loader">
-                    Загружаем лигу...
-                </div>
-            `;
-    }
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues/leaderboard",
-                {
-                    league_id:
-                        leagueId
-                }
-            );
-
-        predictorLeagueCurrent =
-            data.league
-            ||
-            null;
-
-        predictorLeaguePlayers =
-            data.players
-            ||
-            [];
-
-        renderPredictorLeagueBoard();
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-
-        predictorLeagueCurrent =
-            null;
-
-        renderPredictorLeagues();
-    }
-}
-
-
-function renderPredictorLeagueBoard(){
-
-    const box =
-        document.getElementById(
-            "scoreGameLeagues"
-        );
-
-    const league =
-        predictorLeagueCurrent;
-
-    if(
-        !box
-        ||
-        !league
-    ){
-        return;
-    }
-
-    const rows =
-        predictorLeaguePlayers
-        .map(
-            player => {
-
-                const isMe =
-                    currentUser
-                    &&
-                    Number(
-                        player.telegram_id
-                    )
-                    ===
-                    Number(
-                        currentUser.telegram_id
-                    );
-
-                return `
-                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(player.rank) === 1 ? "top1" : ""}">
-
-                        <div class="score-predictor-rank">
-                            ${scoreLeaderboardMedal(player.rank)}
-                        </div>
-
-                        <div class="score-predictor-main">
-
-                            <div class="score-predictor-name">
-                                ${esc(player.first_name || "Игрок")}
-                                ${isMe ? " • ты" : ""}
-                            </div>
-
-                            <div class="score-predictor-sub">
-                                ✅ ${player.successful}
-                                •
-                                ${Number(player.success_rate || 0).toFixed(1)}%
-                                •
-                                🔥 ${player.best_streak}
-                            </div>
-
-                        </div>
-
-                        <div class="score-predictor-right">
-                            <b>🎯 ${player.exact_wins}</b>
-                            <small>${player.total} прогнозов</small>
-                        </div>
-
-                    </div>
-                `;
-            }
-        )
-        .join("");
-
-
-    box.innerHTML =
-        `
-            <div class="predictor-league-board">
-
-                <div class="predictor-league-board-head">
-
-                    <button
-                        class="predictor-league-back"
-                        onclick="closePredictorLeague()"
-                    >
-                        ← Мои лиги
-                    </button>
-
-                    <div class="predictor-league-code">
-                        ${esc(league.invite_code)}
-                    </div>
-
-                </div>
-
-                <div class="score-predictor-title">
-
-                    <span>
-                        🏆 ${esc(league.name)}
-                    </span>
-
-                    <small>
-                        ${predictorLeaguePlayers.length} участников
-                    </small>
-
-                </div>
-
-                ${
-                    rows
-                    ?
-                    `
-                        <div class="score-predictor-list">
-                            ${rows}
-                        </div>
-                    `
-                    :
-                    `
-                        <div class="empty" style="margin-top:9px">
-                            В лиге пока нет участников
-                        </div>
-                    `
-                }
-
-            </div>
-        `;
-}
-
-
-function closePredictorLeague(){
-
-    predictorLeagueCurrent =
-        null;
-
-    predictorLeaguePlayers =
-        [];
-
-    renderPredictorLeagues();
-}
-
-
-
-async function deletePredictorLeague(
-    leagueId,
-    leagueName
-){
-
-    const confirmed =
-        confirm(
-            `Удалить лигу «${leagueName}»?\n\nВсе участники будут удалены из лиги, но их прогнозы и статистика останутся.`
-        );
-
-    if(!confirmed){
-        return;
-    }
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues/delete",
-                {
-                    league_id:
-                        leagueId
-                }
-            );
-
-        predictorLeagues =
-            data.leagues
-            ||
-            [];
-
-        predictorLeagueCurrent =
-            null;
-
-        predictorLeaguePlayers =
-            [];
-
-        renderPredictorLeagues();
-
-        tg.showAlert(
-            "Лига удалена ✅"
-        );
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-
-async function leavePredictorLeague(
-    leagueId
-){
-
-    const confirmed =
-        confirm(
-            "Выйти из этой лиги?"
-        );
-
-    if(!confirmed){
-        return;
-    }
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/leagues/leave",
-                {
-                    league_id:
-                        leagueId
-                }
-            );
-
-        predictorLeagues =
-            data.leagues
-            ||
-            [];
-
-        predictorLeagueCurrent =
-            null;
-
-        renderPredictorLeagues();
-
-        tg.showAlert(
-            "Ты вышел из лиги"
-        );
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-
-function scoreHistoryDateText(
-    value
-){
-
-    if(!value){
-
-        return "";
-    }
-
-
-    const date =
-        new Date(
-            value
-        );
-
-
-    if(
-        Number.isNaN(
-            date.getTime()
-        )
-    ){
-
-        return "";
-    }
-
-
-    return date.toLocaleString(
-        "ru-RU",
-        {
-            day:"2-digit",
-            month:"2-digit",
-            year:"2-digit",
-            hour:"2-digit",
-            minute:"2-digit"
-        }
-    );
-}
-
-
-function renderScoreGameHistory(){
-
-    const box =
-        document.getElementById(
-            "scoreGameHistory"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    let items =
-        [
-            ...scoreGameHistory
-        ];
-
-
-    if(
-        scoreHistoryFilter ===
-        "pending"
-    ){
-
-        items =
-            items.filter(
-                item =>
-                    item.status
-                    ===
-                    "pending"
-            );
-    }
-
-
-    if(
-        scoreHistoryFilter ===
-        "won"
-    ){
-
-        items =
-            items.filter(
-                item =>
-                    item.status
-                    ===
-                    "exact"
-                    ||
-                    item.status
-                    ===
-                    "outcome"
-            );
-    }
-
-
-    if(
-        scoreHistoryFilter ===
-        "lost"
-    ){
-
-        items =
-            items.filter(
-                item =>
-                    item.status
-                    ===
-                    "lost"
-            );
-    }
-
-
-    const total =
-        Number(
-            scoreGameStats.total
-            ||
-            0
-        );
-
-    const exactWins =
-        Number(
-            scoreGameStats.exact_wins
-            ||
-            0
-        );
-
-    const outcomeWins =
-        Number(
-            scoreGameStats.outcome_wins
-            ||
-            0
-        );
-
-    const losses =
-        Number(
-            scoreGameStats.losses
-            ||
-            0
-        );
-
-    const pending =
-        Number(
-            scoreGameStats.pending
-            ||
-            0
-        );
-
-    const successRate =
-        Number(
-            scoreGameStats.success_rate
-            ||
-            0
-        );
-
-    const currentStreak =
-        Number(
-            scoreGameStats.current_streak
-            ||
-            0
-        );
-
-    const bestStreak =
-        Number(
-            scoreGameStats.best_streak
-            ||
-            0
-        );
-
-    const predictorAchievements =
-        Array.isArray(
-            scoreGameStats.achievements
-        )
-        ?
-        scoreGameStats.achievements
-        :
-        [];
-
-
-    const achievementsHtml =
-        predictorAchievements.length
-        ?
-        `
-            <div class="score-achievements">
-
-                <div class="score-achievements-title">
-                    <span>🏅 Достижения прогнозиста</span>
-                    <small>
-                        ${predictorAchievements.filter(item => item.unlocked).length}
-                        /
-                        ${predictorAchievements.length}
-                    </small>
-                </div>
-
-                <div class="score-achievements-grid">
-
-                    ${predictorAchievements.map(
-                        item => {
-
-                            const progress =
-                                Math.max(
-                                    0,
-                                    Number(
-                                        item.progress
-                                        ||
-                                        0
-                                    )
-                                );
-
-                            const target =
-                                Math.max(
-                                    1,
-                                    Number(
-                                        item.target
-                                        ||
-                                        1
-                                    )
-                                );
-
-                            const percent =
-                                Math.max(
-                                    0,
-                                    Math.min(
-                                        100,
-                                        progress
-                                        *
-                                        100
-                                        /
-                                        target
-                                    )
-                                );
-
-                            return `
-                                <div class="score-achievement ${item.unlocked ? "unlocked" : ""}">
-
-                                    <div class="score-achievement-top">
-                                        <span class="score-achievement-icon">
-                                            ${esc(item.icon || "🏅")}
-                                        </span>
-
-                                        <span class="score-achievement-state">
-                                            ${item.unlocked ? "ОТКРЫТО" : "В ПРОЦЕССЕ"}
-                                        </span>
-                                    </div>
-
-                                    <b>${esc(item.title || "Достижение")}</b>
-
-                                    <p>${esc(item.description || "")}</p>
-
-                                    <div class="score-achievement-progress">
-                                        <div style="width:${percent}%"></div>
-                                    </div>
-
-                                    <div class="score-achievement-numbers">
-                                        ${progress}/${target}
-                                    </div>
-
-                                </div>
-                            `;
-                        }
-                    ).join("")}
-
-                </div>
-
-            </div>
-        `
-        :
-        "";
-
-
-    const statsHtml =
-        `
-            <div class="score-history-summary">
-
-                <div class="score-history-stat">
-                    <span>Всего</span>
-                    <b>${total}</b>
-                </div>
-
-                <div class="score-history-stat exact">
-                    <span>Точный счёт</span>
-                    <b>${exactWins}</b>
-                </div>
-
-                <div class="score-history-stat outcome">
-                    <span>Исход</span>
-                    <b>${outcomeWins}</b>
-                </div>
-
-                <div class="score-history-stat lost">
-                    <span>Промахи</span>
-                    <b>${losses}</b>
-                </div>
-
-            </div>
-
-            <div class="score-streak-grid">
-
-                <div class="score-streak-card current">
-                    <span>🔥 Текущая серия</span>
-                    <b>${currentStreak}</b>
-                    <small>${currentStreak === 1 ? "день подряд" : "дней подряд"}</small>
-                </div>
-
-                <div class="score-streak-card best">
-                    <span>🏆 Рекорд серии</span>
-                    <b>${bestStreak}</b>
-                    <small>${bestStreak === 1 ? "день" : "дней"}</small>
-                </div>
-
-            </div>
-
-            <div class="score-history-rate">
-
-                <div>
-                    <span>Успешность</span>
-                    <b>${successRate}%</b>
-                </div>
-
-                <div class="score-history-rate-bar">
-                    <div
-                        class="score-history-rate-fill"
-                        style="width:${Math.max(0, Math.min(100, successRate))}%"
-                    ></div>
-                </div>
-
-                ${
-                    pending > 0
-                    ?
-                    `<small>⏳ В ожидании: ${pending}</small>`
-                    :
-                    `<small>Все прогнозы рассчитаны</small>`
-                }
-
-            </div>
-
-            ${achievementsHtml}
-        `;
-
-
-    const filters =
-        `
-            <div class="score-history-filters">
-
-                <button
-                    class="score-history-chip ${scoreHistoryFilter === "all" ? "active" : ""}"
-                    onclick="setScoreHistoryFilter('all')"
-                >
-                    Все
-                </button>
-
-                <button
-                    class="score-history-chip ${scoreHistoryFilter === "pending" ? "active" : ""}"
-                    onclick="setScoreHistoryFilter('pending')"
-                >
-                    Активные
-                </button>
-
-                <button
-                    class="score-history-chip ${scoreHistoryFilter === "won" ? "active" : ""}"
-                    onclick="setScoreHistoryFilter('won')"
-                >
-                    Угаданные
-                </button>
-
-                <button
-                    class="score-history-chip ${scoreHistoryFilter === "lost" ? "active" : ""}"
-                    onclick="setScoreHistoryFilter('lost')"
-                >
-                    Не угадано
-                </button>
-
-            </div>
-        `;
-
-
-    if(!items.length){
-
-        box.innerHTML =
-            statsHtml
-            +
-            filters
-            +
-            `
-                <div class="empty">
-                    Пока здесь нет прогнозов
-                </div>
-            `;
-
-        return;
-    }
-
-
-    box.innerHTML =
-        statsHtml
-        +
-        filters
-        +
-        `
-            <div class="score-history-list">
-
-                ${items.map(
-                    item => {
-
-                        const finalScore =
-                            (
-                                item.final_home
-                                !=
-                                null
-                                &&
-                                item.final_away
-                                !=
-                                null
-                            )
-                            ?
-                            `${item.final_home}:${item.final_away}`
-                            :
-                            "—";
-
-
-                        const statusIcon =
-                            item.status === "exact"
-                            ?
-                            "🎯"
-                            :
-                            item.status === "outcome"
-                            ?
-                            "✅"
-                            :
-                            item.status === "lost"
-                            ?
-                            "❌"
-                            :
-                            "⏳";
-
-
-                        const reward =
-                            (
-                                Number(
-                                    item.reward_coins
-                                    ||
-                                    0
-                                )
-                                >
-                                0
-                                ||
-                                Number(
-                                    item.reward_xp
-                                    ||
-                                    0
-                                )
-                                >
-                                0
-                            )
-                            ?
-                            `
-                                <div class="score-history-reward">
-                                    ${
-                                        Number(
-                                            item.reward_coins
-                                            ||
-                                            0
-                                        )
-                                        >
-                                        0
-                                        ?
-                                        `+${item.reward_coins} 🪙`
-                                        :
-                                        ""
-                                    }
-
-                                    ${
-                                        Number(
-                                            item.reward_xp
-                                            ||
-                                            0
-                                        )
-                                        >
-                                        0
-                                        ?
-                                        ` +${item.reward_xp} XP`
-                                        :
-                                        ""
-                                    }
-                                </div>
-                            `
-                            :
-                            "";
-
-
-                        return `
-                            <div class="score-history-card">
-
-                                <div class="score-history-head">
-
-                                    <div class="score-history-teams">
-
-                                        ${esc(
-                                            item.home_team
-                                            ||
-                                            ""
-                                        )}
-                                        —
-                                        ${esc(
-                                            item.away_team
-                                            ||
-                                            ""
-                                        )}
-
-                                        <div class="score-history-league">
-                                            ${esc(
-                                                item.league
-                                                ||
-                                                "Футбол"
-                                            )}
-                                        </div>
-
-                                    </div>
-
-                                    <div
-                                        class="score-history-status ${esc(item.status)}"
-                                    >
-                                        ${statusIcon}
-                                        ${esc(
-                                            item.status_text
-                                            ||
-                                            ""
-                                        )}
-                                    </div>
-
-                                </div>
-
-
-                                <div class="score-history-grid">
-
-                                    <div class="score-history-score">
-
-                                        <small>
-                                            Твой прогноз
-                                        </small>
-
-                                        <b>
-                                            ${item.predicted_home}
-                                            :
-                                            ${item.predicted_away}
-                                        </b>
-
-                                    </div>
-
-
-                                    <div class="score-history-score">
-
-                                        <small>
-                                            Итоговый счёт
-                                        </small>
-
-                                        <b>
-                                            ${finalScore}
-                                        </b>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="score-history-meta">
-
-                                    🕒
-                                    ${scoreHistoryDateText(
-                                        item.kickoff_at
-                                        ||
-                                        item.picked_at
-                                    )}
-
-                                </div>
-
-                                ${reward}
-
-                            </div>
-                        `;
-                    }
-                ).join("")}
-
-            </div>
-        `;
-}
-
-
-async function pickExactScore(){
-
-    if(
-        !scoreGame
-        ||
-        scoreGame.can_pick
-        !==
-        true
-    ){
-
-        return;
-    }
-
-
-    const homeInput =
-        document.getElementById(
-            "scoreHomeInput"
-        );
-
-
-    const awayInput =
-        document.getElementById(
-            "scoreAwayInput"
-        );
-
-
-    const home =
-        Number(
-            homeInput.value
-        );
-
-
-    const away =
-        Number(
-            awayInput.value
-        );
-
-
-    if(
-        !Number.isInteger(
-            home
-        )
-        ||
-        !Number.isInteger(
-            away
-        )
-        ||
-        home < 0
-        ||
-        away < 0
-        ||
-        home > 10
-        ||
-        away > 10
-    ){
-
-        tg.showAlert(
-            "Укажи счёт от 0 до 10"
-        );
-
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            `Подтвердить счёт ${home}:${away}?\n\nИзменить прогноз потом нельзя.`
-        );
-
-
-    if(!confirmed){
-
-        return;
-    }
-
-
-    const button =
-        document.getElementById(
-            "scoreGameBtn"
-        );
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Сохраняем...";
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/games/score/pick",
-                {
-                    home_score:
-                        home,
-
-                    away_score:
-                        away
-                }
-            );
-
-
-        scoreGame =
-            data.game
-            ||
-            {};
-
-
-        renderScoreGame();
-
-        renderHome();
-
-
-        tg.showAlert(
-            `⚽ Прогноз ${home}:${away} сохранён`
-        );
-
-
-        loadScoreGameHistory();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-
-
-    }finally{
-
-        renderScoreGame();
-    }
-}
-
-
-/* ===================================
-   🎡 WHEEL
-=================================== */
-
-function wheelWaitText(
-    seconds
-){
-
-    seconds =
-        Math.max(
-            0,
-            Number(
-                seconds
-            )
-            ||
-            0
-        );
-
-
-    const hours =
-        Math.floor(
-            seconds
-            /
-            3600
-        );
-
-
-    const minutes =
-        Math.floor(
-            (
-                seconds
-                %
-                3600
-            )
-            /
-            60
-        );
-
-
-    if(
-        hours > 0
-    ){
-
-        return `${hours} ч ${minutes} мин`;
-    }
-
-
-    if(
-        minutes > 0
-    ){
-
-        return `${minutes} мин`;
-    }
-
-
-    return `${Math.max(
-        1,
-        Math.ceil(
-            seconds
-        )
-    )} сек`;
-}
-
-
-function renderWheel(){
-
-    const button =
-        document.getElementById(
-            "wheelBtn"
-        );
-
-
-    const info =
-        document.getElementById(
-            "wheelInfo"
-        );
-
-
-    if(
-        !button
-        ||
-        !info
-    ){
-
-        return;
-    }
-
-
-    const available =
-        wheel?.available
-        !==
-        false;
-
-
-    button.disabled =
-        !available;
-
-
-    button.textContent =
-        available
-
-        ?
-
-        "Крутить бесплатно"
-
-        :
-
-        "Уже использовано";
-
-
-    info.textContent =
-        available
-
-        ?
-
-        "Вращение доступно 🎁"
-
-        :
-
-        `Следующее вращение через ${wheelWaitText(
-            wheel?.seconds_left
-            ||
-            0
-        )}`;
-
-
-    renderHomeRewards();
-}
-
-
-async function spinLuckyWheel(){
-
-    const button =
-        document.getElementById(
-            "wheelBtn"
-        );
-
-
-    const disc =
-        document.getElementById(
-            "wheelDisc"
-        );
-
-
-    const result =
-        document.getElementById(
-            "wheelResult"
-        );
-
-
-    if(
-        !button
-        ||
-        button.disabled
-    ){
-
-        return;
-    }
-
-
-    button.disabled =
-        true;
-
-
-    result.textContent =
-        "";
-
-
-    disc.classList.remove(
-        "spinning"
-    );
-
-
-    void disc.offsetWidth;
-
-
-    disc.classList.add(
-        "spinning"
-    );
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/wheel/spin"
-            );
-
-
-        balance =
-            Number(
-                data.balance
-                ??
-                balance
-            );
-
-
-        xp =
-            Number(
-                data.xp
-                ??
-                xp
-            );
-
-
-        level =
-            Number(
-                data.level
-                ??
-                level
-            );
-
-
-        leagueInfo =
-            data.league
-            ||
-            leagueInfo;
-
-
-        levelXp =
-            Number(
-                data.current_level_xp
-                ??
-                levelXp
-            );
-
-
-        wheel =
-            data.wheel
-            ||
-            wheel;
-
-
-        setBalances();
-
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    2300
-                )
-        );
-
-
-        result.textContent =
-            `🎉 ${data.reward_label}`;
-
-
-        tg.showAlert(
-            `Колесо удачи: ${data.reward_label}`
-        );
-
-
-        renderGames();
-
-        renderProfile();
-
-        renderHome();
-
-
-    }catch(error){
-
-        result.textContent =
-            `❌ ${error.message}`;
-
-
-        tg.showAlert(
-            error.message
-        );
-
-
-    }finally{
-
-        disc.classList.remove(
-            "spinning"
-        );
-
-
-        renderWheel();
-    }
-}
-
-
-function renderGames(){
-
-    renderPredictionGame();
-
-    renderScoreGame();
-
-    renderScoreGameHistory();
-
-    setScoreGameView(
-        scoreGameView
-    );
-
-    renderWheel();
-}
-
-
-/* ===================================
-   SESSION
-=================================== */
-
-async function loadSession(){
-
-    try{
-
-        const data =
-            await post(
-                "/api/session"
-            );
-
-
-        balance =
-            Number(
-                data.balance
-                ||
-                0
-            );
-
-
-        currentUser =
-            data.user
-            ||
-            null;
-
-
-        referralInfo =
-            data.referral
-            ||
-            {};
-
-
-        notificationSettings =
-            data.notification_settings
-            ||
-            {};
-
-
-        profileExtra =
-            data.profile_extra
-            ||
-            {};
-
-
-        bets =
-            data.bets
-            ||
-            [];
-
-
-        parlays =
-            data.parlays
-            ||
-            [];
-
-
-        xp =
-            Number(
-                data.xp
-                ||
-                0
-            );
-
-
-        level =
-            Number(
-                data.level
-                ||
-                1
-            );
-
-
-        leagueInfo =
-            data.league
-            ||
-            {};
-
-
-        levelXp =
-            Number(
-                data.current_level_xp
-                ||
-                0
-            );
-
-
-        stats =
-            data.stats
-            ||
-            {};
-
-
-        tasks =
-            data.tasks
-            ||
-            [];
-
-
-        achievements =
-            data.achievements
-            ||
-            [];
-
-
-        daily =
-            data.daily_reward
-            ||
-            {};
-
-
-        loginStreak =
-            data.login_streak
-            ||
-            {};
-
-
-        wheel =
-            data.wheel
-            ||
-            {};
-
-
-        predictionGame =
-            data.prediction_game
-            ||
-            {};
-
-
-        scoreGame =
-            data.score_game
-            ||
-            {};
-
-
-        myRank =
-            data.leaderboard?.my_rank
-            ??
-            null;
-
-
-        favoriteMatches =
-            [
-                ...new Set([
-                    ...favoriteMatches,
-
-                    ...(
-                        data.favorites
-                        ||
-                        []
-                    )
-                    .map(
-                        item =>
-                            Number(
-                                item.fixture_id
-                                ??
-                                item
-                            )
-                    )
-                ])
-            ];
-
-
-        favoriteTeams =
-            [
-                ...new Set([
-                    ...favoriteTeams,
-
-                    ...(
-                        data.favorite_teams
-                        ||
-                        []
-                    )
-                ])
-            ];
-
-
-        localStorage.setItem(
-            "bcFavMatches",
-            JSON.stringify(
-                favoriteMatches
-            )
-        );
-
-
-        localStorage.setItem(
-            "bcFavTeams",
-            JSON.stringify(
-                favoriteTeams
-            )
-        );
-
-
-        setBalances();
-
-        renderProfile();
-
-        renderBets();
-
-        renderHome();
-
-        renderGames();
-
-        renderLoginStreak();
-
-        renderHomeRewards();
-
-
-    }catch(error){
-
-        console.error(
-            "Session:",
-            error
-        );
-    }
-}
-
-
-/* ===================================
-   ⭐ МАТЧ ДНЯ
-=================================== */
-
-function matchDayCountdown(
-    iso
-){
-
-    const date =
-        parseDate(
-            iso
-        );
-
-    if(!date){
-        return "Время уточняется";
-    }
-
-    const ms =
-        date.getTime()
-        -
-        Date.now();
-
-    if(ms <= 0){
-        return "Матч начался";
-    }
-
-    const totalMinutes =
-        Math.floor(
-            ms / 60000
-        );
-
-    if(totalMinutes < 60){
-
-        return `До начала ${Math.max(1,totalMinutes)} мин`;
-    }
-
-    const hours =
-        Math.floor(
-            totalMinutes / 60
-        );
-
-    const minutes =
-        totalMinutes % 60;
-
-    if(hours < 24){
-
-        return `До начала ${hours} ч ${minutes} мин`;
-    }
-
-    const days =
-        Math.floor(
-            hours / 24
-        );
-
-    return `До начала ${days} дн.`;
-}
-
-
-function openMatchDay(){
-
-    showPage(
-        "games"
-    );
-
-    setScoreGameView(
-        "play"
-    );
-
-    setTimeout(
-        ()=>{
-
-            document
-            .getElementById(
-                "scoreGame"
-            )
-            ?.scrollIntoView({
-                behavior:"smooth",
-                block:"start"
-            });
-
-        },
-        120
-    );
-}
-
-
-function renderHomeMatchDay(){
-
-    const box =
-        document.getElementById(
-            "homeMatchDay"
-        );
-
-    if(!box){
-        return;
-    }
-
-
-    if(
-        !scoreGame
-        ||
-        scoreGame.available
-        ===
-        false
-    ){
-
-        box.innerHTML =
-            `
-                <div class="match-day-card">
-
-                    <div class="match-day-head">
-
-                        <div class="match-day-title">
-                            ⭐ Матч дня
-                        </div>
-
-                        <div class="match-day-badge">
-                            ЕЖЕДНЕВНО
-                        </div>
-
-                    </div>
-
-                    <div class="empty" style="margin-top:12px">
-                        Пока нет подходящего матча
-                    </div>
-
-                </div>
-            `;
-
-        return;
-    }
-
-
-    const hasPick =
-        scoreGame.predicted_home
-        !=
-        null
-        &&
-        scoreGame.predicted_away
-        !=
-        null;
-
-
-    let statusHtml =
-        "";
-
-
-    if(
-        hasPick
-        &&
-        !scoreGame.settled
-    ){
-
-        statusHtml =
-            `
-                <div class="match-day-pick">
-
-                    Твой прогноз
-
-                    <br>
-
-                    <b>
-                        ${scoreGame.predicted_home}:${scoreGame.predicted_away}
-                    </b>
-
-                    <br>
-
-                    Ждём результат
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        ===
-        true
-    ){
-
-        statusHtml =
-            `
-                <div class="match-day-result win">
-
-                    🎯 Точный счёт!
-
-                    <br><br>
-
-                    Твой прогноз:
-                    <b>
-                        ${scoreGame.predicted_home}:${scoreGame.predicted_away}
-                    </b>
-
-                    •
-                    Итог:
-                    <b>
-                        ${scoreGame.final_home}:${scoreGame.final_away}
-                    </b>
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        !==
-        true
-        &&
-        scoreGame.outcome_win
-        ===
-        true
-    ){
-
-        statusHtml =
-            `
-                <div class="match-day-result win">
-
-                    ✅ Исход угадан
-
-                    <br><br>
-
-                    ${scoreGame.predicted_home}:${scoreGame.predicted_away}
-                    →
-                    ${scoreGame.final_home}:${scoreGame.final_away}
-
-                </div>
-            `;
-    }
-
-
-    if(
-        scoreGame.settled
-        &&
-        scoreGame.exact_win
-        !==
-        true
-        &&
-        scoreGame.outcome_win
-        !==
-        true
-    ){
-
-        statusHtml =
-            `
-                <div class="match-day-result loss">
-
-                    ❌ Сегодня не угадано
-
-                    <br><br>
-
-                    ${scoreGame.predicted_home}:${scoreGame.predicted_away}
-                    →
-                    ${scoreGame.final_home}:${scoreGame.final_away}
-
-                </div>
-            `;
-    }
-
-
-    const actionText =
-        scoreGame.settled
-        ?
-        "Посмотреть результат"
-        :
-        (
-            hasPick
-            ?
-            "Открыть прогноз"
-            :
-            "Сделать прогноз"
-        );
-
-
-    box.innerHTML =
-        `
-            <div class="match-day-card">
-
-                <div class="match-day-head">
-
-                    <div class="match-day-title">
-                        ⭐ Матч дня
-                    </div>
-
-                    <div class="match-day-badge">
-                        ТОЧНЫЙ СЧЁТ
-                    </div>
-
-                </div>
-
-
-                <div class="match-day-league">
-                    ${esc(scoreGame.league || "")}
-                </div>
-
-
-                <div class="match-day-teams">
-
-                    <div class="match-day-team">
-                        ${esc(scoreGame.home_team || "")}
-                    </div>
-
-                    <div class="match-day-vs">
-                        VS
-                    </div>
-
-                    <div class="match-day-team away">
-                        ${esc(scoreGame.away_team || "")}
-                    </div>
-
-                </div>
-
-
-                <div class="match-day-time">
-                    ${
-                        scoreGame.settled
-                        ?
-                        "Матч завершён"
-                        :
-                        matchDayCountdown(
-                            scoreGame.kickoff_at
-                        )
-                    }
-                </div>
-
-
-                <div
-                    style="
-                        margin-top:10px;
-                        text-align:center;
-                        color:var(--muted);
-                        font-size:10px;
-                    "
-                >
-                    🔔 Напомним примерно за час, если прогноз ещё не сделан
-                </div>
-
-
-                <div class="match-day-stats">
-
-                    <div class="match-day-stat">
-                        <b>
-                            ${Number(scoreGame.predictions_count || 0)}
-                        </b>
-                        <small>
-                            прогнозов
-                        </small>
-                    </div>
-
-                    <div class="match-day-stat">
-                        <b>
-                            🔥 ${Number(scoreGame.current_streak || 0)}
-                        </b>
-                        <small>
-                            твоя серия
-                        </small>
-                    </div>
-
-                    <div class="match-day-stat">
-                        <b>
-                            🎯 ${Number(scoreGame.exact_reward_coins || 0)}
-                        </b>
-                        <small>
-                            награда
-                        </small>
-                    </div>
-
-                </div>
-
-
-                ${statusHtml}
-
-
-                <button
-                    class="btn match-day-action"
-                    onclick="openMatchDay()"
-                >
-                    ${actionText}
-                </button>
-
-            </div>
-        `;
-}
-
-
-
-/* ===================================
-   HOME
-=================================== */
-
-function renderHome(){
-
-    renderHomeMatchDay();
-
-    document
-    .getElementById(
-        "homeName"
     )
-    .textContent =
-        currentUser?.first_name
-        ||
-        "Игрок";
 
 
-    document
-    .getElementById(
-        "homeLeague"
+def betcoin_start_keyboard():
+
+    base_url = (
+        webapp_url_with_params()
     )
-    .textContent =
-        `${leagueInfo.icon || "🥉"} `
-        +
-        `${leagueInfo.name || "Бронза"} `
-        +
-        `• Уровень ${level}`;
 
+    if not base_url:
+        return None
 
-    document
-    .getElementById(
-        "homeXp"
+    match_url = (
+        webapp_url_with_params(
+            page="games",
+            score_view="play"
+        )
     )
-    .textContent =
-        `${levelXp} / 100 XP`;
 
-
-    document
-    .getElementById(
-        "homeXpFill"
+    rating_url = (
+        webapp_url_with_params(
+            page="games",
+            score_view="leaderboard"
+        )
     )
-    .style.width =
-        `${Math.min(
-            levelXp,
-            100
-        )}%`;
 
-
-    const top =
-        (
-            loaded.top5
-            ||
-            []
+    profile_url = (
+        webapp_url_with_params(
+            page="profile"
         )
-        .filter(
-            match =>
-                !kickoff(
-                    match
-                ).started
-        );
-
-
-    document
-    .getElementById(
-        "homePopular"
     )
-    .innerHTML =
-        top
-        .slice(
-            0,
-            3
-        )
-        .map(
-            renderMatch
-        )
-        .join("")
-
-        ||
-
-        `
-            <div class="empty">
-                Нет матчей
-            </div>
-        `;
-
-
-    document
-    .getElementById(
-        "homeUpcoming"
-    )
-    .innerHTML =
-        top
-        .slice(
-            0,
-            4
-        )
-        .map(
-            renderMatch
-        )
-        .join("")
-
-        ||
-
-        `
-            <div class="empty">
-                Нет ближайших матчей
-            </div>
-        `;
-
-
-    const active = [
-
-        ...bets
-        .filter(
-            item =>
-                item.status
-                ===
-                "Активна"
-        )
-        .slice(
-            0,
-            2
-        ),
-
-        ...parlays
-        .filter(
-            item =>
-                item.status
-                ===
-                "Активна"
-        )
-        .slice(
-            0,
-            1
-        )
-    ];
-
-
-    document
-    .getElementById(
-        "homeBets"
-    )
-    .innerHTML =
-        active.length
-
-        ?
-
-        active
-        .map(
-            item =>
-                `
-                    <div class="card">
-
-                        <span class="status active">
-                            Активна
-                        </span>
-
-                        <div
-                            style="
-                                font-weight:900;
-                                margin-top:6px
-                            "
-                        >
-                            ${esc(
-                                item.match
-                                ||
-                                `Экспресс #${item.id}`
-                            )}
-                        </div>
-
-                        <div class="muted">
-
-                            ${
-                                item.selection
-
-                                ?
-
-                                esc(
-                                    item.selection
-                                )
-
-                                :
-
-                                `${
-                                    (
-                                        item.legs
-                                        ||
-                                        []
-                                    ).length
-                                } событий`
-                            }
-
-                        </div>
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Нет активных ставок
-            </div>
-        `;
-
-
-    renderHomeRewards();
-
-    renderLive();
-}
-
-
-/* ===================================
-   REFERRALS
-=================================== */
-
-function renderReferral(){
-
-    const linkInput =
-        document.getElementById(
-            "referralLink"
-        );
-
-    const countBox =
-        document.getElementById(
-            "referralCount"
-        );
-
-    const rewardBox =
-        document.getElementById(
-            "referralRewardText"
-        );
-
-    if(
-        !linkInput
-        ||
-        !countBox
-        ||
-        !rewardBox
-    ){
-        return;
-    }
-
-    const link =
-        referralInfo?.link
-        ||
-        "";
-
-    const count =
-        Number(
-            referralInfo?.invited_count
-            ||
-            0
-        );
-
-    const inviterReward =
-        Number(
-            referralInfo?.inviter_reward
-            ||
-            500
-        );
-
-    const friendReward =
-        Number(
-            referralInfo?.friend_reward
-            ||
-            300
-        );
-
-    linkInput.value =
-        link;
-
-    countBox.textContent =
-        `${count} ${
-            count === 1
-            ?
-            "друг"
-            :
-            (
-                count >= 2
-                &&
-                count <= 4
-                ?
-                "друга"
-                :
-                "друзей"
-            )
-        }`;
-
-    rewardBox.textContent =
-        `Ты получаешь +${inviterReward} 🪙, друг — +${friendReward} 🪙`;
-}
-
-
-async function copyReferralLink(){
-
-    const link =
-        referralInfo?.link
-        ||
-        "";
-
-    if(!link){
-
-        tg.showAlert(
-            "Реферальная ссылка пока недоступна"
-        );
-
-        return;
-    }
-
-    try{
-
-        await navigator.clipboard.writeText(
-            link
-        );
-
-        tg.showAlert(
-            "Ссылка скопирована ✅"
-        );
-
-    }catch(error){
-
-        const input =
-            document.getElementById(
-                "referralLink"
-            );
-
-        if(input){
-
-            input.focus();
-            input.select();
-        }
-
-        tg.showAlert(
-            "Скопируй выделенную ссылку"
-        );
-    }
-}
-
-
-function shareReferralLink(){
-
-    const link =
-        referralInfo?.link
-        ||
-        "";
-
-    if(!link){
-
-        tg.showAlert(
-            "Реферальная ссылка пока недоступна"
-        );
-
-        return;
-    }
-
-    const reward =
-        Number(
-            referralInfo?.friend_reward
-            ||
-            300
-        );
-
-    const text =
-        `Залетай в BetCoin ⚽ Получишь +${reward} монет за первый запуск!`;
-
-    const shareUrl =
-        "https://t.me/share/url?url="
-        +
-        encodeURIComponent(
-            link
-        )
-        +
-        "&text="
-        +
-        encodeURIComponent(
-            text
-        );
-
-    if(
-        tg.openTelegramLink
-    ){
-
-        tg.openTelegramLink(
-            shareUrl
-        );
-
-    }else{
-
-        window.open(
-            shareUrl,
-            "_blank"
-        );
-    }
-}
-
-
-function renderProfileExtra(){
-
-    const title =
-        document.getElementById(
-            "profileTitleBadge"
-        );
-
-    const success =
-        document.getElementById(
-            "profilePredSuccess"
-        );
-
-    const exact =
-        document.getElementById(
-            "profileExactWins"
-        );
-
-    const streak =
-        document.getElementById(
-            "profileBestStreak"
-        );
-
-    const leagues =
-        document.getElementById(
-            "profilePrivateLeagues"
-        );
-
-    if(title){
-        title.textContent =
-            `🏅 ${profileExtra?.title || "Новичок"}`;
-    }
-
-    if(success){
-        success.textContent =
-            `${Number(profileExtra?.prediction_success_rate || 0)}%`;
-    }
-
-    if(exact){
-        exact.textContent =
-            Number(
-                profileExtra?.prediction_exact
-                ||
-                0
-            );
-    }
-
-    if(streak){
-        streak.textContent =
-            Number(
-                profileExtra?.best_streak
-                ||
-                0
-            );
-    }
-
-    if(leagues){
-        leagues.textContent =
-            Number(
-                profileExtra?.private_leagues
-                ||
-                0
-            );
-    }
-}
-
-
-function renderNotificationSettings(){
-
-    const mapping = {
-        notifyMatchDay:
-            "match_day",
-
-        notifyFavorite:
-            "favorite_match",
-
-        notifyBets:
-            "bet_result",
-
-        notifyPredictions:
-            "prediction_result",
-
-        notifyReferral:
-            "referral"
-    };
-
-    for(
-        const [
-            id,
-            key
-        ]
-        of
-        Object.entries(
-            mapping
-        )
-    ){
-
-        const input =
-            document.getElementById(
-                id
-            );
-
-        if(input){
-
-            input.checked =
-                notificationSettings?.[
-                    key
-                ]
-                !==
-                false;
-        }
-    }
-}
-
-
-async function saveNotificationSettings(){
-
-    const settings = {
-        match_day:
-            !!document.getElementById(
-                "notifyMatchDay"
-            )?.checked,
-
-        favorite_match:
-            !!document.getElementById(
-                "notifyFavorite"
-            )?.checked,
-
-        bet_result:
-            !!document.getElementById(
-                "notifyBets"
-            )?.checked,
-
-        prediction_result:
-            !!document.getElementById(
-                "notifyPredictions"
-            )?.checked,
-
-        referral:
-            !!document.getElementById(
-                "notifyReferral"
-            )?.checked
-    };
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/notification-settings",
-                settings
-            );
-
-        notificationSettings =
-            data.settings
-            ||
-            settings;
-
-        renderNotificationSettings();
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-
-const onboardingSlides = [
-    {
-        icon:"⚽",
-        title:"Добро пожаловать в BetCoin",
-        text:"Смотри футбольные матчи, выбирай рынки и собирай виртуальные ставки."
-    },
-    {
-        icon:"🎯",
-        title:"Прогнозируй каждый день",
-        text:"Играй в «Угадай исход» и «Точный счёт», получай монеты и XP."
-    },
-    {
-        icon:"🏆",
-        title:"Поднимайся в рейтинге",
-        text:"Соревнуйся с игроками, вступай в приватные лиги и приглашай друзей."
-    }
-];
-
-
-function renderOnboarding(){
-
-    const slide =
-        onboardingSlides[
-            onboardingStep
-        ];
-
-    if(!slide){
-        return;
-    }
-
-    document.getElementById(
-        "onboardingIcon"
-    ).textContent =
-        slide.icon;
-
-    document.getElementById(
-        "onboardingTitle"
-    ).textContent =
-        slide.title;
-
-    document.getElementById(
-        "onboardingText"
-    ).textContent =
-        slide.text;
-
-    document.getElementById(
-        "onboardingDots"
-    ).innerHTML =
-        onboardingSlides
-        .map(
-            (
-                _,
-                index
-            ) =>
-                `
-                    <span
-                        class="
-                            onboarding-dot
-                            ${
-                                index
-                                ===
-                                onboardingStep
-                                ?
-                                "active"
-                                :
-                                ""
-                            }
-                        "
-                    ></span>
-                `
-        )
-        .join("");
-
-    document.getElementById(
-        "onboardingBtn"
-    ).textContent =
-        onboardingStep
-        ===
-        onboardingSlides.length - 1
-        ?
-        "Начать"
-        :
-        "Далее";
-}
-
-
-function showOnboardingIfNeeded(){
-
-    if(
-        localStorage.getItem(
-            "betcoinOnboardingDone"
-        )
-    ){
-        return;
-    }
-
-    onboardingStep = 0;
-
-    document.getElementById(
-        "onboarding"
-    )?.classList.add(
-        "show"
-    );
-
-    renderOnboarding();
-}
-
-
-function nextOnboarding(){
-
-    if(
-        onboardingStep
-        <
-        onboardingSlides.length - 1
-    ){
-
-        onboardingStep += 1;
-        renderOnboarding();
-        return;
-    }
-
-    finishOnboarding();
-}
-
-
-function finishOnboarding(){
-
-    localStorage.setItem(
-        "betcoinOnboardingDone",
-        "1"
-    );
-
-    document.getElementById(
-        "onboarding"
-    )?.classList.remove(
-        "show"
-    );
-}
-
-
-/* ===================================
-   PROFILE
-=================================== */
-
-function renderProfile(){
-
-    renderReferral();
-    renderNotificationSettings();
-    renderProfileExtra();
-
-    document
-    .getElementById(
-        "profileName"
-    )
-    .textContent =
-        currentUser?.first_name
-        ||
-        "Игрок";
-
-
-    document
-    .getElementById(
-        "profileLeague"
-    )
-    .textContent =
-        `${leagueInfo.icon || ""} `
-        +
-        `${leagueInfo.name || ""}`;
-
-
-    document
-    .getElementById(
-        "profileLevel"
-    )
-    .textContent =
-        `Уровень ${level}`;
-
-
-    document
-    .getElementById(
-        "profileXp"
-    )
-    .textContent =
-        `${xp} XP`;
-
-
-    document
-    .getElementById(
-        "profileXpFill"
-    )
-    .style.width =
-        `${Math.min(
-            levelXp,
-            100
-        )}%`;
-
-
-    document
-    .getElementById(
-        "profileRank"
-    )
-    .textContent =
-        myRank
-
-        ?
-
-        `Место: #${myRank}`
-
-        :
-
-        "Место: —";
-
-
-    document
-    .getElementById(
-        "stats"
-    )
-    .innerHTML =
-        [
-            [
-                stats.total_bets
-                ||
-                0,
-
-                "Ординаров"
-            ],
-
-            [
-                stats.wins
-                ||
-                0,
-
-                "Побед"
-            ],
-
-            [
-                `${stats.win_rate || 0}%`,
-
-                "Процент побед"
-            ],
-
-            [
-                stats.total_parlays
-                ||
-                0,
-
-                "Экспрессов"
-            ],
-
-            [
-                stats.prediction_games
-                ||
-                0,
-
-                "Угадай исход"
-            ],
-
-            [
-                stats.prediction_wins
-                ||
-                0,
-
-                "Исходов угадано"
-            ],
-
-            [
-                stats.score_games
-                ||
-                0,
-
-                "Прогнозов счёта"
-            ],
-
-            [
-                stats.score_exact_wins
-                ||
-                0,
-
-                "Точных счетов"
-            ]
-        ]
-        .map(
-            item =>
-                `
-                    <div class="stat">
-
-                        <b>
-                            ${item[0]}
-                        </b>
-
-                        <span class="muted">
-                            ${item[1]}
-                        </span>
-
-                    </div>
-                `
-        )
-        .join("");
-
-
-    document
-    .getElementById(
-        "tasks"
-    )
-    .innerHTML =
-        tasks.length
-
-        ?
-
-        tasks
-        .map(
-            item =>
-                `
-                    <div class="card task-row">
-
-                        <div>
-
-                            <b>
-                                ${esc(item.title)}
-                            </b>
-
-                            <div class="muted">
-
-                                ${item.progress}/${item.target}
-
-                                •
-
-                                +${item.reward}
-
-                                ${
-                                    item.reward_type
-                                    ===
-                                    "xp"
-
-                                    ?
-
-                                    "XP"
-
-                                    :
-
-                                    "🪙"
-                                }
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            class="small-btn"
-
-                            ${
-                                !item.completed
-                                ||
-                                item.claimed
-
-                                ?
-
-                                "disabled"
-
-                                :
-
-                                ""
-                            }
-
-                            onclick="
-                                claimTask(
-                                    '${js(item.key)}'
-                                )
-                            "
-                        >
-
-                            ${
-                                item.claimed
-
-                                ?
-
-                                "Получено"
-
-                                :
-
-                                item.completed
-
-                                ?
-
-                                "Забрать"
-
-                                :
-
-                                "В процессе"
-                            }
-
-                        </button>
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Пока нет заданий
-            </div>
-        `;
-
-
-    document
-    .getElementById(
-        "achievements"
-    )
-    .innerHTML =
-        achievements.length
-
-        ?
-
-        achievements
-        .map(
-            item =>
-                `
-                    <div class="card task-row">
-
-                        <div>
-
-                            <b>
-                                ${esc(item.title)}
-                            </b>
-
-                            <div class="muted">
-
-                                ${item.progress}/${item.target}
-
-                                •
-
-                                +${item.reward} 🪙
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            class="small-btn"
-
-                            ${
-                                !item.completed
-                                ||
-                                item.claimed
-
-                                ?
-
-                                "disabled"
-
-                                :
-
-                                ""
-                            }
-
-                            onclick="
-                                claimAchievement(
-                                    '${js(item.key)}'
-                                )
-                            "
-                        >
-
-                            ${
-                                item.claimed
-
-                                ?
-
-                                "Получено"
-
-                                :
-
-                                item.completed
-
-                                ?
-
-                                "Забрать"
-
-                                :
-
-                                "Закрыто"
-                            }
-
-                        </button>
-
-                    </div>
-                `
-        )
-        .join("")
-
-        :
-
-        `
-            <div class="empty">
-                Пока нет достижений
-            </div>
-        `;
-
-
-    const dailyButton =
-        document.getElementById(
-            "dailyBtn"
-        );
-
-
-    dailyButton.disabled =
-        daily.available
-        !==
-        true;
-
-
-    dailyButton.textContent =
-        daily.available
-        ===
-        true
-
-        ?
-
-        "Получить +300"
-
-        :
-
-        "Уже получено";
-
-
-    document
-    .getElementById(
-        "dailyInfo"
-    )
-    .textContent =
-        daily.available
-        ===
-        true
-
-        ?
-
-        "Бонус доступен"
-
-        :
-
-        `Следующий бонус через ${wheelWaitText(
-            daily.seconds_left
-            ||
-            0
-        )}`;
-
-
-    renderLoginStreak();
-}
-
-
-/* ===================================
-   PROFILE ACTIONS
-=================================== */
-
-async function claimDaily(){
-
-    try{
-
-        await post(
-            "/api/daily-reward"
-        );
-
-
-        await loadSession();
-
-
-        tg.showAlert(
-            "+300 🪙 получено"
-        );
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function claimTask(
-    key
-){
-
-    try{
-
-        await post(
-            "/api/tasks/claim",
-            {
-                task_key:
-                    key
-            }
-        );
-
-
-        await loadSession();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function claimAchievement(
-    key
-){
-
-    try{
-
-        await post(
-            "/api/achievements/claim",
-            {
-                achievement_key:
-                    key
-            }
-        );
-
-
-        await loadSession();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function redeemPromo(){
-
-    const input =
-        document.getElementById(
-            "promoInput"
-        );
-
-
-    const button =
-        document.getElementById(
-            "promoBtn"
-        );
-
-
-    const box =
-        document.getElementById(
-            "promoResult"
-        );
-
-
-    const code =
-        input.value
-        .trim()
-        .toUpperCase();
-
-
-    if(!code){
-
-        tg.showAlert(
-            "Введите промокод"
-        );
-
-        return;
-    }
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Проверяем...";
-
-
-    box.textContent =
-        "";
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/promo/redeem",
-                {
-                    code:
-                        code
-                }
-            );
-
-
-        const rewards = [];
-
-
-        if(
-            Number(
-                data.reward_coins
-            )
-            >
-            0
-        ){
-
-            rewards.push(
-                `+${data.reward_coins} 🪙`
-            );
-        }
-
-
-        if(
-            Number(
-                data.reward_xp
-            )
-            >
-            0
-        ){
-
-            rewards.push(
-                `+${data.reward_xp} XP`
-            );
-        }
-
-
-        box.textContent =
-            `✅ Получено: ${rewards.join(" • ")}`;
-
-
-        input.value =
-            "";
-
-
-        await loadSession();
-
-
-        tg.showAlert(
-            `Промокод активирован! ${rewards.join(" • ")}`
-        );
-
-
-    }catch(error){
-
-        box.textContent =
-            "❌ "
-            +
-            error.message;
-
-
-    }finally{
-
-        button.disabled =
-            false;
-
-
-        button.textContent =
-            "Активировать";
-    }
-}
-
-
-/* ===================================
-   LEADERBOARD
-=================================== */
-
-function leaderboardMetric(
-    item
-){
-
-    if(
-        leaderboardMode
-        ===
-        "coins"
-    ){
-
-        return {
-            main:
-                `${Number(item.balance || 0).toLocaleString("ru-RU")} 🪙`,
-
-            sub:
-                `Уровень ${Number(item.level || 1)}`
-        };
-    }
-
-
-    if(
-        leaderboardMode
-        ===
-        "exact"
-    ){
-
-        return {
-            main:
-                `${Number(item.exact_wins || 0)} 🎯`,
-
-            sub:
-                `${Number(item.successful_predictions || 0)} успешных • ${Number(item.success_rate || 0)}%`
-        };
-    }
-
-
-    if(
-        leaderboardMode
-        ===
-        "weekly"
-    ){
-
-        return {
-            main:
-                `${Number(item.successful_predictions || 0)} ✅`,
-
-            sub:
-                `${Number(item.settled_predictions || 0)} прогнозов за 7 дней`
-        };
-    }
-
 
     return {
-        main:
-            `${Number(item.xp || 0).toLocaleString("ru-RU")} XP`,
-
-        sub:
-            `${item.league?.icon || ""} ${esc(item.league?.name || "")} • Ур. ${Number(item.level || 1)}`
-    };
-}
-
-
-function leaderboardMedal(
-    rank
-){
-
-    if(rank === 1){
-        return "🥇";
-    }
-
-    if(rank === 2){
-        return "🥈";
-    }
-
-    if(rank === 3){
-        return "🥉";
-    }
-
-    return `#${rank}`;
-}
-
-
-function renderLeaderboard(){
-
-    const box =
-        document.getElementById(
-            "leaderboard"
-        );
-
-    const meBox =
-        document.getElementById(
-            "leaderboardMe"
-        );
-
-
-    document
-    .getElementById(
-        "leadersTabXp"
-    )
-    ?.classList.toggle(
-        "active",
-        leaderboardMode === "xp"
-    );
-
-    document
-    .getElementById(
-        "leadersTabCoins"
-    )
-    ?.classList.toggle(
-        "active",
-        leaderboardMode === "coins"
-    );
-
-    document
-    .getElementById(
-        "leadersTabExact"
-    )
-    ?.classList.toggle(
-        "active",
-        leaderboardMode === "exact"
-    );
-
-
-    document
-    .getElementById(
-        "leadersTabWeekly"
-    )
-    ?.classList.toggle(
-        "active",
-        leaderboardMode === "weekly"
-    );
-
-
-    if(meBox){
-
-        if(leaderboardMe){
-
-            const metric =
-                leaderboardMetric(
-                    leaderboardMe
-                );
-
-            meBox.innerHTML =
-                `
-                    <div class="leaders-me">
-
-                        <div class="leaders-me-top">
-
-                            <div>
-
-                                <div class="muted">
-                                    Твоё место
-                                </div>
-
-                                <div class="leaders-me-rank">
-                                    #${leaderboardMe.rank}
-                                </div>
-
-                            </div>
-
-                            <div
-                                style="
-                                    text-align:right;
-                                    font-weight:900
-                                "
-                            >
-                                ${metric.main}
-                            </div>
-
-                        </div>
-
-                        <div class="leaders-me-value">
-                            ${metric.sub}
-                        </div>
-
-                    </div>
-                `;
-
-        }else{
-
-            meBox.innerHTML =
-                "";
-        }
-    }
-
-
-    if(!box){
-        return;
-    }
-
-
-    if(
-        !leaderboardPlayers
-        ||
-        leaderboardPlayers.length
-        ===
-        0
-    ){
-
-        box.innerHTML =
-            `
-                <div class="leader-empty">
-                    Пока рейтинг пуст
-                </div>
-            `;
-
-        return;
-    }
-
-
-    const podium =
-        leaderboardPlayers
-        .filter(
-            item =>
-                Number(item.rank) <= 3
-        );
-
-
-    const byRank =
-        rank =>
-            podium.find(
-                item =>
-                    Number(item.rank)
-                    ===
-                    rank
-            );
-
-
-    const podiumOrder = [
-        byRank(2),
-        byRank(1),
-        byRank(3)
-    ]
-    .filter(Boolean);
-
-
-    const podiumHtml =
-        podiumOrder.length
-        ?
-        `
-            <div class="leaders-podium">
-
-                ${podiumOrder
-                    .map(
-                        item => {
-
-                            const metric =
-                                leaderboardMetric(
-                                    item
-                                );
-
-                            const cls =
-                                Number(item.rank) === 1
-                                ?
-                                "podium-card first"
-                                :
-                                "podium-card";
-
-                            return `
-                                <div class="${cls}">
-
-                                    <div class="podium-medal">
-                                        ${leaderboardMedal(Number(item.rank))}
-                                    </div>
-
-                                    <div class="podium-name">
-                                        ${esc(item.first_name || "Игрок")}
-                                    </div>
-
-                                    <div class="podium-value">
-                                        ${metric.main}
-                                    </div>
-
-                                </div>
-                            `;
-                        }
-                    )
-                    .join("")
-                }
-
-            </div>
-        `
-        :
-        "";
-
-
-    const rest =
-        leaderboardPlayers
-        .filter(
-            item =>
-                Number(item.rank) > 3
-        );
-
-
-    const restHtml =
-        `
-            <div class="leaders-list">
-
-                ${rest
-                    .map(
-                        item => {
-
-                            const metric =
-                                leaderboardMetric(
-                                    item
-                                );
-
-                            return `
-                                <div
-                                    class="
-                                        leader-row
-                                        ${item.is_me ? "me" : ""}
-                                    "
-                                >
-
-                                    <div class="leader-position">
-                                        #${Number(item.rank)}
-                                    </div>
-
-                                    <div style="min-width:0">
-
-                                        <div class="leader-name">
-                                            ${esc(item.first_name || "Игрок")}
-                                            ${item.is_me ? " • Ты" : ""}
-                                        </div>
-
-                                        <div class="leader-sub">
-                                            ${metric.sub}
-                                        </div>
-
-                                    </div>
-
-                                    <div class="leader-value">
-                                        ${metric.main}
-                                    </div>
-
-                                </div>
-                            `;
-                        }
-                    )
-                    .join("")
-                }
-
-            </div>
-        `;
-
-
-    box.innerHTML =
-        podiumHtml
-        +
-        restHtml;
-}
-
-
-async function setLeaderboardMode(
-    mode
-){
-
-    leaderboardMode =
-        [
-            "xp",
-            "coins",
-            "exact",
-            "weekly"
-        ].includes(
-            mode
-        )
-        ?
-        mode
-        :
-        "xp";
-
-    renderLeaderboard();
-
-    await loadLeaderboard();
-}
-
-
-async function loadLeaderboard(){
-
-    const box =
-        document.getElementById(
-            "leaderboard"
-        );
-
-    try{
-
-        if(box){
-
-            box.innerHTML =
-                `
-                    <div class="loader">
-                        Загружаем рейтинг...
-                    </div>
-                `;
-        }
-
-
-        const data =
-            await post(
-                "/api/leaderboard",
-                {
-                    mode:
-                        leaderboardMode
-                }
-            );
-
-
-        myRank =
-            data.my_rank;
-
-
-        leaderboardPlayers =
-            data.players
-            ||
-            [];
-
-
-        leaderboardMe =
-            data.me
-            ||
-            null;
-
-
-        renderLeaderboard();
-
-        renderProfile();
-
-
-    }catch(error){
-
-        console.error(
-            "Leaderboard:",
-            error
-        );
-
-        if(box){
-
-            box.innerHTML =
-                `
-                    <div class="leader-empty">
-                        Не удалось загрузить рейтинг
-                    </div>
-                `;
-        }
-    }
-}
-
-
-/* ===================================
-   RENDER ALL
-=================================== */
-
-function renderAll(){
-
-    setBalances();
-
-    renderMatches();
-
-    renderHome();
-
-    renderBets();
-
-    renderProfile();
-
-    renderGames();
-
-    renderLoginStreak();
-
-    renderHomeRewards();
-
-    renderLive();
-
-    updateParlay();
-}
-
-
-/* ===================================
-   INIT
-=================================== */
-
-function applyStartupDeepLink(){
-
-    try{
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        const page =
-            params.get(
-                "page"
-            );
-
-        const scoreView =
-            params.get(
-                "score_view"
-            );
-
-        const allowedPages = [
-            "home",
-            "matches",
-            "bets",
-            "games",
-            "leaderboard",
-            "profile"
-        ];
-
-        if(
-            page
-            &&
-            allowedPages.includes(
-                page
-            )
-        ){
-
-            showPage(
-                page
-            );
-        }
-
-        if(
-            page === "games"
-            &&
-            scoreView
-            &&
+        "inline_keyboard": [
             [
-                "play",
-                "history",
-                "leaderboard",
-                "leagues"
-            ].includes(
-                scoreView
-            )
-        ){
+                {
+                    "text":
+                        "🎮 Открыть BetCoin",
+                    "web_app": {
+                        "url":
+                            base_url
+                    }
+                }
+            ],
+            [
+                {
+                    "text":
+                        "⭐ Матч дня",
+                    "web_app": {
+                        "url":
+                            match_url
+                    }
+                },
+                {
+                    "text":
+                        "🏆 Рейтинг",
+                    "web_app": {
+                        "url":
+                            rating_url
+                    }
+                }
+            ],
+            [
+                {
+                    "text":
+                        "👤 Профиль",
+                    "web_app": {
+                        "url":
+                            profile_url
+                    }
+                }
+            ]
+        ]
+    }
 
-            setScoreGameView(
-                scoreView
-            );
+
+def send_betcoin_start(
+    chat_id,
+    first_name=None
+):
+
+    name = str(
+        first_name
+        or
+        ""
+    ).strip()
+
+    greeting = (
+        f", {name}"
+        if name
+        else
+        ""
+    )
+
+    text = (
+        f"⚽ Добро пожаловать в BetCoin{greeting}!\n\n"
+        "Футбольный Mini App с прогнозами, играми и соревнованиями.\n\n"
+        "⭐ Матч дня\n"
+        "🎯 Точный счёт\n"
+        "🏆 Рейтинг прогнозистов\n"
+        "👥 Приватные лиги\n\n"
+        "Открывай BetCoin и начинай 👇"
+    )
+
+    reply_markup = (
+        betcoin_start_keyboard()
+    )
+
+    payload = {
+        "chat_id": int(
+            chat_id
+        ),
+        "text": text,
+        "disable_web_page_preview": True
+    }
+
+    if reply_markup:
+
+        payload[
+            "reply_markup"
+        ] = reply_markup
+
+    if BETCOIN_START_IMAGE_URL:
+
+        photo_payload = {
+            "chat_id": int(
+                chat_id
+            ),
+            "photo":
+                BETCOIN_START_IMAGE_URL,
+            "caption": text
         }
 
-    }catch(error){
+        if reply_markup:
 
-        console.error(
-            "Deep link:",
-            error
-        );
-    }
-}
+            photo_payload[
+                "reply_markup"
+            ] = reply_markup
 
-
-
-async function init(){
-
-    updateParlay();
-
-
-    await Promise.all([
-        loadSession(),
-        loadLeague(
-            "top5"
+        result = telegram_api_call(
+            "sendPhoto",
+            photo_payload
         )
-    ]);
+
+        if result.get("ok"):
+            return True
+
+    result = telegram_api_call(
+        "sendMessage",
+        payload
+    )
+
+    return bool(
+        result.get(
+            "ok"
+        )
+    )
 
 
-    await loadLive();
+def send_betcoin_command_open(
+    chat_id,
+    title,
+    page=None,
+    score_view=None
+):
+
+    url = webapp_url_with_params(
+        page=page,
+        score_view=score_view
+    )
+
+    payload = {
+        "chat_id": int(
+            chat_id
+        ),
+        "text": str(
+            title
+        )
+    }
+
+    if url:
+
+        payload[
+            "reply_markup"
+        ] = {
+            "inline_keyboard": [
+                [
+                    {
+                        "text":
+                            "Открыть BetCoin",
+                        "web_app": {
+                            "url":
+                                url
+                        }
+                    }
+                ]
+            ]
+        }
+
+    result = telegram_api_call(
+        "sendMessage",
+        payload
+    )
+
+    return bool(
+        result.get(
+            "ok"
+        )
+    )
 
 
-    loadLeaderboard();
+def handle_telegram_update(
+    update
+):
 
+    message = (
+        update.get(
+            "message"
+        )
+        or
+        {}
+    )
 
-    renderAll();
+    if not message:
+        return
 
-    applyStartupDeepLink();
+    chat = (
+        message.get(
+            "chat"
+        )
+        or
+        {}
+    )
 
-    setTimeout(
-        showOnboardingIfNeeded,
-        350
-    );
+    sender = (
+        message.get(
+            "from"
+        )
+        or
+        {}
+    )
 
+    chat_id = chat.get(
+        "id"
+    )
 
-    setInterval(
-        ()=>{
+    text = str(
+        message.get(
+            "text"
+        )
+        or
+        ""
+    ).strip()
 
-            if(
-                wheel
-                &&
-                wheel.available
-                ===
-                false
-                &&
-                Number(
-                    wheel.seconds_left
+    if not chat_id:
+        return
+
+    command = (
+        text.split(
+            " ",
+            1
+        )[0]
+        .split(
+            "@",
+            1
+        )[0]
+        .lower()
+    )
+
+    if command == "/start":
+
+        parts = text.split(
+            None,
+            1
+        )
+
+        start_param = (
+            parts[1].strip()
+            if len(parts) > 1
+            else
+            ""
+        )
+
+        if start_param.startswith(
+            "ref_"
+        ):
+
+            try:
+
+                inviter_id = int(
+                    start_param[
+                        4:
+                    ]
                 )
-                >
-                0
-            ){
 
-                wheel.seconds_left =
-                    Math.max(
-                        0,
-                        Number(
-                            wheel.seconds_left
+                save_pending_referral(
+                    chat_id,
+                    inviter_id
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                pass
+
+        send_betcoin_start(
+            chat_id,
+            sender.get(
+                "first_name"
+            )
+        )
+
+        return
+
+    if command == "/play":
+
+        send_betcoin_command_open(
+            chat_id,
+            "🎮 Открыть BetCoin",
+        )
+
+        return
+
+    if command == "/match":
+
+        send_betcoin_command_open(
+            chat_id,
+            "⭐ Матч дня",
+            page="games",
+            score_view="play"
+        )
+
+        return
+
+    if command == "/leaders":
+
+        send_betcoin_command_open(
+            chat_id,
+            "🏆 Рейтинг прогнозистов",
+            page="games",
+            score_view="leaderboard"
+        )
+
+        return
+
+    if command == "/profile":
+
+        send_betcoin_command_open(
+            chat_id,
+            "👤 Твой профиль BetCoin",
+            page="profile"
+        )
+
+        return
+
+
+def setup_telegram_webhook():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return False
+
+    webhook_url = (
+        TELEGRAM_WEBHOOK_URL
+        or
+        (
+            RENDER_EXTERNAL_URL.rstrip("/")
+            +
+            "/telegram/webhook"
+            if RENDER_EXTERNAL_URL
+            else
+            (
+                "https://"
+                +
+                RENDER_EXTERNAL_HOSTNAME.strip("/")
+                +
+                "/telegram/webhook"
+                if RENDER_EXTERNAL_HOSTNAME
+                else
+                ""
+            )
+        )
+    )
+
+    if not webhook_url:
+        return False
+
+    result = telegram_api_call(
+        "setWebhook",
+        {
+            "url":
+                webhook_url,
+            "allowed_updates": [
+                "message"
+            ],
+            "drop_pending_updates":
+                False
+        }
+    )
+
+    if result.get("ok"):
+
+        print(
+            "Telegram webhook ready:",
+            webhook_url,
+            flush=True
+        )
+
+        return True
+
+    return False
+
+
+
+def send_telegram_message(
+    telegram_id,
+    text
+):
+
+    if not TELEGRAM_BOT_TOKEN:
+        return False
+
+    try:
+
+        response = requests.post(
+            (
+                "https://api.telegram.org/bot"
+                + TELEGRAM_BOT_TOKEN
+                + "/sendMessage"
+            ),
+            json={
+                "chat_id": int(
+                    telegram_id
+                ),
+                "text": str(
+                    text
+                ),
+                "disable_web_page_preview": True
+            },
+            timeout=12
+        )
+
+        if not response.ok:
+
+            print(
+                "Telegram send error:",
+                telegram_id,
+                response.status_code,
+                response.text[:300],
+                flush=True
+            )
+
+            return False
+
+        data = response.json()
+
+        return bool(
+            data.get(
+                "ok"
+            )
+        )
+
+    except Exception as error:
+
+        print(
+            "Telegram send exception:",
+            telegram_id,
+            error,
+            flush=True
+        )
+
+        return False
+
+
+def score_game_reminder_worker_once():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return 0
+
+    today = score_game_date()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            fixture_id,
+            home_team,
+            away_team,
+            league_name,
+            kickoff_at
+
+        FROM score_game_rounds
+
+        WHERE game_date = %s
+    """, (
+        today,
+    ))
+
+    round_row = cur.fetchone()
+
+    if not round_row:
+
+        cur.close()
+        conn.close()
+
+        try:
+            ensure_score_game_round()
+        except Exception:
+            pass
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                fixture_id,
+                home_team,
+                away_team,
+                league_name,
+                kickoff_at
+
+            FROM score_game_rounds
+
+            WHERE game_date = %s
+        """, (
+            today,
+        ))
+
+        round_row = cur.fetchone()
+
+    if not round_row:
+
+        cur.close()
+        conn.close()
+        return 0
+
+    (
+        fixture_id,
+        home_team,
+        away_team,
+        league_name,
+        kickoff_at
+    ) = round_row
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    minutes_left = (
+        kickoff_at
+        -
+        now
+    ).total_seconds() / 60
+
+    if (
+        minutes_left
+        <
+        SCORE_GAME_REMINDER_FROM_MINUTES
+        or
+        minutes_left
+        >
+        SCORE_GAME_REMINDER_TO_MINUTES
+    ):
+
+        cur.close()
+        conn.close()
+        return 0
+
+    cur.execute("""
+        SELECT
+            u.telegram_id,
+            COALESCE(
+                NULLIF(
+                    u.first_name,
+                    ''
+                ),
+                'Игрок'
+            )
+
+        FROM users u
+
+        LEFT JOIN score_game_picks p
+            ON p.telegram_id =
+                u.telegram_id
+            AND p.game_date = %s
+
+        LEFT JOIN score_game_notifications n
+            ON n.telegram_id =
+                u.telegram_id
+            AND n.game_date = %s
+
+        WHERE
+            p.telegram_id IS NULL
+            AND
+            COALESCE(
+                n.reminder_sent,
+                FALSE
+            ) = FALSE
+
+        ORDER BY
+            u.updated_at DESC
+
+        LIMIT 100
+    """, (
+        today,
+        today
+    ))
+
+    users = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    sent_count = 0
+
+    for (
+        telegram_id,
+        first_name
+    ) in users:
+
+        local_kickoff = (
+            kickoff_at.astimezone(
+                timezone(
+                    timedelta(
+                        hours=3
+                    )
+                )
+            )
+        )
+
+        text = (
+            "⚽ BetCoin — Матч дня\n\n"
+            f"{home_team} — {away_team}\n"
+            f"{league_name or 'Футбол'}\n"
+            f"Начало в {local_kickoff.strftime('%H:%M')}\n\n"
+            "До матча около часа, а ты ещё не сделал прогноз на точный счёт 👀\n"
+            "Открой BetCoin и сделай прогноз."
+        )
+
+        if not send_telegram_message(
+            telegram_id,
+            text
+        ):
+            continue
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                INSERT INTO score_game_notifications (
+                    telegram_id,
+                    game_date,
+                    reminder_sent,
+                    reminder_sent_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    TRUE,
+                    NOW()
+                )
+
+                ON CONFLICT (
+                    telegram_id,
+                    game_date
+                )
+                DO UPDATE SET
+                    reminder_sent = TRUE,
+                    reminder_sent_at = NOW()
+            """, (
+                telegram_id,
+                today
+            ))
+
+            conn.commit()
+
+            sent_count += 1
+
+        except Exception:
+
+            conn.rollback()
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+    return sent_count
+
+
+def score_game_result_notifications_once():
+
+    if not TELEGRAM_BOT_TOKEN:
+        return 0
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            p.telegram_id,
+            p.game_date,
+            r.home_team,
+            r.away_team,
+            p.predicted_home,
+            p.predicted_away,
+            p.final_home,
+            p.final_away,
+            p.exact_win,
+            p.outcome_win,
+            p.reward_coins,
+            p.reward_xp
+
+        FROM score_game_picks p
+
+        JOIN score_game_rounds r
+            ON r.game_date =
+                p.game_date
+
+        LEFT JOIN score_game_notifications n
+            ON n.telegram_id =
+                p.telegram_id
+            AND n.game_date =
+                p.game_date
+
+        WHERE
+            p.settled = TRUE
+            AND
+            COALESCE(
+                n.result_sent,
+                FALSE
+            ) = FALSE
+
+        ORDER BY
+            p.settled_at ASC
+
+        LIMIT 100
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    sent_count = 0
+
+    for row in rows:
+
+        (
+            telegram_id,
+            game_date,
+            home_team,
+            away_team,
+            predicted_home,
+            predicted_away,
+            final_home,
+            final_away,
+            exact_win,
+            outcome_win,
+            reward_coins,
+            reward_xp
+        ) = row
+
+        if exact_win:
+
+            title = (
+                "🎯 ТОЧНЫЙ СЧЁТ!"
+            )
+
+            reward_text = (
+                f"\n+{int(reward_coins or 0)} 🪙"
+                f"  +{int(reward_xp or 0)} XP"
+            )
+
+        elif outcome_win:
+
+            title = (
+                "✅ Исход угадан"
+            )
+
+            reward_text = (
+                f"\n+{int(reward_coins or 0)} 🪙"
+            )
+
+        else:
+
+            title = (
+                "❌ Прогноз не сыграл"
+            )
+
+            reward_text = ""
+
+        text = (
+            "⚽ BetCoin — Матч дня\n\n"
+            f"{home_team} — {away_team}\n"
+            f"Итог: {final_home}:{final_away}\n"
+            f"Твой прогноз: {predicted_home}:{predicted_away}\n\n"
+            f"{title}"
+            f"{reward_text}\n\n"
+            "Открой BetCoin — завтра будет новый Матч дня."
+        )
+
+        if not send_telegram_message(
+            telegram_id,
+            text
+        ):
+            continue
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+
+            cur.execute("""
+                INSERT INTO score_game_notifications (
+                    telegram_id,
+                    game_date,
+                    result_sent,
+                    result_sent_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    TRUE,
+                    NOW()
+                )
+
+                ON CONFLICT (
+                    telegram_id,
+                    game_date
+                )
+                DO UPDATE SET
+                    result_sent = TRUE,
+                    result_sent_at = NOW()
+            """, (
+                telegram_id,
+                game_date
+            ))
+
+            conn.commit()
+
+            sent_count += 1
+
+        except Exception:
+
+            conn.rollback()
+            raise
+
+        finally:
+
+            cur.close()
+            conn.close()
+
+    return sent_count
+
+
+
+# =========================================================
+# BACKGROUND WORKERS
+# =========================================================
+
+def settlement_worker():
+
+    time.sleep(
+        20
+    )
+
+    while True:
+
+        try:
+
+            conn = get_db()
+            cur = conn.cursor()
+
+            cur.execute("""
+                SELECT DISTINCT telegram_id
+
+                FROM (
+
+                    SELECT telegram_id
+
+                    FROM bets
+
+                    WHERE
+                        settled = FALSE
+                        AND
+                        status = 'Активна'
+                        AND
+                        (
+                            kickoff_at IS NULL
+                            OR
+                            kickoff_at <=
+                                NOW()
+                                -
+                                (%s * INTERVAL '1 minute')
                         )
+
+                    UNION
+
+                    SELECT p.telegram_id
+
+                    FROM parlays p
+
+                    JOIN parlay_legs l
+                        ON l.parlay_id = p.id
+
+                    WHERE
+                        p.settled = FALSE
+                        AND
+                        p.status = 'Активна'
+                        AND
+                        l.status = 'Активна'
+                        AND
+                        (
+                            l.kickoff_at IS NULL
+                            OR
+                            l.kickoff_at <=
+                                NOW()
+                                -
+                                (%s * INTERVAL '1 minute')
+                        )
+
+                ) due
+
+                LIMIT 50
+            """, (
+                SETTLEMENT_AFTER_KICKOFF_MINUTES,
+                SETTLEMENT_AFTER_KICKOFF_MINUTES
+            ))
+
+            users = [
+                int(
+                    row[0]
+                )
+                for row in cur.fetchall()
+            ]
+
+            cur.close()
+            conn.close()
+
+            for telegram_id in users:
+
+                try:
+
+                    settle_user_bets(
+                        telegram_id
+                    )
+
+                    settle_user_parlays(
+                        telegram_id
+                    )
+
+                except Exception as error:
+
+                    print(
+                        "User settlement error:",
+                        telegram_id,
+                        error,
+                        flush=True
+                    )
+
+            settle_prediction_picks(
+                30
+            )
+
+            settle_score_game_picks(
+                30
+            )
+
+            score_game_reminder_worker_once()
+
+            score_game_result_notifications_once()
+
+        except Exception as error:
+
+            print(
+                "Settlement worker:",
+                error,
+                flush=True
+            )
+
+        time.sleep(
+            SETTLEMENT_CHECK_SECONDS
+        )
+
+
+def fixtures_worker():
+
+    time.sleep(
+        AUTO_FIXTURES_START_DELAY_SECONDS
+    )
+
+    while True:
+
+        started_at = time.time()
+
+        refreshed = 0
+        failed = 0
+
+        for league_key in LEAGUES.keys():
+
+            try:
+
+                fixtures = (
+                    load_league_fixtures(
+                        league_key,
+                        force=True
+                    )
+                )
+
+                refreshed += len(
+                    fixtures
+                    or
+                    []
+                )
+
+            except Exception as error:
+
+                failed += 1
+
+                print(
+                    "Fixtures auto refresh:",
+                    league_key,
+                    error,
+                    flush=True
+                )
+
+            # Небольшая пауза между лигами,
+            # чтобы не ударять по API пачкой запросов.
+            time.sleep(
+                2
+            )
+
+        print(
+            "Fixtures auto refresh done:",
+            "matches=",
+            refreshed,
+            "failed_leagues=",
+            failed,
+            "seconds=",
+            round(
+                time.time()
+                -
+                started_at,
+                1
+            ),
+            flush=True
+        )
+
+        time.sleep(
+            AUTO_FIXTURES_REFRESH_SECONDS
+        )
+
+
+def live_worker():
+
+    time.sleep(
+        30
+    )
+
+    while True:
+
+        try:
+
+            refresh_live_matches_once()
+
+        except Exception as error:
+
+            print(
+                "Live worker:",
+                error,
+                flush=True
+            )
+
+        time.sleep(
+            LIVE_REFRESH_SECONDS
+        )
+
+
+def start_workers():
+
+    global workers_started
+
+    with workers_lock:
+
+        if workers_started:
+
+            return
+
+        workers_started = True
+
+        threading.Thread(
+            target=
+                settlement_worker,
+            daemon=
+                True,
+            name=
+                "betcoin-settlement"
+        ).start()
+
+        threading.Thread(
+            target=
+                live_worker,
+            daemon=
+                True,
+            name=
+                "betcoin-live"
+        ).start()
+
+
+        threading.Thread(
+            target=
+                fixtures_worker,
+            daemon=
+                True,
+            name=
+                "betcoin-fixtures"
+        ).start()
+
+
+def ensure_runtime_ready():
+
+    global runtime_ready
+
+    if runtime_ready:
+
+        return
+
+    with runtime_lock:
+
+        if runtime_ready:
+
+            return
+
+        ensure_database_ready()
+
+        start_workers()
+
+        try:
+            setup_telegram_webhook()
+        except Exception as error:
+            print(
+                "Telegram webhook setup error:",
+                error,
+                flush=True
+            )
+
+        runtime_ready = True
+
+        print(
+            "BetCoin runtime started successfully",
+            flush=True
+        )
+
+
+# =========================================================
+# TELEGRAM WEBHOOK
+# =========================================================
+
+@app.route(
+    "/telegram/webhook",
+    methods=[
+        "POST"
+    ]
+)
+def telegram_webhook():
+
+    try:
+
+        update = (
+            request.get_json(
+                silent=True
+            )
+            or
+            {}
+        )
+
+        handle_telegram_update(
+            update
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
+    except Exception as error:
+
+        print(
+            "Telegram webhook error:",
+            error,
+            flush=True
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
+
+
+
+# =========================================================
+# TELEGRAM WEBHOOK SETUP / STATUS
+# =========================================================
+
+@app.route(
+    "/telegram/setup-webhook",
+    methods=[
+        "GET"
+    ]
+)
+def telegram_setup_webhook():
+
+    if not TELEGRAM_BOT_TOKEN:
+
+        return jsonify({
+            "ok": False,
+            "error":
+                "TELEGRAM_BOT_TOKEN is not set"
+        }), 500
+
+    base_url = (
+        request.host_url.rstrip("/")
+    )
+
+    webhook_url = (
+        base_url
+        +
+        "/telegram/webhook"
+    )
+
+    result = telegram_api_call(
+        "setWebhook",
+        {
+            "url":
+                webhook_url,
+            "allowed_updates": [
+                "message"
+            ],
+            "drop_pending_updates":
+                False
+        }
+    )
+
+    return jsonify({
+        "ok":
+            bool(
+                result.get(
+                    "ok"
+                )
+            ),
+        "webhook_url":
+            webhook_url,
+        "telegram":
+            result
+    })
+
+
+@app.route(
+    "/telegram/status",
+    methods=[
+        "GET"
+    ]
+)
+def telegram_webhook_status():
+
+    if not TELEGRAM_BOT_TOKEN:
+
+        return jsonify({
+            "ok": False,
+            "error":
+                "TELEGRAM_BOT_TOKEN is not set"
+        }), 500
+
+    result = telegram_api_call(
+        "getWebhookInfo"
+    )
+
+    return jsonify(
+        result
+    )
+
+
+# =========================================================
+# ROOT / HEALTH
+# =========================================================
+
+@app.route("/")
+def root():
+
+    return jsonify({
+
+        "status":
+            "ok",
+
+        "message":
+            "BetCoin server is working",
+
+        "database_ready":
+            database_ready,
+
+        "database_initializing":
+            database_initializing,
+
+        "runtime_ready":
+            runtime_ready,
+
+        "prediction_game":
+            True,
+
+        "score_game":
+            True,
+
+        "wheel":
+            True,
+
+        "login_streak":
+            True,
+
+        "games_tab":
+            True,
+
+        "live":
+            True
+    })
+
+
+@app.route(
+    "/health"
+)
+def health():
+
+    return jsonify({
+        "status": "ok"
+    })
+
+
+# =========================================================
+# LEAGUES / MATCHES API
+# =========================================================
+
+@app.route(
+    "/api/leagues"
+)
+def api_leagues():
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "leagues": [
+
+            {
+                "key":
+                    key,
+
+                "name":
+                    value["name"],
+
+                "short_name":
+                    value["short_name"],
+
+                "country":
+                    value["country"],
+
+                "flag":
+                    value["flag"]
+            }
+
+            for key, value
+            in LEAGUES.items()
+        ]
+    })
+
+
+@app.route(
+    "/api/matches"
+)
+def api_matches():
+
+    try:
+
+        league_key = str(
+            request.args.get(
+                "league",
+                ""
+            )
+            or
+            ""
+        ).strip()
+
+        force = (
+            request.args.get(
+                "refresh"
+            )
+            ==
+            "1"
+        )
+
+        if (
+            not league_key
+            or
+            league_key == "top5"
+        ):
+
+            fixtures = load_default_fixtures(
+                force
+            )
+
+        elif league_key in LEAGUES:
+
+            fixtures = load_league_fixtures(
+                league_key,
+                force
+            )
+
+        else:
+
+            return jsonify({
+                "success": False,
+                "error": "Неизвестная лига"
+            }), 400
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "count":
+                len(
+                    fixtures
+                ),
+
+            "matches":
+                fixtures
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/live"
+)
+def api_live():
+
+    try:
+
+        items = list(
+            live_match_cache.values()
+        )
+
+        items.sort(
+            key=
+                lambda item:
+                    item.get("date")
+                    or
+                    ""
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "count":
+                len(
+                    items
+                ),
+
+            "refresh_seconds":
+                LIVE_REFRESH_SECONDS,
+
+            "matches":
+                items
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/match/<int:fixture_id>"
+)
+def api_match(
+    fixture_id
+):
+
+    try:
+
+        match = get_fixture(
+            fixture_id,
+            False
+        )
+
+        try:
+
+            parsed = fetch_fixture_odds(
+                fixture_id
+            )
+
+            apply_parsed_odds_to_match(
+                match,
+                parsed
+            )
+
+        except Exception as error:
+
+            print(
+                "Match odds error:",
+                error,
+                flush=True
+            )
+
+        return jsonify({
+            "success": True,
+            **match
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+# =========================================================
+# SESSION API
+# =========================================================
+
+@app.route(
+    "/api/session",
+    methods=[
+        "POST"
+    ]
+)
+def api_session():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+        referral_activation = (
+            activate_pending_referral(
+                telegram_id,
+                bool(
+                    user.get(
+                        "is_new"
+                    )
+                )
+            )
+        )
+
+        if referral_activation.get(
+            "activated"
+        ):
+
+            refreshed_user = (
+                get_user_data(
+                    telegram_id
+                )
+            )
+
+            if refreshed_user:
+                user.update(
+                    refreshed_user
+                )
+
+        last_claim = user.get(
+            "last_daily_claim"
+        )
+
+        available = True
+        seconds_left = 0
+        next_claim = None
+
+        if last_claim:
+
+            next_claim = (
+                last_claim
+                +
+                timedelta(
+                    hours=24
+                )
+            )
+
+            now = datetime.now(
+                timezone.utc
+            )
+
+            if now < next_claim:
+
+                available = False
+
+                seconds_left = int(
+                    (
+                        next_claim
                         -
-                        15
-                    );
+                        now
+                    ).total_seconds()
+                )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "user": {
+
+                "telegram_id":
+                    telegram_id,
+
+                "first_name":
+                    user["first_name"],
+
+                "username":
+                    user["username"]
+            },
+
+            "balance":
+                int(
+                    user["balance"]
+                ),
+
+            **xp_info(
+                user["xp"]
+            ),
+
+            "bets":
+                get_user_bets(
+                    telegram_id
+                ),
+
+            "parlays":
+                get_user_parlays(
+                    telegram_id
+                ),
+
+            "favorites":
+                get_user_favorites(
+                    telegram_id
+                ),
+
+            "favorite_teams":
+                get_user_favorite_teams(
+                    telegram_id
+                ),
+
+            "tasks":
+                get_daily_tasks(
+                    telegram_id,
+                    True
+                ),
+
+            "achievements":
+                get_achievements(
+                    telegram_id
+                ),
+
+            "stats":
+                get_profile_stats(
+                    telegram_id
+                ),
+
+            "leaderboard": {
+                "my_rank": None
+            },
+
+            "daily_reward": {
+
+                "amount":
+                    300,
+
+                "available":
+                    available,
+
+                "seconds_left":
+                    max(
+                        0,
+                        seconds_left
+                    ),
+
+                "next_claim":
+                    (
+                        next_claim.isoformat()
+                        if next_claim
+                        else
+                        None
+                    )
+            },
+
+            "login_streak":
+                get_login_streak_status(
+                    telegram_id
+                ),
+
+            "wheel":
+                get_wheel_status(
+                    telegram_id
+                ),
+
+            "prediction_game":
+                get_prediction_game(
+                    telegram_id
+                ),
+
+            "referral":
+                get_referral_info(
+                    telegram_id
+                ),
+
+            "notification_settings":
+                get_notification_settings(
+                    telegram_id
+                ),
+
+            "profile_extra":
+                get_profile_extra(
+                    telegram_id
+                ),
+
+            "score_game":
+                get_score_game(
+                    telegram_id
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
 
-                if(
-                    wheel.seconds_left
-                    ===
-                    0
-                ){
+# =========================================================
+# 🔥 LOGIN STREAK API
+# =========================================================
 
-                    wheel.available =
-                        true;
-                }
+@app.route(
+    "/api/login-streak/claim",
+    methods=[
+        "POST"
+    ]
+)
+def api_login_streak_claim():
 
+    tg_user, error = require_telegram_user()
 
-                renderWheel();
-            }
+    if error:
 
+        return error
 
-            renderMatches();
+    try:
 
-            renderHome();
+        user = get_or_create_user(
+            tg_user
+        )
 
-            renderLoginStreak();
+        result = claim_login_streak(
+            user["telegram_id"]
+        )
 
-            renderHomeRewards();
+        return jsonify({
+            "success": True,
+            **result
+        })
 
-        },
-        15000
-    );
+    except ValueError as error:
 
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
 
-    setInterval(
-        loadLive,
-        30000
-    );
+    except Exception as error:
 
-
-    // Автоматически подхватываем новые матчи,
-    // пока пользователь держит Mini App открытым.
-    setInterval(
-        autoRefreshMatches,
-        600000
-    );
-
-
-    setInterval(
-        async ()=>{
-
-            try{
-
-                const data =
-                    await post(
-                        "/api/settle"
-                    );
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
 
+# =========================================================
+# 🎯 PREDICTION GAME API
+# =========================================================
+
+@app.route(
+    "/api/games/prediction",
+    methods=[
+        "POST"
+    ]
+)
+def api_prediction_game():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "game":
+                get_prediction_game(
+                    user["telegram_id"]
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/prediction/pick",
+    methods=[
+        "POST"
+    ]
+)
+def api_prediction_pick():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        game = make_prediction_pick(
+            user["telegram_id"],
+            body.get(
+                "prediction"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "game": game
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+# =========================================================
+# ⚽ SCORE GAME API
+# =========================================================
+
+@app.route(
+    "/api/games/score",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "game":
+                get_score_game(
+                    user["telegram_id"]
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/pick",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game_pick():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        game = make_score_game_pick(
+            user["telegram_id"],
+            body.get(
+                "home_score"
+            ),
+            body.get(
+                "away_score"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "game": game
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+
+@app.route(
+    "/api/games/score/history",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game_history():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        history = get_score_game_history(
+            user["telegram_id"],
+            body.get(
+                "limit",
+                50
+            )
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "history":
+                history,
+
+            "stats":
+                get_score_game_stats(
+                    user["telegram_id"]
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leaderboard",
+    methods=[
+        "POST"
+    ]
+)
+def api_score_game_leaderboard():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        leaderboard = get_score_game_leaderboard(
+            user["telegram_id"],
+            body.get(
+                "limit",
+                50
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **leaderboard
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+# =========================================================
+# 👥 ПРИВАТНЫЕ ЛИГИ ПРОГНОЗИСТОВ API
+# =========================================================
+
+@app.route(
+    "/api/games/score/leagues",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_leagues():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/create",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_create():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = create_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "name"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/join",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_join():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = join_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "code"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/leave",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_leave():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        leave_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/games/score/leagues/delete",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_delete():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        delete_predictor_league(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "leagues": get_predictor_leagues(
+                user["telegram_id"]
+            )
+        })
+
+    except (ValueError, TypeError) as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+
+@app.route(
+    "/api/games/score/leagues/leaderboard",
+    methods=[
+        "POST"
+    ]
+)
+def api_predictor_league_leaderboard():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = get_predictor_league_leaderboard(
+            user["telegram_id"],
+            body.get(
+                "league_id"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result
+        })
+
+    except (ValueError, TypeError) as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+
+# =========================================================
+# 🎡 WHEEL API
+# =========================================================
+
+@app.route(
+    "/api/wheel/status",
+    methods=[
+        "POST"
+    ]
+)
+def api_wheel_status():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "wheel":
+                get_wheel_status(
+                    user["telegram_id"]
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+@app.route(
+    "/api/wheel/spin",
+    methods=[
+        "POST"
+    ]
+)
+def api_wheel_spin():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        return jsonify({
+            "success": True,
+            **spin_wheel(
+                user["telegram_id"]
+            )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+# =========================================================
+# PROMO API
+# =========================================================
+
+@app.route(
+    "/api/promo/redeem",
+    methods=[
+        "POST"
+    ]
+)
+def api_promo_redeem():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        result = redeem_promo_code(
+            user["telegram_id"],
+            body.get(
+                "code",
+                ""
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            **result
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
+
+
+# =========================================================
+# SINGLE BET API
+# =========================================================
+
+@app.route(
+    "/api/bets",
+    methods=[
+        "POST"
+    ]
+)
+def api_bets():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        fixture_id = int(
+            body.get(
+                "fixture_id"
+            )
+        )
+
+        amount = int(
+            body.get(
+                "amount"
+            )
+        )
+
+        selection = str(
+            body.get(
+                "selection",
+                ""
+            )
+        ).strip()
+
+        if amount < 100:
+
+            raise ValueError(
+                "Минимальная ставка — 100 монет"
+            )
+
+        canonical = resolve_canonical_bet(
+            fixture_id,
+            selection
+        )
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT balance
+
+            FROM users
+
+            WHERE telegram_id = %s
+
+            FOR UPDATE
+        """, (
+            telegram_id,
+        ))
+
+        current_balance = int(
+            cur.fetchone()[0]
+        )
+
+        if amount > current_balance:
+
+            conn.rollback()
+            cur.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "error": "Недостаточно монет"
+            }), 400
+
+        odd = canonical[
+            "odd"
+        ]
+
+        possible = int(
+            amount
+            *
+            odd
+            +
+            0.5
+        )
+
+        cur.execute("""
+            UPDATE users
+
+            SET
                 balance =
-                    Number(
-                        data.balance
-                        ??
-                        balance
-                    );
+                    balance
+                    -
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            amount,
+            telegram_id
+        ))
+
+        cur.execute("""
+            INSERT INTO bets (
+                telegram_id,
+                fixture_id,
+                match_name,
+                selection,
+                odd,
+                amount,
+                possible,
+                provider,
+                kickoff_at
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                'five-dollar',
+                %s
+            )
+            RETURNING id
+        """, (
+            telegram_id,
+            fixture_id,
+            canonical["match"],
+            canonical["selection"],
+            odd,
+            amount,
+            possible,
+            canonical["kickoff_at"]
+        ))
+
+        bet_id = cur.fetchone()[0]
+
+        increment_daily_bet(
+            telegram_id,
+            cur
+        )
+
+        add_xp(
+            telegram_id,
+            10,
+            cur
+        )
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        fresh = get_user_data(
+            telegram_id
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "bet_id":
+                bet_id,
+
+            "balance":
+                int(
+                    fresh["balance"]
+                ),
+
+            "possible":
+                possible,
+
+            "bets":
+                get_user_bets(
+                    telegram_id
+                )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
 
-                xp =
-                    Number(
-                        data.xp
-                        ??
-                        xp
-                    );
+# =========================================================
+# PARLAY API
+# =========================================================
+
+@app.route(
+    "/api/parlays",
+    methods=[
+        "POST"
+    ]
+)
+def api_parlays():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    try:
+
+        amount = int(
+            body.get(
+                "amount"
+            )
+        )
+
+        legs = body.get(
+            "legs",
+            []
+        )
+
+        if amount < 100:
+
+            raise ValueError(
+                "Минимальная ставка — 100 монет"
+            )
+
+        if (
+            not isinstance(
+                legs,
+                list
+            )
+            or
+            len(
+                legs
+            )
+            <
+            2
+        ):
+
+            raise ValueError(
+                "В экспрессе нужно минимум 2 события"
+            )
+
+        if len(
+            legs
+        ) > 15:
+
+            raise ValueError(
+                "Максимум 15 событий"
+            )
+
+        fixture_ids = [
+
+            int(
+                leg["fixture_id"]
+            )
+
+            for leg in legs
+        ]
+
+        if (
+            len(
+                fixture_ids
+            )
+            !=
+            len(
+                set(
+                    fixture_ids
+                )
+            )
+        ):
+
+            raise ValueError(
+                "Нельзя добавить два исхода одного матча"
+            )
+
+        validated = []
+
+        for leg in legs:
+
+            validated.append(
+                resolve_canonical_bet(
+                    int(
+                        leg["fixture_id"]
+                    ),
+                    str(
+                        leg["selection"]
+                    )
+                )
+            )
+
+        total_odd = 1.0
+
+        for leg in validated:
+
+            total_odd *= float(
+                leg["odd"]
+            )
+
+        total_odd = round(
+            total_odd,
+            4
+        )
+
+        possible = int(
+            amount
+            *
+            total_odd
+            +
+            0.5
+        )
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT balance
+
+            FROM users
+
+            WHERE telegram_id = %s
+
+            FOR UPDATE
+        """, (
+            telegram_id,
+        ))
+
+        current_balance = int(
+            cur.fetchone()[0]
+        )
+
+        if amount > current_balance:
+
+            conn.rollback()
+            cur.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "error": "Недостаточно монет"
+            }), 400
+
+        cur.execute("""
+            UPDATE users
+
+            SET
+                balance =
+                    balance
+                    -
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            amount,
+            telegram_id
+        ))
+
+        cur.execute("""
+            INSERT INTO parlays (
+                telegram_id,
+                amount,
+                total_odd,
+                possible
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            RETURNING id
+        """, (
+            telegram_id,
+            amount,
+            total_odd,
+            possible
+        ))
+
+        parlay_id = cur.fetchone()[0]
+
+        for leg in validated:
+
+            cur.execute("""
+                INSERT INTO parlay_legs (
+                    parlay_id,
+                    fixture_id,
+                    match_name,
+                    selection,
+                    odd,
+                    provider,
+                    kickoff_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    'five-dollar',
+                    %s
+                )
+            """, (
+                parlay_id,
+                leg["fixture_id"],
+                leg["match"],
+                leg["selection"],
+                leg["odd"],
+                leg["kickoff_at"]
+            ))
+
+        increment_daily_bet(
+            telegram_id,
+            cur
+        )
+
+        add_xp(
+            telegram_id,
+            10,
+            cur
+        )
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        fresh = get_user_data(
+            telegram_id
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "parlay_id":
+                parlay_id,
+
+            "balance":
+                int(
+                    fresh["balance"]
+                ),
+
+            "total_odd":
+                total_odd,
+
+            "possible":
+                possible,
+
+            "parlays":
+                get_user_parlays(
+                    telegram_id
+                )
+        })
+
+    except ValueError as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 400
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
 
-                level =
-                    Number(
-                        data.level
-                        ??
-                        level
-                    );
+# =========================================================
+# FAVORITES API
+# =========================================================
+
+@app.route(
+    "/api/favorites/toggle",
+    methods=[
+        "POST"
+    ]
+)
+def api_favorites_toggle():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    telegram_id = user[
+        "telegram_id"
+    ]
+
+    fixture_id = int(
+        body["fixture_id"]
+    )
+
+    favorite = bool(
+        body.get(
+            "favorite",
+            True
+        )
+    )
+
+    if favorite:
+
+        add_favorite_match(
+            telegram_id,
+            fixture_id
+        )
+
+    else:
+
+        remove_favorite_match(
+            telegram_id,
+            fixture_id
+        )
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "favorites":
+            get_user_favorites(
+                telegram_id
+            )
+    })
 
 
-                leagueInfo =
-                    data.league
-                    ||
-                    leagueInfo;
+@app.route(
+    "/api/favorite-teams/toggle",
+    methods=[
+        "POST"
+    ]
+)
+def api_favorite_teams_toggle():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    telegram_id = user[
+        "telegram_id"
+    ]
+
+    team_name = str(
+        body.get(
+            "team_name",
+            ""
+        )
+    ).strip()
+
+    favorite = bool(
+        body.get(
+            "favorite",
+            True
+        )
+    )
+
+    if favorite:
+
+        add_favorite_team(
+            telegram_id,
+            team_name
+        )
+
+    else:
+
+        remove_favorite_team(
+            telegram_id,
+            team_name
+        )
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "favorite_teams":
+            get_user_favorite_teams(
+                telegram_id
+            )
+    })
 
 
-                levelXp =
-                    Number(
-                        data.current_level_xp
-                        ??
-                        levelXp
-                    );
+
+# =========================================================
+# 🔔 NOTIFICATION SETTINGS API
+# =========================================================
+
+@app.route(
+    "/api/notification-settings",
+    methods=[
+        "POST"
+    ]
+)
+def api_notification_settings():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    settings = (
+        update_notification_settings(
+            user[
+                "telegram_id"
+            ],
+            body
+        )
+    )
+
+    return jsonify({
+        "success":
+            True,
+
+        "settings":
+            settings
+    })
 
 
-                bets =
-                    data.bets
-                    ||
-                    bets;
+# =========================================================
+# 🏆 LEADERBOARD
+# =========================================================
+
+@app.route(
+    "/api/leaderboard",
+    methods=[
+        "POST"
+    ]
+)
+def api_leaderboard():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+        return error
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    mode = str(
+        body.get(
+            "mode",
+            "xp"
+        )
+        or
+        "xp"
+    ).strip().lower()
+
+    if mode not in {
+        "xp",
+        "coins",
+        "exact",
+        "weekly"
+    }:
+        mode = "xp"
+
+    telegram_id = int(
+        user[
+            "telegram_id"
+        ]
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    if mode == "weekly":
+
+        cur.execute(
+            """
+            WITH weekly AS (
+
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+
+                    (
+                        COUNT(
+                            CASE
+                                WHEN
+                                    p.settled = TRUE
+                                    AND
+                                    p.created_at >=
+                                        NOW()
+                                        -
+                                        INTERVAL '7 days'
+                                THEN 1
+                            END
+                        )
+                    )::INTEGER
+                    AS weekly_predictions,
+
+                    (
+                        COUNT(
+                            CASE
+                                WHEN
+                                    p.settled = TRUE
+                                    AND
+                                    p.created_at >=
+                                        NOW()
+                                        -
+                                        INTERVAL '7 days'
+                                    AND
+                                    (
+                                        p.exact_win = TRUE
+                                        OR
+                                        p.outcome_win = TRUE
+                                    )
+                                THEN 1
+                            END
+                        )
+                    )::INTEGER
+                    AS weekly_success
+
+                FROM users u
+
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id =
+                        u.telegram_id
+
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+
+            positions AS (
+
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            weekly_success DESC,
+                            weekly_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+
+                FROM weekly
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                0 AS exact_wins,
+                weekly_success AS successful_predictions,
+                weekly_predictions AS settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    elif mode == "exact":
+
+        cur.execute("""
+            WITH ranked AS (
+
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                                AND
+                                p.exact_win = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS exact_wins,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                                AND
+                                (
+                                    p.exact_win = TRUE
+                                    OR
+                                    p.outcome_win = TRUE
+                                )
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS successful_predictions,
+
+                    COUNT(
+                        CASE
+                            WHEN
+                                p.settled = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER
+                    AS settled_predictions
+
+                FROM users u
+
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id =
+                        u.telegram_id
+
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+
+            positions AS (
+
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            exact_wins DESC,
+                            successful_predictions DESC,
+                            settled_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+
+                FROM ranked
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                exact_wins,
+                successful_predictions,
+                settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+        """, (
+            telegram_id,
+        ))
+
+    else:
+
+        order_sql = (
+            "balance DESC, xp DESC, telegram_id ASC"
+            if mode == "coins"
+            else
+            "xp DESC, balance DESC, telegram_id ASC"
+        )
+
+        cur.execute(
+            f"""
+            WITH positions AS (
+
+                SELECT
+                    telegram_id,
+                    first_name,
+                    balance,
+                    xp,
+
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            {order_sql}
+                    ) AS rank
+
+                FROM users
+            )
+
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                0 AS exact_wins,
+                0 AS successful_predictions,
+                0 AS settled_predictions,
+                rank
+
+            FROM positions
+
+            WHERE
+                rank <= 50
+                OR
+                telegram_id = %s
+
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    rows = cur.fetchall()
+
+    players = []
+    my_player = None
+
+    for row in rows:
+
+        player_level = calculate_level(
+            row[3]
+        )
+
+        settled_predictions = int(
+            row[6]
+            or
+            0
+        )
+
+        successful_predictions = int(
+            row[5]
+            or
+            0
+        )
+
+        success_rate = (
+            round(
+                successful_predictions
+                /
+                settled_predictions
+                *
+                100
+            )
+            if settled_predictions > 0
+            else
+            0
+        )
+
+        player = {
+
+            "rank":
+                int(
+                    row[7]
+                ),
+
+            "telegram_id":
+                int(
+                    row[0]
+                ),
+
+            "first_name":
+                row[1]
+                or
+                "Игрок",
+
+            "balance":
+                int(
+                    row[2]
+                    or
+                    0
+                ),
+
+            "xp":
+                int(
+                    row[3]
+                    or
+                    0
+                ),
+
+            "level":
+                int(
+                    player_level
+                ),
+
+            "league":
+                get_league(
+                    player_level
+                ),
+
+            "exact_wins":
+                int(
+                    row[4]
+                    or
+                    0
+                ),
+
+            "successful_predictions":
+                successful_predictions,
+
+            "settled_predictions":
+                settled_predictions,
+
+            "success_rate":
+                int(
+                    success_rate
+                ),
+
+            "is_me":
+                int(
+                    row[0]
+                )
+                ==
+                telegram_id
+        }
+
+        if player["is_me"]:
+            my_player = player
+
+        if player["rank"] <= 50:
+            players.append(
+                player
+            )
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "mode":
+            mode,
+
+        "players":
+            players,
+
+        "my_rank":
+            (
+                my_player[
+                    "rank"
+                ]
+                if my_player
+                else
+                None
+            ),
+
+        "me":
+            my_player
+    })
 
 
-                parlays =
-                    data.parlays
-                    ||
-                    parlays;
+# =========================================================
+# 🎁 DAILY REWARD
+# =========================================================
+
+@app.route(
+    "/api/daily-reward",
+    methods=[
+        "POST"
+    ]
+)
+def api_daily_reward():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    telegram_id = user[
+        "telegram_id"
+    ]
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT last_daily_claim
+
+        FROM users
+
+        WHERE telegram_id = %s
+
+        FOR UPDATE
+    """, (
+        telegram_id,
+    ))
+
+    last_claim = cur.fetchone()[0]
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    if (
+        last_claim
+        and
+        now
+        <
+        last_claim
+        +
+        timedelta(
+            hours=24
+        )
+    ):
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Бонус уже получен"
+        }), 400
+
+    cur.execute("""
+        UPDATE users
+
+        SET
+            balance =
+                balance
+                +
+                300,
+
+            last_daily_claim =
+                %s,
+
+            updated_at =
+                NOW()
+
+        WHERE telegram_id = %s
+    """, (
+        now,
+        telegram_id
+    ))
+
+    add_xp(
+        telegram_id,
+        15,
+        cur
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    fresh = get_user_data(
+        telegram_id
+    )
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "balance":
+            int(
+                fresh["balance"]
+            ),
+
+        **xp_info(
+            fresh["xp"]
+        )
+    })
 
 
-                stats =
-                    data.stats
-                    ||
-                    stats;
+# =========================================================
+# ✅ TASK CLAIM
+# =========================================================
+
+@app.route(
+    "/api/tasks/claim",
+    methods=[
+        "POST"
+    ]
+)
+def api_task_claim():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    key = body.get(
+        "task_key"
+    )
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    telegram_id = user[
+        "telegram_id"
+    ]
+
+    tasks = get_daily_tasks(
+        telegram_id,
+        True
+    )
+
+    target = next(
+        (
+            item
+
+            for item in tasks
+
+            if
+            item["key"]
+            ==
+            key
+        ),
+        None
+    )
+
+    if (
+        not target
+        or
+        not target["completed"]
+        or
+        target["claimed"]
+    ):
+
+        return jsonify({
+            "success": False,
+            "error": "Награда недоступна"
+        }), 400
+
+    column_map = {
+
+        "login":
+            "login_claimed",
+
+        "bets_3":
+            "bets_claimed",
+
+        "win_1":
+            "win_claimed"
+    }
+
+    if key not in column_map:
+
+        return jsonify({
+            "success": False,
+            "error": "Неизвестное задание"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    column = column_map[
+        key
+    ]
+
+    cur.execute(
+        f"""
+        UPDATE daily_tasks
+
+        SET {column} = TRUE
+
+        WHERE
+            telegram_id = %s
+            AND
+            task_date = %s
+            AND
+            {column} = FALSE
+        """,
+        (
+            telegram_id,
+            task_date()
+        )
+    )
+
+    if cur.rowcount != 1:
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Награда уже получена"
+        }), 400
+
+    if (
+        target["reward_type"]
+        ==
+        "coins"
+    ):
+
+        cur.execute("""
+            UPDATE users
+
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+        """, (
+            target["reward"],
+            telegram_id
+        ))
+
+    else:
+
+        add_xp(
+            telegram_id,
+            target["reward"],
+            cur
+        )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    fresh = get_user_data(
+        telegram_id
+    )
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "balance":
+            int(
+                fresh["balance"]
+            ),
+
+        **xp_info(
+            fresh["xp"]
+        ),
+
+        "tasks":
+            get_daily_tasks(
+                telegram_id
+            )
+    })
 
 
-                predictionGame =
-                    data.prediction_game
-                    ||
-                    predictionGame;
+# =========================================================
+# 🏅 ACHIEVEMENT CLAIM
+# =========================================================
+
+@app.route(
+    "/api/achievements/claim",
+    methods=[
+        "POST"
+    ]
+)
+def api_achievement_claim():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    body = (
+        request.get_json(
+            silent=True
+        )
+        or
+        {}
+    )
+
+    key = body.get(
+        "achievement_key"
+    )
+
+    user = get_or_create_user(
+        tg_user
+    )
+
+    telegram_id = user[
+        "telegram_id"
+    ]
+
+    achievements = get_achievements(
+        telegram_id
+    )
+
+    achievement = next(
+        (
+            item
+
+            for item in achievements
+
+            if
+            item["key"]
+            ==
+            key
+        ),
+        None
+    )
+
+    if (
+        not achievement
+        or
+        not achievement["completed"]
+        or
+        achievement["claimed"]
+    ):
+
+        return jsonify({
+            "success": False,
+            "error": "Награда недоступна"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO achievement_claims (
+            telegram_id,
+            achievement_key
+        )
+        VALUES (
+            %s,
+            %s
+        )
+        ON CONFLICT
+        DO NOTHING
+
+        RETURNING achievement_key
+    """, (
+        telegram_id,
+        key
+    ))
+
+    if not cur.fetchone():
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Награда уже получена"
+        }), 400
+
+    cur.execute("""
+        UPDATE users
+
+        SET
+            balance =
+                balance
+                +
+                %s,
+
+            updated_at =
+                NOW()
+
+        WHERE telegram_id = %s
+    """, (
+        achievement["reward"],
+        telegram_id
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    fresh = get_user_data(
+        telegram_id
+    )
+
+    return jsonify({
+
+        "success":
+            True,
+
+        "balance":
+            int(
+                fresh["balance"]
+            ),
+
+        "achievements":
+            get_achievements(
+                telegram_id
+            )
+    })
 
 
-                scoreGame =
-                    data.score_game
-                    ||
-                    scoreGame;
+# =========================================================
+# 🔄 MANUAL SETTLE
+# =========================================================
+
+@app.route(
+    "/api/settle",
+    methods=[
+        "POST"
+    ]
+)
+def api_settle():
+
+    tg_user, error = require_telegram_user()
+
+    if error:
+
+        return error
+
+    try:
+
+        user = get_or_create_user(
+            tg_user
+        )
+
+        telegram_id = user[
+            "telegram_id"
+        ]
+
+        settle_user_bets(
+            telegram_id
+        )
+
+        settle_user_parlays(
+            telegram_id
+        )
+
+        settle_prediction_picks(
+            10
+        )
+
+        settle_score_game_picks(
+            10
+        )
+
+        fresh = get_user_data(
+            telegram_id
+        )
+
+        return jsonify({
+
+            "success":
+                True,
+
+            "balance":
+                int(
+                    fresh["balance"]
+                ),
+
+            **xp_info(
+                fresh["xp"]
+            ),
+
+            "bets":
+                get_user_bets(
+                    telegram_id
+                ),
+
+            "parlays":
+                get_user_parlays(
+                    telegram_id
+                ),
+
+            "stats":
+                get_profile_stats(
+                    telegram_id
+                ),
+
+            "prediction_game":
+                get_prediction_game(
+                    telegram_id
+                ),
+
+            "score_game":
+                get_score_game(
+                    telegram_id
+                ),
+
+            "login_streak":
+                get_login_streak_status(
+                    telegram_id
+                )
+        })
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": str(error)
+        }), 500
 
 
-                loginStreak =
-                    data.login_streak
-                    ||
-                    loginStreak;
+# =========================================================
+# LOCAL START
+# =========================================================
 
+if __name__ == "__main__":
 
-                renderAll();
+    port = int(
+        os.environ.get(
+            "PORT",
+            "10000"
+        )
+    )
 
+    app.run(
+        host=
+            "0.0.0.0",
 
-            }catch(error){
+        port=
+            port,
 
-                console.error(
-                    error
-                );
-            }
-
-        },
-        300000
-    );
-}
-
-
-init();
-
-</script>
-
-
-<div
-    id="onboarding"
-    class="onboarding"
->
-
-<div class="onboarding-card">
-
-<div
-    id="onboardingIcon"
-    class="onboarding-icon"
->
-⚽
-</div>
-
-<div
-    id="onboardingTitle"
-    class="onboarding-title"
->
-Добро пожаловать в BetCoin
-</div>
-
-<div
-    id="onboardingText"
-    class="onboarding-text"
->
-Смотри матчи, делай прогнозы и соревнуйся с другими игроками.
-</div>
-
-<div
-    id="onboardingDots"
-    class="onboarding-dots"
-></div>
-
-<button
-    id="onboardingBtn"
-    class="btn"
-    onclick="nextOnboarding()"
->
-Далее
-</button>
-
-<button
-    class="btn secondary"
-    onclick="finishOnboarding()"
->
-Пропустить
-</button>
-
-</div>
-
-</div>
-
-</body>
-</html>
+        threaded=
+            True
+    )

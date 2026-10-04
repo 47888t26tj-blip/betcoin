@@ -2522,6 +2522,29 @@ body.parlay-mini-collapsed #page-match{
     padding-bottom:130px;
 }
 
+
+
+/* ===================================
+   API SOURCE STATUS
+=================================== */
+
+.matches-source-notice{
+    margin:0 0 10px;
+    padding:9px 11px;
+    border-radius:12px;
+    border:1px solid rgba(255,209,102,.28);
+    background:rgba(255,209,102,.08);
+    color:#e6d295;
+    font-size:12px;
+    line-height:1.35;
+}
+
+.matches-source-notice.error{
+    border-color:rgba(255,82,82,.30);
+    background:rgba(255,82,82,.08);
+    color:#ff9a9a;
+}
+
 </style>
 
 </head>
@@ -2981,6 +3004,12 @@ LIVE
 </button>
 
 </div>
+
+<div
+    id="matchesSourceNotice"
+    class="matches-source-notice"
+    style="display:none"
+></div>
 
 <div id="matchesList">
 
@@ -4271,6 +4300,8 @@ let miniParlayCollapsed = false;
 
 let currentLeague = "top5";
 
+let matchSourceState = {};
+
 let dateFilter = "today";
 
 let searchQuery = "";
@@ -5543,6 +5574,31 @@ async function loadLive(){
 
 
         if(
+            data
+            &&
+            data.success
+        ){
+
+            matchSourceState[
+                key
+            ] = {
+                source:
+                    data.source
+                    ||
+                    "five-dollar",
+
+                stale:
+                    !!data.stale,
+
+                notice:
+                    data.notice
+                    ||
+                    null
+            };
+        }
+
+
+        if(
             !response.ok
             ||
             !data.success
@@ -5758,7 +5814,12 @@ function readLeagueCache(
             fresh:
                 age
                 <
-                MATCH_CACHE_TTL_MS
+                MATCH_CACHE_TTL_MS,
+
+            source_state:
+                parsed.source_state
+                ||
+                null
         };
 
     }catch(error){
@@ -5784,7 +5845,14 @@ function writeLeagueCache(
                     Date.now(),
 
                 matches:
-                    items
+                    items,
+
+                source_state:
+                    matchSourceState[
+                        key
+                    ]
+                    ||
+                    null
             })
         );
 
@@ -5820,6 +5888,37 @@ function hydrateLeagueFromCache(
         key
     ] =
         cached.matches;
+
+    if(
+        cached.source_state
+    ){
+
+        matchSourceState[
+            key
+        ] =
+            cached.source_state;
+
+    }else{
+
+        matchSourceState[
+            key
+        ] = {
+            source:
+                "cache",
+
+            stale:
+                !cached.fresh,
+
+            notice:
+                (
+                    cached.fresh
+                    ?
+                    null
+                    :
+                    "Показаны сохранённые матчи"
+                )
+        };
+    }
 
     return cached;
 }
@@ -6152,6 +6251,19 @@ async function loadLeague(
                     key
                 ];
 
+            matchSourceState[
+                key
+            ] = {
+                source:
+                    "cache",
+
+                stale:
+                    true,
+
+                notice:
+                    "Не удалось обновить API — показаны сохранённые матчи"
+            };
+
             renderMatches();
 
             console.warn(
@@ -6161,6 +6273,20 @@ async function loadLeague(
 
             return;
         }
+
+
+        matchSourceState[
+            key
+        ] = {
+            source:
+                "error",
+
+            stale:
+                false,
+
+            notice:
+                "Ошибка загрузки данных. Можно попробовать обновить ещё раз."
+        };
 
 
         const message =
@@ -6382,10 +6508,12 @@ async function refreshMatchesNow(){
 
         if(key === "favorites"){
 
-            loaded = {};
-
             await loadLeague(
-                "top5"
+                "top5",
+                {
+                    force:
+                        true
+                }
             );
 
             currentLeague =
@@ -6395,12 +6523,12 @@ async function refreshMatchesNow(){
 
         }else{
 
-            delete loaded[
-                key
-            ];
-
             await loadLeague(
-                key
+                key,
+                {
+                    force:
+                        true
+                }
             );
         }
 
@@ -6458,7 +6586,59 @@ function allMatches(){
 }
 
 
+function renderMatchSourceNotice(){
+
+    const box =
+        document.getElementById(
+            "matchesSourceNotice"
+        );
+
+    if(!box){
+        return;
+    }
+
+    const state =
+        matchSourceState[
+            currentLeague
+        ]
+        ||
+        {};
+
+    if(
+        !state.notice
+    ){
+
+        box.style.display =
+            "none";
+
+        box.textContent =
+            "";
+
+        box.classList.remove(
+            "error"
+        );
+
+        return;
+    }
+
+    box.style.display =
+        "block";
+
+    box.classList.toggle(
+        "error",
+        state.source
+        ===
+        "error"
+    );
+
+    box.textContent =
+        state.notice;
+}
+
+
 function renderMatches(){
+
+    renderMatchSourceNotice();
 
     let list =
         currentLeague

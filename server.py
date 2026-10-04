@@ -262,6 +262,8 @@ for league_key, league_data in LEAGUES.items():
 # =========================================================
 
 FIXTURES_CACHE_SECONDS = 1800
+STALE_FIXTURES_CACHE_SECONDS = 21600
+FOOTBALL_DATA_TIMEOUT_SECONDS = 6
 AUTO_FIXTURES_REFRESH_SECONDS = 3600
 AUTO_FIXTURES_START_DELAY_SECONDS = 45
 ODDS_CACHE_SECONDS = 21600
@@ -447,6 +449,7 @@ ACHIEVEMENTS = [
 # =========================================================
 
 league_fixture_cache = {}
+league_source_status = {}
 fixture_detail_cache = {}
 odds_cache = {}
 result_cache = {}
@@ -3860,6 +3863,428 @@ def make_match_from_item(
     return match
 
 
+FOOTBALL_DATA_FIXTURE_OFFSET = 9000000000000
+
+
+def football_data_get(
+    path,
+    params=None
+):
+
+    if not FOOTBALL_TOKEN:
+
+        raise RuntimeError(
+            "FOOTBALL_DATA_TOKEN not configured"
+        )
+
+    response = requests.get(
+        FOOTBALL_DATA_URL
+        +
+        path,
+
+        headers={
+            "X-Auth-Token":
+                FOOTBALL_TOKEN
+        },
+
+        params=(
+            params
+            or
+            {}
+        ),
+
+        timeout=
+            FOOTBALL_DATA_TIMEOUT_SECONDS
+    )
+
+    if not response.ok:
+
+        raise RuntimeError(
+            "Football-Data HTTP "
+            +
+            str(
+                response.status_code
+            )
+        )
+
+    return response.json()
+
+
+def make_match_from_football_data(
+    item,
+    league_key
+):
+
+    league_config = (
+        LEAGUES.get(
+            league_key
+        )
+        or
+        {}
+    )
+
+    home = (
+        item.get(
+            "homeTeam"
+        )
+        or
+        {}
+    )
+
+    away = (
+        item.get(
+            "awayTeam"
+        )
+        or
+        {}
+    )
+
+    competition = (
+        item.get(
+            "competition"
+        )
+        or
+        {}
+    )
+
+    score = (
+        item.get(
+            "score"
+        )
+        or
+        {}
+    )
+
+    full_time = (
+        score.get(
+            "fullTime"
+        )
+        or
+        {}
+    )
+
+    raw_id = int(
+        item.get(
+            "id"
+        )
+        or
+        0
+    )
+
+    fixture_id = (
+        FOOTBALL_DATA_FIXTURE_OFFSET
+        +
+        raw_id
+    )
+
+    match = {
+
+        "fixture_id":
+            fixture_id,
+
+        "provider":
+            "football-data",
+
+        "provider_fixture_id":
+            raw_id,
+
+        "date":
+            item.get(
+                "utcDate"
+            ),
+
+        "status":
+            item.get(
+                "status"
+            ),
+
+        "status_code":
+            item.get(
+                "status"
+            ),
+
+        "league":
+            (
+                competition.get(
+                    "name"
+                )
+                or
+                league_config.get(
+                    "name"
+                )
+                or
+                "Football"
+            ),
+
+        "league_id":
+            None,
+
+        "league_key":
+            league_key,
+
+        "country":
+            league_config.get(
+                "country",
+                ""
+            ),
+
+        "league_short_name":
+            league_config.get(
+                "short_name",
+                ""
+            ),
+
+        "league_flag":
+            league_config.get(
+                "flag",
+                ""
+            ),
+
+        "home":
+            (
+                home.get(
+                    "name"
+                )
+                or
+                "Unknown"
+            ),
+
+        "away":
+            (
+                away.get(
+                    "name"
+                )
+                or
+                "Unknown"
+            ),
+
+        "home_team_id":
+            home.get(
+                "id"
+            ),
+
+        "away_team_id":
+            away.get(
+                "id"
+            ),
+
+        "home_logo":
+            (
+                home.get(
+                    "crest"
+                )
+                or
+                find_logo_fast(
+                    home.get(
+                        "name",
+                        ""
+                    )
+                )
+            ),
+
+        "away_logo":
+            (
+                away.get(
+                    "crest"
+                )
+                or
+                find_logo_fast(
+                    away.get(
+                        "name",
+                        ""
+                    )
+                )
+            ),
+
+        "home_score":
+            full_time.get(
+                "home"
+            ),
+
+        "away_score":
+            full_time.get(
+                "away"
+            ),
+
+        "odds":
+            None,
+
+        "btts":
+            None,
+
+        "handicaps":
+            None,
+
+        "bookmaker":
+            None,
+
+        "available_extra_markets":
+            []
+    }
+
+    for line in TOTAL_POINTS:
+
+        match[
+            "total_"
+            +
+            str(
+                line
+            ).replace(
+                ".",
+                "_"
+            )
+        ] = None
+
+    fixture_detail_cache[
+        str(
+            fixture_id
+        )
+    ] = {
+        "time":
+            time.time(),
+
+        "data":
+            match
+    }
+
+    return match
+
+
+def load_football_data_fixtures(
+    league_key
+):
+
+    league = (
+        LEAGUES.get(
+            league_key
+        )
+        or
+        {}
+    )
+
+    code = league.get(
+        "football_data_code"
+    )
+
+    if not code:
+
+        return []
+
+    now = datetime.now(
+        timezone.utc
+    )
+
+    data = football_data_get(
+        f"/competitions/{code}/matches",
+        {
+            "dateFrom":
+                now.date().isoformat(),
+
+            "dateTo":
+                (
+                    now
+                    +
+                    timedelta(
+                        days=
+                            MAX_FIXTURE_DAYS
+                    )
+                ).date().isoformat()
+        }
+    )
+
+    result = []
+
+    for item in (
+        data.get(
+            "matches"
+        )
+        or
+        []
+    ):
+
+        try:
+
+            result.append(
+                make_match_from_football_data(
+                    item,
+                    league_key
+                )
+            )
+
+        except Exception as error:
+
+            print(
+                "Football-Data parse error:",
+                league_key,
+                error,
+                flush=True
+            )
+
+    result.sort(
+        key=
+            lambda match:
+                match.get(
+                    "date"
+                )
+                or
+                ""
+    )
+
+    return result
+
+
+def usable_stale_league_cache(
+    league_key
+):
+
+    cached = (
+        league_fixture_cache.get(
+            league_key
+        )
+    )
+
+    if not cached:
+
+        return None
+
+    age = (
+        time.time()
+        -
+        float(
+            cached.get(
+                "time",
+                0
+            )
+        )
+    )
+
+    data = (
+        cached.get(
+            "data"
+        )
+        or
+        []
+    )
+
+    if (
+        data
+        and
+        age
+        <=
+        STALE_FIXTURES_CACHE_SECONDS
+    ):
+
+        return {
+            "age":
+                age,
+
+            "data":
+                data
+        }
+
+    return None
+
+
 def fetch_league_id_fixtures(
     league_key,
     league_id,
@@ -3927,8 +4352,10 @@ def load_league_fixtures(
             "Неизвестная лига"
         )
 
-    cached = league_fixture_cache.get(
-        league_key
+    cached = (
+        league_fixture_cache.get(
+            league_key
+        )
     )
 
     if (
@@ -3943,7 +4370,23 @@ def load_league_fixtures(
         FIXTURES_CACHE_SECONDS
     ):
 
-        return cached["data"]
+        league_source_status[
+            league_key
+        ] = {
+            "source":
+                "cache",
+
+            "stale":
+                False,
+
+            "message":
+                None
+        }
+
+        return cached[
+            "data"
+        ]
+
 
     now = datetime.now(
         timezone.utc
@@ -3958,7 +4401,8 @@ def load_league_fixtures(
             now
             +
             timedelta(
-                days=MAX_FIXTURE_DAYS
+                days=
+                    MAX_FIXTURE_DAYS
             )
         ).timestamp()
     )
@@ -4013,7 +4457,9 @@ def load_league_fixtures(
             except Exception as error:
 
                 request_errors.append(
-                    str(error)
+                    str(
+                        error
+                    )
                 )
 
                 print(
@@ -4023,74 +4469,243 @@ def load_league_fixtures(
                     flush=True
                 )
 
-    if successful == 0:
-
-        if (
-            cached
-            and
-            cached.get("data")
-            is not None
-        ):
-
-            return cached["data"]
-
-        raise RuntimeError(
-            "Не удалось загрузить "
-            +
-            LEAGUES[
-                league_key
-            ].get(
-                "name",
-                league_key
-            )
-            +
-            (
-                ": "
-                +
-                request_errors[0]
-                if request_errors
-                else
-                ""
-            )
-        )
 
     unique = {}
 
     for match in result:
 
         fixture_id = int(
-            match["fixture_id"]
+            match[
+                "fixture_id"
+            ]
         )
 
-        unique[fixture_id] = match
+        unique[
+            fixture_id
+        ] = match
 
-        fixture_detail_cache[
-            str(fixture_id)
-        ] = {
-            "time": time.time(),
-            "data": match
-        }
 
-    result = list(
+    primary_result = list(
         unique.values()
     )
 
-    result.sort(
+    primary_result.sort(
         key=
             lambda match:
-                match.get("date")
+                match.get(
+                    "date"
+                )
                 or
                 ""
     )
 
-    league_fixture_cache[
+
+    if primary_result:
+
+        for match in primary_result:
+
+            fixture_id = int(
+                match[
+                    "fixture_id"
+                ]
+            )
+
+            fixture_detail_cache[
+                str(
+                    fixture_id
+                )
+            ] = {
+                "time":
+                    time.time(),
+
+                "data":
+                    match
+            }
+
+        league_fixture_cache[
+            league_key
+        ] = {
+            "time":
+                time.time(),
+
+            "data":
+                primary_result
+        }
+
+        league_source_status[
+            league_key
+        ] = {
+            "source":
+                "five-dollar",
+
+            "stale":
+                False,
+
+            "message":
+                None
+        }
+
+        return primary_result
+
+
+    stale = (
+        usable_stale_league_cache(
+            league_key
+        )
+    )
+
+    if stale:
+
+        league_source_status[
+            league_key
+        ] = {
+            "source":
+                "cache",
+
+            "stale":
+                True,
+
+            "message":
+                "Основной источник временно не дал матчи — показаны сохранённые данные"
+        }
+
+        return stale[
+            "data"
+        ]
+
+
+    fallback_error = None
+
+    if FOOTBALL_TOKEN:
+
+        try:
+
+            fallback = (
+                load_football_data_fixtures(
+                    league_key
+                )
+            )
+
+            if fallback:
+
+                league_fixture_cache[
+                    league_key
+                ] = {
+                    "time":
+                        time.time(),
+
+                    "data":
+                        fallback
+                }
+
+                league_source_status[
+                    league_key
+                ] = {
+                    "source":
+                        "football-data",
+
+                    "stale":
+                        False,
+
+                    "message":
+                        "Основной источник недоступен — используется резервное расписание без коэффициентов"
+                }
+
+                return fallback
+
+        except Exception as error:
+
+            fallback_error = str(
+                error
+            )
+
+            print(
+                "Football-Data fallback error:",
+                league_key,
+                error,
+                flush=True
+            )
+
+
+    if successful > 0:
+
+        league_fixture_cache[
+            league_key
+        ] = {
+            "time":
+                time.time(),
+
+            "data":
+                []
+        }
+
+        league_source_status[
+            league_key
+        ] = {
+            "source":
+                "five-dollar",
+
+            "stale":
+                False,
+
+            "message":
+                None
+        }
+
+        return []
+
+
+    league_source_status[
         league_key
     ] = {
-        "time": time.time(),
-        "data": result
+        "source":
+            "error",
+
+        "stale":
+            False,
+
+        "message":
+            "Не удалось получить данные ни из основного, ни из резервного источника"
     }
 
-    return result
+
+    messages = []
+
+    if request_errors:
+
+        messages.append(
+            request_errors[
+                0
+            ]
+        )
+
+    if fallback_error:
+
+        messages.append(
+            fallback_error
+        )
+
+    raise RuntimeError(
+        "Не удалось загрузить "
+        +
+        LEAGUES[
+            league_key
+        ].get(
+            "name",
+            league_key
+        )
+        +
+        (
+            ": "
+            +
+            " | ".join(
+                messages
+            )
+            if messages
+            else
+            ""
+        )
+    )
 
 
 def load_default_fixtures(
@@ -4167,6 +4782,69 @@ def load_default_fixtures(
     )
 
     return result
+
+
+def get_top5_source_status():
+
+    statuses = [
+        league_source_status.get(
+            key,
+            {}
+        )
+        for key
+        in DEFAULT_LEAGUES
+    ]
+
+    if any(
+        item.get(
+            "source"
+        )
+        ==
+        "football-data"
+        for item
+        in statuses
+    ):
+
+        return {
+            "source":
+                "mixed",
+
+            "stale":
+                False,
+
+            "message":
+                "Часть матчей загружена из резервного источника"
+        }
+
+    if any(
+        item.get(
+            "stale"
+        )
+        for item
+        in statuses
+    ):
+
+        return {
+            "source":
+                "cache",
+
+            "stale":
+                True,
+
+            "message":
+                "Часть матчей показана из сохранённого кэша"
+        }
+
+    return {
+        "source":
+            "five-dollar",
+
+        "stale":
+            False,
+
+        "message":
+            None
+    }
 
 
 def get_all_cached_matches():
@@ -12219,6 +12897,34 @@ def api_matches():
                 "error": "Неизвестная лига"
             }), 400
 
+        source_status = (
+            get_top5_source_status()
+            if (
+                not league_key
+                or
+                league_key
+                ==
+                "top5"
+            )
+            else
+            (
+                league_source_status.get(
+                    league_key
+                )
+                or
+                {
+                    "source":
+                        "five-dollar",
+
+                    "stale":
+                        False,
+
+                    "message":
+                        None
+                }
+            )
+        )
+
         return jsonify({
 
             "success":
@@ -12227,6 +12933,23 @@ def api_matches():
             "count":
                 len(
                     fixtures
+                ),
+
+            "source":
+                source_status.get(
+                    "source"
+                ),
+
+            "stale":
+                bool(
+                    source_status.get(
+                        "stale"
+                    )
+                ),
+
+            "notice":
+                source_status.get(
+                    "message"
                 ),
 
             "matches":

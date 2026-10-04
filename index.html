@@ -2399,22 +2399,6 @@ body.parlay-mini-open #page-matches{
     transform:translateX(20px);
 }
 
-.parlay-collapse-btn{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    font-size:12px;
-    font-weight:900;
-    padding:0;
-}
-
-.mini.collapsed .mini-bottom{
-    display:none;
-}
-
-.mini.collapsed{
-    padding-bottom:9px;
-}
 
 .onboarding{
     position:fixed;
@@ -2471,6 +2455,71 @@ body.parlay-mini-open #page-matches{
 
 .onboarding-dot.active{
     background:var(--accent);
+}
+
+
+
+/* ===================================
+   🧾 WORKING COLLAPSIBLE PARLAY
+=================================== */
+
+.mini-top{
+    gap:8px;
+}
+
+.mini-summary{
+    min-width:0;
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--text);
+    text-align:left;
+}
+
+.mini-summary #miniOdd{
+    white-space:nowrap;
+}
+
+.mini-collapse{
+    flex:0 0 36px;
+    width:36px;
+    height:36px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--card2);
+    color:var(--text);
+    font-size:22px;
+    font-weight:900;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .18s ease;
+}
+
+.mini.collapsed .mini-bottom{
+    display:none;
+}
+
+.mini.collapsed{
+    padding-bottom:10px;
+}
+
+.mini.collapsed .mini-collapse{
+    transform:rotate(180deg);
+}
+
+body.parlay-mini-collapsed .page{
+    padding-bottom:115px;
+}
+
+body.parlay-mini-collapsed #page-match{
+    padding-bottom:130px;
 }
 
 </style>
@@ -3796,8 +3845,11 @@ LIVE
     class="mini"
 >
 
-<div
-    class="mini-top"
+<div class="mini-top">
+
+<button
+    class="mini-summary"
+    type="button"
     onclick="openParlay()"
 >
 
@@ -3816,19 +3868,21 @@ LIVE
 
 </div>
 
-<div style="display:flex;align-items:center;gap:10px">
 <b id="miniOdd">
 x1.00
 </b>
 
+</button>
+
 <button
     id="miniCollapseBtn"
-    class="parlay-collapse-btn"
-    onclick="event.stopPropagation();toggleMiniParlay()"
+    class="mini-collapse"
+    type="button"
+    aria-label="Свернуть экспресс"
+    onclick="toggleMiniParlay()"
 >
-Свернуть
+⌄
 </button>
-</div>
 
 </div>
 
@@ -4196,6 +4250,7 @@ let favoriteTeams =
 let parlaySlip = [];
 
 let parlayStake = 0;
+let miniParlayCollapsed = false;
 
 let currentLeague = "top5";
 
@@ -7112,6 +7167,41 @@ function toggleParlayChoice(){
 }
 
 
+function toggleMiniParlay(){
+
+    const mini =
+        document.getElementById(
+            "miniParlay"
+        );
+
+    if(!mini){
+        return;
+    }
+
+    miniParlayCollapsed =
+        !miniParlayCollapsed;
+
+    mini.classList.toggle(
+        "collapsed",
+        miniParlayCollapsed
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-collapsed",
+        miniParlayCollapsed
+        &&
+        parlaySlip.length > 0
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-open",
+        !miniParlayCollapsed
+        &&
+        parlaySlip.length > 0
+    );
+}
+
+
 function parlayOdd(){
 
     return parlaySlip.reduce(
@@ -7155,19 +7245,46 @@ function updateParlay(){
         0;
 
 
-    document
-    .getElementById(
-        "miniParlay"
-    )
-    .classList.toggle(
+    const miniParlay =
+        document.getElementById(
+            "miniParlay"
+        );
+
+    miniParlay.classList.toggle(
         "show",
         count > 0
+    );
+
+    miniParlay.classList.toggle(
+        "collapsed",
+        count > 0
+        &&
+        miniParlayCollapsed
     );
 
     document.body.classList.toggle(
         "parlay-mini-open",
         count > 0
+        &&
+        !miniParlayCollapsed
     );
+
+    document.body.classList.toggle(
+        "parlay-mini-collapsed",
+        count > 0
+        &&
+        miniParlayCollapsed
+    );
+
+    if(count === 0){
+
+        miniParlayCollapsed =
+            false;
+
+        miniParlay.classList.remove(
+            "collapsed"
+        );
+    }
 
 
     document
@@ -7314,6 +7431,8 @@ function clearParlay(){
     parlaySlip = [];
 
     parlayStake = 0;
+
+    miniParlayCollapsed = false;
 
 
     document
@@ -12208,39 +12327,6 @@ async function saveNotificationSettings(){
     }
 }
 
-
-function toggleMiniParlay(){
-
-    const mini =
-        document.getElementById(
-            "miniParlay"
-        );
-
-    const button =
-        document.getElementById(
-            "miniCollapseBtn"
-        );
-
-    if(!mini){
-        return;
-    }
-
-    mini.classList.toggle(
-        "collapsed"
-    );
-
-    if(button){
-
-        button.textContent =
-            mini.classList.contains(
-                "collapsed"
-            )
-            ?
-            "Развернуть"
-            :
-            "Свернуть";
-    }
-}
 
 
 const onboardingSlides = [

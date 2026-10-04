@@ -2545,6 +2545,214 @@ body.parlay-mini-collapsed #page-match{
     color:#ff9a9a;
 }
 
+
+
+/* ===================================
+   ⚽ MATCH CENTER 2.0
+=================================== */
+
+.match-center-hero{
+    padding:16px;
+    border-radius:20px;
+    background:linear-gradient(
+        180deg,
+        rgba(47,128,255,.08),
+        var(--card)
+    );
+    border:1px solid var(--border);
+    margin-bottom:14px;
+}
+
+.match-center-league{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:800;
+}
+
+.match-center-time{
+    text-align:center;
+    margin-top:4px;
+    font-size:14px;
+    font-weight:900;
+}
+
+.match-center-teams{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:12px;
+    margin-top:18px;
+}
+
+.match-center-team{
+    min-width:0;
+    text-align:center;
+    font-weight:900;
+}
+
+.match-center-team .logo{
+    width:54px;
+    height:54px;
+    margin:0 auto 8px;
+    flex:0 0 54px;
+}
+
+.match-center-team .logo img{
+    max-width:44px;
+    max-height:44px;
+}
+
+.match-center-vs{
+    color:var(--muted);
+    font-size:15px;
+    font-weight:900;
+}
+
+.match-center-score{
+    font-size:26px;
+    font-weight:950;
+    white-space:nowrap;
+}
+
+.match-center-section{
+    margin-top:16px;
+}
+
+.match-center-section-title{
+    font-size:18px;
+    font-weight:950;
+    margin-bottom:9px;
+}
+
+.form-wrap{
+    display:grid;
+    gap:9px;
+}
+
+.form-team{
+    padding:11px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--card);
+}
+
+.form-team-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.form-chips{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+}
+
+.form-chip{
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:950;
+}
+
+.form-chip.w{
+    background:rgba(37,192,109,.14);
+    color:var(--green);
+}
+
+.form-chip.d{
+    background:rgba(255,209,102,.13);
+    color:var(--gold);
+}
+
+.form-chip.l{
+    background:rgba(255,82,82,.14);
+    color:var(--red);
+}
+
+.form-chip.na{
+    background:var(--card2);
+    color:var(--muted);
+}
+
+.standing-duel{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.standing-team{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--card);
+}
+
+.standing-position{
+    font-size:24px;
+    font-weight:950;
+}
+
+.stat-compare{
+    display:grid;
+    gap:7px;
+}
+
+.stat-line{
+    display:grid;
+    grid-template-columns:55px 1fr 55px;
+    align-items:center;
+    gap:8px;
+    padding:8px 10px;
+    border-radius:12px;
+    background:var(--card);
+    border:1px solid var(--border);
+}
+
+.stat-line .home{
+    text-align:right;
+    font-weight:900;
+}
+
+.stat-line .away{
+    font-weight:900;
+}
+
+.stat-line .label{
+    color:var(--muted);
+    text-align:center;
+    font-size:11px;
+    font-weight:800;
+}
+
+.h2h-list{
+    display:grid;
+    gap:7px;
+}
+
+.h2h-item{
+    padding:10px 11px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--card);
+}
+
+.match-center-loading{
+    padding:14px;
+    border:1px dashed var(--border);
+    border-radius:14px;
+    color:var(--muted);
+    text-align:center;
+    margin-top:14px;
+}
+
 </style>
 
 </head>
@@ -7085,6 +7293,625 @@ async function toggleFavoriteTeam(
    MATCH DETAIL
 =================================== */
 
+function matchCenterHero(
+    match
+){
+
+    const parsed =
+        parseDate(
+            match.date
+        );
+
+    const time =
+        parsed
+        ?
+        parsed.toLocaleString(
+            "ru-RU",
+            {
+                day:
+                    "2-digit",
+
+                month:
+                    "short",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
+            }
+        )
+        :
+        "Время уточняется";
+
+    const live =
+        liveMap[
+            Number(
+                match.fixture_id
+            )
+        ];
+
+    const homeScore =
+        live?.home_score
+        ??
+        match.home_score;
+
+    const awayScore =
+        live?.away_score
+        ??
+        match.away_score;
+
+    const hasScore =
+        homeScore
+        !=
+        null
+        &&
+        awayScore
+        !=
+        null;
+
+    return `
+        <div class="match-center-hero">
+
+            <div class="match-center-league">
+                ${esc(
+                    match.league_flag
+                    ||
+                    ""
+                )}
+                ${esc(
+                    match.league
+                    ||
+                    "Футбол"
+                )}
+            </div>
+
+            <div class="match-center-time">
+                ${esc(time)}
+                ${
+                    live?.live
+                    ?
+                    " • 🔴 LIVE"
+                    :
+                    ""
+                }
+            </div>
+
+            <div class="match-center-teams">
+
+                <div class="match-center-team">
+
+                    ${logo(
+                        match.home_logo
+                    )}
+
+                    <div>
+                        ${esc(match.home)}
+                    </div>
+
+                </div>
+
+                <div class="match-center-vs">
+                    ${
+                        hasScore
+                        ?
+                        `
+                            <div class="match-center-score">
+                                ${homeScore}:${awayScore}
+                            </div>
+                        `
+                        :
+                        "VS"
+                    }
+                </div>
+
+                <div class="match-center-team">
+
+                    ${logo(
+                        match.away_logo
+                    )}
+
+                    <div>
+                        ${esc(match.away)}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+function formChip(
+    outcome
+){
+
+    const value =
+        String(
+            outcome
+            ||
+            ""
+        )
+        .toUpperCase();
+
+    const cls =
+        value
+        ===
+        "W"
+        ?
+        "w"
+        :
+        (
+            value
+            ===
+            "D"
+            ?
+            "d"
+            :
+            (
+                value
+                ===
+                "L"
+                ?
+                "l"
+                :
+                "na"
+            )
+        );
+
+    const label =
+        value
+        ===
+        "W"
+        ?
+        "В"
+        :
+        (
+            value
+            ===
+            "D"
+            ?
+            "Н"
+            :
+            (
+                value
+                ===
+                "L"
+                ?
+                "П"
+                :
+                "—"
+            )
+        );
+
+    return `
+        <span class="form-chip ${cls}">
+            ${label}
+        </span>
+    `;
+}
+
+
+function renderTeamFormBox(
+    name,
+    items
+){
+
+    return `
+        <div class="form-team">
+
+            <div class="form-team-head">
+
+                <b>
+                    ${esc(name)}
+                </b>
+
+                <span class="muted">
+                    последние ${Math.min(
+                        5,
+                        items?.length
+                        ||
+                        0
+                    )}
+                </span>
+
+            </div>
+
+            <div class="form-chips">
+
+                ${
+                    (
+                        items
+                        ||
+                        []
+                    )
+                    .map(
+                        item =>
+                            formChip(
+                                item.outcome
+                            )
+                    )
+                    .join("")
+                    ||
+                    `<span class="muted">Нет данных</span>`
+                }
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+function renderStandingCard(
+    name,
+    row
+){
+
+    if(!row){
+
+        return `
+            <div class="standing-team">
+
+                <b>
+                    ${esc(name)}
+                </b>
+
+                <div class="muted" style="margin-top:8px">
+                    Нет данных
+                </div>
+
+            </div>
+        `;
+    }
+
+    return `
+        <div class="standing-team">
+
+            <div class="standing-position">
+                ${row.position ?? "—"}
+            </div>
+
+            <b>
+                ${esc(name)}
+            </b>
+
+            <div class="muted" style="margin-top:6px">
+                ${Number(row.points || 0)} очк. •
+                ${Number(row.played || 0)} игр
+            </div>
+
+            <div class="muted" style="margin-top:3px">
+                ${Number(row.win || 0)}-${Number(row.draw || 0)}-${Number(row.lose || 0)}
+            </div>
+
+        </div>
+    `;
+}
+
+
+function statValue(
+    stats,
+    key,
+    side
+){
+
+    return (
+        stats?.[
+            key
+        ]?.[
+            side
+        ]
+        ??
+        "—"
+    );
+}
+
+
+function renderMatchCenterData(
+    match,
+    data
+){
+
+    let html = "";
+
+
+    if(
+        data.availability?.form
+    ){
+
+        html += `
+            <div class="match-center-section">
+
+                <div class="match-center-section-title">
+                    📈 Форма команд
+                </div>
+
+                <div class="form-wrap">
+
+                    ${renderTeamFormBox(
+                        match.home,
+                        data.home_form
+                    )}
+
+                    ${renderTeamFormBox(
+                        match.away,
+                        data.away_form
+                    )}
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    if(
+        data.availability?.standings
+    ){
+
+        html += `
+            <div class="match-center-section">
+
+                <div class="match-center-section-title">
+                    📊 Положение в таблице
+                </div>
+
+                <div class="standing-duel">
+
+                    ${renderStandingCard(
+                        match.home,
+                        data.standings?.home
+                    )}
+
+                    ${renderStandingCard(
+                        match.away,
+                        data.standings?.away
+                    )}
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    if(
+        (
+            data.h2h
+            ||
+            []
+        ).length
+    ){
+
+        html += `
+            <div class="match-center-section">
+
+                <div class="match-center-section-title">
+                    🤝 Последние личные встречи
+                </div>
+
+                <div class="h2h-list">
+
+                    ${
+                        data.h2h
+                        .map(
+                            item =>
+                                `
+                                    <div class="h2h-item">
+
+                                        <b>
+                                            ${esc(item.home)}
+                                            ${item.home_score ?? "—"}:${item.away_score ?? "—"}
+                                            ${esc(item.away)}
+                                        </b>
+
+                                        <div class="muted" style="margin-top:4px">
+                                            ${
+                                                item.date
+                                                ?
+                                                new Date(
+                                                    item.date
+                                                ).toLocaleDateString(
+                                                    "ru-RU"
+                                                )
+                                                :
+                                                ""
+                                            }
+                                        </div>
+
+                                    </div>
+                                `
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    if(
+        data.availability?.statistics
+        &&
+        data.statistics
+    ){
+
+        const stats =
+            data.statistics;
+
+        const statRows = [
+            [
+                "possession",
+                "Владение",
+                "%"
+            ],
+            [
+                "shots_on_target",
+                "В створ",
+                ""
+            ],
+            [
+                "shots_off_target",
+                "Мимо",
+                ""
+            ],
+            [
+                "attacks",
+                "Атаки",
+                ""
+            ],
+            [
+                "dangerous_attacks",
+                "Опасные атаки",
+                ""
+            ]
+        ];
+
+        html += `
+            <div class="match-center-section">
+
+                <div class="match-center-section-title">
+                    📉 Статистика матча
+                </div>
+
+                <div class="stat-compare">
+
+                    ${
+                        statRows
+                        .map(
+                            row =>
+                                `
+                                    <div class="stat-line">
+
+                                        <div class="home">
+                                            ${statValue(
+                                                stats,
+                                                row[0],
+                                                "home"
+                                            )}${row[2]}
+                                        </div>
+
+                                        <div class="label">
+                                            ${row[1]}
+                                        </div>
+
+                                        <div class="away">
+                                            ${statValue(
+                                                stats,
+                                                row[0],
+                                                "away"
+                                            )}${row[2]}
+                                        </div>
+
+                                    </div>
+                                `
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    if(!html){
+
+        html = `
+            <div class="match-center-loading">
+                Дополнительная статистика для этого матча пока недоступна
+            </div>
+        `;
+    }
+
+
+    return html;
+}
+
+
+async function loadMatchCenterExtra(
+    id,
+    match
+){
+
+    const box =
+        document.getElementById(
+            "matchCenterExtra"
+        );
+
+    if(!box){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetchWithTimeout(
+                SERVER_URL
+                +
+                "/api/match/"
+                +
+                id
+                +
+                "/center",
+                10000
+            );
+
+        const data =
+            await response.json();
+
+
+        if(
+            !response.ok
+            ||
+            data.success
+            ===
+            false
+        ){
+
+            throw new Error(
+                data.error
+                ||
+                "Не удалось загрузить статистику"
+            );
+        }
+
+
+        box.innerHTML =
+            renderMatchCenterData(
+                match,
+                data
+            );
+
+
+    }catch(error){
+
+        box.innerHTML =
+            `
+                <div class="match-center-loading">
+
+                    Дополнительные данные не загрузились
+
+                    <button
+                        class="small-btn"
+                        style="margin-left:8px"
+                        onclick="loadMatchCenterExtra(${Number(id)},window.currentMatchCenterMatch)"
+                    >
+                        Повторить
+                    </button>
+
+                </div>
+            `;
+    }
+}
+
+
 async function openMatch(
     id
 ){
@@ -7141,8 +7968,11 @@ async function openMatch(
         }
 
 
+        window.currentMatchCenterMatch =
+            match;
+
         let html =
-            renderMatch(
+            matchCenterHero(
                 match
             );
 
@@ -7322,8 +8152,25 @@ async function openMatch(
         }
 
 
+        html +=
+            `
+                <div
+                    id="matchCenterExtra"
+                    class="match-center-loading"
+                >
+                    Загружаем форму, таблицу и статистику...
+                </div>
+            `;
+
+
         box.innerHTML =
             html;
+
+
+        loadMatchCenterExtra(
+            id,
+            match
+        );
 
 
     }catch(error){

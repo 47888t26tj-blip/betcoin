@@ -1452,6 +1452,30 @@ def init_database():
     """)
 
 
+    cur.execute("""
+        INSERT INTO promo_codes (
+            code,
+            reward_coins,
+            reward_xp,
+            max_uses,
+            active
+        )
+        VALUES (
+            'BETCOIN10K',
+            10000,
+            0,
+            1,
+            TRUE
+        )
+        ON CONFLICT (code)
+        DO UPDATE SET
+            reward_coins = EXCLUDED.reward_coins,
+            reward_xp = EXCLUDED.reward_xp,
+            max_uses = EXCLUDED.max_uses,
+            active = TRUE
+    """)
+
+
     conn.commit()
 
     cur.close()

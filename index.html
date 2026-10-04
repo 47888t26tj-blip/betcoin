@@ -2268,6 +2268,34 @@ button{
     vertical-align:middle;
 }
 
+
+
+/* ===================================
+   🧾 PARLAY MINI SAFE AREA
+=================================== */
+
+body.parlay-mini-open .page{
+    padding-bottom:170px;
+}
+
+body.parlay-mini-open #page-match{
+    padding-bottom:190px;
+}
+
+body.parlay-mini-open #page-matches{
+    padding-bottom:175px;
+}
+
+@media (max-width: 420px){
+    body.parlay-mini-open .page{
+        padding-bottom:185px;
+    }
+
+    body.parlay-mini-open #page-match{
+        padding-bottom:205px;
+    }
+}
+
 </style>
 
 </head>
@@ -2747,7 +2775,7 @@ LIVE
 ← Назад
 </button>
 
-<div id="matchDetail"></div>
+<div id="matchDetail" style="padding-bottom:8px"></div>
 
 </section>
 
@@ -6449,15 +6477,35 @@ function selectBet(
         `;
 
 
+    const exactInParlay =
+        selectedInParlay(
+            id,
+            selection
+        );
+
+    const anotherFromSameMatch =
+        parlaySlip.some(
+            item =>
+                Number(
+                    item.fixture_id
+                )
+                ===
+                Number(
+                    id
+                )
+                &&
+                item.selection
+                !==
+                selection
+        );
+
+
     document
     .getElementById(
         "parlayChoiceBtn"
     )
     .textContent =
-        selectedInParlay(
-            id,
-            selection
-        )
+        exactInParlay
 
         ?
 
@@ -6465,7 +6513,13 @@ function selectBet(
 
         :
 
-        "+ Экспресс";
+        (
+            anotherFromSameMatch
+            ?
+            "↻ Заменить в экспрессе"
+            :
+            "+ Экспресс"
+        );
 
 
     document
@@ -6696,42 +6750,57 @@ function toggleParlayChoice(){
 
     }else{
 
-        if(
-            parlaySlip.some(
+        const sameMatchIndex =
+            parlaySlip.findIndex(
                 item =>
                     Number(
                         item.fixture_id
                     )
                     ===
                     selectedBet.fixture_id
-            )
-        ){
-
-            tg.showAlert(
-                "В экспрессе уже есть исход этого матча"
             );
-
-            return;
-        }
 
 
         if(
-            parlaySlip.length
+            sameMatchIndex
             >=
-            15
+            0
         ){
 
+            // В одном экспрессе оставляем только один рынок
+            // на матч, но при выборе нового рынка просто
+            // заменяем старый — так можно быстро перейти
+            // с П1/П2 на фору, тотал и т.д.
+            parlaySlip[
+                sameMatchIndex
+            ] = {
+                ...selectedBet
+            };
+
             tg.showAlert(
-                "Максимум 15 событий"
+                "Ставка на этот матч заменена ✅"
             );
 
-            return;
+        }else{
+
+            if(
+                parlaySlip.length
+                >=
+                15
+            ){
+
+                tg.showAlert(
+                    "Максимум 15 событий"
+                );
+
+                return;
+            }
+
+
+            parlaySlip.push({
+                ...selectedBet
+            });
         }
-
-
-        parlaySlip.push({
-            ...selectedBet
-        });
     }
 
 
@@ -6793,6 +6862,11 @@ function updateParlay(){
     )
     .classList.toggle(
         "show",
+        count > 0
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-open",
         count > 0
     );
 

@@ -65,6 +65,15 @@ BETCOIN_START_IMAGE_URL = os.environ.get(
     ""
 ).strip()
 
+
+BETCOIN_BOT_USERNAME = os.environ.get(
+    "BETCOIN_BOT_USERNAME",
+    ""
+).strip().lstrip("@")
+
+REFERRAL_INVITER_REWARD = 500
+REFERRAL_FRIEND_REWARD = 300
+
 RENDER_EXTERNAL_URL = os.environ.get(
     "RENDER_EXTERNAL_URL",
     ""
@@ -550,6 +559,48 @@ def init_database():
                 NOT NULL
                 DEFAULT 0
         )
+    """)
+
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS referral_pending (
+
+            telegram_id BIGINT PRIMARY KEY,
+
+            inviter_telegram_id BIGINT NOT NULL,
+
+            created_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS referrals (
+
+            referred_telegram_id BIGINT PRIMARY KEY
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            inviter_telegram_id BIGINT NOT NULL
+                REFERENCES users(telegram_id)
+                ON DELETE CASCADE,
+
+            inviter_reward INTEGER NOT NULL
+                DEFAULT 500,
+
+            friend_reward INTEGER NOT NULL
+                DEFAULT 300,
+
+            activated_at TIMESTAMPTZ NOT NULL
+                DEFAULT NOW()
+        )
+    """)
+
+
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_referrals_inviter
+        ON referrals(inviter_telegram_id)
     """)
 
 
@@ -1761,6 +1812,22 @@ def get_or_create_user(tg_user):
     conn = get_db()
     cur = conn.cursor()
 
+    cur.execute(
+        """
+        SELECT 1
+        FROM users
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    was_existing = (
+        cur.fetchone()
+        is not None
+    )
+
     cur.execute("""
         INSERT INTO users (
             telegram_id,
@@ -1823,7 +1890,10 @@ def get_or_create_user(tg_user):
         "username": row[2],
         "balance": row[3],
         "last_daily_claim": row[4],
-        "xp": row[5]
+        "xp": row[5],
+        "is_new": (
+            not was_existing
+        )
     }
 
 
@@ -1863,6 +1933,430 @@ def get_user_data(telegram_id):
         "balance": row[3],
         "last_daily_claim": row[4],
         "xp": row[5]
+    }
+
+
+
+# =========================================================
+# REFERRALS
+# =========================================================
+
+_bot_username_cache = {
+    "value": None,
+    "checked_at": 0
+}
+
+
+def get_betcoin_bot_username():
+
+    if BETCOIN_BOT_USERNAME:
+        return BETCOIN_BOT_USERNAME
+
+    now_ts = time.time()
+
+    cached = (
+        _bot_username_cache.get(
+            "value"
+        )
+    )
+
+    checked_at = float(
+        _bot_username_cache.get(
+            "checked_at",
+            0
+        )
+        or
+        0
+    )
+
+    if (
+        cached
+        and
+        now_ts - checked_at < 3600
+    ):
+        return cached
+
+    result = telegram_api_call(
+        "getMe"
+    )
+
+    username = ""
+
+    if result.get("ok"):
+
+        username = str(
+            (
+                result.get(
+                    "result"
+                )
+                or
+                {}
+            ).get(
+                "username"
+            )
+            or
+            ""
+        ).strip().lstrip("@")
+
+    _bot_username_cache[
+        "value"
+    ] = username
+
+    _bot_username_cache[
+        "checked_at"
+    ] = now_ts
+
+    return username
+
+
+def save_pending_referral(
+    referred_telegram_id,
+    inviter_telegram_id
+):
+
+    referred_telegram_id = int(
+        referred_telegram_id
+    )
+
+    inviter_telegram_id = int(
+        inviter_telegram_id
+    )
+
+    if (
+        referred_telegram_id
+        ==
+        inviter_telegram_id
+    ):
+        return False
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT 1
+        FROM users
+        WHERE telegram_id = %s
+        """,
+        (
+            inviter_telegram_id,
+        )
+    )
+
+    inviter_exists = (
+        cur.fetchone()
+        is not None
+    )
+
+    if not inviter_exists:
+
+        cur.close()
+        conn.close()
+        return False
+
+    cur.execute(
+        """
+        SELECT 1
+        FROM referrals
+        WHERE referred_telegram_id = %s
+        """,
+        (
+            referred_telegram_id,
+        )
+    )
+
+    already_referred = (
+        cur.fetchone()
+        is not None
+    )
+
+    if already_referred:
+
+        cur.close()
+        conn.close()
+        return False
+
+    cur.execute(
+        """
+        INSERT INTO referral_pending (
+            telegram_id,
+            inviter_telegram_id
+        )
+        VALUES (
+            %s,
+            %s
+        )
+        ON CONFLICT (telegram_id)
+        DO NOTHING
+        """,
+        (
+            referred_telegram_id,
+            inviter_telegram_id
+        )
+    )
+
+    conn.commit()
+
+    saved = (
+        cur.rowcount
+        >
+        0
+    )
+
+    cur.close()
+    conn.close()
+
+    return saved
+
+
+def activate_pending_referral(
+    telegram_id,
+    is_new_user
+):
+
+    telegram_id = int(
+        telegram_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT inviter_telegram_id
+        FROM referral_pending
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    row = cur.fetchone()
+
+    if not row:
+
+        cur.close()
+        conn.close()
+
+        return {
+            "activated": False
+        }
+
+    inviter_id = int(
+        row[0]
+    )
+
+    if (
+        not is_new_user
+        or
+        inviter_id == telegram_id
+    ):
+
+        cur.execute(
+            """
+            DELETE FROM referral_pending
+            WHERE telegram_id = %s
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return {
+            "activated": False
+        }
+
+    cur.execute(
+        """
+        INSERT INTO referrals (
+            referred_telegram_id,
+            inviter_telegram_id,
+            inviter_reward,
+            friend_reward
+        )
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s
+        )
+        ON CONFLICT (referred_telegram_id)
+        DO NOTHING
+        """,
+        (
+            telegram_id,
+            inviter_id,
+            REFERRAL_INVITER_REWARD,
+            REFERRAL_FRIEND_REWARD
+        )
+    )
+
+    inserted = (
+        cur.rowcount
+        >
+        0
+    )
+
+    if inserted:
+
+        cur.execute(
+            """
+            UPDATE users
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+            """,
+            (
+                REFERRAL_INVITER_REWARD,
+                inviter_id
+            )
+        )
+
+        cur.execute(
+            """
+            UPDATE users
+            SET
+                balance =
+                    balance
+                    +
+                    %s,
+
+                updated_at =
+                    NOW()
+
+            WHERE telegram_id = %s
+            """,
+            (
+                REFERRAL_FRIEND_REWARD,
+                telegram_id
+            )
+        )
+
+    cur.execute(
+        """
+        DELETE FROM referral_pending
+        WHERE telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if inserted:
+
+        try:
+
+            send_telegram_message(
+                inviter_id,
+                (
+                    "🎁 Новый друг в BetCoin!\n\n"
+                    f"+{REFERRAL_INVITER_REWARD} 🪙 за приглашение."
+                )
+            )
+
+        except Exception as error:
+
+            print(
+                "Referral notification error:",
+                error,
+                flush=True
+            )
+
+    return {
+        "activated":
+            inserted,
+
+        "inviter_id":
+            inviter_id
+    }
+
+
+def get_referral_info(
+    telegram_id
+):
+
+    telegram_id = int(
+        telegram_id
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT COUNT(*)
+        FROM referrals
+        WHERE inviter_telegram_id = %s
+        """,
+        (
+            telegram_id,
+        )
+    )
+
+    invited_count = int(
+        (
+            cur.fetchone()
+            or
+            [0]
+        )[0]
+        or
+        0
+    )
+
+    cur.close()
+    conn.close()
+
+    username = (
+        get_betcoin_bot_username()
+    )
+
+    referral_link = (
+        (
+            "https://t.me/"
+            +
+            username
+            +
+            "?start=ref_"
+            +
+            str(
+                telegram_id
+            )
+        )
+        if username
+        else
+        ""
+    )
+
+    return {
+        "link":
+            referral_link,
+
+        "invited_count":
+            invited_count,
+
+        "inviter_reward":
+            REFERRAL_INVITER_REWARD,
+
+        "friend_reward":
+            REFERRAL_FRIEND_REWARD
     }
 
 
@@ -10064,6 +10558,42 @@ def handle_telegram_update(
 
     if command == "/start":
 
+        parts = text.split(
+            None,
+            1
+        )
+
+        start_param = (
+            parts[1].strip()
+            if len(parts) > 1
+            else
+            ""
+        )
+
+        if start_param.startswith(
+            "ref_"
+        ):
+
+            try:
+
+                inviter_id = int(
+                    start_param[
+                        4:
+                    ]
+                )
+
+                save_pending_referral(
+                    chat_id,
+                    inviter_id
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                pass
+
         send_betcoin_start(
             chat_id,
             sender.get(
@@ -11247,6 +11777,32 @@ def api_session():
             "telegram_id"
         ]
 
+        referral_activation = (
+            activate_pending_referral(
+                telegram_id,
+                bool(
+                    user.get(
+                        "is_new"
+                    )
+                )
+            )
+        )
+
+        if referral_activation.get(
+            "activated"
+        ):
+
+            refreshed_user = (
+                get_user_data(
+                    telegram_id
+                )
+            )
+
+            if refreshed_user:
+                user.update(
+                    refreshed_user
+                )
+
         last_claim = user.get(
             "last_daily_claim"
         )
@@ -11382,6 +11938,11 @@ def api_session():
 
             "prediction_game":
                 get_prediction_game(
+                    telegram_id
+                ),
+
+            "referral":
+                get_referral_info(
                     telegram_id
                 ),
 

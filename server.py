@@ -3166,7 +3166,8 @@ def reset_five_rate_window_after_429():
 def five_get(
     path,
     params=None,
-    attempts=2
+    attempts=2,
+    timeout_seconds=20
 ):
 
     if not FIVE_DOLLAR_FOOTBALL_API_KEY:
@@ -3189,7 +3190,7 @@ def five_get(
                 FIVE_API_URL + path,
                 headers=five_headers(),
                 params=params or {},
-                timeout=20
+                timeout=timeout_seconds
             )
 
         except requests.RequestException as error:
@@ -3876,7 +3877,9 @@ def fetch_league_id_fixtures(
             "order": "asc",
             "page": 1,
             "per_page": 50
-        }
+        },
+        attempts=1,
+        timeout_seconds=8
     )
 
     result = []
@@ -4097,7 +4100,13 @@ def load_default_fixtures(
     result = []
 
     with ThreadPoolExecutor(
-        max_workers=2
+        max_workers=max(
+            1,
+            min(
+                5,
+                len(DEFAULT_LEAGUES)
+            )
+        )
     ) as executor:
 
         future_map = {
@@ -12383,6 +12392,96 @@ def api_session():
                 user.update(
                     refreshed_user
                 )
+
+        if fast_mode:
+
+            last_claim = user.get(
+                "last_daily_claim"
+            )
+
+            available = True
+            seconds_left = 0
+            next_claim = None
+
+            if last_claim:
+
+                next_claim = (
+                    last_claim
+                    +
+                    timedelta(
+                        hours=24
+                    )
+                )
+
+                now = datetime.now(
+                    timezone.utc
+                )
+
+                if now < next_claim:
+
+                    available = False
+
+                    seconds_left = int(
+                        (
+                            next_claim
+                            -
+                            now
+                        ).total_seconds()
+                    )
+
+            return jsonify({
+
+                "success":
+                    True,
+
+                "fast":
+                    True,
+
+                "user": {
+
+                    "telegram_id":
+                        telegram_id,
+
+                    "first_name":
+                        user["first_name"],
+
+                    "username":
+                        user["username"]
+                },
+
+                "balance":
+                    int(
+                        user["balance"]
+                    ),
+
+                **xp_info(
+                    user["xp"]
+                ),
+
+                "daily_reward": {
+
+                    "amount":
+                        300,
+
+                    "available":
+                        available,
+
+                    "seconds_left":
+                        max(
+                            0,
+                            seconds_left
+                        ),
+
+                    "next_claim":
+                        (
+                            next_claim.isoformat()
+                            if next_claim
+                            else
+                            None
+                        )
+                }
+            })
+
 
         last_claim = user.get(
             "last_daily_claim"

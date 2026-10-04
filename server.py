@@ -12310,6 +12310,14 @@ def api_match(
 )
 def api_session():
 
+    fast_mode = (
+        request.args.get(
+            "fast"
+        )
+        ==
+        "1"
+    )
+
     tg_user, error = require_telegram_user()
 
     if error:
@@ -12486,8 +12494,16 @@ def api_session():
                 ),
 
             "prediction_game":
-                get_prediction_game(
-                    telegram_id
+                (
+                    {
+                        "loading": True,
+                        "available": False
+                    }
+                    if fast_mode
+                    else
+                    get_prediction_game(
+                        telegram_id
+                    )
                 ),
 
             "referral":
@@ -12506,8 +12522,16 @@ def api_session():
                 ),
 
             "score_game":
-                get_score_game(
-                    telegram_id
+                (
+                    {
+                        "loading": True,
+                        "available": False
+                    }
+                    if fast_mode
+                    else
+                    get_score_game(
+                        telegram_id
+                    )
                 )
         })
 

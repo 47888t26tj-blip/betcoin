@@ -5093,14 +5093,14 @@ def choose_prediction_match():
         ):
             continue
 
+        # Игра "Угадай исход" работает только
+        # с матчами, которые начинаются сегодня.
         if (
-            kickoff
-            >
-            now
-            +
-            timedelta(
-                days=PREDICTION_LOOKAHEAD_DAYS
-            )
+            kickoff.astimezone(
+                timezone.utc
+            ).date()
+            !=
+            prediction_game_date()
         ):
             continue
 
@@ -5167,18 +5167,38 @@ def ensure_prediction_round():
 
     if row:
 
+        saved_kickoff = row[6]
+
+        # Старые версии могли записать на сегодняшний
+        # игровой день матч из будущего. Такой раунд
+        # больше не считаем доступным.
+        if (
+            saved_kickoff
+            and
+            saved_kickoff.astimezone(
+                timezone.utc
+            ).date()
+            ==
+            today
+        ):
+
+            cur.close()
+            conn.close()
+
+            return {
+                "game_date": row[0],
+                "fixture_id": int(row[1]),
+                "match_name": row[2],
+                "home_team": row[3],
+                "away_team": row[4],
+                "league_name": row[5],
+                "kickoff_at": row[6]
+            }
+
         cur.close()
         conn.close()
 
-        return {
-            "game_date": row[0],
-            "fixture_id": int(row[1]),
-            "match_name": row[2],
-            "home_team": row[3],
-            "away_team": row[4],
-            "league_name": row[5],
-            "kickoff_at": row[6]
-        }
+        return None
 
     cur.close()
     conn.close()
@@ -5480,7 +5500,7 @@ def get_prediction_game(
 
         return {
             "available": False,
-            "message": "Пока нет подходящего матча",
+            "message": "Сегодня матчей нет — возвращайся завтра ⚽",
             "reward_coins": PREDICTION_REWARD_COINS,
             "reward_xp": PREDICTION_REWARD_XP
         }
@@ -5794,15 +5814,14 @@ def choose_score_game_match():
         ):
             continue
 
+        # Игра "Точный счёт" работает только
+        # с матчами, которые начинаются сегодня.
         if (
-            kickoff
-            >
-            now
-            +
-            timedelta(
-                days=
-                    SCORE_GAME_LOOKAHEAD_DAYS
-            )
+            kickoff.astimezone(
+                timezone.utc
+            ).date()
+            !=
+            score_game_date()
         ):
             continue
 
@@ -5924,34 +5943,53 @@ def ensure_score_game_round():
 
     if row:
 
+        saved_kickoff = row[6]
+
+        # Не показываем сохранённый раунд, если сам матч
+        # фактически проходит не сегодня.
+        if (
+            saved_kickoff
+            and
+            saved_kickoff.astimezone(
+                timezone.utc
+            ).date()
+            ==
+            today
+        ):
+
+            cur.close()
+            conn.close()
+
+            return {
+
+                "game_date":
+                    row[0],
+
+                "fixture_id":
+                    int(
+                        row[1]
+                    ),
+
+                "match_name":
+                    row[2],
+
+                "home_team":
+                    row[3],
+
+                "away_team":
+                    row[4],
+
+                "league_name":
+                    row[5],
+
+                "kickoff_at":
+                    row[6]
+            }
+
         cur.close()
         conn.close()
 
-        return {
-
-            "game_date":
-                row[0],
-
-            "fixture_id":
-                int(
-                    row[1]
-                ),
-
-            "match_name":
-                row[2],
-
-            "home_team":
-                row[3],
-
-            "away_team":
-                row[4],
-
-            "league_name":
-                row[5],
-
-            "kickoff_at":
-                row[6]
-        }
+        return None
 
     cur.close()
     conn.close()
@@ -6342,7 +6380,7 @@ def get_score_game(
                 False,
 
             "message":
-                "Пока нет подходящего матча",
+                "Сегодня матчей нет — возвращайся завтра ⚽",
 
             "exact_reward_coins":
                 SCORE_GAME_EXACT_COINS,

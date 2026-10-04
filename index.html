@@ -2032,6 +2032,164 @@ button{
     font-size:16px;
 }
 
+
+
+/* ===================================
+   🏆 LEADERS 2.0
+=================================== */
+
+.leaders-tabs{
+    display:flex;
+    gap:7px;
+    margin-bottom:12px;
+}
+
+.leaders-tab{
+    flex:1;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    border-radius:12px;
+    padding:10px 6px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.leaders-tab.active{
+    color:var(--text);
+    border-color:rgba(92,225,145,.42);
+    background:rgba(92,225,145,.08);
+}
+
+.leaders-me{
+    padding:14px;
+    margin-bottom:14px;
+    border:1px solid rgba(92,225,145,.35);
+    background:linear-gradient(
+        135deg,
+        rgba(92,225,145,.10),
+        rgba(92,225,145,.025)
+    );
+    border-radius:16px;
+}
+
+.leaders-me-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.leaders-me-rank{
+    font-size:22px;
+    font-weight:950;
+}
+
+.leaders-me-value{
+    margin-top:6px;
+    font-size:13px;
+    color:var(--muted);
+}
+
+.leaders-podium{
+    display:grid;
+    grid-template-columns:1fr 1.08fr 1fr;
+    gap:7px;
+    align-items:end;
+    margin:8px 0 16px;
+}
+
+.podium-card{
+    text-align:center;
+    border:1px solid var(--border);
+    background:var(--card);
+    border-radius:16px;
+    padding:12px 6px;
+    min-width:0;
+}
+
+.podium-card.first{
+    padding-top:18px;
+    padding-bottom:18px;
+    border-color:rgba(245,196,72,.45);
+}
+
+.podium-medal{
+    font-size:28px;
+    line-height:1;
+    margin-bottom:7px;
+}
+
+.podium-name{
+    font-weight:900;
+    font-size:13px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.podium-value{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:5px;
+}
+
+.leaders-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.leader-row{
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) auto;
+    align-items:center;
+    gap:9px;
+    padding:11px 12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:var(--card);
+}
+
+.leader-row.me{
+    border-color:rgba(92,225,145,.38);
+    background:rgba(92,225,145,.06);
+}
+
+.leader-position{
+    font-weight:950;
+    font-size:14px;
+    text-align:center;
+}
+
+.leader-name{
+    font-weight:850;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.leader-sub{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
+}
+
+.leader-value{
+    text-align:right;
+    font-size:13px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.leader-empty{
+    padding:24px 14px;
+    text-align:center;
+    color:var(--muted);
+}
+
+
 </style>
 
 </head>
@@ -2864,10 +3022,47 @@ LIVE
 
 <div
     class="title"
-    style="margin-bottom:12px"
+    style="margin-bottom:5px"
 >
 🏆 Лидеры
 </div>
+
+<div
+    class="muted"
+    style="margin-bottom:12px"
+>
+Соревнуйся с игроками BetCoin
+</div>
+
+<div class="leaders-tabs">
+
+<button
+    id="leadersTabXp"
+    class="leaders-tab active"
+    onclick="setLeaderboardMode('xp')"
+>
+⭐ XP
+</button>
+
+<button
+    id="leadersTabCoins"
+    class="leaders-tab"
+    onclick="setLeaderboardMode('coins')"
+>
+🪙 Монеты
+</button>
+
+<button
+    id="leadersTabExact"
+    class="leaders-tab"
+    onclick="setLeaderboardMode('exact')"
+>
+🎯 Точный счёт
+</button>
+
+</div>
+
+<div id="leaderboardMe"></div>
 
 <div id="leaderboard"></div>
 
@@ -3642,6 +3837,10 @@ let scoreHistoryFilter = "all";
 let loginStreak = {};
 
 let myRank = null;
+let leaderboardMode = "xp";
+let leaderboardPlayers = [];
+let leaderboardMe = null;
+
 
 
 const esc =
@@ -11662,13 +11861,384 @@ async function redeemPromo(){
    LEADERBOARD
 =================================== */
 
+function leaderboardMetric(
+    item
+){
+
+    if(
+        leaderboardMode
+        ===
+        "coins"
+    ){
+
+        return {
+            main:
+                `${Number(item.balance || 0).toLocaleString("ru-RU")} 🪙`,
+
+            sub:
+                `Уровень ${Number(item.level || 1)}`
+        };
+    }
+
+
+    if(
+        leaderboardMode
+        ===
+        "exact"
+    ){
+
+        return {
+            main:
+                `${Number(item.exact_wins || 0)} 🎯`,
+
+            sub:
+                `${Number(item.successful_predictions || 0)} успешных • ${Number(item.success_rate || 0)}%`
+        };
+    }
+
+
+    return {
+        main:
+            `${Number(item.xp || 0).toLocaleString("ru-RU")} XP`,
+
+        sub:
+            `${item.league?.icon || ""} ${esc(item.league?.name || "")} • Ур. ${Number(item.level || 1)}`
+    };
+}
+
+
+function leaderboardMedal(
+    rank
+){
+
+    if(rank === 1){
+        return "🥇";
+    }
+
+    if(rank === 2){
+        return "🥈";
+    }
+
+    if(rank === 3){
+        return "🥉";
+    }
+
+    return `#${rank}`;
+}
+
+
+function renderLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "leaderboard"
+        );
+
+    const meBox =
+        document.getElementById(
+            "leaderboardMe"
+        );
+
+
+    document
+    .getElementById(
+        "leadersTabXp"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "xp"
+    );
+
+    document
+    .getElementById(
+        "leadersTabCoins"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "coins"
+    );
+
+    document
+    .getElementById(
+        "leadersTabExact"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "exact"
+    );
+
+
+    if(meBox){
+
+        if(leaderboardMe){
+
+            const metric =
+                leaderboardMetric(
+                    leaderboardMe
+                );
+
+            meBox.innerHTML =
+                `
+                    <div class="leaders-me">
+
+                        <div class="leaders-me-top">
+
+                            <div>
+
+                                <div class="muted">
+                                    Твоё место
+                                </div>
+
+                                <div class="leaders-me-rank">
+                                    #${leaderboardMe.rank}
+                                </div>
+
+                            </div>
+
+                            <div
+                                style="
+                                    text-align:right;
+                                    font-weight:900
+                                "
+                            >
+                                ${metric.main}
+                            </div>
+
+                        </div>
+
+                        <div class="leaders-me-value">
+                            ${metric.sub}
+                        </div>
+
+                    </div>
+                `;
+
+        }else{
+
+            meBox.innerHTML =
+                "";
+        }
+    }
+
+
+    if(!box){
+        return;
+    }
+
+
+    if(
+        !leaderboardPlayers
+        ||
+        leaderboardPlayers.length
+        ===
+        0
+    ){
+
+        box.innerHTML =
+            `
+                <div class="leader-empty">
+                    Пока рейтинг пуст
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const podium =
+        leaderboardPlayers
+        .filter(
+            item =>
+                Number(item.rank) <= 3
+        );
+
+
+    const byRank =
+        rank =>
+            podium.find(
+                item =>
+                    Number(item.rank)
+                    ===
+                    rank
+            );
+
+
+    const podiumOrder = [
+        byRank(2),
+        byRank(1),
+        byRank(3)
+    ]
+    .filter(Boolean);
+
+
+    const podiumHtml =
+        podiumOrder.length
+        ?
+        `
+            <div class="leaders-podium">
+
+                ${podiumOrder
+                    .map(
+                        item => {
+
+                            const metric =
+                                leaderboardMetric(
+                                    item
+                                );
+
+                            const cls =
+                                Number(item.rank) === 1
+                                ?
+                                "podium-card first"
+                                :
+                                "podium-card";
+
+                            return `
+                                <div class="${cls}">
+
+                                    <div class="podium-medal">
+                                        ${leaderboardMedal(Number(item.rank))}
+                                    </div>
+
+                                    <div class="podium-name">
+                                        ${esc(item.first_name || "Игрок")}
+                                    </div>
+
+                                    <div class="podium-value">
+                                        ${metric.main}
+                                    </div>
+
+                                </div>
+                            `;
+                        }
+                    )
+                    .join("")
+                }
+
+            </div>
+        `
+        :
+        "";
+
+
+    const rest =
+        leaderboardPlayers
+        .filter(
+            item =>
+                Number(item.rank) > 3
+        );
+
+
+    const restHtml =
+        `
+            <div class="leaders-list">
+
+                ${rest
+                    .map(
+                        item => {
+
+                            const metric =
+                                leaderboardMetric(
+                                    item
+                                );
+
+                            return `
+                                <div
+                                    class="
+                                        leader-row
+                                        ${item.is_me ? "me" : ""}
+                                    "
+                                >
+
+                                    <div class="leader-position">
+                                        #${Number(item.rank)}
+                                    </div>
+
+                                    <div style="min-width:0">
+
+                                        <div class="leader-name">
+                                            ${esc(item.first_name || "Игрок")}
+                                            ${item.is_me ? " • Ты" : ""}
+                                        </div>
+
+                                        <div class="leader-sub">
+                                            ${metric.sub}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="leader-value">
+                                        ${metric.main}
+                                    </div>
+
+                                </div>
+                            `;
+                        }
+                    )
+                    .join("")
+                }
+
+            </div>
+        `;
+
+
+    box.innerHTML =
+        podiumHtml
+        +
+        restHtml;
+}
+
+
+async function setLeaderboardMode(
+    mode
+){
+
+    leaderboardMode =
+        [
+            "xp",
+            "coins",
+            "exact"
+        ].includes(
+            mode
+        )
+        ?
+        mode
+        :
+        "xp";
+
+    renderLeaderboard();
+
+    await loadLeaderboard();
+}
+
+
 async function loadLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "leaderboard"
+        );
 
     try{
 
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="loader">
+                        Загружаем рейтинг...
+                    </div>
+                `;
+        }
+
+
         const data =
             await post(
-                "/api/leaderboard"
+                "/api/leaderboard",
+                {
+                    mode:
+                        leaderboardMode
+                }
             );
 
 
@@ -11676,53 +12246,19 @@ async function loadLeaderboard(){
             data.my_rank;
 
 
-        document
-        .getElementById(
-            "leaderboard"
-        )
-        .innerHTML =
-            (
-                data.players
-                ||
-                []
-            )
-            .map(
-                item =>
-                    `
-                        <div class="card">
+        leaderboardPlayers =
+            data.players
+            ||
+            [];
 
-                            <b>
-                                #${item.rank}
-                                ${esc(item.first_name)}
-                            </b>
 
-                            <div class="muted">
+        leaderboardMe =
+            data.me
+            ||
+            null;
 
-                                ${item.league?.icon || ""}
 
-                                ${esc(
-                                    item.league?.name
-                                    ||
-                                    ""
-                                )}
-
-                                •
-
-                                Уровень ${item.level}
-
-                            </div>
-
-                            <div>
-                                ${item.xp} XP
-                                •
-                                ${item.balance} 🪙
-                            </div>
-
-                        </div>
-                    `
-            )
-            .join("");
-
+        renderLeaderboard();
 
         renderProfile();
 
@@ -11730,8 +12266,19 @@ async function loadLeaderboard(){
     }catch(error){
 
         console.error(
+            "Leaderboard:",
             error
         );
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="leader-empty">
+                        Не удалось загрузить рейтинг
+                    </div>
+                `;
+        }
     }
 }
 

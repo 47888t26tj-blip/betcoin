@@ -2799,6 +2799,45 @@ body.parlay-mini-collapsed #page-match{
     }
 }
 
+
+
+/* ===================================
+   🏆 LEADERBOARD 2.0
+=================================== */
+
+.leaders-tabs{
+    grid-template-columns:repeat(3,1fr);
+}
+
+#leaderboardMe .leader-me-card,
+.leader-me-card{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    align-items:center;
+    gap:14px;
+    padding:14px;
+    margin:12px 0;
+    border-radius:18px;
+    border:1px solid rgba(92,225,145,.25);
+    background:linear-gradient(
+        135deg,
+        rgba(92,225,145,.10),
+        rgba(47,128,255,.06)
+    );
+}
+
+.leader-me-rank{
+    font-size:28px;
+    line-height:1;
+    font-weight:950;
+}
+
+@media (max-width:420px){
+    .leaders-tabs{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
 </style>
 
 </head>
@@ -3701,6 +3740,23 @@ LIVE
     onclick="setLeaderboardMode('weekly')"
 >
 📅 Неделя
+</button>
+
+
+<button
+    id="leadersTabMonthly"
+    class="leaders-tab"
+    onclick="setLeaderboardMode('monthly')"
+>
+🗓 Месяц
+</button>
+
+<button
+    id="leadersTabSeason"
+    class="leaders-tab"
+    onclick="setLeaderboardMode('season')"
+>
+🏆 Сезон
 </button>
 
 </div>
@@ -14682,6 +14738,38 @@ function leaderboardMetric(
     }
 
 
+    if(
+        leaderboardMode
+        ===
+        "monthly"
+    ){
+
+        return {
+            main:
+                `${Number(item.successful_predictions || 0)} ✅`,
+
+            sub:
+                `${Number(item.exact_wins || 0)} точных • ${Number(item.settled_predictions || 0)} за 30 дней`
+        };
+    }
+
+
+    if(
+        leaderboardMode
+        ===
+        "season"
+    ){
+
+        return {
+            main:
+                `${Number(item.successful_predictions || 0)} ✅`,
+
+            sub:
+                `${Number(item.exact_wins || 0)} точных • ${Number(item.settled_predictions || 0)} за сезон`
+        };
+    }
+
+
     return {
         main:
             `${Number(item.xp || 0).toLocaleString("ru-RU")} XP`,
@@ -14760,6 +14848,25 @@ function renderLeaderboard(){
     ?.classList.toggle(
         "active",
         leaderboardMode === "weekly"
+    );
+
+
+    document
+    .getElementById(
+        "leadersTabMonthly"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "monthly"
+    );
+
+    document
+    .getElementById(
+        "leadersTabSeason"
+    )
+    ?.classList.toggle(
+        "active",
+        leaderboardMode === "season"
     );
 
 
@@ -14993,7 +15100,9 @@ async function setLeaderboardMode(
             "xp",
             "coins",
             "exact",
-            "weekly"
+            "weekly",
+            "monthly",
+            "season"
         ].includes(
             mode
         )

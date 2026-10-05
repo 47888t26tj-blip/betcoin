@@ -15565,7 +15565,9 @@ def api_leaderboard():
         "xp",
         "coins",
         "exact",
-        "weekly"
+        "weekly",
+        "monthly",
+        "season"
     }:
         mode = "xp"
 
@@ -15578,7 +15580,153 @@ def api_leaderboard():
     conn = get_db()
     cur = conn.cursor()
 
-    if mode == "weekly":
+    if mode == "monthly":
+
+        cur.execute(
+            """
+            WITH period AS (
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= NOW() - INTERVAL '30 days'
+                            THEN 1
+                        END
+                    )::INTEGER AS period_predictions,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= NOW() - INTERVAL '30 days'
+                             AND (p.exact_win = TRUE OR p.outcome_win = TRUE)
+                            THEN 1
+                        END
+                    )::INTEGER AS period_success,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= NOW() - INTERVAL '30 days'
+                             AND p.exact_win = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER AS period_exact
+                FROM users u
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id = u.telegram_id
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+            positions AS (
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            period_success DESC,
+                            period_exact DESC,
+                            period_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+                FROM period
+            )
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                period_exact AS exact_wins,
+                period_success AS successful_predictions,
+                period_predictions AS settled_predictions,
+                rank
+            FROM positions
+            WHERE rank <= 50 OR telegram_id = %s
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    elif mode == "season":
+
+        cur.execute(
+            """
+            WITH period AS (
+                SELECT
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= DATE_TRUNC('month', NOW()) - INTERVAL '2 months'
+                            THEN 1
+                        END
+                    )::INTEGER AS period_predictions,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= DATE_TRUNC('month', NOW()) - INTERVAL '2 months'
+                             AND (p.exact_win = TRUE OR p.outcome_win = TRUE)
+                            THEN 1
+                        END
+                    )::INTEGER AS period_success,
+                    COUNT(
+                        CASE
+                            WHEN p.settled = TRUE
+                             AND p.created_at >= DATE_TRUNC('month', NOW()) - INTERVAL '2 months'
+                             AND p.exact_win = TRUE
+                            THEN 1
+                        END
+                    )::INTEGER AS period_exact
+                FROM users u
+                LEFT JOIN score_game_picks p
+                    ON p.telegram_id = u.telegram_id
+                GROUP BY
+                    u.telegram_id,
+                    u.first_name,
+                    u.balance,
+                    u.xp
+            ),
+            positions AS (
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            period_success DESC,
+                            period_exact DESC,
+                            period_predictions DESC,
+                            xp DESC,
+                            telegram_id ASC
+                    ) AS rank
+                FROM period
+            )
+            SELECT
+                telegram_id,
+                first_name,
+                balance,
+                xp,
+                period_exact AS exact_wins,
+                period_success AS successful_predictions,
+                period_predictions AS settled_predictions,
+                rank
+            FROM positions
+            WHERE rank <= 50 OR telegram_id = %s
+            ORDER BY rank ASC
+            """,
+            (
+                telegram_id,
+            )
+        )
+
+    elif mode == "weekly":
 
         cur.execute(
             """

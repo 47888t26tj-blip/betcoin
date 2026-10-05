@@ -4474,6 +4474,7 @@ let miniParlayCollapsed = false;
 let currentLeague = "top5";
 
 let matchSourceState = {};
+let leagueLoadingState = {};
 
 let dateFilter = "today";
 
@@ -6275,6 +6276,14 @@ async function loadLeague(
     }
 
 
+    leagueLoadingState[
+        key
+    ] =
+        true;
+
+    renderMatches();
+
+
     try{
 
         const url =
@@ -6400,10 +6409,22 @@ async function loadLeague(
             );
 
 
+        leagueLoadingState[
+            key
+        ] =
+            false;
+
+
         renderMatches();
 
 
     }catch(error){
+
+        leagueLoadingState[
+            key
+        ] =
+            false;
+
 
         if(
             currentLeague
@@ -6968,6 +6989,44 @@ function renderMatches(){
 
 
     if(!box){
+        return;
+    }
+
+
+    if(
+        list.length
+        ===
+        0
+        &&
+        leagueLoadingState[
+            currentLeague
+        ]
+    ){
+
+        box.innerHTML =
+            `
+                <div class="matches-empty">
+
+                    <div class="matches-empty-icon">
+                        ⏳
+                    </div>
+
+                    <b>
+                        Загружаем матчи...
+                    </b>
+
+                    <div
+                        class="muted"
+                        style="margin-top:6px"
+                    >
+                        Подожди несколько секунд
+                    </div>
+
+                </div>
+            `;
+
+        renderLive();
+
         return;
     }
 

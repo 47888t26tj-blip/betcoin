@@ -10841,6 +10841,131 @@ def get_profile_extra(
         )
     )
 
+    # Лучший выигрыш и коэффициент среди выигранных ординаров.
+    cur.execute(
+        """
+        SELECT
+            COALESCE(
+                MAX(odd),
+                0
+            ),
+            COALESCE(
+                MAX(possible),
+                0
+            )
+
+        FROM bets
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Выиграла'
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    single_best = (
+        cur.fetchone()
+        or
+        (
+            0,
+            0
+        )
+    )
+
+    # Лучший выигрыш и коэффициент среди выигранных экспрессов.
+    cur.execute(
+        """
+        SELECT
+            COALESCE(
+                MAX(total_odd),
+                0
+            ),
+            COALESCE(
+                MAX(possible),
+                0
+            )
+
+        FROM parlays
+
+        WHERE
+            telegram_id = %s
+            AND
+            status = 'Выиграла'
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    parlay_best = (
+        cur.fetchone()
+        or
+        (
+            0,
+            0
+        )
+    )
+
+    # Любимые команды пользователя.
+    cur.execute(
+        """
+        SELECT team_name
+
+        FROM favorite_teams
+
+        WHERE telegram_id = %s
+
+        ORDER BY created_at ASC
+
+        LIMIT 5
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    favorite_teams = [
+        item[0]
+        for item in cur.fetchall()
+    ]
+
+    # Сколько достижений уже выполнено.
+    cur.execute(
+        """
+        SELECT COUNT(*)::INTEGER
+
+        FROM achievement_claims
+
+        WHERE telegram_id = %s
+        """,
+        (
+            int(
+                telegram_id
+            ),
+        )
+    )
+
+    achievement_claims = int(
+        (
+            cur.fetchone()
+            or
+            (
+                0,
+            )
+        )[0]
+        or
+        0
+    )
+
     cur.close()
     conn.close()
 
@@ -10887,12 +11012,40 @@ def get_profile_extra(
         )
     )
 
+    best_odd = max(
+        float(
+            single_best[0]
+            or
+            0
+        ),
+        float(
+            parlay_best[0]
+            or
+            0
+        )
+    )
+
+    biggest_win = max(
+        int(
+            single_best[1]
+            or
+            0
+        ),
+        int(
+            parlay_best[1]
+            or
+            0
+        )
+    )
+
     if exact_wins >= 25:
         title = "Мастер прогнозов"
     elif exact_wins >= 10:
         title = "Эксперт"
     elif successful_predictions >= 10:
         title = "Аналитик"
+    elif biggest_win >= 5000:
+        title = "Охотник за коэффициентами"
     else:
         title = "Новичок"
 
@@ -10939,7 +11092,22 @@ def get_profile_extra(
                 league_count_row[0]
                 or
                 0
-            )
+            ),
+
+        "best_odd":
+            round(
+                best_odd,
+                2
+            ),
+
+        "biggest_win":
+            biggest_win,
+
+        "favorite_teams":
+            favorite_teams,
+
+        "achievement_claims":
+            achievement_claims
     }
 
 

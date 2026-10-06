@@ -4137,7 +4137,6 @@ def make_match_from_football_data(
 
     return match
 
-
 def load_football_data_fixtures(
     league_key
 ):
@@ -8260,7 +8259,6 @@ def get_score_game_history(
 
     return history
 
-
 def get_score_game_stats(telegram_id):
 
     conn = get_db()
@@ -8348,7 +8346,8 @@ def get_score_game_stats(telegram_id):
         else:
 
             running_streak = 1
-         best_streak = max(
+
+        best_streak = max(
             best_streak,
             running_streak
         )
@@ -12521,14 +12520,13 @@ def send_telegram_message(
     except Exception as error:
 
         print(
-            "Telegram send exception:",  
+            "Telegram send exception:",
             telegram_id,
             error,
             flush=True
         )
 
         return False
-
 
 def score_game_reminder_worker_once():
 

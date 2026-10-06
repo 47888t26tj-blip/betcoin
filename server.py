@@ -8348,8 +8348,7 @@ def get_score_game_stats(telegram_id):
         else:
 
             running_streak = 1
-
-        best_streak = max(
+         best_streak = max(
             best_streak,
             running_streak
         )
@@ -9212,45 +9211,7 @@ def get_predictor_league_leaderboard(
                         p.exact_win IS NOT TRUE
                         AND
                         p.outcome_win = TRUE
-                )::INTEGER AS outcome_wins,
-
-                COUNT(*) FILTER (
-                    WHERE
-                        p.settled = TRUE
-                        AND
-                        p.created_at >=
-                            NOW()
-                            -
-                            INTERVAL '7 days'
-                )::INTEGER AS weekly_settled,
-
-                COUNT(*) FILTER (
-                    WHERE
-                        p.settled = TRUE
-                        AND
-                        p.created_at >=
-                            NOW()
-                            -
-                            INTERVAL '7 days'
-                        AND
-                        p.exact_win = TRUE
-                )::INTEGER AS weekly_exact,
-
-                COUNT(*) FILTER (
-                    WHERE
-                        p.settled = TRUE
-                        AND
-                        p.created_at >=
-                            NOW()
-                            -
-                            INTERVAL '7 days'
-                        AND
-                        (
-                            p.exact_win = TRUE
-                            OR
-                            p.outcome_win = TRUE
-                        )
-                )::INTEGER AS weekly_successful
+                )::INTEGER AS outcome_wins
 
             FROM predictor_league_members lm
 
@@ -9315,23 +9276,7 @@ def get_predictor_league_leaderboard(
             outcome_wins,
             successful,
             success_rate,
-            best_streak,
-            weekly_settled,
-            weekly_exact,
-            weekly_successful,
-
-            CASE
-                WHEN weekly_settled > 0
-                THEN ROUND(
-                    weekly_successful
-                    *
-                    100.0
-                    /
-                    weekly_settled,
-                    1
-                )
-                ELSE 0
-            END AS weekly_success_rate
+            best_streak
 
         FROM metrics
 
@@ -9370,102 +9315,8 @@ def get_predictor_league_leaderboard(
             "outcome_wins": int(row[5] or 0),
             "successful": int(row[6] or 0),
             "success_rate": float(row[7] or 0),
-            "best_streak": int(row[8] or 0),
-            "weekly_settled": int(row[9] or 0),
-            "weekly_exact": int(row[10] or 0),
-            "weekly_successful": int(row[11] or 0),
-            "weekly_success_rate": float(row[12] or 0)
+            "best_streak": int(row[8] or 0)
         })
-
-    my_player = next(
-        (
-            player
-            for player in players
-            if int(
-                player["telegram_id"]
-            )
-            ==
-            int(
-                telegram_id
-            )
-        ),
-        None
-    )
-
-    weekly_sorted = sorted(
-        players,
-        key=
-            lambda player: (
-                -int(
-                    player.get(
-                        "weekly_successful",
-                        0
-                    )
-                    or
-                    0
-                ),
-                -int(
-                    player.get(
-                        "weekly_exact",
-                        0
-                    )
-                    or
-                    0
-                ),
-                -float(
-                    player.get(
-                        "weekly_success_rate",
-                        0
-                    )
-                    or
-                    0
-                ),
-                -int(
-                    player.get(
-                        "weekly_settled",
-                        0
-                    )
-                    or
-                    0
-                ),
-                int(
-                    player[
-                        "telegram_id"
-                    ]
-                )
-            )
-    )
-
-    weekly_leader = (
-        weekly_sorted[0]
-        if
-        weekly_sorted
-        and
-        int(
-            weekly_sorted[0].get(
-                "weekly_settled",
-                0
-            )
-            or
-            0
-        )
-        >
-        0
-        else
-        None
-    )
-
-    total_predictions = sum(
-        int(
-            player.get(
-                "total",
-                0
-            )
-            or
-            0
-        )
-        for player in players
-    )
 
     return {
         "league": {
@@ -9477,28 +9328,7 @@ def get_predictor_league_leaderboard(
                 int(league_row[3])
                 ==
                 int(telegram_id)
-            ),
-            "members_count": len(
-                players
-            ),
-            "total_predictions": int(
-                total_predictions
-            ),
-            "my_rank": (
-                int(
-                    my_player[
-                        "rank"
-                    ]
-                )
-                if my_player
-                else None
-            ),
-            "leader": (
-                players[0]
-                if players
-                else None
-            ),
-            "weekly_leader": weekly_leader
+            )
         },
         "players": players
     }
@@ -12691,7 +12521,7 @@ def send_telegram_message(
     except Exception as error:
 
         print(
-            "Telegram send exception:",
+            "Telegram send exception:",  
             telegram_id,
             error,
             flush=True

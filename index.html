@@ -2966,6 +2966,150 @@ body.parlay-mini-collapsed #page-match{
     }
 }
 
+
+/* ===================================
+   🧾 PARLAY HISTORY 2.0
+=================================== */
+
+.parlay-history-card{
+    padding:14px;
+    border-radius:18px;
+    background:var(--card);
+    border:1px solid var(--border);
+    margin-bottom:10px;
+}
+.parlay-history-card.win{border-color:rgba(37,192,109,.28)}
+.parlay-history-card.loss{border-color:rgba(255,82,82,.28)}
+.parlay-history-card.active{border-color:rgba(255,159,67,.24)}
+
+.parlay-history-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+}
+.parlay-history-title{font-size:16px;font-weight:950}
+.parlay-history-sub{margin-top:4px;color:var(--muted);font-size:10px}
+
+.parlay-history-summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+    margin-top:12px;
+}
+.parlay-history-summary > div{
+    min-width:0;
+    padding:9px 7px;
+    border-radius:12px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    text-align:center;
+}
+.parlay-history-summary span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:3px;
+}
+.parlay-history-summary b{
+    display:block;
+    font-size:13px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.parlay-history-legs{
+    display:grid;
+    gap:7px;
+    margin-top:11px;
+}
+.parlay-history-leg{
+    padding:11px;
+    border-radius:13px;
+    border:1px solid var(--border);
+    background:#10141c;
+}
+.parlay-history-leg.win{
+    border-color:rgba(37,192,109,.30);
+    background:rgba(37,192,109,.06);
+}
+.parlay-history-leg.loss{
+    border-color:rgba(255,82,82,.30);
+    background:rgba(255,82,82,.06);
+}
+.parlay-history-leg.pending{
+    border-color:rgba(255,159,67,.24);
+    background:rgba(255,159,67,.05);
+}
+.parlay-history-leg-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px;
+}
+.parlay-history-leg-match{
+    min-width:0;
+    font-size:13px;
+    font-weight:900;
+    line-height:1.3;
+}
+.parlay-history-leg-status{
+    flex:0 0 auto;
+    padding:4px 7px;
+    border-radius:999px;
+    font-size:9px;
+    font-weight:950;
+    white-space:nowrap;
+}
+.parlay-history-leg-status.win{
+    color:var(--green);
+    background:rgba(37,192,109,.13);
+}
+.parlay-history-leg-status.loss{
+    color:var(--red);
+    background:rgba(255,82,82,.13);
+}
+.parlay-history-leg-status.pending{
+    color:var(--orange);
+    background:rgba(255,159,67,.13);
+}
+.parlay-history-leg-meta{
+    margin-top:6px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    color:var(--muted);
+    font-size:10px;
+}
+.parlay-history-score{color:#fff;font-weight:900}
+
+.parlay-history-result{
+    margin-top:10px;
+    padding:9px 10px;
+    border-radius:12px;
+    font-size:11px;
+    font-weight:850;
+}
+.parlay-history-result.win{
+    background:rgba(37,192,109,.09);
+    color:var(--green);
+}
+.parlay-history-result.loss{
+    background:rgba(255,82,82,.09);
+    color:#ff7b7b;
+}
+.parlay-history-result.active{
+    background:rgba(255,159,67,.08);
+    color:var(--orange);
+}
+
+@media (max-width:420px){
+    .parlay-history-summary{grid-template-columns:1fr 1fr}
+    .parlay-history-summary > div:last-child{grid-column:1 / -1}
+}
+
 </style>
 
 </head>
@@ -3895,7 +4039,6 @@ LIVE
 
 </section>
 
-
 <!-- ===================================
      👤 PROFILE
 =================================== -->
@@ -3997,6 +4140,7 @@ LIVE
 <b id="profileBestOdd">—</b>
 <span class="muted">лучший кэф</span>
 </div>
+
 <div class="profile-extra-card">
 <b id="profileBiggestWin">0</b>
 <span class="muted">лучший выигрыш</span>
@@ -8149,7 +8293,6 @@ async function openMatch(
     }
 }
 
-
 /* ===================================
    SINGLE BET
 =================================== */
@@ -9147,13 +9290,80 @@ function switchBets(
 }
 
 
+function parlayLegView(
+    parlayStatus,
+    leg
+){
+    const raw = String(leg?.status || "");
+    let text = raw || "Активна";
+
+    if(
+        parlayStatus === "Проиграла"
+        &&
+        (!raw || raw === "Активна")
+    ){
+        text = "Ожидает результата";
+    }
+
+    let state = "pending";
+    let icon = "⏳";
+
+    if(text === "Выиграла"){
+        state = "win";
+        icon = "✅";
+    }else if(text === "Проиграла"){
+        state = "loss";
+        icon = "❌";
+    }
+
+    return {text,state,icon};
+}
+
+
+function parlayLegScore(
+    leg
+){
+    if(leg?.score){
+        return String(leg.score);
+    }
+
+    if(
+        leg?.home_score != null
+        &&
+        leg?.away_score != null
+    ){
+        return `${leg.home_score}:${leg.away_score}`;
+    }
+
+    return "";
+}
+
+
+function parlayStatusView(
+    item
+){
+    if(item?.status === "Выиграла"){
+        return {state:"win",icon:"✅",text:"Выиграла"};
+    }
+
+    if(item?.status === "Проиграла"){
+        return {state:"loss",icon:"❌",text:"Проиграла"};
+    }
+
+    return {
+        state:"active",
+        icon:"⏳",
+        text:item?.status || "Активна"
+    };
+}
+
+
 function renderBets(){
 
     const singles =
         bets.filter(
             passFilter
         );
-
 
     const express =
         parlays.filter(
@@ -9167,24 +9377,18 @@ function renderBets(){
     )
     .innerHTML =
         singles.length
-
         ?
-
         singles
         .map(
             item =>
                 `
                     <div class="card">
 
-                        <span
-                            class="status ${stClass(item.status)}"
-                        >
+                        <span class="status ${stClass(item.status)}">
                             ${esc(item.status)}
                         </span>
 
-                        <h3>
-                            ${esc(item.match)}
-                        </h3>
+                        <h3>${esc(item.match)}</h3>
 
                         <div>
                             ${esc(item.selection)}
@@ -9197,8 +9401,7 @@ function renderBets(){
                             ?
                             `
                                 <div class="muted">
-                                    Счёт:
-                                    ${esc(item.score)}
+                                    Счёт: ${esc(item.score)}
                                 </div>
                             `
                             :
@@ -9219,9 +9422,7 @@ function renderBets(){
                 `
         )
         .join("")
-
         :
-
         `
             <div class="empty">
                 Нет ставок
@@ -9235,126 +9436,173 @@ function renderBets(){
     )
     .innerHTML =
         express.length
-
         ?
-
         express
         .map(
-            item =>
-                `
-                    <div class="card">
+            item => {
 
-                        <span
-                            class="status ${stClass(item.status)}"
-                        >
-                            ${esc(item.status)}
-                        </span>
+                const parlayView =
+                    parlayStatusView(
+                        item
+                    );
 
-                        <h3>
-                            🧾 Экспресс #${item.id}
-                        </h3>
+                const legs =
+                    item.legs
+                    ||
+                    [];
 
-                        <div class="bet-row">
-                            <span>Кэф</span>
-                            <b>${Number(item.total_odd).toFixed(2)}</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Ставка</span>
-                            <b>${item.amount} 🪙</b>
-                        </div>
-
-                        <div class="bet-row">
-                            <span>Выигрыш</span>
-                            <b>${item.possible} 🪙</b>
-                        </div>
-
-                        ${
-                            (
-                                item.legs
-                                ||
-                                []
+                const settledLegs =
+                    legs.filter(
+                        leg =>
+                            [
+                                "Выиграла",
+                                "Проиграла"
+                            ].includes(
+                                leg?.status
                             )
-                            .map(
-                                (
-                                    leg,
-                                    index
-                                ) =>
-                                    `
-                                        <div class="card">
+                    ).length;
 
-                                            <b>
-                                                ${index + 1}.
-                                                ${esc(leg.match)}
-                                            </b>
+                const resultText =
+                    item.status === "Выиграла"
+                    ?
+                    `✅ Экспресс сыграл • +${Number(item.possible || 0)} 🪙`
+                    :
+                    (
+                        item.status === "Проиграла"
+                        ?
+                        "❌ Экспресс не сыграл"
+                        :
+                        `⏳ Рассчитано ${settledLegs} из ${legs.length} событий`
+                    );
 
-                                            <div class="muted">
-                                                ${esc(leg.selection)}
-                                                •
-                                                ${Number(leg.odd).toFixed(2)}
-                                            </div>
+                return `
+                    <div class="parlay-history-card ${parlayView.state}">
 
-                                            <span
-                                                class="status ${
-                                                    stClass(
-                                                        (
-                                                            item.status
-                                                            ===
-                                                            "Проиграла"
-                                                            &&
-                                                            (
-                                                                !leg.status
-                                                                ||
-                                                                leg.status
-                                                                ===
-                                                                "Активна"
-                                                            )
-                                                        )
+                        <div class="parlay-history-head">
+
+                            <div>
+                                <div class="parlay-history-title">
+                                    🧾 Экспресс #${item.id}
+                                </div>
+
+                                <div class="parlay-history-sub">
+                                    ${legs.length} событий
+                                </div>
+                            </div>
+
+                            <span class="status ${stClass(item.status)}">
+                                ${parlayView.icon}
+                                ${esc(parlayView.text)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="parlay-history-summary">
+
+                            <div>
+                                <span>Общий кэф</span>
+                                <b>x${Number(item.total_odd || 1).toFixed(2)}</b>
+                            </div>
+
+                            <div>
+                                <span>Ставка</span>
+                                <b>${Number(item.amount || 0)} 🪙</b>
+                            </div>
+
+                            <div>
+                                <span>
+                                    ${
+                                        item.status === "Выиграла"
+                                        ?
+                                        "Выигрыш"
+                                        :
+                                        "Возможный выигрыш"
+                                    }
+                                </span>
+                                <b>${Number(item.possible || 0)} 🪙</b>
+                            </div>
+
+                        </div>
+
+
+                        <div class="parlay-history-legs">
+
+                            ${legs
+                                .map(
+                                    (
+                                        leg,
+                                        index
+                                    ) => {
+
+                                        const view =
+                                            parlayLegView(
+                                                item.status,
+                                                leg
+                                            );
+
+                                        const score =
+                                            parlayLegScore(
+                                                leg
+                                            );
+
+                                        return `
+                                            <div class="parlay-history-leg ${view.state}">
+
+                                                <div class="parlay-history-leg-top">
+
+                                                    <div class="parlay-history-leg-match">
+                                                        ${index + 1}. ${esc(leg.match)}
+                                                    </div>
+
+                                                    <span class="parlay-history-leg-status ${view.state}">
+                                                        ${view.icon} ${esc(view.text)}
+                                                    </span>
+
+                                                </div>
+
+                                                <div class="parlay-history-leg-meta">
+
+                                                    <span>
+                                                        ${esc(leg.selection)}
+                                                        •
+                                                        x${Number(leg.odd || 1).toFixed(2)}
+                                                    </span>
+
+                                                    ${
+                                                        score
                                                         ?
-                                                        "Ожидает результата"
+                                                        `
+                                                            <span class="parlay-history-score">
+                                                                ${esc(score)}
+                                                            </span>
+                                                        `
                                                         :
-                                                        leg.status
-                                                    )
-                                                }"
-                                            >
-                                                ${esc(
-                                                    (
-                                                        item.status
-                                                        ===
-                                                        "Проиграла"
-                                                        &&
-                                                        (
-                                                            !leg.status
-                                                            ||
-                                                            leg.status
-                                                            ===
-                                                            "Активна"
-                                                        )
-                                                    )
-                                                    ?
-                                                    "Ожидает результата"
-                                                    :
-                                                    (
-                                                        leg.status
-                                                        ||
-                                                        "Активна"
-                                                    )
-                                                )}
-                                            </span>
+                                                        ""
+                                                    }
 
-                                        </div>
-                                    `
-                            )
-                            .join("")
-                        }
+                                                </div>
+
+                                            </div>
+                                        `;
+                                    }
+                                )
+                                .join("")
+                            }
+
+                        </div>
+
+
+                        <div class="parlay-history-result ${parlayView.state}">
+                            ${resultText}
+                        </div>
 
                     </div>
-                `
+                `;
+            }
         )
         .join("")
-
         :
-
         `
             <div class="empty">
                 Нет экспрессов
@@ -11997,7 +12245,8 @@ async function leavePredictorLeague(
         );
 
     }catch(error){
-           tg.showAlert(
+
+        tg.showAlert(
             error.message
         );
     }
@@ -12042,7 +12291,6 @@ function scoreHistoryDateText(
         }
     );
 }
-
 
 function renderScoreGameHistory(){
 

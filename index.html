@@ -3399,6 +3399,350 @@ body.parlay-mini-collapsed #page-match{
     }
 }
 
+
+/* ===================================
+   🎨 BETCOIN DESIGN SYSTEM 1.0
+=================================== */
+
+:root{
+    --bg:#0a0d12;
+    --surface:#121721;
+    --surface-2:#181e2a;
+    --surface-3:#0f141c;
+    --border:#283142;
+    --border-soft:#202838;
+    --text:#f7f9fc;
+    --muted:#8d96a8;
+    --accent:#3b82f6;
+    --accent-soft:rgba(59,130,246,.14);
+    --green:#27c67a;
+    --green-soft:rgba(39,198,122,.12);
+    --red:#ff5f63;
+    --red-soft:rgba(255,95,99,.12);
+    --orange:#ff9d4d;
+    --orange-soft:rgba(255,157,77,.12);
+    --gold:#ffd166;
+    --radius-sm:12px;
+    --radius-md:15px;
+    --radius-lg:18px;
+    --radius-xl:22px;
+    --shadow-soft:0 10px 28px rgba(0,0,0,.20);
+    --shadow-card:0 8px 24px rgba(0,0,0,.16);
+}
+
+html,body{
+    background:
+        radial-gradient(circle at 50% -12%, rgba(59,130,246,.08), transparent 30%),
+        var(--bg);
+    color:var(--text);
+}
+
+body{
+    font-size:14px;
+    line-height:1.35;
+}
+
+.page{padding:14px}
+.topbar{margin-bottom:14px}
+
+.brand,.title{
+    font-size:24px;
+    letter-spacing:-.5px;
+}
+
+.balance{
+    background:var(--surface);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius-md);
+    padding:9px 12px;
+    box-shadow:var(--shadow-card);
+}
+
+.card,
+.match-card,
+.stat,
+.game-card,
+.profile-overview-card,
+.score-streak-card,
+.predictor-league-card,
+.predictor-league-box,
+.private-league-summary-card,
+.form-team,
+.standing-team,
+.h2h-item,
+.stat-line{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card);
+}
+
+.muted{color:var(--muted)}
+
+.search,
+.input,
+.predictor-league-input,
+.score-input{
+    background:var(--surface-3);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:var(--radius-md);
+}
+
+.search:focus,
+.input:focus,
+.predictor-league-input:focus,
+.score-input:focus{
+    border-color:rgba(59,130,246,.72);
+    box-shadow:0 0 0 3px rgba(59,130,246,.10);
+}
+
+.chip{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    color:var(--muted);
+    border-radius:999px;
+    transition:.16s ease;
+}
+
+.chip.active{
+    background:var(--accent-soft);
+    border-color:rgba(59,130,246,.55);
+    color:#fff;
+}
+
+.btn{
+    min-height:46px;
+    border-radius:var(--radius-md);
+    background:linear-gradient(180deg,#438cff,#2f76eb);
+    box-shadow:0 7px 16px rgba(47,118,235,.18);
+    transition:transform .12s ease, opacity .12s ease;
+}
+
+.btn:active,
+.small-btn:active,
+.quick:active,
+.home-action:active{
+    transform:scale(.985);
+}
+
+.btn.secondary{
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    box-shadow:none;
+}
+
+.btn.danger{
+    background:var(--red-soft);
+    border:1px solid rgba(255,95,99,.25);
+    color:var(--red);
+    box-shadow:none;
+}
+
+.small-btn{
+    border-radius:var(--radius-sm);
+    background:linear-gradient(180deg,#438cff,#2f76eb);
+}
+
+.tabs{
+    background:var(--surface);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius-md);
+    padding:4px;
+}
+
+.tab{border-radius:var(--radius-sm)}
+
+.tab.active{
+    background:var(--surface-2);
+    color:#fff;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.status{border:1px solid transparent}
+
+.status.active{
+    color:var(--orange);
+    background:var(--orange-soft);
+    border-color:rgba(255,157,77,.20);
+}
+
+.status.win{
+    color:var(--green);
+    background:var(--green-soft);
+    border-color:rgba(39,198,122,.20);
+}
+
+.status.loss{
+    color:var(--red);
+    background:var(--red-soft);
+    border-color:rgba(255,95,99,.20);
+}
+
+.status.refund{
+    color:var(--muted);
+    background:rgba(141,150,168,.10);
+    border-color:rgba(141,150,168,.15);
+}
+
+.odd,
+.prediction-btn{
+    background:var(--surface-2);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-sm);
+    transition:.15s ease;
+}
+
+.odd.selected,
+.prediction-btn.selected{
+    background:var(--accent-soft);
+    border-color:rgba(59,130,246,.62);
+    box-shadow:0 0 0 2px rgba(59,130,246,.06);
+}
+
+.quick,
+.home-action{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-card);
+}
+
+.home-hero,
+.dashboard,
+.match-day-card{
+    border-color:rgba(59,130,246,.28);
+    box-shadow:var(--shadow-soft);
+}
+
+.home-snapshot-card,
+.home-bet-card,
+.reward-alert{
+    border-color:var(--border-soft);
+    box-shadow:var(--shadow-card);
+}
+
+.match-day-card{
+    background:
+        radial-gradient(circle at 92% 0%, rgba(59,130,246,.16), transparent 45%),
+        var(--surface);
+}
+
+.match-day-stat{
+    background:rgba(255,255,255,.025);
+    border-color:rgba(255,255,255,.05);
+}
+
+.star{
+    background:var(--surface-2);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-sm);
+}
+
+.score-game-tabs,
+.private-league-tabs{
+    background:var(--surface-3);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-md);
+}
+
+.score-game-tab,
+.private-league-tabs button{
+    border-radius:var(--radius-sm);
+}
+
+.score-game-tab.active,
+.private-league-tabs button.active{
+    background:var(--surface-2);
+    border-color:rgba(59,130,246,.25);
+}
+
+.score-history-card,
+.score-predictor-row,
+.parlay-history-leg{
+    background:var(--surface-3);
+    border-color:var(--border-soft);
+}
+
+.score-history-score{background:var(--surface-2)}
+
+.parlay-history-card{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    box-shadow:var(--shadow-card);
+}
+
+.parlay-history-summary > div{
+    background:var(--surface-2);
+    border-color:var(--border-soft);
+}
+
+.private-league-hero,
+.profile-hero,
+.leader-me-card,
+.match-center-hero{
+    border-radius:var(--radius-xl);
+    box-shadow:var(--shadow-soft);
+}
+
+.mini{
+    background:rgba(18,23,33,.97);
+    border-color:rgba(59,130,246,.50);
+    border-radius:var(--radius-lg);
+    box-shadow:0 14px 38px rgba(0,0,0,.42);
+    backdrop-filter:blur(14px);
+}
+
+.modal{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    border-radius:24px 24px 0 0;
+}
+
+.overlay{
+    background:rgba(2,4,8,.74);
+    backdrop-filter:blur(3px);
+}
+
+.nav{
+    background:rgba(14,18,25,.96);
+    border-top:1px solid var(--border-soft);
+    backdrop-filter:blur(14px);
+    box-shadow:0 -8px 28px rgba(0,0,0,.18);
+}
+
+.nav button{
+    color:var(--muted);
+    transition:.14s ease;
+}
+
+.nav button.active{color:#fff}
+
+.nav button.active::before{
+    content:"";
+    display:block;
+    width:24px;
+    height:3px;
+    margin:0 auto 5px;
+    border-radius:999px;
+    background:var(--accent);
+}
+
+.empty,
+.loader,
+.home-empty-compact{
+    background:var(--surface);
+    border-color:var(--border-soft);
+    border-radius:var(--radius-lg);
+}
+
+@media (max-width:420px){
+    .page{padding:12px}
+    .brand,.title{font-size:22px}
+    .card,.match-card{border-radius:16px}
+    .nav{min-height:68px}
+}
+
 </style>
 
 </head>
@@ -3949,7 +4293,6 @@ LIVE
 
 </section>
 
-
 <!-- ===================================
      MATCH DETAIL
 =================================== -->
@@ -4325,4072 +4668,6 @@ LIVE
 
 </section>
 
-<!-- ===================================
-     🏆 LEADERBOARD
-=================================== -->
-
-<section
-    id="page-leaderboard"
-    class="page"
->
-
-<div
-    class="title"
-    style="margin-bottom:5px"
->
-🏆 Лидеры
-</div>
-
-<div
-    class="muted"
-    style="margin-bottom:12px"
->
-Соревнуйся с игроками BetCoin
-</div>
-
-<div class="leaders-tabs">
-
-<button
-    id="leadersTabXp"
-    class="leaders-tab active"
-    onclick="setLeaderboardMode('xp')"
->
-⭐ XP
-</button>
-
-<button
-    id="leadersTabCoins"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('coins')"
->
-🪙 Монеты
-</button>
-
-<button
-    id="leadersTabExact"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('exact')"
->
-🎯 Точный счёт
-</button>
-
-
-<button
-    id="leadersTabWeekly"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('weekly')"
->
-📅 Неделя
-</button>
-
-
-<button
-    id="leadersTabMonthly"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('monthly')"
->
-🗓 Месяц
-</button>
-
-<button
-    id="leadersTabSeason"
-    class="leaders-tab"
-    onclick="setLeaderboardMode('season')"
->
-🏆 Сезон
-</button>
-
-</div>
-
-<div id="leaderboardMe"></div>
-
-<div id="leaderboard"></div>
-
-</section>
-
-
-<!-- ===================================
-     👤 PROFILE
-=================================== -->
-
-<section
-    id="page-profile"
-    class="page"
->
-
-<div class="topbar">
-
-<div class="title">
-👤 Профиль
-</div>
-
-<div class="balance">
-🪙
-<span data-balance>
-0
-</span>
-</div>
-
-</div>
-
-
-<div class="profile-hero">
-
-<div
-    id="profileName"
-    style="
-        font-size:21px;
-        font-weight:900
-    "
->
-Игрок
-</div>
-
-<div
-    id="profileLeague"
-    class="muted"
-></div>
-
-<div
-    class="row"
-    style="margin-top:12px"
->
-
-<span id="profileLevel"></span>
-
-<span id="profileXp"></span>
-
-</div>
-
-<div class="xp-bar">
-
-<div
-    id="profileXpFill"
-    class="xp-fill"
-></div>
-
-</div>
-
-<div
-    id="profileRank"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-<div
-    id="profileTitleBadge"
-    class="profile-title-badge"
->
-🏅 Новичок
-</div>
-
-<div class="profile-extra-grid">
-
-<div class="profile-extra-card">
-<b id="profilePredSuccess">0%</b>
-<span class="muted">успешность</span>
-</div>
-
-<div class="profile-extra-card">
-<b id="profileExactWins">0</b>
-<span class="muted">точных счетов</span>
-</div>
-
-<div class="profile-extra-card">
-<b id="profileBestStreak">0</b>
-<span class="muted">лучший стрик</span>
-</div>
-
-<div class="profile-extra-card">
-<b id="profilePrivateLeagues">0</b>
-<span class="muted">приватных лиг</span>
-</div>
-
-<div class="profile-extra-card">
-<b id="profileBestOdd">—</b>
-<span class="muted">лучший кэф</span>
-</div>
-
-<div class="profile-extra-card">
-<b id="profileBiggestWin">0</b>
-<span class="muted">лучший выигрыш</span>
-</div>
-
-</div>
-
-<div
-    id="profileFavoriteTeams"
-    class="profile-favorite-teams"
-></div>
-
-</div>
-
-
-<div class="streak-card">
-
-<div class="streak-head">
-
-<div>
-
-<div class="streak-title">
-🔥 Серия входов
-</div>
-
-<div class="muted">
-Заходи каждый день и забирай награды
-</div>
-
-</div>
-
-<div
-    id="streakCount"
-    class="streak-count"
->
-День 1
-</div>
-
-</div>
-
-
-<div
-    id="streakDays"
-    class="streak-days"
-></div>
-
-
-<div
-    id="streakReward"
-    class="streak-reward"
-></div>
-
-
-<button
-    id="streakBtn"
-    class="btn"
-    onclick="claimLoginStreak()"
->
-Забрать награду
-</button>
-
-
-<div
-    id="streakMessage"
-    class="streak-message"
-></div>
-
-</div>
-
-
-<div class="card">
-
-<b>
-🎁 Ежедневный бонус
-</b>
-
-<div class="muted">
-+300 монет каждые 24 часа
-</div>
-
-<button
-    id="dailyBtn"
-    class="btn"
-    onclick="claimDaily()"
->
-Получить +300
-</button>
-
-<div
-    id="dailyInfo"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-</div>
-
-
-<div class="card">
-
-<b>
-🎟 Промокод
-</b>
-
-<div
-    class="muted"
-    style="margin:5px 0 10px"
->
-Введи код и получи виртуальные монеты или XP
-</div>
-
-<input
-    id="promoInput"
-    class="input"
-    maxlength="32"
-    placeholder="Например START500"
-    style="text-transform:uppercase"
->
-
-<button
-    id="promoBtn"
-    class="btn"
-    onclick="redeemPromo()"
->
-Активировать
-</button>
-
-<div
-    id="promoResult"
-    class="muted"
-    style="margin-top:8px"
-></div>
-
-</div>
-
-
-
-<div class="card">
-
-<div
-    class="row"
-    style="
-        align-items:flex-start;
-        gap:12px
-    "
->
-
-<div>
-
-<b>
-👥 Пригласи друга
-</b>
-
-<div
-    id="referralRewardText"
-    class="muted"
-    style="margin-top:5px"
->
-Приглашай друзей и получай монеты
-</div>
-
-</div>
-
-<div
-    id="referralCount"
-    style="
-        font-weight:900;
-        white-space:nowrap
-    "
->
-0 друзей
-</div>
-
-</div>
-
-<input
-    id="referralLink"
-    class="input"
-    readonly
-    placeholder="Реферальная ссылка"
-    style="
-        margin-top:12px;
-        font-size:13px
-    "
->
-
-<div
-    class="row"
-    style="
-        margin-top:8px;
-        gap:8px
-    "
->
-
-<button
-    class="small-btn"
-    style="flex:1"
-    onclick="copyReferralLink()"
->
-📋 Скопировать
-</button>
-
-<button
-    class="small-btn"
-    style="flex:1"
-    onclick="shareReferralLink()"
->
-↗️ Поделиться
-</button>
-
-</div>
-
-<div
-    class="muted"
-    style="
-        margin-top:9px;
-        font-size:12px
-    "
->
-Награда начисляется, когда новый игрок впервые открывает BetCoin.
-</div>
-
-</div>
-
-
-
-<div class="card">
-
-<b>
-🔔 Уведомления
-</b>
-
-<div class="muted" style="margin-top:4px">
-Выбери, какие сообщения присылать в Telegram
-</div>
-
-<div class="notify-row">
-<div>
-<b>⭐ Матч дня</b>
-<div class="muted">Напоминание перед матчем</div>
-</div>
-<label class="switch">
-<input id="notifyMatchDay" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
-
-<div class="notify-row">
-<div>
-<b>⭐ Избранные матчи</b>
-<div class="muted">Напоминания по избранному</div>
-</div>
-<label class="switch">
-<input id="notifyFavorite" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
-
-<div class="notify-row">
-<div>
-<b>🎟 Результаты ставок</b>
-<div class="muted">Итог ординаров и экспрессов</div>
-</div>
-<label class="switch">
-<input id="notifyBets" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
-
-<div class="notify-row">
-<div>
-<b>🎯 Результаты прогнозов</b>
-<div class="muted">Точный счёт и угадай исход</div>
-</div>
-<label class="switch">
-<input id="notifyPredictions" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
-
-<div class="notify-row">
-<div>
-<b>👥 Рефералы</b>
-<div class="muted">Когда приходит новый друг</div>
-</div>
-<label class="switch">
-<input id="notifyReferral" type="checkbox" onchange="saveNotificationSettings()">
-<span></span>
-</label>
-</div>
-
-</div>
-
-
-<div class="profile-overview-card">
-
-<div class="profile-overview-title">
-📌 Карточка игрока
-</div>
-
-<div class="profile-overview-grid">
-
-<div>
-<span>🎟 Всего ставок</span>
-<b id="profileTotalActions">0</b>
-</div>
-
-<div>
-<span>🏆 Побед</span>
-<b id="profileTotalWins">0</b>
-</div>
-
-<div>
-<span>🎯 Прогнозов</span>
-<b id="profileTotalPredictions">0</b>
-</div>
-
-<div>
-<span>🏅 Достижений</span>
-<b id="profileAchievementCount">0</b>
-</div>
-
-</div>
-
-</div>
-
-
-<h3>
-📊 Статистика
-</h3>
-
-<div
-    id="stats"
-    class="stat-grid"
-></div>
-
-
-<h3>
-✅ Задания
-</h3>
-
-<div id="tasks"></div>
-
-
-<h3>
-🏅 Достижения
-</h3>
-
-<div id="achievements"></div>
-
-</section>
-
-</div>
-
-
-<!-- ===================================
-     MINI PARLAY
-=================================== -->
-
-<div
-    id="miniParlay"
-    class="mini"
->
-
-<div class="mini-top">
-
-<button
-    class="mini-summary"
-    type="button"
-    onclick="openParlay()"
->
-
-<div>
-
-<b>
-🧾 Экспресс
-</b>
-
-<div
-    id="miniMeta"
-    class="muted"
->
-0 событий
-</div>
-
-</div>
-
-<b id="miniOdd">
-x1.00
-</b>
-
-</button>
-
-<button
-    id="miniCollapseBtn"
-    class="mini-collapse"
-    type="button"
-    aria-label="Свернуть экспресс"
-    onclick="toggleMiniParlay()"
->
-⌄
-</button>
-
-</div>
-
-
-<div class="mini-bottom">
-
-<input
-    id="miniStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
-
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(this.value)
-                    ||
-                    0
-                )
-            );
-
-        document.getElementById(
-            'parlayStake'
-        ).value=
-            this.value;
-
-        updateParlay()
-    "
->
-
-
-<div class="muted">
-
-Выигрыш
-<br>
-
-<b id="miniWin">
-—
-</b>
-
-</div>
-
-
-<button
-    class="small-btn"
-    onclick="openParlay()"
->
-Открыть
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ===================================
-     NAV
-=================================== -->
-
-<nav class="nav">
-
-<button
-    id="nav-home"
-    class="active"
-    onclick="showPage('home')"
->
-<span>🏠</span>
-<small>Главная</small>
-</button>
-
-<button
-    id="nav-matches"
-    onclick="showPage('matches')"
->
-<span>⚽</span>
-<small>Матчи</small>
-</button>
-
-<button
-    id="nav-bets"
-    onclick="showPage('bets')"
->
-<span>🎟</span>
-<small>Ставки</small>
-</button>
-
-<button
-    id="nav-games"
-    onclick="showPage('games')"
->
-<span>🎮</span>
-<small>Игры</small>
-</button>
-
-<button
-    id="nav-leaderboard"
-    onclick="showPage('leaderboard')"
->
-<span>🏆</span>
-<small>Лидеры</small>
-</button>
-
-<button
-    id="nav-profile"
-    onclick="showPage('profile')"
->
-<span>👤</span>
-<small>Профиль</small>
-</button>
-
-</nav>
-
-
-<!-- ===================================
-     BET CHOICE
-=================================== -->
-
-<div
-    id="choiceOverlay"
-    class="overlay"
->
-
-<div class="modal">
-
-<h2>
-Выбери тип ставки
-</h2>
-
-<div
-    id="choiceInfo"
-    class="card"
-></div>
-
-<button
-    class="btn"
-    onclick="openSingle()"
->
-Ординар
-</button>
-
-<button
-    id="parlayChoiceBtn"
-    class="btn secondary"
-    onclick="toggleParlayChoice()"
->
-+ Экспресс
-</button>
-
-<button
-    class="btn danger"
-    onclick="closeOverlay('choiceOverlay')"
->
-Закрыть
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ===================================
-     SINGLE
-=================================== -->
-
-<div
-    id="singleOverlay"
-    class="overlay"
->
-
-<div class="modal">
-
-<h2>
-Ординар
-</h2>
-
-<div
-    id="singleInfo"
-    class="card"
-></div>
-
-<input
-    id="singleStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
-    oninput="updateSingleWin()"
->
-
-<div
-    id="singleWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-<button
-    id="singleBtn"
-    class="btn"
-    onclick="confirmSingle()"
->
-Поставить
-</button>
-
-<button
-    class="btn danger"
-    onclick="closeOverlay('singleOverlay')"
->
-Закрыть
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ===================================
-     PARLAY
-=================================== -->
-
-<div
-    id="parlayOverlay"
-    class="overlay"
->
-
-<div class="modal">
-
-<h2>
-🧾 Экспресс
-</h2>
-
-<div id="parlayList"></div>
-
-<div class="card">
-
-Событий:
-
-<b id="parlayCount">
-0
-</b>
-
-<br>
-
-Общий кэф:
-
-<b id="parlayOdd">
-1.00
-</b>
-
-</div>
-
-
-<input
-    id="parlayStake"
-    class="input"
-    type="number"
-    min="100"
-    placeholder="Минимум 100"
-
-    oninput="
-        parlayStake=
-            Math.max(
-                0,
-                Math.floor(
-                    Number(this.value)
-                    ||
-                    0
-                )
-            );
-
-        document.getElementById(
-            'miniStake'
-        ).value=
-            this.value;
-
-        updateParlay()
-    "
->
-
-
-<div
-    id="parlayWin"
-    class="muted"
-    style="margin-top:7px"
-></div>
-
-
-<button
-    id="parlayBtn"
-    class="btn"
-    onclick="confirmParlay()"
->
-Поставить экспресс
-</button>
-
-
-<button
-    class="btn danger"
-    onclick="clearParlay()"
->
-Очистить
-</button>
-
-</div>
-
-</div>
-
-
-<script>
-
-const SERVER_URL =
-    "https://betcoin-gu5c.onrender.com";
-
-
-const tg =
-    window.Telegram.WebApp;
-
-
-tg.ready();
-
-tg.expand();
-
-
-const initData =
-    tg.initData
-    ||
-    "";
-
-
-let balance = 0;
-
-let matches = [];
-
-let loaded = {};
-
-const MATCH_CACHE_TTL_MS =
-    10 * 60 * 1000;
-
-const MATCH_CACHE_STALE_MS =
-    6 * 60 * 60 * 1000;
-
-const MATCH_FETCH_TIMEOUT_MS =
-    20000;
-
-let bets = [];
-
-let parlays = [];
-
-let liveMap = {};
-
-
-let favoriteMatches =
-    JSON.parse(
-        localStorage.getItem(
-            "bcFavMatches"
-        )
-        ||
-        "[]"
-    );
-
-
-let favoriteTeams =
-    JSON.parse(
-        localStorage.getItem(
-            "bcFavTeams"
-        )
-        ||
-        "[]"
-    );
-
-
-let parlaySlip = [];
-
-let parlayStake = 0;
-let miniParlayCollapsed = false;
-
-let currentLeague = "top5";
-
-let matchSourceState = {};
-let leagueLoadingState = {};
-
-let dateFilter = "today";
-
-let searchQuery = "";
-
-let betFilter = "all";
-
-let betTab = "single";
-
-let selectedBet = null;
-
-let currentUser = null;
-let referralInfo = {};
-let notificationSettings = {};
-let profileExtra = {};
-let onboardingStep = 0;
-
-let xp = 0;
-
-let level = 1;
-
-let leagueInfo = {};
-
-let levelXp = 0;
-
-let stats = {};
-
-let tasks = [];
-
-let achievements = [];
-
-let daily = {};
-
-let wheel = {};
-
-let predictionGame = {};
-
-let scoreGame = {};
-
-let scoreGameHistory = [];
-
-let scoreGameStats = {};
-
-let scoreGameLeaderboard = [];
-
-let scoreGameLeaderboardMe = null;
-
-let scoreGameLeaderboardRank = null;
-
-let predictorLeagues = [];
-
-let predictorLeagueCurrent = null;
-
-let predictorLeaguePlayers = [];
-let predictorLeagueView = "overall";
-
-let scoreGameView = "play";
-
-let scoreHistoryFilter = "all";
-
-let loginStreak = {};
-
-let myRank = null;
-let leaderboardMode = "xp";
-let leaderboardPlayers = [];
-let leaderboardMe = null;
-
-
-
-const esc =
-    value =>
-        String(
-            value
-            ??
-            ""
-        )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-
-const js =
-    value =>
-        String(
-            value
-            ??
-            ""
-        )
-        .replaceAll(
-            "\\",
-            "\\\\"
-        )
-        .replaceAll(
-            "'",
-            "\\'"
-        )
-        .replaceAll(
-            "\n",
-            " "
-        );
-
-
-const tkey =
-    value =>
-        String(
-            value
-            ||
-            ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-async function post(
-    path,
-    body={}
-){
-
-    const response =
-        await fetch(
-            SERVER_URL
-            +
-            path,
-            {
-                method:
-                    "POST",
-
-                headers:{
-                    "Content-Type":
-                        "application/json",
-
-                    "X-Telegram-Init-Data":
-                        initData
-                },
-
-                body:
-                    JSON.stringify({
-                        ...body,
-                        initData
-                    })
-            }
-        );
-
-
-    const data =
-        await response.json();
-
-
-    if(
-        !response.ok
-        ||
-        data.success
-        ===
-        false
-    ){
-
-        throw new Error(
-            data.error
-            ||
-            "Ошибка сервера"
-        );
-    }
-
-
-    return data;
-}
-
-
-function setBalances(){
-
-    document
-    .querySelectorAll(
-        "[data-balance]"
-    )
-    .forEach(
-        element =>
-            element.textContent =
-                balance
-    );
-
-
-    document.getElementById(
-        "homeCoins"
-    ).textContent =
-        `${balance} 🪙`;
-}
-
-
-function closeOverlay(
-    id
-){
-
-    document
-    .getElementById(
-        id
-    )
-    ?.classList.remove(
-        "show"
-    );
-}
-
-
-function showPage(
-    name,
-    nav=true
-){
-
-    document
-    .querySelectorAll(
-        ".page"
-    )
-    .forEach(
-        page =>
-            page.classList.remove(
-                "active"
-            )
-    );
-
-
-    document
-    .getElementById(
-        "page-"
-        +
-        name
-    )
-    ?.classList.add(
-        "active"
-    );
-
-
-    if(nav){
-
-        document
-        .querySelectorAll(
-            ".nav button"
-        )
-        .forEach(
-            button =>
-                button
-                .classList
-                .remove(
-                    "active"
-                )
-        );
-
-
-        document
-        .getElementById(
-            "nav-"
-            +
-            name
-        )
-        ?.classList.add(
-            "active"
-        );
-    }
-
-
-    if(
-        name
-        ===
-        "leaderboard"
-    ){
-
-        loadLeaderboard();
-    }
-
-
-    if(
-        name
-        ===
-        "profile"
-        ||
-        name
-        ===
-        "bets"
-        ||
-        name
-        ===
-        "games"
-    ){
-
-        loadSession(
-            true
-        );
-    }
-
-
-    if(
-        name
-        ===
-        "profile"
-    ){
-
-        loadLeaderboard();
-    }
-
-
-    if(
-        name
-        ===
-        "games"
-    ){
-
-        loadGamesBackground();
-        loadScoreGameHistory();
-    }
-
-
-    window.scrollTo(
-        0,
-        0
-    );
-}
-
-
-function quick(
-    value
-){
-
-    showPage(
-        "matches"
-    );
-
-
-    if(
-        value
-        ===
-        "today"
-    ){
-
-        setDateFilter(
-            "today"
-        );
-
-        loadLeague(
-            "top5"
-        );
-
-    }else if(
-        value
-        ===
-        "myteams"
-    ){
-
-        setDateFilter(
-            "myteams"
-        );
-
-        loadLeague(
-            "top5"
-        );
-
-    }else{
-
-        setDateFilter(
-            "all"
-        );
-
-        loadLeague(
-            value
-        );
-    }
-}
-
-
-function logo(
-    url
-){
-
-    return url
-
-    ?
-
-    `
-        <div class="logo">
-
-            <img
-                src="${esc(url)}"
-
-                onerror="
-                    this.parentElement.innerHTML='⚽'
-                "
-            >
-
-        </div>
-    `
-
-    :
-
-    `
-        <div class="logo">
-            ⚽
-        </div>
-    `;
-}
-
-
-function parseDate(
-    value
-){
-
-    const date =
-        new Date(
-            value
-        );
-
-
-    return Number.isFinite(
-        date.getTime()
-    )
-
-    ?
-
-    date
-
-    :
-
-    null;
-}
-function isToday(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    const now =
-        new Date();
-
-
-    return (
-        !!date
-        &&
-        date.toDateString()
-        ===
-        now.toDateString()
-    );
-}
-
-
-function isTomorrow(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    const tomorrow =
-        new Date();
-
-
-    tomorrow.setDate(
-        tomorrow.getDate()
-        +
-        1
-    );
-
-
-    return (
-        !!date
-        &&
-        date.toDateString()
-        ===
-        tomorrow.toDateString()
-    );
-}
-
-
-function isFavTeam(
-    name
-){
-
-    return favoriteTeams.some(
-        team =>
-            tkey(
-                team
-            )
-            ===
-            tkey(
-                name
-            )
-    );
-}
-
-
-function hasFavTeam(
-    match
-){
-
-    return (
-        isFavTeam(
-            match.home
-        )
-        ||
-        isFavTeam(
-            match.away
-        )
-    );
-}
-
-
-function findMatch(
-    id
-){
-
-    id =
-        Number(
-            id
-        );
-
-
-    for(
-        const list
-        of
-        Object.values(
-            loaded
-        )
-    ){
-
-        for(
-            const match
-            of
-            list
-            ||
-            []
-        ){
-
-            if(
-                Number(
-                    match.fixture_id
-                )
-                ===
-                id
-            ){
-
-                return match;
-            }
-        }
-    }
-
-
-    return null;
-}
-
-
-function kickoff(
-    match
-){
-
-    const live =
-        liveMap[
-            Number(
-                match.fixture_id
-            )
-        ];
-
-
-    if(live){
-
-        const score =
-            (
-                live.home_score
-                !=
-                null
-                &&
-                live.away_score
-                !=
-                null
-            )
-
-            ?
-
-            `${live.home_score}:${live.away_score}`
-
-            :
-
-            "";
-
-
-        if(
-            live.finished
-        ){
-
-            return{
-                started:true,
-                text:
-                    score
-                    ?
-                    `FT • ${score}`
-                    :
-                    "FT",
-                c:"started"
-            };
-        }
-
-
-        if(
-            live.live
-        ){
-
-            return{
-                started:true,
-                text:
-                    score
-                    ?
-                    `● LIVE • ${score}`
-                    :
-                    "● LIVE",
-                c:"live"
-            };
-        }
-    }
-
-
-    const date =
-        parseDate(
-            match.date
-        );
-
-
-    if(!date){
-
-        return{
-            started:false,
-            text:"Время уточняется",
-            c:""
-        };
-    }
-
-
-    const ms =
-        date
-        -
-        Date.now();
-
-
-    if(
-        ms <= 0
-    ){
-
-        return{
-            started:true,
-            text:"● Начался",
-            c:"started"
-        };
-    }
-
-
-    const minutes =
-        Math.floor(
-            ms
-            /
-            60000
-        );
-
-
-    if(
-        minutes < 60
-    ){
-
-        return{
-            started:false,
-            text:
-                `Через ${Math.max(
-                    1,
-                    minutes
-                )} мин`,
-            c:"soon"
-        };
-    }
-
-
-    const hours =
-        Math.floor(
-            minutes
-            /
-            60
-        );
-
-
-    if(
-        hours < 24
-    ){
-
-        return{
-            started:false,
-            text:
-                `Через ${hours} ч ${minutes % 60} мин`,
-            c:""
-        };
-    }
-
-
-    return{
-        started:false,
-        text:
-            date.toLocaleString(
-                "ru-RU",
-                {
-                    day:"2-digit",
-                    month:"2-digit",
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            ),
-        c:""
-    };
-}
-
-
-/* ===================================
-   🎁 HOME REWARDS
-=================================== */
-
-function renderHomeRewards(){
-
-    const box =
-        document.getElementById(
-            "homeRewards"
-        );
-
-
-    if(!box){
-
-        return;
-    }
-
-
-    const cards = [];
-
-
-    if(
-        loginStreak
-        &&
-        loginStreak.available
-        ===
-        true
-    ){
-
-        const reward =
-            loginStreak.next_reward
-            ||
-            {
-                coins:100,
-                xp:0
-            };
-
-
-        const rewardText =
-            Number(
-                reward.xp
-                ||
-                0
-            )
-            >
-            0
-
-            ?
-
-            `+${reward.coins} 🪙 +${reward.xp} XP`
-
-            :
-
-            `+${reward.coins} 🪙`;
-
-
-        cards.push(
-            `
-                <div class="reward-alert">
-
-                    <div class="reward-alert-row">
-
-                        <div class="reward-alert-icon">
-                            🔥
-                        </div>
-
-                        <div class="reward-alert-content">
-
-                            <div class="reward-alert-title">
-                                Награда дня доступна
-                            </div>
-
-                            <div class="reward-alert-text">
-                                День ${loginStreak.next_day || 1}
-                                •
-                                ${rewardText}
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="reward-alert-btn"
-                            onclick="showPage('profile')"
-                        >
-                            Забрать
-                        </button>
-
-                    </div>
-
-                </div>
-            `
-        );
-    }
-
-
-    if(
-        wheel
-        &&
-        wheel.available
-        ===
-        true
-    ){
-
-        cards.push(
-            `
-                <div class="reward-alert wheel">
-
-                    <div class="reward-alert-row">
-
-                        <div class="reward-alert-icon">
-                            🎡
-                        </div>
-
-                        <div class="reward-alert-content">
-
-                            <div class="reward-alert-title">
-                                Бесплатное вращение
-                            </div>
-
-                            <div class="reward-alert-text">
-                                Колесо удачи снова доступно
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="reward-alert-btn"
-                            onclick="showPage('games')"
-                        >
-                            Крутить
-                        </button>
-
-                    </div>
-
-                </div>
-            `
-        );
-    }
-
-
-    box.innerHTML =
-        cards.join(
-            ""
-        );
-
-
-    box.classList.toggle(
-        "show",
-        cards.length
-        >
-        0
-    );
-}
-
-
-/* ===================================
-   MATCH CARDS
-=================================== */
-
-function selectedInParlay(
-    id,
-    selection
-){
-
-    return parlaySlip.some(
-        item =>
-            Number(
-                item.fixture_id
-            )
-            ===
-            Number(
-                id
-            )
-            &&
-            item.selection
-            ===
-            selection
-    );
-}
-
-
-function oddBtn(
-    match,
-    selection,
-    odd,
-    label
-){
-
-    const number =
-        Number(
-            odd
-        );
-
-
-    const matchKickoff =
-        kickoff(
-            match
-        );
-
-
-    const selected =
-        selectedInParlay(
-            match.fixture_id,
-            selection
-        );
-
-
-    if(
-        matchKickoff.started
-        ||
-        !Number.isFinite(
-            number
-        )
-        ||
-        number <= 1
-    ){
-
-        return `
-            <button class="odd disabled">
-
-                <small>
-                    ${esc(label)}
-                </small>
-
-                ${
-                    matchKickoff.started
-                    ?
-                    "Закрыто"
-                    :
-                    "—"
-                }
-
-            </button>
-        `;
-    }
-
-
-    return `
-        <button
-            class="odd ${selected ? "selected" : ""}"
-
-            onclick="
-                event.stopPropagation();
-
-                selectBet(
-                    ${Number(match.fixture_id)},
-                    '${js(match.home)}',
-                    '${js(match.away)}',
-                    '${js(selection)}',
-                    ${number},
-                    '${js(match.date)}'
-                )
-            "
-        >
-
-            <small>
-                ${selected ? "✓ " : ""}
-                ${esc(label)}
-            </small>
-
-            ${number.toFixed(2)}
-
-        </button>
-    `;
-}
-
-
-function renderMatch(
-    match
-){
-
-    if(!match){
-
-        return "";
-    }
-
-
-    const matchKickoff =
-        kickoff(
-            match
-        );
-
-
-    const live =
-        liveMap[
-            Number(
-                match.fixture_id
-            )
-        ];
-
-
-    const hasScore =
-        live
-        &&
-        live.home_score
-        !=
-        null
-        &&
-        live.away_score
-        !=
-        null;
-
-
-    const favorite =
-        favoriteMatches.includes(
-            Number(
-                match.fixture_id
-            )
-        );
-
-
-    const odds =
-        match.odds
-        ||
-        {};
-
-
-    return `
-        <div
-            class="match-card"
-
-            onclick="
-                openMatch(
-                    ${Number(match.fixture_id)}
-                )
-            "
-        >
-
-            <div class="match-head">
-
-                <div class="match-meta">
-
-                    <div class="league">
-
-                        ${
-                            live?.live
-                            ?
-                            `<span class="badge live">LIVE</span>`
-                            :
-                            ""
-                        }
-
-                        ${
-                            live?.finished
-                            ?
-                            `<span class="badge ft">FT</span>`
-                            :
-                            ""
-                        }
-
-                        ${esc(
-                            match.league
-                            ||
-                            "Футбол"
-                        )}
-
-                    </div>
-
-                    <div class="time ${matchKickoff.c}">
-                        ${esc(matchKickoff.text)}
-                        ${
-                            (
-                                !matchKickoff.started
-                                &&
-                                parseDate(match.date)
-                                &&
-                                (
-                                    parseDate(match.date).getTime()
-                                    -
-                                    Date.now()
-                                )
-                                >
-                                0
-                                &&
-                                (
-                                    parseDate(match.date).getTime()
-                                    -
-                                    Date.now()
-                                )
-                                <=
-                                60 * 60 * 1000
-                            )
-                            ?
-                            `<span class="match-soon">СКОРО</span>`
-                            :
-                            ""
-                        }
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="star ${favorite ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteMatch(
-                            ${Number(match.fixture_id)}
-                        )
-                    "
-                >
-                    ${favorite ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="team-row">
-
-                ${logo(
-                    match.home_logo
-                )}
-
-                <div class="team-name">
-                    ${esc(match.home)}
-                </div>
-
-                ${
-                    hasScore
-                    ?
-                    `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
-                            ${live.home_score}
-                        </div>
-                    `
-                    :
-                    ""
-                }
-
-                <button
-                    class="team-star ${isFavTeam(match.home) ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.home)}'
-                        )
-                    "
-                >
-                    ${isFavTeam(match.home) ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="team-row">
-
-                ${logo(
-                    match.away_logo
-                )}
-
-                <div class="team-name">
-                    ${esc(match.away)}
-                </div>
-
-                ${
-                    hasScore
-                    ?
-                    `
-                        <div
-                            class="score ${live.live ? "live" : ""}"
-                        >
-                            ${live.away_score}
-                        </div>
-                    `
-                    :
-                    ""
-                }
-
-                <button
-                    class="team-star ${isFavTeam(match.away) ? "on" : ""}"
-
-                    onclick="
-                        event.stopPropagation();
-
-                        toggleFavoriteTeam(
-                            '${js(match.away)}'
-                        )
-                    "
-                >
-                    ${isFavTeam(match.away) ? "★" : "☆"}
-                </button>
-
-            </div>
-
-
-            <div class="odds">
-
-                ${oddBtn(
-                    match,
-                    "П1",
-                    odds.home,
-                    "П1"
-                )}
-
-                ${oddBtn(
-                    match,
-                    "X",
-                    odds.draw,
-                    "X"
-                )}
-
-                ${oddBtn(
-                    match,
-                    "П2",
-                    odds.away,
-                    "П2"
-                )}
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-/* ===================================
-   LIVE
-=================================== */
-
-async function loadLive(){
-
-    try{
-
-        const response =
-            await fetch(
-                SERVER_URL
-                +
-                "/api/live"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            data
-            &&
-            data.success
-        ){
-
-            matchSourceState[
-                key
-            ] = {
-                source:
-                    data.source
-                    ||
-                    "five-dollar",
-
-                stale:
-                    !!data.stale,
-
-                refreshing:
-                    !!data.refreshing,
-
-                notice:
-                    data.notice
-                    ||
-                    null
-            };
-        }
-
-
-        if(
-            !response.ok
-            ||
-            !data.success
-        ){
-
-            return;
-        }
-
-
-        liveMap = {};
-
-
-        for(
-            const match
-            of
-            data.matches
-            ||
-            []
-        ){
-
-            liveMap[
-                Number(
-                    match.fixture_id
-                )
-            ] =
-                match;
-        }
-
-
-        renderLive();
-
-        renderMatches();
-
-        renderHome();
-
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-    }
-}
-
-
-function renderLive(){
-
-    const live =
-        Object.values(
-            liveMap
-        )
-        .filter(
-            item =>
-                item.live
-        );
-
-
-    for(
-        const [
-            wrap,
-            list
-        ]
-        of
-        [
-            [
-                "homeLiveWrap",
-                "homeLive"
-            ],
-            [
-                "liveWrap",
-                "liveList"
-            ]
-        ]
-    ){
-
-        const wrapper =
-            document.getElementById(
-                wrap
-            );
-
-
-        if(!wrapper){
-
-            continue;
-        }
-
-
-        if(
-            live.length
-        ){
-
-            wrapper.style.display =
-                "block";
-
-
-            document
-            .getElementById(
-                list
-            )
-            .innerHTML =
-                live
-                .map(
-                    item =>
-                        renderMatch({
-                            ...(
-                                findMatch(
-                                    item.fixture_id
-                                )
-                                ||
-                                {}
-                            ),
-                            ...item
-                        })
-                )
-                .join("");
-
-        }else{
-
-            wrapper.style.display =
-                "none";
-        }
-    }
-}
-
-
-/* ===================================
-   MATCH LOADING
-=================================== */
-
-function leagueCacheKey(
-    key
-){
-
-    return (
-        "bcLeagueCache:"
-        +
-        key
-    );
-}
-
-
-function readLeagueCache(
-    key
-){
-
-    try{
-
-        const raw =
-            localStorage.getItem(
-                leagueCacheKey(
-                    key
-                )
-            );
-
-        if(!raw){
-            return null;
-        }
-
-        const parsed =
-            JSON.parse(
-                raw
-            );
-
-        if(
-            !parsed
-            ||
-            !Array.isArray(
-                parsed.matches
-            )
-            ||
-            !Number(
-                parsed.saved_at
-            )
-        ){
-
-            return null;
-        }
-
-        const age =
-            Date.now()
-            -
-            Number(
-                parsed.saved_at
-            );
-
-        if(
-            age
-            >
-            MATCH_CACHE_STALE_MS
-        ){
-
-            localStorage.removeItem(
-                leagueCacheKey(
-                    key
-                )
-            );
-
-            return null;
-        }
-
-        return {
-            matches:
-                parsed.matches,
-
-            saved_at:
-                Number(
-                    parsed.saved_at
-                ),
-
-            age:
-                age,
-
-            fresh:
-                age
-                <
-                MATCH_CACHE_TTL_MS,
-
-            source_state:
-                parsed.source_state
-                ||
-                null
-        };
-
-    }catch(error){
-
-        return null;
-    }
-}
-
-
-function writeLeagueCache(
-    key,
-    items
-){
-
-    try{
-
-        localStorage.setItem(
-            leagueCacheKey(
-                key
-            ),
-            JSON.stringify({
-                saved_at:
-                    Date.now(),
-
-                matches:
-                    items,
-
-                source_state:
-                    matchSourceState[
-                        key
-                    ]
-                    ||
-                    null
-            })
-        );
-
-    }catch(error){
-
-        console.warn(
-            "League cache:",
-            error
-        );
-    }
-}
-
-
-function hydrateLeagueFromCache(
-    key
-){
-
-    const cached =
-        readLeagueCache(
-            key
-        );
-
-    if(
-        !cached
-        ||
-        !cached.matches.length
-    ){
-
-        return null;
-    }
-
-    loaded[
-        key
-    ] =
-        cached.matches;
-
-    if(
-        cached.source_state
-    ){
-
-        matchSourceState[
-            key
-        ] =
-            cached.source_state;
-
-    }else{
-
-        matchSourceState[
-            key
-        ] = {
-            source:
-                "cache",
-
-            stale:
-                !cached.fresh,
-
-            refreshing:
-                false,
-
-            notice:
-                (
-                    cached.fresh
-                    ?
-                    null
-                    :
-                    "Показаны сохранённые матчи"
-                )
-        };
-    }
-
-    return cached;
-}
-
-
-async function fetchWithTimeout(
-    url,
-    timeoutMs =
-        MATCH_FETCH_TIMEOUT_MS
-){
-
-    const controller =
-        new AbortController();
-
-    const timer =
-        setTimeout(
-            () =>
-                controller.abort(),
-            timeoutMs
-        );
-
-    try{
-
-        return await fetch(
-            url,
-            {
-                signal:
-                    controller.signal
-            }
-        );
-
-    }finally{
-
-        clearTimeout(
-            timer
-        );
-    }
-}
-
-
-async function autoRefreshMatches(){
-
-    try{
-
-        const key =
-            currentLeague
-            ||
-            "top5";
-
-        // Сбрасываем только текущую лигу,
-        // чтобы сервер реально проверил свежее расписание.
-        await loadLeague(
-            key,
-            {
-                force:
-                    true
-            }
-        );
-
-    }catch(error){
-
-        console.error(
-            "Auto matches refresh:",
-            error
-        );
-    }
-}
-
-
-async function loadLeague(
-    key,
-    options = {}
-){
-
-    const background =
-        options.background
-        ===
-        true;
-
-    currentLeague =
-        key;
-
-
-    document
-    .querySelectorAll(
-        ".league-chip"
-    )
-    .forEach(
-        button =>
-            button.classList.toggle(
-                "active",
-                button.dataset.v
-                ===
-                key
-            )
-    );
-
-
-    if(
-        key
-        ===
-        "favorites"
-    ){
-
-        renderMatches();
-
-        return;
-    }
-
-
-    let cached =
-        readLeagueCache(
-            key
-        );
-
-
-    if(
-        !loaded[
-            key
-        ]
-        &&
-        cached
-    ){
-
-        loaded[
-            key
-        ] =
-            cached.matches;
-    }
-
-
-    if(
-        loaded[
-            key
-        ]
-    ){
-
-        matches =
-            loaded[
-                key
-            ];
-
-        renderMatches();
-
-
-        if(
-            cached?.fresh
-            &&
-            !options.force
-        ){
-
-            return;
-        }
-    }
-
-
-    if(
-        !loaded[
-            key
-        ]
-        &&
-        !background
-    ){
-
-        document
-        .getElementById(
-            "matchesList"
-        )
-        .innerHTML =
-            `
-                <div class="loader">
-                    Загружаем матчи...
-                </div>
-            `;
-    }
-
-
-    leagueLoadingState[
-        key
-    ] =
-        true;
-
-    renderMatches();
-
-
-    try{
-
-        const url =
-            SERVER_URL
-            +
-            "/api/matches"
-            +
-            (
-                key
-                ===
-                "top5"
-
-                ?
-
-                (
-                    options.force
-                    ?
-                    "?refresh=1"
-                    :
-                    ""
-                )
-
-                :
-
-                "?league="
-                +
-                encodeURIComponent(
-                    key
-                )
-                +
-                (
-                    options.force
-                    ?
-                    "&refresh=1"
-                    :
-                    ""
-                )
-            );
-
-
-        const response =
-            await fetchWithTimeout(
-                url
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok
-            ||
-            !data.success
-        ){
-
-            throw new Error(
-                data.error
-                ||
-                "Ошибка загрузки матчей"
-            );
-        }
-
-
-        const leagueMatches =
-            (
-                data.matches
-                ||
-                []
-            )
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    new Date(
-                        a.date
-                    )
-                    -
-                    new Date(
-                        b.date
-                    )
-            );
-
-
-        if(
-            leagueMatches.length
-        ){
-
-            loaded[
-                key
-            ] =
-                leagueMatches;
-
-            writeLeagueCache(
-                key,
-                leagueMatches
-            );
-        }
-
-
-        if(
-            currentLeague
-            !==
-            key
-        ){
-
-            return;
-        }
-
-
-        matches =
-            leagueMatches.length
-            ?
-            leagueMatches
-            :
-            (
-                loaded[
-                    key
-                ]
-                ||
-                []
-            );
-
-
-        leagueLoadingState[
-            key
-        ] =
-            false;
-
-
-        renderMatches();
-
-
-    }catch(error){
-
-        leagueLoadingState[
-            key
-        ] =
-            false;
-
-
-        if(
-            currentLeague
-            !==
-            key
-        ){
-
-            return;
-        }
-
-
-        if(
-            loaded[
-                key
-            ]
-            &&
-            loaded[
-                key
-            ].length
-        ){
-
-            matches =
-                loaded[
-                    key
-                ];
-
-            matchSourceState[
-                key
-            ] = {
-                source:
-                    "cache",
-
-                stale:
-                    true,
-
-                refreshing:
-                    true,
-
-                notice:
-                    "Показаны сохранённые матчи • обновление продолжится в фоне"
-            };
-
-            renderMatches();
-
-            console.warn(
-                "Matches refresh failed, using cache:",
-                error
-            );
-
-            return;
-        }
-
-
-        if(
-            background
-            &&
-            error?.name
-            ===
-            "AbortError"
-        ){
-
-            matchSourceState[
-                key
-            ] = {
-                source:
-                    "loading",
-
-                stale:
-                    false,
-
-                refreshing:
-                    true,
-
-                notice:
-                    "Матчи загружаются дольше обычного • обновление продолжается"
-            };
-
-
-            const listBox =
-                document.getElementById(
-                    "matchesList"
-                );
-
-
-            if(
-                listBox
-                &&
-                currentLeague
-                ===
-                key
-            ){
-
-                listBox.innerHTML =
-                    `
-                        <div class="matches-empty">
-
-                            <div class="matches-empty-icon">
-                                ⏳
-                            </div>
-
-                            <b>
-                                Загружаем матчи...
-                            </b>
-
-                            <div
-                                class="muted"
-                                style="margin-top:6px"
-                            >
-                                Это может занять немного времени при первом запуске
-                            </div>
-
-                        </div>
-                    `;
-            }
-
-
-            return;
-        }
-
-
-        matchSourceState[
-            key
-        ] = {
-            source:
-                "error",
-
-            stale:
-                false,
-
-            refreshing:
-                false,
-
-            notice:
-                "Не удалось загрузить данные. Нажми «Обновить»."
-        };
-
-
-        const message =
-            (
-                error?.name
-                ===
-                "AbortError"
-            )
-            ?
-            "Сервер отвечает слишком долго"
-            :
-            (
-                error?.message
-                ||
-                "Не удалось загрузить матчи"
-            );
-
-
-        document
-        .getElementById(
-            "matchesList"
-        )
-        .innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        ⏱️
-                    </div>
-
-                    <b>
-                        ${esc(message)}
-                    </b>
-
-                    <button
-                        class="btn secondary"
-                        style="margin-top:12px"
-                        onclick="loadLeague('${js(key)}',{force:true})"
-                    >
-                        Попробовать ещё раз
-                    </button>
-
-                </div>
-            `;
-    }
-}
-
-
-function setDateFilter(
-    value
-){
-
-    dateFilter =
-        value;
-
-
-    document
-    .querySelectorAll(
-        ".date-chip"
-    )
-    .forEach(
-        button =>
-            button.classList.toggle(
-                "active",
-                button.dataset.v
-                ===
-                value
-            )
-    );
-
-
-    renderMatches();
-}
-
-
-function filtered(
-    list
-){
-
-    return list.filter(
-        match =>
-
-            (
-                dateFilter
-                ===
-                "all"
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "today"
-                    &&
-                    isToday(
-                        match.date
-                    )
-                )
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "tomorrow"
-                    &&
-                    isTomorrow(
-                        match.date
-                    )
-                )
-
-                ||
-
-                (
-                    dateFilter
-                    ===
-                    "myteams"
-                    &&
-                    hasFavTeam(
-                        match
-                    )
-                )
-            )
-
-            &&
-
-            (
-                !searchQuery
-
-                ||
-
-                (
-                    `${match.home} ${match.away} ${match.league}`
-                )
-                .toLowerCase()
-                .includes(
-                    searchQuery
-                )
-            )
-    );
-}
-
-
-function matchDateLabel(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    if(!date){
-        return "Дата уточняется";
-    }
-
-    if(isToday(value)){
-        return "Сегодня";
-    }
-
-    if(isTomorrow(value)){
-        return "Завтра";
-    }
-
-    return date.toLocaleDateString(
-        "ru-RU",
-        {
-            day:"numeric",
-            month:"long",
-            weekday:"short"
-        }
-    );
-}
-
-
-function matchDateKey(
-    value
-){
-
-    const date =
-        parseDate(
-            value
-        );
-
-    if(!date){
-        return "unknown";
-    }
-
-    return [
-        date.getFullYear(),
-        String(
-            date.getMonth() + 1
-        ).padStart(2,"0"),
-        String(
-            date.getDate()
-        ).padStart(2,"0")
-    ].join("-");
-}
-
-
-async function refreshMatchesNow(){
-
-    const button =
-        document.querySelector(
-            ".matches-refresh"
-        );
-
-    if(button){
-        button.disabled = true;
-        button.textContent = "↻ Обновляем...";
-    }
-
-    try{
-
-        const key =
-            currentLeague
-            ||
-            "top5";
-
-        if(key === "favorites"){
-
-            await loadLeague(
-                "top5",
-                {
-                    force:
-                        true
-                }
-            );
-
-            currentLeague =
-                "favorites";
-
-            renderMatches();
-
-        }else{
-
-            await loadLeague(
-                key,
-                {
-                    force:
-                        true
-                }
-            );
-        }
-
-        await loadLive();
-
-    }catch(error){
-
-        console.error(
-            "Manual matches refresh:",
-            error
-        );
-
-    }finally{
-
-        if(button){
-            button.disabled = false;
-            button.textContent = "↻ Обновить";
-        }
-    }
-}
-
-
-function allMatches(){
-
-    const map = {};
-
-
-    for(
-        const list
-        of
-        Object.values(
-            loaded
-        )
-    ){
-
-        for(
-            const match
-            of
-            list
-            ||
-            []
-        ){
-
-            map[
-                match.fixture_id
-            ] =
-                match;
-        }
-    }
-
-
-    return Object.values(
-        map
-    );
-}
-
-
-function renderMatchSourceNotice(){
-
-    const box =
-        document.getElementById(
-            "matchesSourceNotice"
-        );
-
-    if(!box){
-        return;
-    }
-
-    const state =
-        matchSourceState[
-            currentLeague
-        ]
-        ||
-        {};
-
-    if(
-        !state.notice
-    ){
-
-        box.style.display =
-            "none";
-
-        box.textContent =
-            "";
-
-        box.classList.remove(
-            "error"
-        );
-
-        return;
-    }
-
-    box.style.display =
-        "block";
-
-    box.classList.toggle(
-        "error",
-        state.source
-        ===
-        "error"
-    );
-
-    box.textContent =
-        state.notice;
-}
-
-
-function renderMatches(){
-
-    renderMatchSourceNotice();
-
-    let list =
-        currentLeague
-        ===
-        "favorites"
-
-        ?
-
-        allMatches()
-        .filter(
-            match =>
-                favoriteMatches.includes(
-                    Number(
-                        match.fixture_id
-                    )
-                )
-        )
-
-        :
-
-        matches;
-
-
-    list =
-        filtered(
-            list
-        );
-
-
-    // LIVE показываем отдельным блоком сверху,
-    // поэтому не дублируем те же матчи в общем списке.
-    const regularList =
-        list.filter(
-            match =>
-                !liveMap[
-                    Number(
-                        match.fixture_id
-                    )
-                ]?.live
-        );
-
-
-    const countBox =
-        document.getElementById(
-            "matchesCount"
-        );
-
-
-    if(countBox){
-
-        const total =
-            list.length;
-
-        countBox.textContent =
-            total === 1
-            ?
-            "1 матч"
-            :
-            (
-                total >= 2
-                &&
-                total <= 4
-                ?
-                `${total} матча`
-                :
-                `${total} матчей`
-            );
-    }
-
-
-    const box =
-        document.getElementById(
-            "matchesList"
-        );
-
-
-    if(!box){
-        return;
-    }
-
-
-    if(
-        list.length
-        ===
-        0
-        &&
-        leagueLoadingState[
-            currentLeague
-        ]
-    ){
-
-        box.innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        ⏳
-                    </div>
-
-                    <b>
-                        Загружаем матчи...
-                    </b>
-
-                    <div
-                        class="muted"
-                        style="margin-top:6px"
-                    >
-                        Подожди несколько секунд
-                    </div>
-
-                </div>
-            `;
-
-        renderLive();
-
-        return;
-    }
-
-
-    if(list.length === 0){
-
-        let message =
-            "Матчи не найдены";
-
-        if(dateFilter === "today"){
-            message =
-                "Сегодня матчей пока нет";
-        }
-
-        if(dateFilter === "tomorrow"){
-            message =
-                "На завтра матчей пока нет";
-        }
-
-        if(dateFilter === "myteams"){
-            message =
-                "Матчей твоих команд сейчас нет";
-        }
-
-        if(currentLeague === "favorites"){
-            message =
-                "В избранном пока нет матчей";
-        }
-
-        box.innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        ⚽
-                    </div>
-
-                    <b>
-                        ${esc(message)}
-                    </b>
-
-                    <div
-                        class="muted"
-                        style="margin-top:6px"
-                    >
-                        ${
-                            matchSourceState[
-                                currentLeague
-                            ]?.refreshing
-                            ?
-                            "Расписание обновляется в фоне"
-                            :
-                            "Попробуй другой день или лигу"
-                        }
-                    </div>
-
-                </div>
-            `;
-
-        renderLive();
-
-        return;
-    }
-
-
-    if(regularList.length === 0){
-
-        box.innerHTML =
-            `
-                <div class="matches-empty">
-
-                    <div class="matches-empty-icon">
-                        🔴
-                    </div>
-
-                    <b>
-                        Все выбранные матчи сейчас LIVE
-                    </b>
-
-                    <div
-                        class="muted"
-                        style="margin-top:6px"
-                    >
-                        Они показаны выше
-                    </div>
-
-                </div>
-            `;
-
-        renderLive();
-
-        return;
-    }
-
-
-    const groups = {};
-
-
-    for(
-        const match
-        of
-        regularList
-    ){
-
-        const key =
-            matchDateKey(
-                match.date
-            );
-
-        if(!groups[key]){
-            groups[key] = [];
-        }
-
-        groups[key].push(
-            match
-        );
-    }
-
-
-    const keys =
-        Object.keys(
-            groups
-        )
-        .sort();
-
-
-    box.innerHTML =
-        keys
-        .map(
-            key => {
-
-                const group =
-                    groups[key];
-
-                const label =
-                    matchDateLabel(
-                        group[0]?.date
-                    );
-
-                return `
-                    <div class="matches-date-title">
-
-                        <span>
-                            ${esc(label)}
-                        </span>
-
-                        <span class="matches-date-count">
-                            ${group.length}
-                        </span>
-
-                    </div>
-
-                    ${group
-                        .map(
-                            renderMatch
-                        )
-                        .join("")
-                    }
-                `;
-            }
-        )
-        .join("");
-
-
-    renderLive();
-}
-
-
-/* ===================================
-   FAVORITES
-=================================== */
-
-async function toggleFavoriteMatch(
-    id
-){
-
-    id =
-        Number(
-            id
-        );
-
-
-    const old =
-        favoriteMatches.includes(
-            id
-        );
-
-
-    favoriteMatches =
-        old
-
-        ?
-
-        favoriteMatches.filter(
-            value =>
-                value
-                !==
-                id
-        )
-
-        :
-
-        [
-            ...favoriteMatches,
-            id
-        ];
-
-
-    localStorage.setItem(
-        "bcFavMatches",
-        JSON.stringify(
-            favoriteMatches
-        )
-    );
-
-
-    renderAll();
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/favorites/toggle",
-                {
-                    fixture_id:
-                        id,
-
-                    favorite:
-                        !old
-                }
-            );
-
-
-        favoriteMatches =
-            (
-                data.favorites
-                ||
-                []
-            )
-            .map(
-                item =>
-                    Number(
-                        item.fixture_id
-                        ??
-                        item
-                    )
-            );
-
-
-        localStorage.setItem(
-            "bcFavMatches",
-            JSON.stringify(
-                favoriteMatches
-            )
-        );
-
-
-        renderAll();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-async function toggleFavoriteTeam(
-    name
-){
-
-    const old =
-        isFavTeam(
-            name
-        );
-
-
-    favoriteTeams =
-        old
-
-        ?
-
-        favoriteTeams.filter(
-            team =>
-                tkey(
-                    team
-                )
-                !==
-                tkey(
-                    name
-                )
-        )
-
-        :
-
-        [
-            ...favoriteTeams,
-            name
-        ];
-
-
-    localStorage.setItem(
-        "bcFavTeams",
-        JSON.stringify(
-            favoriteTeams
-        )
-    );
-
-
-    renderAll();
-
-
-    try{
-
-        const data =
-            await post(
-                "/api/favorite-teams/toggle",
-                {
-                    team_name:
-                        name,
-
-                    favorite:
-                        !old
-                }
-            );
-
-
-        favoriteTeams =
-            data.favorite_teams
-            ||
-            favoriteTeams;
-
-
-        localStorage.setItem(
-            "bcFavTeams",
-            JSON.stringify(
-                favoriteTeams
-            )
-        );
-
-
-        renderAll();
-
-
-    }catch(error){
-
-        tg.showAlert(
-            error.message
-        );
-    }
-}
-
-
-/* ===================================
-   MATCH DETAIL
-=================================== */
-
-function matchCenterHero(match){
-
-    const parsed = parseDate(match.date);
-    const time = parsed
-        ? parsed.toLocaleString("ru-RU",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})
-        : "Время уточняется";
-
-    const live = liveMap[Number(match.fixture_id)];
-    const homeScore = live?.home_score ?? match.home_score;
-    const awayScore = live?.away_score ?? match.away_score;
-    const hasScore = homeScore != null && awayScore != null;
-
-    return `
-        <div class="match-center-hero">
-            <div class="match-center-league">
-                ${esc(match.league_flag || "")} ${esc(match.league || "Футбол")}
-            </div>
-            <div class="match-center-time">
-                ${esc(time)} ${live?.live ? " • 🔴 LIVE" : ""}
-            </div>
-            <div class="match-center-teams">
-                <div class="match-center-team">
-                    ${logo(match.home_logo)}
-                    <div>${esc(match.home)}</div>
-                </div>
-                <div class="match-center-vs">
-                    ${hasScore ? `<div class="match-center-score">${homeScore}:${awayScore}</div>` : "VS"}
-                </div>
-                <div class="match-center-team">
-                    ${logo(match.away_logo)}
-                    <div>${esc(match.away)}</div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-
-function formChip(outcome){
-    const v = String(outcome || "").toUpperCase();
-    const cls = v === "W" ? "w" : (v === "D" ? "d" : (v === "L" ? "l" : "na"));
-    const label = v === "W" ? "В" : (v === "D" ? "Н" : (v === "L" ? "П" : "—"));
-    return `<span class="form-chip ${cls}">${label}</span>`;
-}
-
-
-function renderTeamFormBox(name,items){
-    return `
-        <div class="form-team">
-            <div class="form-team-head">
-                <b>${esc(name)}</b>
-                <span class="muted">последние ${Math.min(5,items?.length || 0)}</span>
-            </div>
-            <div class="form-chips">
-                ${(items || []).map(item => formChip(item.outcome)).join("") || `<span class="muted">Нет данных</span>`}
-            </div>
-        </div>
-    `;
-}
-
-
-function renderStandingCard(name,row){
-    if(!row){
-        return `<div class="standing-team"><b>${esc(name)}</b><div class="muted" style="margin-top:8px">Нет данных</div></div>`;
-    }
-
-    return `
-        <div class="standing-team">
-            <div class="standing-position">${row.position ?? "—"}</div>
-            <b>${esc(name)}</b>
-            <div class="muted" style="margin-top:6px">${Number(row.points || 0)} очк. • ${Number(row.played || 0)} игр</div>
-            <div class="muted" style="margin-top:3px">${Number(row.win || 0)}-${Number(row.draw || 0)}-${Number(row.lose || 0)}</div>
-        </div>
-    `;
-}
-
-
-function renderMatchCenterData(match,data){
-
-    let html = "";
-
-    if(data.availability?.form){
-        html += `
-            <div class="match-center-section">
-                <div class="match-center-section-title">📈 Форма команд</div>
-                <div class="form-wrap">
-                    ${renderTeamFormBox(match.home,data.home_form)}
-                    ${renderTeamFormBox(match.away,data.away_form)}
-                </div>
-            </div>
-        `;
-    }
-
-    if(data.availability?.standings){
-        html += `
-            <div class="match-center-section">
-                <div class="match-center-section-title">📊 Положение в таблице</div>
-                <div class="standing-duel">
-                    ${renderStandingCard(match.home,data.standings?.home)}
-                    ${renderStandingCard(match.away,data.standings?.away)}
-                </div>
-            </div>
-        `;
-    }
-
-    if((data.h2h || []).length){
-        html += `
-            <div class="match-center-section">
-                <div class="match-center-section-title">🤝 Последние личные встречи</div>
-                <div class="h2h-list">
-                    ${data.h2h.map(item => `
-                        <div class="h2h-item">
-                            <b>${esc(item.home)} ${item.home_score ?? "—"}:${item.away_score ?? "—"} ${esc(item.away)}</b>
-                            <div class="muted" style="margin-top:4px">
-                                ${item.date ? new Date(item.date).toLocaleDateString("ru-RU") : ""}
-                            </div>
-                        </div>
-                    `).join("")}
-                </div>
-            </div>
-        `;
-    }
-
-    if(data.availability?.statistics && data.statistics){
-        const stats = data.statistics;
-        const rows = [
-            ["possession","Владение","%"],
-            ["shots_on_target","В створ",""],
-            ["shots_off_target","Мимо",""],
-            ["attacks","Атаки",""],
-            ["dangerous_attacks","Опасные атаки",""]
-        ];
-
-        html += `
-            <div class="match-center-section">
-                <div class="match-center-section-title">📉 Статистика матча</div>
-                <div class="stat-compare">
-                    ${rows.map(row => `
-                        <div class="stat-line">
-                            <div class="home">${stats?.[row[0]]?.home ?? "—"}${row[2]}</div>
-                            <div class="label">${row[1]}</div>
-                            <div class="away">${stats?.[row[0]]?.away ?? "—"}${row[2]}</div>
-                        </div>
-                    `).join("")}
-                </div>
-            </div>
-        `;
-    }
-
-    return html || `<div class="match-center-loading">Дополнительная статистика для этого матча пока недоступна</div>`;
-}
-
-
-async function loadMatchCenterExtra(id,match){
-
-    const box = document.getElementById("matchCenterExtra");
-    if(!box) return;
-
-    try{
-        const response = await fetchWithTimeout(
-            SERVER_URL + "/api/match/" + id + "/center",
-            10000
-        );
-
-        const data = await response.json();
-
-        if(!response.ok || data.success === false){
-            throw new Error(data.error || "Не удалось загрузить статистику");
-        }
-
-        box.innerHTML = renderMatchCenterData(match,data);
-
-    }catch(error){
-        box.innerHTML = `
-            <div class="match-center-loading">
-                Дополнительные данные не загрузились
-                <button class="small-btn" style="margin-left:8px"
-                    onclick="loadMatchCenterExtra(${Number(id)},window.currentMatchCenterMatch)">
-                    Повторить
-                </button>
-            </div>
-        `;
-    }
-}
 
 <!-- ===================================
      🏆 LEADERBOARD
@@ -12334,7 +8611,6 @@ function renderTeamFormBox(name,items){
     `;
 }
 
-
 function renderStandingCard(name,row){
     if(!row){
         return `<div class="standing-team"><b>${esc(name)}</b><div class="muted" style="margin-top:8px">Нет данных</div></div>`;
@@ -12458,6 +8734,4277 @@ async function loadMatchCenterExtra(id,match){
         `;
     }
 }
+
+
+async function openMatch(
+    id
+){
+
+    showPage(
+        "match",
+        false
+    );
+
+
+    const box =
+        document.getElementById(
+            "matchDetail"
+        );
+
+
+    box.innerHTML =
+        `
+            <div class="loader">
+                Загрузка...
+            </div>
+        `;
+
+
+    try{
+
+        const response =
+            await fetch(
+                SERVER_URL
+                +
+                "/api/match/"
+                +
+                id
+            );
+
+
+        const match =
+            await response.json();
+
+
+        if(
+            !response.ok
+            ||
+            match.success
+            ===
+            false
+        ){
+
+            throw new Error(
+                match.error
+                ||
+                "Ошибка"
+            );
+        }
+
+
+        window.currentMatchCenterMatch =
+            match;
+
+        let html =
+            matchCenterHero(
+                match
+            );
+
+
+        html +=
+            `
+                <div class="market-title">
+                    Исход матча
+                </div>
+
+                <div class="market-grid three">
+
+                    ${oddBtn(
+                        match,
+                        "П1",
+                        match.odds?.home,
+                        "П1"
+                    )}
+
+                    ${oddBtn(
+                        match,
+                        "X",
+                        match.odds?.draw,
+                        "X"
+                    )}
+
+                    ${oddBtn(
+                        match,
+                        "П2",
+                        match.odds?.away,
+                        "П2"
+                    )}
+
+                </div>
+            `;
+
+
+        for(
+            const line
+            of
+            [
+                1.5,
+                2.5,
+                3.5,
+                4.5
+            ]
+        ){
+
+            const market =
+                match[
+                    "total_"
+                    +
+                    String(
+                        line
+                    )
+                    .replace(
+                        ".",
+                        "_"
+                    )
+                ];
+
+
+            if(
+                market
+            ){
+
+                html +=
+                    `
+                        <div class="market-title">
+                            Тотал ${line}
+                        </div>
+
+                        <div class="market-grid">
+
+                            ${oddBtn(
+                                match,
+                                `ТБ ${line}`,
+                                market.over,
+                                `ТБ ${line}`
+                            )}
+
+                            ${oddBtn(
+                                match,
+                                `ТМ ${line}`,
+                                market.under,
+                                `ТМ ${line}`
+                            )}
+
+                        </div>
+                    `;
+            }
+        }
+
+
+        if(
+            match.btts
+        ){
+
+            html +=
+                `
+                    <div class="market-title">
+                        Обе забьют
+                    </div>
+
+                    <div class="market-grid">
+
+                        ${oddBtn(
+                            match,
+                            "ОЗ Да",
+                            match.btts.yes,
+                            "Да"
+                        )}
+
+                        ${oddBtn(
+                            match,
+                            "ОЗ Нет",
+                            match.btts.no,
+                            "Нет"
+                        )}
+
+                    </div>
+                `;
+        }
+
+
+        if(
+            match.handicaps
+        ){
+
+            const home =
+                Object.entries(
+                    match.handicaps.home
+                    ||
+                    {}
+                )[0];
+
+
+            const away =
+                Object.entries(
+                    match.handicaps.away
+                    ||
+                    {}
+                )[0];
+
+
+            if(
+                home
+                &&
+                away
+            ){
+
+                html +=
+                    `
+                        <div class="market-title">
+                            Фора
+                        </div>
+
+                        <div class="market-grid">
+
+                            ${oddBtn(
+                                match,
+                                `Ф1(${home[0]})`,
+                                home[1],
+                                `Ф1 (${home[0]})`
+                            )}
+
+                            ${oddBtn(
+                                match,
+                                `Ф2(${away[0]})`,
+                                away[1],
+                                `Ф2 (${away[0]})`
+                            )}
+
+                        </div>
+                    `;
+            }
+        }
+
+
+        html +=
+            `
+                <div
+                    id="matchCenterExtra"
+                    class="match-center-loading"
+                >
+                    Загружаем форму, таблицу и статистику...
+                </div>
+            `;
+
+        box.innerHTML =
+            html;
+
+        loadMatchCenterExtra(
+            id,
+            match
+        );
+
+
+    }catch(error){
+
+        box.innerHTML =
+            `
+                <div class="empty">
+                    ${esc(error.message)}
+                </div>
+            `;
+    }
+}
+
+
+/* ===================================
+   SINGLE BET
+=================================== */
+
+function selectBet(
+    id,
+    home,
+    away,
+    selection,
+    odd,
+    date
+){
+
+    if(
+        new Date(
+            date
+        )
+        <=
+        new Date()
+    ){
+
+        tg.showAlert(
+            "Матч уже начался"
+        );
+
+        return;
+    }
+
+
+    selectedBet = {
+
+        fixture_id:
+            Number(
+                id
+            ),
+
+        match:
+            `${home} — ${away}`,
+
+        selection:
+            selection,
+
+        odd:
+            Number(
+                odd
+            )
+    };
+
+
+    document
+    .getElementById(
+        "choiceInfo"
+    )
+    .innerHTML =
+        `
+            <b>
+                ${esc(selectedBet.match)}
+            </b>
+
+            <div class="muted">
+                ${esc(selection)}
+                •
+                ${Number(odd).toFixed(2)}
+            </div>
+        `;
+
+
+    const exactInParlay =
+        selectedInParlay(
+            id,
+            selection
+        );
+
+    const anotherFromSameMatch =
+        parlaySlip.some(
+            item =>
+                Number(
+                    item.fixture_id
+                )
+                ===
+                Number(
+                    id
+                )
+                &&
+                item.selection
+                !==
+                selection
+        );
+
+
+    document
+    .getElementById(
+        "parlayChoiceBtn"
+    )
+    .textContent =
+        exactInParlay
+
+        ?
+
+        "✓ Убрать"
+
+        :
+
+        (
+            anotherFromSameMatch
+            ?
+            "↻ Заменить в экспрессе"
+            :
+            "+ Экспресс"
+        );
+
+
+    document
+    .getElementById(
+        "choiceOverlay"
+    )
+    .classList.add(
+        "show"
+    );
+}
+
+
+function openSingle(){
+
+    closeOverlay(
+        "choiceOverlay"
+    );
+
+
+    document
+    .getElementById(
+        "singleInfo"
+    )
+    .innerHTML =
+        `
+            <b>
+                ${esc(selectedBet.match)}
+            </b>
+
+            <div class="muted">
+                ${esc(selectedBet.selection)}
+                •
+                ${selectedBet.odd.toFixed(2)}
+            </div>
+        `;
+
+
+    document
+    .getElementById(
+        "singleStake"
+    )
+    .value =
+        "";
+
+
+    updateSingleWin();
+
+
+    document
+    .getElementById(
+        "singleOverlay"
+    )
+    .classList.add(
+        "show"
+    );
+}
+
+
+function updateSingleWin(){
+
+    const amount =
+        Number(
+            document
+            .getElementById(
+                "singleStake"
+            )
+            .value
+        );
+
+
+    document
+    .getElementById(
+        "singleWin"
+    )
+    .textContent =
+        amount > 0
+        &&
+        selectedBet
+
+        ?
+
+        `Возможный выигрыш: ${Math.round(
+            amount
+            *
+            selectedBet.odd
+        )} 🪙`
+
+        :
+
+        "";
+}
+
+
+async function confirmSingle(){
+
+    const amount =
+        Math.floor(
+            Number(
+                document
+                .getElementById(
+                    "singleStake"
+                )
+                .value
+            )
+            ||
+            0
+        );
+
+
+    if(
+        !selectedBet
+        ||
+        amount < 100
+    ){
+
+        tg.showAlert(
+            "Минимальная ставка — 100 монет"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "singleBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/bets",
+                {
+                    fixture_id:
+                        selectedBet.fixture_id,
+
+                    selection:
+                        selectedBet.selection,
+
+                    amount:
+                        amount
+                }
+            );
+
+
+        balance =
+            Number(
+                data.balance
+                ??
+                balance
+            );
+
+
+        bets =
+            data.bets
+            ||
+            bets;
+
+
+        setBalances();
+
+        renderBets();
+
+
+        closeOverlay(
+            "singleOverlay"
+        );
+
+
+        tg.showAlert(
+            "Ставка принята ✅"
+        );
+
+
+        await loadSession();
+
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+
+    }finally{
+
+        button.disabled =
+            false;
+    }
+}
+
+
+/* ===================================
+   PARLAY
+=================================== */
+
+function toggleParlayChoice(){
+
+    const index =
+        parlaySlip.findIndex(
+            item =>
+                Number(
+                    item.fixture_id
+                )
+                ===
+                selectedBet.fixture_id
+                &&
+                item.selection
+                ===
+                selectedBet.selection
+        );
+
+
+    if(
+        index >= 0
+    ){
+
+        parlaySlip.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        const sameMatchIndex =
+            parlaySlip.findIndex(
+                item =>
+                    Number(
+                        item.fixture_id
+                    )
+                    ===
+                    selectedBet.fixture_id
+            );
+
+
+        if(
+            sameMatchIndex
+            >=
+            0
+        ){
+
+            // В одном экспрессе оставляем только один рынок
+            // на матч, но при выборе нового рынка просто
+            // заменяем старый — так можно быстро перейти
+            // с П1/П2 на фору, тотал и т.д.
+            parlaySlip[
+                sameMatchIndex
+            ] = {
+                ...selectedBet
+            };
+
+            tg.showAlert(
+                "Ставка на этот матч заменена ✅"
+            );
+
+        }else{
+
+            if(
+                parlaySlip.length
+                >=
+                15
+            ){
+
+                tg.showAlert(
+                    "Максимум 15 событий"
+                );
+
+                return;
+            }
+
+
+            parlaySlip.push({
+                ...selectedBet
+            });
+        }
+    }
+
+
+    closeOverlay(
+        "choiceOverlay"
+    );
+
+
+    updateParlay();
+}
+
+
+function toggleMiniParlay(){
+
+    const mini =
+        document.getElementById(
+            "miniParlay"
+        );
+
+    if(!mini){
+        return;
+    }
+
+    miniParlayCollapsed =
+        !miniParlayCollapsed;
+
+    mini.classList.toggle(
+        "collapsed",
+        miniParlayCollapsed
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-collapsed",
+        miniParlayCollapsed
+        &&
+        parlaySlip.length > 0
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-open",
+        !miniParlayCollapsed
+        &&
+        parlaySlip.length > 0
+    );
+}
+
+
+function parlayOdd(){
+
+    return parlaySlip.reduce(
+        (
+            total,
+            item
+        ) =>
+            total
+            *
+            Number(
+                item.odd
+            ),
+        1
+    );
+}
+
+
+function updateParlay(){
+
+    const count =
+        parlaySlip.length;
+
+
+    const odd =
+        parlayOdd();
+
+
+    const win =
+        parlayStake > 0
+
+        ?
+
+        Math.round(
+            parlayStake
+            *
+            odd
+        )
+
+        :
+
+        0;
+
+
+    const miniParlay =
+        document.getElementById(
+            "miniParlay"
+        );
+
+    miniParlay.classList.toggle(
+        "show",
+        count > 0
+    );
+
+    miniParlay.classList.toggle(
+        "collapsed",
+        count > 0
+        &&
+        miniParlayCollapsed
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-open",
+        count > 0
+        &&
+        !miniParlayCollapsed
+    );
+
+    document.body.classList.toggle(
+        "parlay-mini-collapsed",
+        count > 0
+        &&
+        miniParlayCollapsed
+    );
+
+    if(count === 0){
+
+        miniParlayCollapsed =
+            false;
+
+        miniParlay.classList.remove(
+            "collapsed"
+        );
+    }
+
+
+    document
+    .getElementById(
+        "miniMeta"
+    )
+    .textContent =
+        `${count} событий`;
+
+
+    document
+    .getElementById(
+        "miniOdd"
+    )
+    .textContent =
+        `x${odd.toFixed(2)}`;
+
+
+    document
+    .getElementById(
+        "miniWin"
+    )
+    .textContent =
+        win
+        ?
+        `${win} 🪙`
+        :
+        "—";
+
+
+    document
+    .getElementById(
+        "parlayCount"
+    )
+    .textContent =
+        count;
+
+
+    document
+    .getElementById(
+        "parlayOdd"
+    )
+    .textContent =
+        odd.toFixed(2);
+
+
+    document
+    .getElementById(
+        "parlayWin"
+    )
+    .textContent =
+        win
+        ?
+        `Возможный выигрыш: ${win} 🪙`
+        :
+        "";
+
+
+    renderParlayList();
+
+    renderMatches();
+}
+
+
+function renderParlayList(){
+
+    document
+    .getElementById(
+        "parlayList"
+    )
+    .innerHTML =
+        parlaySlip.length
+
+        ?
+
+        parlaySlip
+        .map(
+            (
+                item,
+                index
+            ) =>
+                `
+                    <div class="card">
+
+                        <b>
+                            ${index + 1}.
+                            ${esc(item.match)}
+                        </b>
+
+                        <div class="muted">
+                            ${esc(item.selection)}
+                            •
+                            ${Number(item.odd).toFixed(2)}
+                        </div>
+
+                        <button
+                            class="small-btn"
+                            style="margin-top:7px"
+
+                            onclick="
+                                parlaySlip.splice(
+                                    ${index},
+                                    1
+                                );
+
+                                updateParlay()
+                            "
+                        >
+                            Удалить
+                        </button>
+
+                    </div>
+                `
+        )
+        .join("")
+
+        :
+
+        `
+            <div class="empty">
+                Экспресс пуст
+            </div>
+        `;
+}
+
+
+function openParlay(){
+
+    updateParlay();
+
+
+    document
+    .getElementById(
+        "parlayOverlay"
+    )
+    .classList.add(
+        "show"
+    );
+}
+
+
+function clearParlay(){
+
+    parlaySlip = [];
+
+    parlayStake = 0;
+
+    miniParlayCollapsed = false;
+
+
+    document
+    .getElementById(
+        "miniStake"
+    )
+    .value =
+        "";
+
+
+    document
+    .getElementById(
+        "parlayStake"
+    )
+    .value =
+        "";
+
+
+    updateParlay();
+
+
+    closeOverlay(
+        "parlayOverlay"
+    );
+}
+
+
+async function confirmParlay(){
+
+    if(
+        parlaySlip.length
+        <
+        2
+    ){
+
+        tg.showAlert(
+            "Нужно минимум 2 события"
+        );
+
+        return;
+    }
+
+
+    if(
+        parlayStake < 100
+    ){
+
+        tg.showAlert(
+            "Минимальная ставка — 100 монет"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "parlayBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/parlays",
+                {
+                    amount:
+                        parlayStake,
+
+                    legs:
+                        parlaySlip.map(
+                            item => ({
+                                fixture_id:
+                                    item.fixture_id,
+
+                                selection:
+                                    item.selection
+                            })
+                        )
+                }
+            );
+
+
+        balance =
+            Number(
+                data.balance
+                ??
+                balance
+            );
+
+
+        parlays =
+            data.parlays
+            ||
+            parlays;
+
+
+        clearParlay();
+
+        setBalances();
+
+        renderBets();
+
+
+        showPage(
+            "bets"
+        );
+
+
+        switchBets(
+            "parlay"
+        );
+
+
+        tg.showAlert(
+            "Экспресс принят ✅"
+        );
+
+
+        await loadSession();
+
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+
+    }finally{
+
+        button.disabled =
+            false;
+    }
+}
+
+
+/* ===================================
+   BET HISTORY
+=================================== */
+
+function stClass(
+    status
+){
+
+    return status
+    ===
+    "Выиграла"
+
+    ?
+
+    "win"
+
+    :
+
+    status
+    ===
+    "Проиграла"
+
+    ?
+
+    "loss"
+
+    :
+
+    status
+    ===
+    "Возврат"
+
+    ?
+
+    "refund"
+
+    :
+
+    "active";
+}
+
+
+function passFilter(
+    item
+){
+
+    return (
+        betFilter
+        ===
+        "all"
+
+        ||
+
+        (
+            betFilter
+            ===
+            "active"
+            &&
+            item.status
+            ===
+            "Активна"
+        )
+
+        ||
+
+        (
+            betFilter
+            ===
+            "win"
+            &&
+            item.status
+            ===
+            "Выиграла"
+        )
+
+        ||
+
+        (
+            betFilter
+            ===
+            "loss"
+            &&
+            item.status
+            ===
+            "Проиграла"
+        )
+    );
+}
+
+
+function setBetFilter(
+    value
+){
+
+    betFilter =
+        value;
+
+
+    document
+    .querySelectorAll(
+        ".bet-chip"
+    )
+    .forEach(
+        button =>
+            button.classList.toggle(
+                "active",
+                button.dataset.v
+                ===
+                value
+            )
+    );
+
+
+    renderBets();
+}
+
+
+function switchBets(
+    value
+){
+
+    betTab =
+        value;
+
+
+    document
+    .getElementById(
+        "tabSingle"
+    )
+    .classList.toggle(
+        "active",
+        value
+        ===
+        "single"
+    );
+
+
+    document
+    .getElementById(
+        "tabParlay"
+    )
+    .classList.toggle(
+        "active",
+        value
+        ===
+        "parlay"
+    );
+
+
+    document
+    .getElementById(
+        "singleBets"
+    )
+    .style.display =
+        value
+        ===
+        "single"
+
+        ?
+
+        "block"
+
+        :
+
+        "none";
+
+
+    document
+    .getElementById(
+        "parlayBets"
+    )
+    .style.display =
+        value
+        ===
+        "parlay"
+
+        ?
+
+        "block"
+
+        :
+
+        "none";
+}
+
+
+function parlayLegView(
+    parlayStatus,
+    leg
+){
+    const raw = String(leg?.status || "");
+    let text = raw || "Активна";
+
+    if(
+        parlayStatus === "Проиграла"
+        &&
+        (!raw || raw === "Активна")
+    ){
+        text = "Ожидает результата";
+    }
+
+    let state = "pending";
+    let icon = "⏳";
+
+    if(text === "Выиграла"){
+        state = "win";
+        icon = "✅";
+    }else if(text === "Проиграла"){
+        state = "loss";
+        icon = "❌";
+    }
+
+    return {text,state,icon};
+}
+
+
+function parlayLegScore(
+    leg
+){
+    if(leg?.score){
+        return String(leg.score);
+    }
+
+    if(
+        leg?.home_score != null
+        &&
+        leg?.away_score != null
+    ){
+        return `${leg.home_score}:${leg.away_score}`;
+    }
+
+    return "";
+}
+
+
+function parlayStatusView(
+    item
+){
+    if(item?.status === "Выиграла"){
+        return {state:"win",icon:"✅",text:"Выиграла"};
+    }
+
+    if(item?.status === "Проиграла"){
+        return {state:"loss",icon:"❌",text:"Проиграла"};
+    }
+
+    return {
+        state:"active",
+        icon:"⏳",
+        text:item?.status || "Активна"
+    };
+}
+
+
+function renderBets(){
+
+    const singles =
+        bets.filter(
+            passFilter
+        );
+
+    const express =
+        parlays.filter(
+            passFilter
+        );
+
+
+    document
+    .getElementById(
+        "singleBets"
+    )
+    .innerHTML =
+        singles.length
+        ?
+        singles
+        .map(
+            item =>
+                `
+                    <div class="card">
+
+                        <span class="status ${stClass(item.status)}">
+                            ${esc(item.status)}
+                        </span>
+
+                        <h3>${esc(item.match)}</h3>
+
+                        <div>
+                            ${esc(item.selection)}
+                            •
+                            ${Number(item.odd).toFixed(2)}
+                        </div>
+
+                        ${
+                            item.score
+                            ?
+                            `
+                                <div class="muted">
+                                    Счёт: ${esc(item.score)}
+                                </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        <div class="bet-row">
+                            <span>Ставка</span>
+                            <b>${item.amount} 🪙</b>
+                        </div>
+
+                        <div class="bet-row">
+                            <span>Выигрыш</span>
+                            <b>${item.possible} 🪙</b>
+                        </div>
+
+                    </div>
+                `
+        )
+        .join("")
+        :
+        `
+            <div class="empty">
+                Нет ставок
+            </div>
+        `;
+
+
+    document
+    .getElementById(
+        "parlayBets"
+    )
+    .innerHTML =
+        express.length
+        ?
+        express
+        .map(
+            item => {
+
+                const parlayView =
+                    parlayStatusView(
+                        item
+                    );
+
+                const legs =
+                    item.legs
+                    ||
+                    [];
+
+                const settledLegs =
+                    legs.filter(
+                        leg =>
+                            [
+                                "Выиграла",
+                                "Проиграла"
+                            ].includes(
+                                leg?.status
+                            )
+                    ).length;
+
+                const resultText =
+                    item.status === "Выиграла"
+                    ?
+                    `✅ Экспресс сыграл • +${Number(item.possible || 0)} 🪙`
+                    :
+                    (
+                        item.status === "Проиграла"
+                        ?
+                        "❌ Экспресс не сыграл"
+                        :
+                        `⏳ Рассчитано ${settledLegs} из ${legs.length} событий`
+                    );
+
+                return `
+                    <div class="parlay-history-card ${parlayView.state}">
+
+                        <div class="parlay-history-head">
+
+                            <div>
+                                <div class="parlay-history-title">
+                                    🧾 Экспресс #${item.id}
+                                </div>
+
+                                <div class="parlay-history-sub">
+                                    ${legs.length} событий
+                                </div>
+                            </div>
+
+                            <span class="status ${stClass(item.status)}">
+                                ${parlayView.icon}
+                                ${esc(parlayView.text)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="parlay-history-summary">
+
+                            <div>
+                                <span>Общий кэф</span>
+                                <b>x${Number(item.total_odd || 1).toFixed(2)}</b>
+                            </div>
+
+                            <div>
+                                <span>Ставка</span>
+                                <b>${Number(item.amount || 0)} 🪙</b>
+                            </div>
+
+                            <div>
+                                <span>
+                                    ${
+                                        item.status === "Выиграла"
+                                        ?
+                                        "Выигрыш"
+                                        :
+                                        "Возможный выигрыш"
+                                    }
+                                </span>
+                                <b>${Number(item.possible || 0)} 🪙</b>
+                            </div>
+
+                        </div>
+
+
+                        <div class="parlay-history-legs">
+
+                            ${legs
+                                .map(
+                                    (
+                                        leg,
+                                        index
+                                    ) => {
+
+                                        const view =
+                                            parlayLegView(
+                                                item.status,
+                                                leg
+                                            );
+
+                                        const score =
+                                            parlayLegScore(
+                                                leg
+                                            );
+
+                                        return `
+                                            <div class="parlay-history-leg ${view.state}">
+
+                                                <div class="parlay-history-leg-top">
+
+                                                    <div class="parlay-history-leg-match">
+                                                        ${index + 1}. ${esc(leg.match)}
+                                                    </div>
+
+                                                    <span class="parlay-history-leg-status ${view.state}">
+                                                        ${view.icon} ${esc(view.text)}
+                                                    </span>
+
+                                                </div>
+
+                                                <div class="parlay-history-leg-meta">
+
+                                                    <span>
+                                                        ${esc(leg.selection)}
+                                                        •
+                                                        x${Number(leg.odd || 1).toFixed(2)}
+                                                    </span>
+
+                                                    ${
+                                                        score
+                                                        ?
+                                                        `
+                                                            <span class="parlay-history-score">
+                                                                ${esc(score)}
+                                                            </span>
+                                                        `
+                                                        :
+                                                        ""
+                                                    }
+
+                                                </div>
+
+                                            </div>
+                                        `;
+                                    }
+                                )
+                                .join("")
+                            }
+
+                        </div>
+
+
+                        <div class="parlay-history-result ${parlayView.state}">
+                            ${resultText}
+                        </div>
+
+                    </div>
+                `;
+            }
+        )
+        .join("")
+        :
+        `
+            <div class="empty">
+                Нет экспрессов
+            </div>
+        `;
+
+
+    renderHome();
+}
+
+
+/* ===================================
+   🔥 LOGIN STREAK
+=================================== */
+
+function renderLoginStreak(){
+
+    const daysBox =
+        document.getElementById(
+            "streakDays"
+        );
+
+
+    const countBox =
+        document.getElementById(
+            "streakCount"
+        );
+
+
+    const rewardBox =
+        document.getElementById(
+            "streakReward"
+        );
+
+
+    const messageBox =
+        document.getElementById(
+            "streakMessage"
+        );
+
+
+    const button =
+        document.getElementById(
+            "streakBtn"
+        );
+
+
+    if(
+        !daysBox
+        ||
+        !countBox
+        ||
+        !rewardBox
+        ||
+        !messageBox
+        ||
+        !button
+    ){
+
+        return;
+    }
+
+
+    const rewards =
+        loginStreak.rewards
+        ||
+        [];
+
+
+    daysBox.innerHTML =
+        rewards
+        .map(
+            item => {
+
+                let icon =
+                    "🔒";
+
+
+                let classes =
+                    "streak-day";
+
+
+                if(
+                    item.completed
+                ){
+
+                    icon =
+                        "✅";
+
+                    classes +=
+                        " completed";
+                }
+
+
+                if(
+                    item.current
+                ){
+
+                    icon =
+                        "🔥";
+
+                    classes +=
+                        " current";
+                }
+
+
+                if(
+                    Number(
+                        item.day
+                    )
+                    ===
+                    7
+                ){
+
+                    classes +=
+                        " final";
+                }
+
+
+                const rewardText =
+                    Number(
+                        item.xp
+                        ||
+                        0
+                    )
+                    >
+                    0
+
+                    ?
+
+                    `${item.coins}🪙 +${item.xp}XP`
+
+                    :
+
+                    `${item.coins}🪙`;
+
+
+                return `
+                    <div class="${classes}">
+
+                        <b>
+                            ${item.day}
+                        </b>
+
+                        <span>
+                            ${icon}
+                        </span>
+
+                        <small>
+                            ${rewardText}
+                        </small>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    const nextDay =
+        Number(
+            loginStreak.next_day
+            ||
+            1
+        );
+
+
+    const currentDay =
+        Number(
+            loginStreak.current_day
+            ||
+            0
+        );
+
+
+    countBox.textContent =
+        loginStreak.claimed_today
+
+        ?
+
+        `Серия: ${currentDay} 🔥`
+
+        :
+
+        `День ${nextDay}`;
+
+
+    const reward =
+        loginStreak.next_reward
+        ||
+        {
+            coins:100,
+            xp:0
+        };
+
+
+    rewardBox.textContent =
+        Number(
+            reward.xp
+            ||
+            0
+        )
+        >
+        0
+
+        ?
+
+        `Сегодня: +${reward.coins} 🪙 +${reward.xp} XP`
+
+        :
+
+        `Сегодня: +${reward.coins} 🪙`;
+
+
+    button.disabled =
+        loginStreak.available
+        !==
+        true;
+
+
+    button.textContent =
+        loginStreak.available
+        ===
+        true
+
+        ?
+
+        "Забрать награду"
+
+        :
+
+        "Награда получена ✅";
+
+
+    if(
+        loginStreak.claimed_today
+    ){
+
+        messageBox.textContent =
+            "Возвращайся завтра, чтобы продолжить серию 🔥";
+
+    }else if(
+        loginStreak.streak_broken
+    ){
+
+        messageBox.textContent =
+            "Серия была прервана. Начинаем снова с 1-го дня.";
+
+    }else if(
+        currentDay > 0
+    ){
+
+        messageBox.textContent =
+            `Продолжай серию — следующий день ${nextDay}.`;
+
+    }else{
+
+        messageBox.textContent =
+            "Начни серию прямо сегодня.";
+    }
+
+
+    renderHomeRewards();
+}
+
+
+async function claimLoginStreak(){
+
+    const button =
+        document.getElementById(
+            "streakBtn"
+        );
+
+
+    if(
+        !button
+        ||
+        button.disabled
+    ){
+
+        return;
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Получаем...";
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/login-streak/claim"
+            );
+
+
+        balance =
+            Number(
+                data.balance
+                ??
+                balance
+            );
+
+
+        xp =
+            Number(
+                data.xp
+                ??
+                xp
+            );
+
+
+        level =
+            Number(
+                data.level
+                ??
+                level
+            );
+
+
+        leagueInfo =
+            data.league
+            ||
+            leagueInfo;
+
+
+        levelXp =
+            Number(
+                data.current_level_xp
+                ??
+                levelXp
+            );
+
+
+        loginStreak =
+            data.login_streak
+            ||
+            loginStreak;
+
+
+        setBalances();
+
+        renderLoginStreak();
+
+        renderProfile();
+
+        renderHome();
+
+        renderHomeRewards();
+
+
+        const rewards = [];
+
+
+        if(
+            Number(
+                data.reward_coins
+            )
+            >
+            0
+        ){
+
+            rewards.push(
+                `+${data.reward_coins} 🪙`
+            );
+        }
+
+
+        if(
+            Number(
+                data.reward_xp
+            )
+            >
+            0
+        ){
+
+            rewards.push(
+                `+${data.reward_xp} XP`
+            );
+        }
+
+
+        tg.showAlert(
+            `🔥 День ${data.claimed_day}: ${rewards.join(" • ")}`
+        );
+
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+
+    }finally{
+
+        renderLoginStreak();
+
+        renderHomeRewards();
+    }
+}
+
+
+/* ===================================
+   🎯 УГАДАЙ ИСХОД
+=================================== */
+
+function predictionDateText(
+    value
+){
+
+    const date =
+        parseDate(
+            value
+        );
+
+
+    if(!date){
+
+        return "Время уточняется";
+    }
+
+
+    return date.toLocaleString(
+        "ru-RU",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+function renderPredictionGame(){
+
+    if(
+        predictionGame?.loading
+    ){
+
+        const box =
+            document.getElementById(
+                "predictionGame"
+            );
+
+        if(box){
+            box.innerHTML =
+                `
+                    <div class="loader">
+                        Загружаем матч...
+                    </div>
+                `;
+        }
+
+        return;
+    }
+
+
+    const box =
+        document.getElementById(
+            "predictionGame"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    if(
+        !predictionGame
+        ||
+        predictionGame.available
+        ===
+        false
+    ){
+
+        box.innerHTML =
+            `
+                <div class="empty">
+                    ${esc(
+                        predictionGame?.message
+                        ||
+                        "Сегодня матчей нет — возвращайся завтра ⚽"
+                    )}
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const pick =
+        predictionGame.pick;
+
+
+    const settled =
+        predictionGame.settled
+        ===
+        true;
+
+
+    const canPick =
+        predictionGame.can_pick
+        ===
+        true;
+
+
+    let statusHtml =
+        "";
+
+
+    if(
+        pick
+        &&
+        !settled
+    ){
+
+        statusHtml =
+            `
+                <div class="prediction-result wait">
+                    ✅ Твой прогноз:
+                    <b>${esc(pick)}</b>
+                    <br>
+                    Ждём окончания матча
+                </div>
+            `;
+    }
+
+
+    if(
+        settled
+        &&
+        predictionGame.won
+        ===
+        true
+    ){
+
+        statusHtml =
+            `
+                <div class="prediction-result win">
+
+                    🎉 Ты угадал!
+
+                    <br>
+
+                    Счёт:
+                    ${esc(
+                        predictionGame.final_score
+                        ||
+                        ""
+                    )}
+
+                    <br>
+
+                    +${predictionGame.reward_coins || 200} 🪙
+                    +
+                    ${predictionGame.reward_xp || 25} XP
+
+                </div>
+            `;
+    }
+
+
+    if(
+        settled
+        &&
+        predictionGame.won
+        ===
+        false
+    ){
+
+        statusHtml =
+            `
+                <div class="prediction-result loss">
+
+                    ❌ Не угадал
+
+                    <br>
+
+                    Счёт:
+                    ${esc(
+                        predictionGame.final_score
+                        ||
+                        ""
+                    )}
+
+                    <br>
+
+                    Правильный исход:
+                    <b>
+                        ${esc(
+                            predictionGame.actual_result
+                            ||
+                            ""
+                        )}
+                    </b>
+
+                </div>
+            `;
+    }
+
+
+    box.innerHTML =
+        `
+            <div class="prediction-match">
+
+                <div class="prediction-league">
+                    ${esc(
+                        predictionGame.league
+                        ||
+                        "Футбол"
+                    )}
+                </div>
+
+
+                <div class="prediction-teams">
+
+                    ${esc(
+                        predictionGame.home_team
+                    )}
+
+                    <br>
+
+                    <span
+                        style="
+                            color:var(--muted);
+                            font-size:13px
+                        "
+                    >
+                        против
+                    </span>
+
+                    <br>
+
+                    ${esc(
+                        predictionGame.away_team
+                    )}
+
+                </div>
+
+
+                <div class="prediction-time">
+
+                    🕒
+                    ${predictionDateText(
+                        predictionGame.kickoff_at
+                    )}
+
+                </div>
+
+
+                <div class="prediction-buttons">
+
+                    <button
+                        class="
+                            prediction-btn
+                            ${pick === "П1" ? "selected" : ""}
+                        "
+
+                        ${!canPick ? "disabled" : ""}
+
+                        onclick="pickPrediction('П1')"
+                    >
+
+                        П1
+
+                        <small>
+                            ${esc(
+                                predictionGame.home_team
+                            )}
+                        </small>
+
+                    </button>
+
+
+                    <button
+                        class="
+                            prediction-btn
+                            ${pick === "X" ? "selected" : ""}
+                        "
+
+                        ${!canPick ? "disabled" : ""}
+
+                        onclick="pickPrediction('X')"
+                    >
+
+                        X
+
+                        <small>
+                            Ничья
+                        </small>
+
+                    </button>
+
+
+                    <button
+                        class="
+                            prediction-btn
+                            ${pick === "П2" ? "selected" : ""}
+                        "
+
+                        ${!canPick ? "disabled" : ""}
+
+                        onclick="pickPrediction('П2')"
+                    >
+
+                        П2
+
+                        <small>
+                            ${esc(
+                                predictionGame.away_team
+                            )}
+                        </small>
+
+                    </button>
+
+                </div>
+
+
+                ${statusHtml}
+
+            </div>
+        `;
+}
+
+
+async function pickPrediction(
+    prediction
+){
+
+    if(
+        !predictionGame
+        ||
+        predictionGame.can_pick
+        !==
+        true
+    ){
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Подтвердить прогноз "
+            +
+            prediction
+            +
+            "?\n\nИзменить его потом нельзя."
+        );
+
+
+    if(!confirmed){
+
+        return;
+    }
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/prediction/pick",
+                {
+                    prediction:
+                        prediction
+                }
+            );
+
+
+        predictionGame =
+            data.game
+            ||
+            {};
+
+
+        renderPredictionGame();
+
+
+        tg.showAlert(
+            "Прогноз сохранён ✅"
+        );
+
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+/* ===================================
+   ⚽ УГАДАЙ СЧЁТ
+=================================== */
+
+function renderScoreGame(){
+
+    if(
+        scoreGame?.loading
+    ){
+
+        const box =
+            document.getElementById(
+                "scoreGame"
+            );
+
+        if(box){
+            box.innerHTML =
+                `
+                    <div class="loader">
+                        Загружаем матч...
+                    </div>
+                `;
+        }
+
+        return;
+    }
+
+
+    const box =
+        document.getElementById(
+            "scoreGame"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    if(
+        !scoreGame
+        ||
+        scoreGame.available
+        ===
+        false
+    ){
+
+        box.innerHTML =
+            `
+                <div class="empty">
+                    ${esc(
+                        scoreGame?.message
+                        ||
+                        "Сегодня матчей нет — возвращайся завтра ⚽"
+                    )}
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const canPick =
+        scoreGame.can_pick
+        ===
+        true;
+
+
+    const hasPick =
+        scoreGame.predicted_home
+        !=
+        null
+        &&
+        scoreGame.predicted_away
+        !=
+        null;
+
+
+    let gameStatus =
+        "";
+
+
+    if(
+        hasPick
+        &&
+        !scoreGame.settled
+    ){
+
+        gameStatus =
+            `
+                <div class="score-saved">
+
+                    ✅ Твой прогноз
+
+                    <div class="score-big">
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </div>
+
+                    Ждём окончания матча
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        ===
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result win">
+
+                    🎯 ТОЧНЫЙ СЧЁТ!
+
+                    <div class="score-big">
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </div>
+
+                    +${scoreGame.reward_coins} 🪙
+                    +
+                    ${scoreGame.reward_xp} XP
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        !==
+        true
+        &&
+        scoreGame.outcome_win
+        ===
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result win">
+
+                    ✅ Исход угадан
+
+                    <br><br>
+
+                    Твой прогноз:
+                    <b>
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </b>
+
+                    <br>
+
+                    Итог:
+                    <b>
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </b>
+
+                    <br><br>
+
+                    +${scoreGame.reward_coins} 🪙
+
+                </div>
+            `;
+    }
+
+
+    if(
+        scoreGame.settled
+        &&
+        scoreGame.exact_win
+        !==
+        true
+        &&
+        scoreGame.outcome_win
+        !==
+        true
+    ){
+
+        gameStatus =
+            `
+                <div class="prediction-result loss">
+
+                    ❌ Не угадал
+
+                    <br><br>
+
+                    Твой прогноз:
+                    <b>
+                        ${scoreGame.predicted_home}
+                        :
+                        ${scoreGame.predicted_away}
+                    </b>
+
+                    <br>
+
+                    Итоговый счёт:
+                    <b>
+                        ${scoreGame.final_home}
+                        :
+                        ${scoreGame.final_away}
+                    </b>
+
+                </div>
+            `;
+    }
+
+
+    box.innerHTML =
+        `
+            <div class="prediction-match">
+
+                <div class="prediction-league">
+                    ${esc(
+                        scoreGame.league
+                        ||
+                        "Футбол"
+                    )}
+                </div>
+
+
+                <div class="prediction-teams">
+
+                    ${esc(
+                        scoreGame.home_team
+                    )}
+
+                    <br>
+
+                    <span
+                        style="
+                            color:var(--muted);
+                            font-size:13px
+                        "
+                    >
+                        против
+                    </span>
+
+                    <br>
+
+                    ${esc(
+                        scoreGame.away_team
+                    )}
+
+                </div>
+
+
+                <div class="prediction-time">
+
+                    🕒
+                    ${predictionDateText(
+                        scoreGame.kickoff_at
+                    )}
+
+                </div>
+
+
+                ${
+                    canPick
+
+                    ?
+
+                    `
+                        <div class="score-teams-row">
+
+                            <div class="score-team">
+                                ${esc(scoreGame.home_team)}
+                            </div>
+
+                            <div class="score-team">
+                                ${esc(scoreGame.away_team)}
+                            </div>
+
+                        </div>
+
+
+                        <div class="score-picker">
+
+                            <input
+                                id="scoreHomeInput"
+                                class="score-input"
+                                type="number"
+                                inputmode="numeric"
+                                min="0"
+                                max="10"
+                                value="0"
+                            >
+
+                            <div class="score-colon">
+                                :
+                            </div>
+
+                            <input
+                                id="scoreAwayInput"
+                                class="score-input"
+                                type="number"
+                                inputmode="numeric"
+                                min="0"
+                                max="10"
+                                value="0"
+                            >
+
+                        </div>
+
+
+                        <div class="score-help">
+                            От 0 до 10 голов каждой команде
+                        </div>
+
+
+                        <button
+                            id="scoreGameBtn"
+                            class="btn"
+                            onclick="pickExactScore()"
+                        >
+                            Подтвердить счёт
+                        </button>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                ${gameStatus}
+
+            </div>
+        `;
+}
+
+
+
+function setScoreGameView(
+    view
+){
+
+    scoreGameView =
+        [
+            "play",
+            "history",
+            "leaderboard",
+            "leagues"
+        ].includes(
+            view
+        )
+        ?
+        view
+        :
+        "play";
+
+
+    const playView =
+        document.getElementById(
+            "scoreGamePlayView"
+        );
+
+    const historyView =
+        document.getElementById(
+            "scoreGameHistoryView"
+        );
+
+    const leaderboardView =
+        document.getElementById(
+            "scoreGameLeaderboardView"
+        );
+
+    const leaguesView =
+        document.getElementById(
+            "scoreGameLeaguesView"
+        );
+
+    const playTab =
+        document.getElementById(
+            "scoreGamePlayTab"
+        );
+
+    const historyTab =
+        document.getElementById(
+            "scoreGameHistoryTab"
+        );
+
+    const leaderboardTab =
+        document.getElementById(
+            "scoreGameLeaderboardTab"
+        );
+
+    const leaguesTab =
+        document.getElementById(
+            "scoreGameLeaguesTab"
+        );
+
+
+    if(playView){
+
+        playView.style.display =
+            scoreGameView === "play"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    if(historyView){
+
+        historyView.style.display =
+            scoreGameView === "history"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    if(leaderboardView){
+
+        leaderboardView.style.display =
+            scoreGameView === "leaderboard"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    if(leaguesView){
+
+        leaguesView.style.display =
+            scoreGameView === "leagues"
+            ?
+            "block"
+            :
+            "none";
+    }
+
+
+    playTab?.classList.toggle(
+        "active",
+        scoreGameView === "play"
+    );
+
+    historyTab?.classList.toggle(
+        "active",
+        scoreGameView === "history"
+    );
+
+    leaderboardTab?.classList.toggle(
+        "active",
+        scoreGameView === "leaderboard"
+    );
+
+
+    leaguesTab?.classList.toggle(
+        "active",
+        scoreGameView === "leagues"
+    );
+
+
+    if(
+        scoreGameView ===
+        "history"
+    ){
+
+        loadScoreGameHistory();
+    }
+
+
+    if(
+        scoreGameView ===
+        "leaderboard"
+    ){
+
+        loadScoreGameLeaderboard();
+    }
+
+
+    if(
+        scoreGameView ===
+        "leagues"
+    ){
+
+        loadPredictorLeagues();
+    }
+}
+
+function setScoreHistoryFilter(
+    filter
+){
+
+    scoreHistoryFilter =
+        filter
+        ||
+        "all";
+
+    renderScoreGameHistory();
+}
+
+
+async function loadScoreGameHistory(){
+
+    const box =
+        document.getElementById(
+            "scoreGameHistory"
+        );
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/history",
+                {
+                    limit:50
+                }
+            );
+
+
+        scoreGameHistory =
+            data.history
+            ||
+            [];
+
+
+        scoreGameStats =
+            data.stats
+            ||
+            {};
+
+
+        renderScoreGameHistory();
+
+
+    }catch(error){
+
+        console.error(
+            "Score game history:",
+            error
+        );
+
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить прогнозы
+                    </div>
+                `;
+        }
+    }
+}
+
+
+async function loadScoreGameLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeaderboard"
+        );
+
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leaderboard",
+                {
+                    limit:50
+                }
+            );
+
+
+        scoreGameLeaderboard =
+            data.players
+            ||
+            [];
+
+        scoreGameLeaderboardMe =
+            data.me
+            ||
+            null;
+
+        scoreGameLeaderboardRank =
+            data.my_rank
+            ??
+            null;
+
+
+        renderScoreGameLeaderboard();
+
+
+    }catch(error){
+
+        console.error(
+            "Score game leaderboard:",
+            error
+        );
+
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить рейтинг
+                    </div>
+                `;
+        }
+    }
+}
+
+
+function scoreLeaderboardMedal(
+    rank
+){
+
+    if(Number(rank) === 1){
+        return "🥇";
+    }
+
+    if(Number(rank) === 2){
+        return "🥈";
+    }
+
+    if(Number(rank) === 3){
+        return "🥉";
+    }
+
+    return `#${rank}`;
+}
+
+
+function renderScoreGameLeaderboard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeaderboard"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    const me =
+        scoreGameLeaderboardMe;
+
+
+    const myCard =
+        me
+        ?
+        `
+            <div class="score-predictor-me">
+
+                <div class="score-predictor-me-top">
+                    <span>Твоё место в рейтинге</span>
+                    <b>#${me.rank}</b>
+                </div>
+
+                <div class="score-predictor-me-stats">
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.exact_wins}</b>
+                        <small>точных</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.successful}</b>
+                        <small>успешных</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${Number(me.success_rate || 0).toFixed(1)}%</b>
+                        <small>успех</small>
+                    </div>
+
+                    <div class="score-predictor-me-stat">
+                        <b>${me.best_streak}</b>
+                        <small>рекорд серии</small>
+                    </div>
+
+                </div>
+
+            </div>
+        `
+        :
+        `
+            <div class="score-predictor-me">
+                <div class="muted" style="text-align:center">
+                    Сделай первый прогноз на счёт, чтобы попасть в рейтинг
+                </div>
+            </div>
+        `;
+
+
+    const title =
+        `
+            <div class="score-predictor-title">
+                <span>🏆 Топ прогнозистов</span>
+                <small>Точный счёт → успех → % → серия</small>
+            </div>
+        `;
+
+
+    if(
+        !scoreGameLeaderboard.length
+    ){
+
+        box.innerHTML =
+            myCard
+            +
+            title
+            +
+            `
+                <div class="empty" style="margin-top:9px">
+                    Рейтинг пока пуст
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const rows =
+        scoreGameLeaderboard
+        .map(
+            player => {
+
+                const isMe =
+                    currentUser
+                    &&
+                    Number(
+                        player.telegram_id
+                    )
+                    ===
+                    Number(
+                        currentUser.telegram_id
+                    );
+
+                return `
+                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(player.rank) === 1 ? "top1" : ""}">
+
+                        <div class="score-predictor-rank">
+                            ${scoreLeaderboardMedal(player.rank)}
+                        </div>
+
+                        <div class="score-predictor-main">
+
+                            <div class="score-predictor-name">
+                                ${esc(player.first_name || "Игрок")}
+                                ${isMe ? " • ты" : ""}
+                            </div>
+
+                            <div class="score-predictor-sub">
+                                ✅ ${player.successful} успешных
+                                •
+                                ${Number(player.success_rate || 0).toFixed(1)}%
+                                •
+                                🔥 ${player.best_streak}
+                            </div>
+
+                        </div>
+
+                        <div class="score-predictor-right">
+                            <b>🎯 ${player.exact_wins}</b>
+                            <small>${player.total} прогнозов</small>
+                        </div>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    box.innerHTML =
+        myCard
+        +
+        title
+        +
+        `
+            <div class="score-predictor-list">
+                ${rows}
+            </div>
+        `;
+}
+
+
+
+async function loadPredictorLeagues(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues"
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        predictorLeaguePlayers =
+            [];
+
+        renderPredictorLeagues();
+
+    }catch(error){
+
+        console.error(
+            "Predictor leagues:",
+            error
+        );
+
+        if(box){
+
+            box.innerHTML =
+                `
+                    <div class="empty">
+                        Не удалось загрузить лиги
+                    </div>
+                `;
+        }
+    }
+}
+
+
+function renderPredictorLeagues(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    if(!box){
+        return;
+    }
+
+
+    if(
+        predictorLeagueCurrent
+    ){
+
+        renderPredictorLeagueBoard();
+        return;
+    }
+
+
+    const leaguesHtml =
+        predictorLeagues.length
+        ?
+        predictorLeagues
+        .map(
+            league => `
+                <div class="predictor-league-card">
+
+                    <div class="predictor-league-head">
+
+                        <div>
+                            <div class="predictor-league-name">
+                                ${esc(league.name)}
+                            </div>
+
+                            <div class="predictor-league-meta">
+                                👥 ${league.members_count} участников
+                                ${league.is_owner ? " • 👑 твоя лига" : ""}
+                            </div>
+
+                            <div class="predictor-league-hint">
+                                Открой таблицу и сравни прогнозы
+                            </div>
+                        </div>
+
+                        <div class="predictor-league-code">
+                            ${esc(league.invite_code)}
+                        </div>
+
+                    </div>
+
+                    <div class="predictor-league-card-actions">
+
+                        <button
+                            class="btn secondary"
+                            onclick="copyPredictorLeagueCode('${js(league.invite_code)}')"
+                        >
+                            📋 Код
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="openPredictorLeague(${Number(league.id)})"
+                        >
+                            🏆 Открыть
+                        </button>
+
+                        ${
+                            league.is_owner
+                            ?
+                            `
+                                <button
+                                    class="btn danger"
+                                    onclick="deletePredictorLeague(${Number(league.id)}, '${js(league.name)}')"
+                                >
+                                    Удалить
+                                </button>
+                            `
+                            :
+                            `
+                                <button
+                                    class="btn danger"
+                                    onclick="leavePredictorLeague(${Number(league.id)})"
+                                >
+                                    Выйти
+                                </button>
+                            `
+                        }
+
+                    </div>
+
+                </div>
+            `
+        )
+        .join("")
+        :
+        `
+            <div class="empty">
+                Ты пока не состоишь ни в одной приватной лиге
+            </div>
+        `;
+
+
+    box.innerHTML =
+        `
+            <div class="score-predictor-title">
+                <span>👥 Приватные лиги</span>
+                <small>Соревнуйся с друзьями</small>
+            </div>
+
+            <div class="predictor-league-box">
+
+                <h3>Создать свою лигу</h3>
+
+                <div class="predictor-league-input-row">
+
+                    <input
+                        id="predictorLeagueName"
+                        class="predictor-league-input"
+                        maxlength="32"
+                        placeholder="Например: Друзья"
+                    >
+
+                    <button
+                        class="small-btn"
+                        onclick="createPredictorLeague()"
+                    >
+                        Создать
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="predictor-league-box">
+
+                <h3>Вступить по коду</h3>
+
+                <div class="predictor-league-input-row">
+
+                    <input
+                        id="predictorLeagueCode"
+                        class="predictor-league-input"
+                        maxlength="8"
+                        placeholder="ABC123"
+                        style="text-transform:uppercase"
+                    >
+
+                    <button
+                        class="small-btn"
+                        onclick="joinPredictorLeague()"
+                    >
+                        Вступить
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="predictor-league-list">
+                ${leaguesHtml}
+            </div>
+        `;
+}
+
+
+async function createPredictorLeague(){
+
+    const input =
+        document.getElementById(
+            "predictorLeagueName"
+        );
+
+    const name =
+        String(
+            input?.value
+            ||
+            ""
+        ).trim();
+
+    if(name.length < 2){
+
+        tg.showAlert(
+            "Введи название лиги"
+        );
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/create",
+                {
+                    name
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            `Лига создана ✅\nКод: ${data.invite_code}`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function joinPredictorLeague(){
+
+    const input =
+        document.getElementById(
+            "predictorLeagueCode"
+        );
+
+    const code =
+        String(
+            input?.value
+            ||
+            ""
+        )
+        .trim()
+        .toUpperCase();
+
+    if(!code){
+
+        tg.showAlert(
+            "Введи код приглашения"
+        );
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/join",
+                {
+                    code
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            data.joined
+            ?
+            `Ты вступил в лигу «${data.name}» ✅`
+            :
+            `Ты уже состоишь в лиге «${data.name}»`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function copyPredictorLeagueCode(
+    code
+){
+
+    try{
+
+        await navigator.clipboard.writeText(
+            code
+        );
+
+        tg.showAlert(
+            `Код ${code} скопирован`
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            `Код лиги: ${code}`
+        );
+    }
+}
+
+
+async function openPredictorLeague(
+    leagueId
+){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    if(box){
+
+        box.innerHTML =
+            `
+                <div class="loader">
+                    Загружаем лигу...
+                </div>
+            `;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/leaderboard",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagueCurrent =
+            data.league
+            ||
+            null;
+
+        predictorLeagueView =
+            "overall";
+
+        predictorLeaguePlayers =
+            data.players
+            ||
+            [];
+
+        renderPredictorLeagueBoard();
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+
+        predictorLeagueCurrent =
+            null;
+
+        renderPredictorLeagues();
+    }
+}
+
+
+function setPredictorLeagueView(
+    mode
+){
+
+    predictorLeagueView =
+        mode
+        ===
+        "weekly"
+        ?
+        "weekly"
+        :
+        "overall";
+
+    renderPredictorLeagueBoard();
+}
+
+
+function predictorLeagueSortedPlayers(){
+
+    const list =
+        [
+            ...(
+                predictorLeaguePlayers
+                ||
+                []
+            )
+        ];
+
+    if(
+        predictorLeagueView
+        ===
+        "weekly"
+    ){
+
+        list.sort(
+            (
+                a,
+                b
+            ) =>
+                Number(
+                    b.weekly_successful
+                    ||
+                    0
+                )
+                -
+                Number(
+                    a.weekly_successful
+                    ||
+                    0
+                )
+                ||
+                Number(
+                    b.weekly_exact
+                    ||
+                    0
+                )
+                -
+                Number(
+                    a.weekly_exact
+                    ||
+                    0
+                )
+                ||
+                Number(
+                    b.weekly_success_rate
+                    ||
+                    0
+                )
+                -
+                Number(
+                    a.weekly_success_rate
+                    ||
+                    0
+                )
+                ||
+                Number(
+                    b.weekly_settled
+                    ||
+                    0
+                )
+                -
+                Number(
+                    a.weekly_settled
+                    ||
+                    0
+                )
+        );
+    }
+
+    return list.map(
+        (
+            player,
+            index
+        ) => ({
+            ...player,
+            display_rank:
+                index
+                +
+                1
+        })
+    );
+}
+
+
+async function sharePredictorLeague(){
+
+    const league =
+        predictorLeagueCurrent;
+
+    if(!league){
+        return;
+    }
+
+    const text =
+        `Вступай в мою лигу «${league.name}» в BetCoin. Код: ${league.invite_code}`;
+
+    try{
+
+        if(
+            navigator.share
+        ){
+
+            await navigator.share({
+                title:
+                    `BetCoin • ${league.name}`,
+
+                text
+            });
+
+            return;
+        }
+
+    }catch(error){
+
+        if(
+            error?.name
+            ===
+            "AbortError"
+        ){
+            return;
+        }
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        tg.showAlert(
+            "Приглашение скопировано ✅"
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            text
+        );
+    }
+}
+
+
+function renderPredictorLeagueBoard(){
+
+    const box =
+        document.getElementById(
+            "scoreGameLeagues"
+        );
+
+    const league =
+        predictorLeagueCurrent;
+
+    if(
+        !box
+        ||
+        !league
+    ){
+        return;
+    }
+
+
+    const displayPlayers =
+        predictorLeagueSortedPlayers();
+
+
+    const leader =
+        league.leader
+        ||
+        predictorLeaguePlayers[
+            0
+        ]
+        ||
+        null;
+
+
+    const weeklyLeader =
+        league.weekly_leader
+        ||
+        null;
+
+
+    const rows =
+        displayPlayers
+        .map(
+            player => {
+
+                const isMe =
+                    currentUser
+                    &&
+                    Number(
+                        player.telegram_id
+                    )
+                    ===
+                    Number(
+                        currentUser.telegram_id
+                    );
+
+
+                const rank =
+                    predictorLeagueView
+                    ===
+                    "weekly"
+                    ?
+                    player.display_rank
+                    :
+                    player.rank;
+
+
+                const successful =
+                    predictorLeagueView
+                    ===
+                    "weekly"
+                    ?
+                    Number(
+                        player.weekly_successful
+                        ||
+                        0
+                    )
+                    :
+                    Number(
+                        player.successful
+                        ||
+                        0
+                    );
+
+
+                const successRate =
+                    predictorLeagueView
+                    ===
+                    "weekly"
+                    ?
+                    Number(
+                        player.weekly_success_rate
+                        ||
+                        0
+                    )
+                    :
+                    Number(
+                        player.success_rate
+                        ||
+                        0
+                    );
+
+
+                const exactWins =
+                    predictorLeagueView
+                    ===
+                    "weekly"
+                    ?
+                    Number(
+                        player.weekly_exact
+                        ||
+                        0
+                    )
+                    :
+                    Number(
+                        player.exact_wins
+                        ||
+                        0
+                    );
+
+
+                const total =
+                    predictorLeagueView
+                    ===
+                    "weekly"
+                    ?
+                    Number(
+                        player.weekly_settled
+                        ||
+                        0
+                    )
+                    :
+                    Number(
+                        player.total
+                        ||
+                        0
+                    );
+
+
+                return `
+                    <div class="score-predictor-row ${isMe ? "me" : ""} ${Number(rank) === 1 ? "top1" : ""}">
+
+                        <div class="score-predictor-rank">
+                            ${scoreLeaderboardMedal(rank)}
+                        </div>
+
+                        <div class="score-predictor-main">
+
+                            <div class="score-predictor-name">
+                                ${esc(player.first_name || "Игрок")}
+                                ${isMe ? " • ты" : ""}
+                            </div>
+
+                            <div class="score-predictor-sub">
+                                ✅ ${successful}
+                                •
+                                ${successRate.toFixed(1)}%
+                                ${
+                                    predictorLeagueView
+                                    ===
+                                    "overall"
+                                    ?
+                                    ` • 🔥 ${Number(player.best_streak || 0)}`
+                                    :
+                                    ""
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="score-predictor-right">
+                            <b>🎯 ${exactWins}</b>
+                            <small>${total} прогнозов</small>
+                        </div>
+
+                    </div>
+                `;
+            }
+        )
+        .join("");
+
+
+    box.innerHTML =
+        `
+            <div class="predictor-league-board">
+
+                <div class="predictor-league-board-head">
+
+                    <button
+                        class="predictor-league-back"
+                        onclick="closePredictorLeague()"
+                    >
+                        ← Мои лиги
+                    </button>
+
+                    <div class="predictor-league-code">
+                        ${esc(league.invite_code)}
+                    </div>
+
+                </div>
+
+
+                <div class="private-league-hero">
+
+                    <div>
+
+                        <div class="private-league-kicker">
+                            👥 Приватная лига
+                        </div>
+
+                        <div class="private-league-title">
+                            ${esc(league.name)}
+                        </div>
+
+                        <div class="private-league-meta">
+                            ${Number(league.members_count || predictorLeaguePlayers.length)} участников
+                            •
+                            ${Number(league.total_predictions || 0)} прогнозов
+                            ${
+                                league.is_owner
+                                ?
+                                " • 👑 ты создатель"
+                                :
+                                ""
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="private-league-actions">
+
+                        <button
+                            class="small-btn"
+                            onclick="copyPredictorLeagueCode('${js(league.invite_code)}')"
+                        >
+                            📋 Код
+                        </button>
+
+                        <button
+                            class="small-btn"
+                            onclick="sharePredictorLeague()"
+                        >
+                            ↗️ Пригласить
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="private-league-summary">
+
+                    <div class="private-league-summary-card">
+                        <span>🏆 Лидер</span>
+                        <b>
+                            ${leader ? esc(leader.first_name || "Игрок") : "—"}
+                        </b>
+                        <small>
+                            ${leader ? `🎯 ${Number(leader.exact_wins || 0)} • ✅ ${Number(leader.successful || 0)}` : "Нет данных"}
+                        </small>
+                    </div>
+
+                    <div class="private-league-summary-card">
+                        <span>📅 Лидер недели</span>
+                        <b>
+                            ${weeklyLeader ? esc(weeklyLeader.first_name || "Игрок") : "—"}
+                        </b>
+                        <small>
+                            ${
+                                weeklyLeader
+                                ?
+                                `✅ ${Number(weeklyLeader.weekly_successful || 0)} • 🎯 ${Number(weeklyLeader.weekly_exact || 0)}`
+                                :
+                                "Пока нет прогнозов"
+                            }
+                        </small>
+                    </div>
+
+                    <div class="private-league-summary-card">
+                        <span>📍 Твоё место</span>
+                        <b>
+                            ${league.my_rank ? `#${Number(league.my_rank)}` : "—"}
+                        </b>
+                        <small>
+                            общий рейтинг
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="private-league-tabs">
+
+                    <button
+                        class="${predictorLeagueView === "overall" ? "active" : ""}"
+                        onclick="setPredictorLeagueView('overall')"
+                    >
+                        🏆 Общий
+                    </button>
+
+                    <button
+                        class="${predictorLeagueView === "weekly" ? "active" : ""}"
+                        onclick="setPredictorLeagueView('weekly')"
+                    >
+                        📅 Неделя
+                    </button>
+
+                </div>
+
+
+                <div class="score-predictor-title">
+
+                    <span>
+                        ${
+                            predictorLeagueView
+                            ===
+                            "weekly"
+                            ?
+                            "📅 Рейтинг недели"
+                            :
+                            "🏆 Таблица лиги"
+                        }
+                    </span>
+
+                    <small>
+                        ${
+                            predictorLeagueView
+                            ===
+                            "weekly"
+                            ?
+                            "за последние 7 дней"
+                            :
+                            "за всё время"
+                        }
+                    </small>
+
+                </div>
+
+                ${
+                    rows
+                    ?
+                    `
+                        <div class="score-predictor-list">
+                            ${rows}
+                        </div>
+                    `
+                    :
+                    `
+                        <div class="empty" style="margin-top:9px">
+                            В лиге пока нет участников
+                        </div>
+                    `
+                }
+
+            </div>
+        `;
+}
+
+
+function closePredictorLeague(){
+
+    predictorLeagueCurrent =
+        null;
+
+    predictorLeagueView =
+        "overall";
+
+    predictorLeaguePlayers =
+        [];
+
+    renderPredictorLeagues();
+}
+
+
+
+async function deletePredictorLeague(
+    leagueId,
+    leagueName
+){
+
+    const confirmed =
+        confirm(
+            `Удалить лигу «${leagueName}»?\n\nВсе участники будут удалены из лиги, но их прогнозы и статистика останутся.`
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/delete",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        predictorLeaguePlayers =
+            [];
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            "Лига удалена ✅"
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+async function leavePredictorLeague(
+    leagueId
+){
+
+    const confirmed =
+        confirm(
+            "Выйти из этой лиги?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    try{
+
+        const data =
+            await post(
+                "/api/games/score/leagues/leave",
+                {
+                    league_id:
+                        leagueId
+                }
+            );
+
+        predictorLeagues =
+            data.leagues
+            ||
+            [];
+
+        predictorLeagueCurrent =
+            null;
+
+        renderPredictorLeagues();
+
+        tg.showAlert(
+            "Ты вышел из лиги"
+        );
+
+    }catch(error){
+
+        tg.showAlert(
+            error.message
+        );
+    }
+}
+
+
+
+function scoreHistoryDateText(
+    value
+){
+
+    if(!value){
+
+        return "";
+    }
+
+
+    const date =
+        new Date(
+            value
+        );
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "";
+    }
+
+
+    return date.toLocaleString(
+        "ru-RU",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
 
 function renderScoreGameHistory(){
 

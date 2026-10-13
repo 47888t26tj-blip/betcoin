@@ -3743,6 +3743,22 @@ body{
     .nav{min-height:68px}
 }
 
+
+.parlay-history-leg.refund{
+    border-color:rgba(141,150,168,.24);
+    background:rgba(141,150,168,.05);
+}
+
+.parlay-history-leg-status.refund{
+    color:var(--muted);
+    background:rgba(141,150,168,.12);
+}
+
+.parlay-history-result.refund{
+    background:rgba(141,150,168,.09);
+    color:var(--muted);
+}
+
 </style>
 
 </head>
@@ -4293,6 +4309,7 @@ LIVE
 
 </section>
 
+
 <!-- ===================================
      MATCH DETAIL
 =================================== -->
@@ -4312,7 +4329,6 @@ LIVE
 <div id="matchDetail" style="padding-bottom:8px"></div>
 
 </section>
-
 
 <!-- ===================================
      🎟 BETS
@@ -8611,6 +8627,7 @@ function renderTeamFormBox(name,items){
     `;
 }
 
+
 function renderStandingCard(name,row){
     if(!row){
         return `<div class="standing-team"><b>${esc(name)}</b><div class="muted" style="margin-top:8px">Нет данных</div></div>`;
@@ -8625,7 +8642,6 @@ function renderStandingCard(name,row){
         </div>
     `;
 }
-
 
 function renderMatchCenterData(match,data){
 
@@ -10028,6 +10044,9 @@ function parlayLegView(
     }else if(text === "Проиграла"){
         state = "loss";
         icon = "❌";
+    }else if(text === "Возврат"){
+        state = "refund";
+        icon = "↩️";
     }
 
     return {text,state,icon};
@@ -10064,6 +10083,10 @@ function parlayStatusView(
         return {state:"loss",icon:"❌",text:"Проиграла"};
     }
 
+    if(item?.status === "Возврат"){
+        return {state:"refund",icon:"↩️",text:"Возврат"};
+    }
+
     return {
         state:"active",
         icon:"⏳",
@@ -10094,8 +10117,42 @@ function renderBets(){
         ?
         singles
         .map(
-            item =>
-                `
+            item => {
+
+                let payoutLabel =
+                    "Возможный выигрыш";
+
+                let payoutValue =
+                    Number(
+                        item.possible
+                        ||
+                        0
+                    );
+
+                if(item.status === "Выиграла"){
+                    payoutLabel = "Выигрыш";
+                    payoutValue = Number(
+                        item.payout
+                        ??
+                        item.possible
+                        ??
+                        0
+                    );
+                }else if(item.status === "Возврат"){
+                    payoutLabel = "Возврат";
+                    payoutValue = Number(
+                        item.payout
+                        ??
+                        item.amount
+                        ??
+                        0
+                    );
+                }else if(item.status === "Проиграла"){
+                    payoutLabel = "Результат";
+                    payoutValue = 0;
+                }
+
+                return `
                     <div class="card">
 
                         <span class="status ${stClass(item.status)}">
@@ -10128,12 +10185,13 @@ function renderBets(){
                         </div>
 
                         <div class="bet-row">
-                            <span>Выигрыш</span>
-                            <b>${item.possible} 🪙</b>
+                            <span>${payoutLabel}</span>
+                            <b>${payoutValue} 🪙</b>
                         </div>
 
                     </div>
-                `
+                `;
+            }
         )
         .join("")
         :
@@ -10170,24 +10228,57 @@ function renderBets(){
                         leg =>
                             [
                                 "Выиграла",
-                                "Проиграла"
+                                "Проиграла",
+                                "Возврат"
                             ].includes(
                                 leg?.status
                             )
                     ).length;
 
-                const resultText =
-                    item.status === "Выиграла"
-                    ?
-                    `✅ Экспресс сыграл • +${Number(item.possible || 0)} 🪙`
-                    :
-                    (
-                        item.status === "Проиграла"
-                        ?
-                        "❌ Экспресс не сыграл"
-                        :
-                        `⏳ Рассчитано ${settledLegs} из ${legs.length} событий`
+                const actualPayout =
+                    Number(
+                        item.payout
+                        ??
+                        0
                     );
+
+                const actualOdd =
+                    Number(
+                        item.settled_odd
+                        ??
+                        item.total_odd
+                        ??
+                        1
+                    );
+
+                let resultText =
+                    `⏳ Рассчитано ${settledLegs} из ${legs.length} событий`;
+
+                let moneyLabel =
+                    "Возможный выигрыш";
+
+                let moneyValue =
+                    Number(
+                        item.possible
+                        ||
+                        0
+                    );
+
+                if(item.status === "Выиграла"){
+                    resultText =
+                        `✅ Экспресс сыграл • +${actualPayout} 🪙`;
+                    moneyLabel = "Выигрыш";
+                    moneyValue = actualPayout;
+                }else if(item.status === "Проиграла"){
+                    resultText = "❌ Экспресс не сыграл";
+                    moneyLabel = "Результат";
+                    moneyValue = 0;
+                }else if(item.status === "Возврат"){
+                    resultText =
+                        `↩️ Экспресс возвращён • ${actualPayout} 🪙`;
+                    moneyLabel = "Возврат";
+                    moneyValue = actualPayout;
+                }
 
                 return `
                     <div class="parlay-history-card ${parlayView.state}">
@@ -10215,8 +10306,10 @@ function renderBets(){
                         <div class="parlay-history-summary">
 
                             <div>
-                                <span>Общий кэф</span>
-                                <b>x${Number(item.total_odd || 1).toFixed(2)}</b>
+                                <span>
+                                    ${item.settled ? "Итоговый кэф" : "Общий кэф"}
+                                </span>
+                                <b>x${actualOdd.toFixed(2)}</b>
                             </div>
 
                             <div>
@@ -10225,16 +10318,8 @@ function renderBets(){
                             </div>
 
                             <div>
-                                <span>
-                                    ${
-                                        item.status === "Выиграла"
-                                        ?
-                                        "Выигрыш"
-                                        :
-                                        "Возможный выигрыш"
-                                    }
-                                </span>
-                                <b>${Number(item.possible || 0)} 🪙</b>
+                                <span>${moneyLabel}</span>
+                                <b>${moneyValue} 🪙</b>
                             </div>
 
                         </div>

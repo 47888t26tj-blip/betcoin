@@ -274,6 +274,37 @@ TOTAL_POINTS = [
     4.5
 ]
 
+
+def is_supported_handicap_line(line):
+
+    try:
+
+        value = float(
+            line
+        )
+
+        doubled = (
+            value
+            *
+            2
+        )
+
+        return (
+            abs(
+                doubled
+                -
+                round(
+                    doubled
+                )
+            )
+            <
+            0.000001
+        )
+
+    except Exception:
+
+        return False
+
 WHEEL_COOLDOWN_HOURS = 24
 
 PREDICTION_REWARD_COINS = 200
@@ -3588,7 +3619,13 @@ def parse_odds_response(payload):
 
             home_line = None
 
-        if home_line is not None:
+        if (
+            home_line is not None
+            and
+            is_supported_handicap_line(
+                home_line
+            )
+        ):
 
             away_line = -home_line
 
@@ -5625,6 +5662,12 @@ def match_market_odd(
             handicap_match.group(2)
         )
 
+        if not is_supported_handicap_line(
+            line
+        ):
+
+            return None, selection
+
         side = (
             "home"
             if team_number == 1
@@ -5728,6 +5771,18 @@ def resolve_canonical_bet(
         float(odd),
         4
     )
+
+    if (
+        odd != odd
+        or
+        odd <= 1.0
+        or
+        odd > 1000.0
+    ):
+
+        raise ValueError(
+            "Некорректный коэффициент"
+        )
 
     return {
         "fixture_id": int(fixture_id),
@@ -5846,6 +5901,12 @@ def calculate_bet_result(
             handicap_match.group(2)
         )
 
+        if not is_supported_handicap_line(
+            handicap
+        ):
+
+            return None
+
         if team == 1:
 
             value = (
@@ -5905,6 +5966,32 @@ def is_finished_status(status):
         "ended",
         "full_time",
         "fulltime"
+    }
+
+
+def is_void_status(status):
+
+    value = (
+        str(
+            status or ""
+        )
+        .strip()
+        .lower()
+        .replace(
+            "-",
+            "_"
+        )
+        .replace(
+            " ",
+            "_"
+        )
+    )
+
+    return value in {
+        "cancelled",
+        "canceled",
+        "abandoned",
+        "void"
     }
 
 
@@ -10080,6 +10167,7 @@ def settle_user_bets(
             id,
             fixture_id,
             selection,
+            odd,
             amount,
             possible
 
@@ -10113,6 +10201,7 @@ def settle_user_bets(
             bet_id,
             fixture_id,
             selection,
+            odd,
             amount,
             possible
         ) = row
@@ -10121,15 +10210,13 @@ def settle_user_bets(
             fixture_id
         )
 
-        if (
-            not match
-            or
-            not is_finished_status(
-                match.get("status")
-            )
-        ):
+        if not match:
 
             continue
+
+        match_status = match.get(
+            "status"
+        )
 
         home_score = match.get(
             "home_score"
@@ -10139,23 +10226,59 @@ def settle_user_bets(
             "away_score"
         )
 
-        if (
-            home_score is None
-            or
-            away_score is None
+        score = None
+
+        if is_void_status(
+            match_status
         ):
 
-            continue
+            result = "refund"
 
-        result = calculate_bet_result(
-            selection,
-            int(
+        else:
+
+            if not is_finished_status(
+                match_status
+            ):
+
+                continue
+
+            if (
+                home_score is None
+                or
+                away_score is None
+            ):
+
+                continue
+
+            home_score = int(
                 home_score
-            ),
-            int(
+            )
+
+            away_score = int(
                 away_score
             )
-        )
+
+            result = calculate_bet_result(
+                selection,
+                home_score,
+                away_score
+            )
+
+            score = (
+                f"{home_score}:"
+                f"{away_score}"
+            )
+
+            if result is None:
+
+                print(
+                    "Unsupported bet market during settlement; refunding:",
+                    bet_id,
+                    selection,
+                    flush=True
+                )
+
+                result = "refund"
 
         if result == "win":
 
@@ -10182,11 +10305,6 @@ def settle_user_bets(
         else:
 
             continue
-
-        score = (
-            f"{int(home_score)}:"
-            f"{int(away_score)}"
-        )
 
         cur.execute("""
             UPDATE bets
@@ -10352,16 +10470,14 @@ def settle_user_parlays(
                 fixture_id
             )
 
-            if (
-                not match
-                or
-                not is_finished_status(
-                    match.get("status")
-                )
-            ):
+            if not match:
 
                 all_resolved = False
                 continue
+
+            match_status = match.get(
+                "status"
+            )
 
             home_score = match.get(
                 "home_score"
@@ -10371,24 +10487,62 @@ def settle_user_parlays(
                 "away_score"
             )
 
-            if (
-                home_score is None
-                or
-                away_score is None
+            score = None
+
+            if is_void_status(
+                match_status
             ):
 
-                all_resolved = False
-                continue
+                result = "refund"
 
-            result = calculate_bet_result(
-                selection,
-                int(
+            else:
+
+                if not is_finished_status(
+                    match_status
+                ):
+
+                    all_resolved = False
+                    continue
+
+                if (
+                    home_score is None
+                    or
+                    away_score is None
+                ):
+
+                    all_resolved = False
+                    continue
+
+                home_score = int(
                     home_score
-                ),
-                int(
+                )
+
+                away_score = int(
                     away_score
                 )
-            )
+
+                result = calculate_bet_result(
+                    selection,
+                    home_score,
+                    away_score
+                )
+
+                score = (
+                    f"{home_score}:"
+                    f"{away_score}"
+                )
+
+                if result is None:
+
+                    print(
+                        "Unsupported parlay market during settlement; refunding leg:",
+                        parlay_id,
+                        leg_id,
+                        selection,
+                        flush=True
+                    )
+
+                    result = "refund"
 
             if result == "win":
 
@@ -10412,11 +10566,6 @@ def settle_user_parlays(
 
                 all_resolved = False
                 continue
-
-            score = (
-                f"{int(home_score)}:"
-                f"{int(away_score)}"
-            )
 
             cur.execute("""
                 UPDATE parlay_legs
@@ -10590,50 +10739,48 @@ def get_user_bets(
     cur.close()
     conn.close()
 
-    return [
+    result = []
 
-        {
-            "id":
-                row[0],
+    for row in rows:
 
-            "fixture_id":
-                row[1],
+        status = row[7]
+        amount = int(
+            row[5]
+        )
+        possible = int(
+            row[6]
+        )
 
-            "match":
-                row[2],
+        payout = None
 
-            "selection":
-                row[3],
+        if status == "Выиграла":
+            payout = possible
+        elif status == "Возврат":
+            payout = amount
+        elif status == "Проиграла":
+            payout = 0
 
-            "odd":
-                row[4],
+        result.append({
 
-            "amount":
-                row[5],
+            "id": row[0],
+            "fixture_id": row[1],
+            "match": row[2],
+            "selection": row[3],
+            "odd": row[4],
+            "amount": amount,
+            "possible": possible,
+            "payout": payout,
+            "status": status,
+            "settled": row[8],
+            "score": row[9],
+            "created_at": (
+                row[10].isoformat()
+                if row[10]
+                else None
+            )
+        })
 
-            "possible":
-                row[6],
-
-            "status":
-                row[7],
-
-            "settled":
-                row[8],
-
-            "score":
-                row[9],
-
-            "created_at":
-                (
-                    row[10].isoformat()
-                    if row[10]
-                    else
-                    None
-                )
-        }
-
-        for row in rows
-    ]
+    return result
 
 
 def get_user_parlays(
@@ -10693,76 +10840,100 @@ def get_user_parlays(
         legs = [
 
             {
-                "id":
-                    leg[0],
-
-                "fixture_id":
-                    leg[1],
-
-                "match":
-                    leg[2],
-
-                "selection":
-                    leg[3],
-
-                "odd":
-                    leg[4],
-
-                "status":
-                    leg[5],
-
-                "score":
-                    leg[6]
+                "id": leg[0],
+                "fixture_id": leg[1],
+                "match": leg[2],
+                "selection": leg[3],
+                "odd": leg[4],
+                "status": leg[5],
+                "score": leg[6]
             }
 
             for leg in cur.fetchall()
         ]
 
+        amount = int(
+            row[1]
+        )
+
+        original_possible = int(
+            row[3]
+        )
+
+        status = row[4]
+        payout = None
+        settled_odd = None
+
+        if status == "Проиграла":
+
+            payout = 0
+
+        elif status in {
+            "Выиграла",
+            "Возврат"
+        }:
+
+            effective_odd = 1.0
+
+            for leg in legs:
+
+                if leg["status"] == "Выиграла":
+
+                    effective_odd *= float(
+                        leg["odd"]
+                    )
+
+                elif leg["status"] == "Проиграла":
+
+                    effective_odd = 0.0
+                    break
+
+            settled_odd = round(
+                effective_odd,
+                4
+            )
+
+            if effective_odd <= 1.000001:
+
+                payout = amount
+
+            else:
+
+                payout = int(
+                    amount
+                    *
+                    effective_odd
+                    +
+                    0.5
+                )
+
         result.append({
 
-            "id":
-                row[0],
-
-            "amount":
-                row[1],
-
-            "total_odd":
-                row[2],
-
-            "possible":
-                row[3],
-
-            "status":
-                row[4],
-
-            "settled":
-                row[5],
-
-            "created_at":
-                (
-                    row[6].isoformat()
-                    if row[6]
-                    else
-                    None
-                ),
-
-            "settled_at":
-                (
-                    row[7].isoformat()
-                    if row[7]
-                    else
-                    None
-                ),
-
-            "legs":
-                legs
+            "id": row[0],
+            "amount": amount,
+            "total_odd": row[2],
+            "possible": original_possible,
+            "payout": payout,
+            "settled_odd": settled_odd,
+            "status": status,
+            "settled": row[5],
+            "created_at": (
+                row[6].isoformat()
+                if row[6]
+                else None
+            ),
+            "settled_at": (
+                row[7].isoformat()
+                if row[7]
+                else None
+            ),
+            "legs": legs
         })
 
     cur.close()
     conn.close()
 
     return result
-
 
 
 def get_profile_extra(
@@ -12468,7 +12639,6 @@ def setup_telegram_webhook():
     return False
 
 
-
 def send_telegram_message(
     telegram_id,
     text
@@ -12527,6 +12697,7 @@ def send_telegram_message(
         )
 
         return False
+
 
 def score_game_reminder_worker_once():
 
